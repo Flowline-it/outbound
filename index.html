@@ -476,7 +476,7 @@ textarea.body{min-height:150px;line-height:1.55;white-space:pre-wrap;font-size:1
 const APP_DEFAULTS = {
   supabaseUrl:    'https://adaaubcarnczlmenfwam.supabase.co',
   supabaseKey:    'sb_publishable_0a_ioaj4iiT3MlzUKR2XyQ_-PYHrQPP',
-  googleClientId: '183110262616-3rd20u12hlmns50h48rant26c7clurpk.apps.googleusercontent.com',
+  googleClientId: '659196383129-0do3bchjsc10sr57v2csapkv0jeugsd5.apps.googleusercontent.com',
 };
 /* La chiave Anthropic NON va qui: è personale e a consumo.
    Resta nelle Impostazioni del singolo (serve solo per l'Outbound). */
@@ -539,7 +539,12 @@ let state = {
 // i valori del team valgono se il singolo non ne ha di propri
 if(!state.config.supabaseUrl && APP_DEFAULTS.supabaseUrl) state.config.supabaseUrl=APP_DEFAULTS.supabaseUrl;
 if(!state.config.supabaseKey && APP_DEFAULTS.supabaseKey) state.config.supabaseKey=APP_DEFAULTS.supabaseKey;
-if(!state.config.googleClientId && APP_DEFAULTS.googleClientId) state.config.googleClientId=APP_DEFAULTS.googleClientId;
+// il Client ID del team vince sempre: evita che un vecchio ID salvato nel browser blocchi il login (origin_mismatch)
+if(APP_DEFAULTS.googleClientId && state.config.googleClientId!==APP_DEFAULTS.googleClientId){
+  if(state.config.googleClientId){ state.google={token:null,email:null,expires:0}; save(LS.gauth,state.google); } // token del vecchio client: non più valido
+  state.config.googleClientId=APP_DEFAULTS.googleClientId;
+  try{const c=JSON.parse(localStorage.getItem(LS.config)||'{}');c.googleClientId=APP_DEFAULTS.googleClientId;localStorage.setItem(LS.config,JSON.stringify(c));}catch(e){}
+}
 if(state.config.eurRate==null) state.config.eurRate=EUR_DEFAULT;
 if(state.config.autoSync==null) state.config.autoSync=true;
 if(state.config.autoSyncSec==null) state.config.autoSyncSec=60;
