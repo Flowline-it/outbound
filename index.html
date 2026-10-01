@@ -1,0 +1,3073 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlowLine Outbound — Gestione campagne</title>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="https://apis.google.com/js/api.js" async defer></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --bg:#f6f6f3; --surface:#ffffff; --surface-2:#fbfbf9; --border:#e6e4dd;
+  --text:#1b1b19; --muted:#73726c; --faint:#a3a29b;
+  --accent:#4f46e5; --accent-soft:#eef0ff; --accent-2:#0d9488;
+  --ok:#16a34a; --ok-soft:#e7f6ec; --warn:#d97706; --warn-soft:#fdf2e3;
+  --late:#dc2626; --late-soft:#fdecea; --wait:#2563eb; --wait-soft:#e9f0ff;
+  --radius:12px; --radius-sm:8px;
+  --shadow:0 1px 2px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.04);
+}
+[data-theme="dark"]{
+  --bg:#16161a; --surface:#1f1f25; --surface-2:#26262d; --border:#33333c;
+  --text:#ededf0; --muted:#9a9aa3; --faint:#6a6a73;
+  --accent:#7c75f5; --accent-soft:#26243d; --accent-2:#2dd4bf;
+  --ok:#4ade80; --ok-soft:#16291c; --warn:#fbbf24; --warn-soft:#2c2310;
+  --late:#f87171; --late-soft:#2c1514; --wait:#60a5fa; --wait-soft:#13233f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.3);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+.mono{font-family:'JetBrains Mono',ui-monospace,'SFMono-Regular',Menlo,monospace}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select,textarea{font-family:inherit;font-size:14px;color:var(--text)}
+a{color:var(--accent)}
+
+/* layout */
+.app{display:grid;grid-template-columns:232px 1fr;min-height:100vh}
+.rail{
+  background:var(--surface);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;position:sticky;top:0;height:100vh;
+}
+.brand{padding:20px 18px 14px;display:flex;align-items:center;gap:10px}
+.brand .logo{
+  width:30px;height:30px;border-radius:8px;flex:0 0 auto;
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.brand .logo svg{width:18px;height:18px}
+.brand h1{font-size:15px;font-weight:650;letter-spacing:-.01em;line-height:1.1}
+.brand .sub{font-size:11px;color:var(--faint);font-weight:500}
+.nav{padding:8px;display:flex;flex-direction:column;gap:2px;flex:1}
+.nav button{
+  display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:var(--radius-sm);
+  color:var(--muted);font-weight:550;font-size:13.5px;text-align:left;width:100%;
+  transition:background .12s,color .12s;
+}
+.nav button:hover{background:var(--surface-2);color:var(--text)}
+.nav button.active{background:var(--accent-soft);color:var(--accent)}
+.nav button .ico{width:17px;height:17px;flex:0 0 auto;opacity:.9}
+.nav button .badge{margin-left:auto;font-size:11px;font-weight:650;background:var(--accent);color:#fff;
+  min-width:19px;height:19px;border-radius:10px;padding:0 6px;display:flex;align-items:center;justify-content:center}
+.nav button.active .badge{background:var(--accent)}
+.nav .badge.late{background:var(--late)}
+.rail-foot{padding:10px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:8px}
+.conn-pill{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);padding:6px 8px;border-radius:8px;background:var(--surface-2)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--faint);flex:0 0 auto}
+.dot.on{background:var(--ok)}
+.dot.warn{background:var(--warn)}
+.rail-foot button.mini{font-size:12px;color:var(--muted);padding:7px 8px;border-radius:8px;text-align:left;display:flex;align-items:center;gap:8px}
+.rail-foot button.mini:hover{background:var(--surface-2);color:var(--text)}
+.spend-pill{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text);padding:7px 9px;border-radius:8px;background:var(--accent-soft);border:1px solid transparent;width:100%;font-weight:600}
+.spend-pill:hover{border-color:var(--accent)}
+.spend-pill .ico{width:14px;height:14px;color:var(--accent);flex:0 0 auto}
+.spend-pill .spend-gen{margin-left:auto;font-size:11px;color:var(--muted);font-weight:500}
+.spend-table{width:100%;font-size:13px;border-collapse:collapse}
+.spend-table td{padding:7px 0;border-bottom:1px solid var(--border)}
+.spend-table td:last-child{text-align:right;font-weight:600}
+.spend-table tr:last-child td{border:none}
+.spend-big{font-size:30px;font-weight:700;letter-spacing:-.02em}
+
+.main{min-width:0;display:flex;flex-direction:column}
+.topbar{
+  position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--border);
+  padding:14px 26px;display:flex;align-items:center;gap:14px;
+}
+.topbar h2{font-size:18px;font-weight:650;letter-spacing:-.015em}
+.topbar .crumb{color:var(--faint);font-size:13px}
+.topbar .spacer{flex:1}
+.content{padding:22px 26px 60px;max-width:1180px;width:100%}
+
+/* generic ui */
+.btn{
+  display:inline-flex;align-items:center;gap:7px;padding:8px 13px;border-radius:9px;
+  font-weight:600;font-size:13px;background:var(--surface);border:1px solid var(--border);
+  color:var(--text);transition:all .12s;
+}
+.btn:hover{background:var(--surface-2);border-color:var(--faint)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn.ghost{background:transparent;border-color:transparent}
+.btn.ghost:hover{background:var(--surface-2)}
+.btn.danger{color:var(--late);border-color:transparent}
+.btn.danger:hover{background:var(--late-soft)}
+.btn.sm{padding:6px 10px;font-size:12px;gap:5px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn .ico{width:15px;height:15px}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+.grid{display:grid;gap:14px}
+
+/* dashboard stats */
+.stats{grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.stat{padding:16px 18px;position:relative;overflow:hidden}
+.stat .k{font-size:12px;color:var(--muted);font-weight:600;display:flex;align-items:center;gap:7px}
+.stat .v{font-size:30px;font-weight:700;letter-spacing:-.02em;margin-top:7px;line-height:1}
+.stat .meta{font-size:12px;color:var(--faint);margin-top:5px}
+.stat .accent-bar{position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent)}
+.stat.today .accent-bar{background:var(--accent)}
+.stat.wait .accent-bar{background:var(--wait)}
+.stat.reply .accent-bar{background:var(--ok)}
+.stat.late .accent-bar{background:var(--late)}
+
+.section-h{display:flex;align-items:center;gap:10px;margin:24px 0 12px}
+.section-h h3{font-size:15px;font-weight:650}
+.section-h .count{font-size:12px;color:var(--faint);font-weight:600}
+.section-h .line{flex:1;height:1px;background:var(--border)}
+
+/* table */
+.table-wrap{overflow:auto;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-weight:600;color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;
+  padding:11px 14px;border-bottom:1px solid var(--border);white-space:nowrap;background:var(--surface-2);position:sticky;top:0}
+td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--surface-2)}
+.az{font-weight:600}
+.email-cell{color:var(--muted);font-size:12px}
+
+/* status chip */
+.chip{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:20px;font-size:12px;font-weight:600;white-space:nowrap}
+.chip .d{width:6px;height:6px;border-radius:50%}
+.chip.da{background:var(--surface-2);color:var(--muted)} .chip.da .d{background:var(--faint)}
+.chip.plan{background:#f3eaff;color:#7c3aed} .chip.plan .d{background:#7c3aed}
+[data-theme="dark"] .chip.plan{background:#2a2140;color:#c4b5fd} [data-theme="dark"] .chip.plan .d{background:#c4b5fd}
+.chip.seq{background:var(--accent-soft);color:var(--accent)} .chip.seq .d{background:var(--accent)}
+.chip.wait{background:var(--wait-soft);color:var(--wait)} .chip.wait .d{background:var(--wait)}
+.chip.reply{background:var(--ok-soft);color:var(--ok)} .chip.reply .d{background:var(--ok)}
+.chip.done{background:var(--surface-2);color:var(--faint)} .chip.done .d{background:var(--faint)}
+.chip.stop{background:var(--late-soft);color:var(--late)} .chip.stop .d{background:var(--late)}
+.chip.late{background:var(--late-soft);color:var(--late)} .chip.late .d{background:var(--late)}
+.chip.today{background:var(--warn-soft);color:var(--warn)} .chip.today .d{background:var(--warn)}
+
+.step-pill{font-size:11px;font-weight:650;color:var(--accent-2);background:color-mix(in srgb,var(--accent-2) 12%,transparent);padding:2px 7px;border-radius:6px}
+
+/* queue cards */
+.queue-card{padding:0;overflow:hidden;margin-bottom:14px}
+.qc-head{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--border);background:var(--surface-2)}
+.qc-head .az{font-size:14px}
+.qc-head .meta{font-size:12px;color:var(--muted)}
+.qc-head .spacer{flex:1}
+.qc-body{padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.field-lbl{font-size:11px;font-weight:650;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.field-lbl .cnt{margin-left:auto;font-weight:600;color:var(--faint);text-transform:none;letter-spacing:0}
+input.subj,textarea.body{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:9px 11px;resize:vertical}
+input.subj:focus,textarea.body:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+textarea.body{min-height:150px;line-height:1.55;white-space:pre-wrap;font-size:13.5px}
+.qc-foot{display:flex;align-items:center;gap:9px;padding:0 16px 14px;flex-wrap:wrap}
+.qc-foot .spacer{flex:1}
+.preview-note{font-size:12px;color:var(--faint);display:flex;align-items:center;gap:6px}
+
+/* agenda */
+.agenda-col{margin-bottom:20px}
+.agenda-day{display:flex;align-items:baseline;gap:10px;margin-bottom:9px}
+.agenda-day .dnum{font-size:22px;font-weight:700;letter-spacing:-.02em}
+.agenda-day .dname{font-size:13px;color:var(--muted);font-weight:600;text-transform:capitalize}
+.agenda-day .dcount{margin-left:auto;font-size:12px;color:var(--faint);font-weight:600}
+.agenda-row{display:flex;align-items:center;gap:12px;padding:10px 14px;border:1px solid var(--border);border-radius:10px;background:var(--surface);margin-bottom:7px}
+.agenda-row:hover{border-color:var(--faint)}
+.agenda-row .az{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.agenda-row .when{font-size:12px;color:var(--muted);white-space:nowrap}
+
+/* suite module switcher */
+.modswitch{display:flex;gap:4px;padding:8px 10px 4px}
+.modswitch button{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 6px;border-radius:8px;font-size:12.5px;font-weight:600;color:var(--muted);background:var(--surface-2);border:1px solid var(--border)}
+.modswitch button svg{width:14px;height:14px}
+.modswitch button.active{background:var(--accent);border-color:var(--accent);color:#fff}
+/* shifts */
+.sh-dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto;display:inline-block}
+.sh-m{display:flex;gap:7px;align-items:flex-start;padding:5px 6px;border-radius:7px}
+.sh-m:hover{background:var(--surface-2)}
+.sh-m-body{min-width:0;flex:1}
+.sh-name{font-size:12px;font-weight:600;line-height:1.3}
+.sh-blocks{display:flex;flex-wrap:wrap;gap:3px;margin-top:2px}
+.sh-chip{font-size:11px;font-weight:600;background:var(--accent-soft);color:var(--accent);padding:2px 6px;border-radius:6px;white-space:nowrap;font-family:'JetBrains Mono',monospace}
+.sh-chip[onclick]{cursor:pointer}
+.sh-chip[onclick]:hover{background:var(--late-soft);color:var(--late)}
+.sh-chip.edit{display:inline-flex;align-items:center;gap:5px;background:var(--surface-2);color:var(--text)}
+.sh-chip.edit button{color:var(--faint);font-weight:700;font-size:12px}
+.sh-chip.edit button:hover{color:var(--late)}
+.sh-busy{font-size:10.5px;color:var(--late);margin-top:3px;font-weight:600;background:var(--late-soft);padding:1px 5px;border-radius:5px;display:inline-block;font-family:'JetBrains Mono',monospace}
+.sh-nofree{font-size:10.5px;color:var(--faint);margin-top:2px;font-style:italic}
+.mp-day{display:grid;grid-template-columns:110px 1fr auto;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)}
+.mp-day:last-child{border-bottom:none}
+.mp-dname{font-size:13px;font-weight:600}
+.mp-blocks{display:flex;flex-wrap:wrap;gap:5px}
+.mp-none{font-size:12px;color:var(--faint)}
+.mp-add{display:flex;align-items:center;gap:5px}
+.mp-add input[type=time]{background:var(--surface-2);border:1px solid var(--border);border-radius:7px;padding:5px 7px;font-size:12px}
+.ex-add{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.ex-add input,.ex-add select{background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:7px 9px;font-size:13px}
+.ex-whole{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted)}
+.ex-row{display:flex;align-items:center;gap:10px;font-size:13px;padding:7px 10px;border:1px solid var(--border);border-radius:8px}
+.cal-pick{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:13px}
+.cal-pick:hover{background:var(--surface-2)}
+.cal-pick input{width:16px;height:16px;accent-color:var(--accent);cursor:pointer}
+.cal-sw{width:10px;height:10px;border-radius:3px;flex:0 0 auto}
+.cal-nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cal-role{font-size:10.5px;color:var(--faint);white-space:nowrap}
+/* editing avanzato */
+.sh-chip.edit .chip-t{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--text);padding:0}
+.sh-chip.edit .chip-t:hover{color:var(--accent);text-decoration:underline}
+.mp-dname{display:flex;align-items:center;gap:8px}
+.mp-clear{font-size:10px;font-weight:600;color:var(--faint);text-transform:uppercase;letter-spacing:.03em}
+.mp-clear:hover{color:var(--late)}
+.cal-cell-h.zoom{cursor:pointer}
+.cal-cell-h.zoom:hover{background:var(--accent-soft)}
+.cal-cell-h.zoom:hover .cal-zoom{opacity:1}
+.cal-zoom{width:13px;height:13px;opacity:0;color:var(--accent);transition:opacity .12s}
+/* vista giorno stile calendario */
+.gc-card{padding:0;overflow:hidden}
+.gc-grid{display:flex;overflow-x:auto}
+.gc-gutter{flex:0 0 var(--gutter);position:sticky;left:0;z-index:4;background:var(--surface);border-right:1px solid var(--border)}
+.gc-gutter-h{height:56px;border-bottom:1px solid var(--border)}
+.gc-gutter-b{position:relative}
+.gc-hl{position:absolute;right:8px;transform:translateY(-50%);font-size:10.5px;color:var(--faint);font-family:'JetBrains Mono',monospace;font-weight:600;white-space:nowrap}
+.gc-now-lbl{position:absolute;right:4px;transform:translateY(-50%);font-size:9.5px;font-weight:700;color:#fff;background:var(--late);border-radius:4px;padding:1px 4px;font-family:'JetBrains Mono',monospace;z-index:5}
+.gc-cols{display:flex;flex:1;min-width:0}
+.gc-col{flex:1;min-width:150px;border-right:1px solid var(--border)}
+.gc-col:last-child{border-right:none}
+.gc-col-h{height:56px;padding:8px 10px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;justify-content:center;gap:2px;background:var(--surface-2);position:sticky;top:0;z-index:3}
+.gc-col-h.mine{background:var(--accent-soft)}
+.gc-col-h .sh-dot{position:absolute;top:10px;right:10px}
+.gc-col-n{font-size:13px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gc-col-s{font-size:10.5px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.gc-busy-n{color:var(--late)}
+.gc-track{position:relative;background:var(--surface)}
+.gc-line{position:absolute;left:0;right:0;height:1px;background:var(--border);opacity:.6}
+.gc-ev{position:absolute;left:4px;right:4px;border-radius:6px;padding:3px 7px;overflow:hidden;display:flex;flex-direction:column;justify-content:center;z-index:2}
+.gc-ev-t{font-size:11px;font-weight:700;font-family:'JetBrains Mono',monospace;white-space:nowrap;line-height:1.3}
+.gc-ev-s{font-size:10px;font-weight:600;opacity:.85;white-space:nowrap;line-height:1.2}
+.gc-ev.free{background:color-mix(in srgb,var(--c) 18%,var(--surface));border-left:3px solid var(--c);color:var(--c)}
+[data-theme="dark"] .gc-ev.free{background:color-mix(in srgb,var(--c) 30%,var(--surface));color:#fff}
+.gc-ev.free.mine{cursor:pointer}
+.gc-ev.free.mine:hover{background:color-mix(in srgb,var(--c) 32%,var(--surface));box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.gc-ev.busy{z-index:3;background:repeating-linear-gradient(135deg,var(--late-soft) 0 7px,color-mix(in srgb,var(--late) 22%,var(--surface)) 7px 14px);
+  border-left:3px solid var(--late);color:var(--late);left:14px}
+.gc-lock{font-size:9px;line-height:1}
+.gc-noavail{position:absolute;left:4px;right:4px;border-radius:6px;background:repeating-linear-gradient(45deg,var(--border) 0 6px,transparent 6px 12px);opacity:.5;
+  display:flex;align-items:center;justify-content:center}
+.gc-noavail span{font-size:11px;color:var(--muted);font-weight:600;background:var(--surface);padding:2px 8px;border-radius:6px;border:1px solid var(--border)}
+.gc-now{position:absolute;left:0;right:0;height:2px;background:var(--late);z-index:5}
+.gc-now::before{content:'';position:absolute;left:-1px;top:-3px;width:8px;height:8px;border-radius:50%;background:var(--late)}
+.lg-free{width:16px;height:10px;border-radius:3px;background:color-mix(in srgb,var(--accent) 18%,var(--surface));border-left:3px solid var(--accent);display:inline-block}
+.lg-busy{width:16px;height:10px;border-radius:3px;display:inline-block;border-left:3px solid var(--late);
+  background:repeating-linear-gradient(135deg,var(--late-soft) 0 4px,color-mix(in srgb,var(--late) 22%,var(--surface)) 4px 8px)}
+.lg-none{width:16px;height:10px;border-radius:3px;display:inline-block;background:repeating-linear-gradient(45deg,var(--border) 0 4px,transparent 4px 8px);border:1px solid var(--border)}
+@media(max-width:840px){.gc-col{min-width:120px}.gc-col-n{font-size:12px}}
+@media(max-width:840px){.mp-day{grid-template-columns:1fr;gap:6px}}
+
+/* planning */
+.load-strip{display:flex;gap:8px;align-items:stretch}
+.load-cell{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:6px 4px;border-radius:9px}
+.load-cell.today{background:var(--accent-soft)}
+.load-d{font-size:11px;color:var(--muted);text-align:center;text-transform:capitalize;line-height:1.2}
+.load-cell.today .load-d{color:var(--accent)}
+.load-bar-wrap{width:26px;height:70px;background:var(--surface-2);border:1px solid var(--border);border-radius:6px;display:flex;align-items:flex-end;overflow:hidden}
+.load-bar{width:100%;background:var(--accent);border-radius:0 0 5px 5px;min-height:2px;transition:height .2s}
+.load-bar.over{background:var(--late)}
+.load-n{font-size:12px;font-weight:700}
+.load-n.over{color:var(--late)}
+.plan-bar{padding:12px 16px;margin-bottom:14px;display:flex;flex-direction:column;gap:10px}
+.plan-bar-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.plan-sel-info{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:8px}
+.plan-sel-info b{color:var(--accent);font-size:15px}
+.plan-group{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px;color:var(--muted)}
+.plan-lbl{font-size:11px;font-weight:650;text-transform:uppercase;letter-spacing:.04em;color:var(--faint);margin-right:2px}
+.plan-bar input[type=date],.plan-bar input[type=number]{background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:6px 9px}
+.table-wrap input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--accent)}
+.table-wrap input[type=date]{background:var(--surface-2);border:1px solid var(--border);border-radius:7px;padding:5px 8px;font-size:12px}
+
+/* calendar grid */
+.cal-bar{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.cal-title{flex:1;text-align:center;display:flex;flex-direction:column;line-height:1.25}
+.cal-title b{font-size:15px;text-transform:capitalize}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.cal-cell{background:var(--surface);border:1px solid var(--border);border-radius:10px;min-height:190px;display:flex;flex-direction:column;overflow:hidden}
+.cal-cell.today{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.cal-cell.wknd{background:var(--surface-2)}
+.cal-cell.past{opacity:.62}
+.cal-cell-h{display:flex;align-items:center;gap:6px;padding:7px 9px;border-bottom:1px solid var(--border)}
+.cal-dname{font-size:11px;color:var(--muted);font-weight:600;text-transform:capitalize}
+.cal-dnum{font-size:14px;font-weight:700;margin-left:auto}
+.cal-cell.today .cal-dnum{color:var(--accent)}
+.cal-count{font-size:10px;font-weight:700;background:var(--accent-soft);color:var(--accent);min-width:17px;height:17px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 5px;margin-left:0}
+.cal-count.late{background:var(--late-soft);color:var(--late)}
+.cal-items{padding:6px;display:flex;flex-direction:column;gap:4px;overflow:auto;flex:1}
+.cal-item{display:flex;align-items:center;gap:6px;padding:4px 6px;border-radius:6px;cursor:pointer;font-size:12px;background:var(--surface-2)}
+.cal-item:hover{background:var(--accent-soft)}
+.cal-dot{width:7px;height:7px;border-radius:50%;flex:0 0 auto}
+.cal-az{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
+.cal-more{font-size:11px;color:var(--muted);padding:2px 6px;font-weight:600}
+.cal-empty{font-size:13px;color:var(--faint);text-align:center;padding:8px 0}
+.cal-legend{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:14px;padding:10px 12px;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-size:12px;color:var(--muted);font-weight:500}
+.cal-leg{display:flex;align-items:center;gap:6px}
+@media(max-width:840px){
+  .cal-grid{grid-template-columns:repeat(7,minmax(110px,1fr));overflow-x:auto;padding-bottom:6px}
+  .cal-cell{min-height:120px}
+}
+.empty{text-align:center;padding:48px 20px;color:var(--muted)}
+.empty .ico{width:40px;height:40px;margin:0 auto 14px;opacity:.4}
+.empty h4{font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px}
+.empty p{font-size:13px;max-width:380px;margin:0 auto 16px}
+
+/* modal */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;z-index:50;padding:20px}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);width:100%;max-width:560px;max-height:88vh;overflow:auto}
+.modal.wide{max-width:760px}
+.modal-h{display:flex;align-items:center;gap:10px;padding:18px 22px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:2}
+.modal-h h3{font-size:16px;font-weight:650;flex:1}
+.modal-b{padding:20px 22px;display:flex;flex-direction:column;gap:16px}
+.modal-f{padding:14px 22px;border-top:1px solid var(--border);display:flex;gap:9px;justify-content:flex-end;position:sticky;bottom:0;background:var(--surface)}
+.x{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.x:hover{background:var(--surface-2)}
+
+.form-row{display:flex;flex-direction:column;gap:6px}
+.form-row label{font-size:12.5px;font-weight:600;color:var(--text)}
+.form-row .hint{font-size:11.5px;color:var(--faint);font-weight:400}
+.form-row input,.form-row select,.form-row textarea{
+  background:var(--surface-2);border:1px solid var(--border);border-radius:9px;padding:9px 11px;width:100%;
+}
+.form-row input:focus,.form-row select:focus,.form-row textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.form-row textarea{min-height:90px;resize:vertical;line-height:1.5}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.toggle{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
+.toggle .sw{width:38px;height:22px;border-radius:12px;background:var(--border);position:relative;transition:.15s;flex:0 0 auto}
+.toggle .sw::after{content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;top:2px;left:2px;transition:.15s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle.on .sw{background:var(--accent)}
+.toggle.on .sw::after{left:18px}
+
+/* cadence editor */
+.cad-step{display:grid;grid-template-columns:1fr 110px 34px;gap:10px;align-items:center;margin-bottom:8px}
+.cad-step input{background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:8px 10px}
+
+/* mapping */
+.map-row{display:grid;grid-template-columns:160px 1fr;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}
+.map-row:last-child{border:none}
+.map-row .lbl{font-size:13px;font-weight:600}
+.map-row .lbl small{display:block;font-weight:400;color:var(--faint);font-size:11px}
+
+/* toast */
+.toasts{position:fixed;bottom:22px;right:22px;z-index:80;display:flex;flex-direction:column;gap:9px}
+.toast{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:10px;
+  padding:11px 15px;box-shadow:var(--shadow);font-size:13px;font-weight:500;display:flex;align-items:center;gap:9px;
+  min-width:240px;max-width:360px;animation:slidein .2s}
+.toast.ok{border-left-color:var(--ok)} .toast.err{border-left-color:var(--late)} .toast.warn{border-left-color:var(--warn)}
+@keyframes slidein{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+
+.test-banner{background:var(--warn-soft);color:var(--warn);font-size:12px;font-weight:600;padding:6px 26px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+
+.filters{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.search{flex:1;min-width:180px;display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:8px 11px}
+.search input{background:none;border:none;flex:1;outline:none}
+.fbtn{padding:7px 12px;border-radius:8px;font-size:12.5px;font-weight:600;color:var(--muted);background:var(--surface);border:1px solid var(--border)}
+.fbtn.on{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+
+.spinner{width:15px;height:15px;border:2px solid currentColor;border-top-color:transparent;border-radius:50%;animation:spin .6s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinning svg{animation:spin .6s linear infinite}
+
+.kbd{font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--surface-2);border:1px solid var(--border);border-radius:5px;padding:1px 5px;color:var(--muted)}
+.helptip{font-size:12px;color:var(--faint);line-height:1.5}
+
+@media(max-width:840px){
+  .app{grid-template-columns:1fr}
+  .rail{position:fixed;left:0;top:0;width:232px;z-index:40;transform:translateX(-100%);transition:.2s}
+  .rail.open{transform:none}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .two-col{grid-template-columns:1fr}
+  .content{padding:18px 16px 60px}
+  .topbar{padding:12px 16px}
+  .menu-btn{display:flex!important}
+}
+.menu-btn{display:none;width:34px;height:34px;border-radius:8px;align-items:center;justify-content:center;border:1px solid var(--border);background:var(--surface)}
+.scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:35}
+.scrim.show{display:block}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="rail" id="rail">
+    <div class="brand">
+      <div class="logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h10M4 17h6"/><path d="M16 14l4 3-4 3"/></svg>
+      </div>
+      <div>
+        <h1>FlowLine</h1>
+        <div class="sub" id="brandSub">Suite</div>
+      </div>
+    </div>
+    <div class="modswitch">
+      <button id="mod-outbound" onclick="setModule('outbound')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13 M22 2l-7 20-4-9-9-4 20-7z"/></svg>Outbound</button>
+      <button id="mod-shifts" onclick="setModule('shifts')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4h18v18H3z M16 2v4 M8 2v4 M3 10h18 M8 15h3"/></svg>Turni</button>
+    </div>
+    <nav class="nav" id="nav"></nav>
+    <div class="rail-foot">
+      <button class="spend-pill" id="spendPill" onclick="openSpend()" title="Spesa API stimata — clicca per dettagli">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22 M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        <span id="spendTxt">≈ €0,000</span>
+        <span id="spendGen" class="spend-gen">0 gen.</span>
+      </button>
+      <div class="conn-pill"><span class="dot" id="gdot"></span><span id="gtxt">Google non connesso</span></div>
+      <div class="conn-pill"><span class="dot" id="sdot"></span><span id="stxt">Database locale</span></div>
+      <button class="mini" onclick="openSettings()">
+        <svg class="ico" style="width:15px;height:15px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Impostazioni
+      </button>
+      <button class="mini" onclick="toggleTheme()" id="themeBtn">
+        <svg class="ico" style="width:15px;height:15px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        Tema
+      </button>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim" onclick="closeRail()"></div>
+
+  <div class="main">
+    <div class="test-banner" id="testBanner" style="display:none">
+      <svg style="width:14px;height:14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+      Modalità test attiva — gli invii sono simulati, nessuna email viene spedita davvero.
+    </div>
+    <div class="topbar">
+      <button class="menu-btn" onclick="openRail()"><svg style="width:18px;height:18px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button>
+      <div>
+        <h2 id="viewTitle">Dashboard</h2>
+      </div>
+      <div class="spacer"></div>
+      <div id="topActions"></div>
+    </div>
+    <div class="content" id="content"></div>
+  </div>
+</div>
+
+<div id="modalRoot"></div>
+<div class="toasts" id="toasts"></div>
+<input type="file" id="fileInput" accept=".csv,.xlsx,.xls" style="display:none">
+
+<script>
+/* ============================================================
+   FlowLine Suite — single file
+   ============================================================ */
+
+/* ┌──────────────────────────────────────────────────────────┐
+   │  CONFIGURAZIONE TEAM — compila QUI una volta sola.        │
+   │  Così ogni collaboratore apre il link e trova tutto       │
+   │  pronto: nessuna chiave da incollare.                     │
+   │  (URL e chiavi qui sotto sono pubbliche per progetto:     │
+   │   la anon key di Supabase e il Client ID Google sono      │
+   │   pensati per stare nel browser.)                         │
+   └──────────────────────────────────────────────────────────┘ */
+const APP_DEFAULTS = {
+  supabaseUrl:    'https://adaaubcarnczlmenfwam.supabase.co',
+  supabaseKey:    'sb_publishable_0a_ioaj4iiT3MlzUKR2XyQ_-PYHrQPP',
+  googleClientId: '183110262616-3rd20u12hlmns50h48rant26c7clurpk.apps.googleusercontent.com',
+};
+/* La chiave Anthropic NON va qui: è personale e a consumo.
+   Resta nelle Impostazioni del singolo (serve solo per l'Outbound). */
+
+const LS = {
+  config:'flo_config', contacts:'flo_contacts', cadence:'flo_cadence',
+  templates:'flo_templates', theme:'flo_theme', usage:'flo_usage', gauth:'flo_gauth'
+};
+const MODEL = 'claude-sonnet-4-6';
+const PRICE = {in:3, out:15}; // USD per 1M token — Claude Sonnet 4.6
+const EUR_DEFAULT = 0.92;     // USD→EUR di riferimento (modificabile)
+const STEPS_DEFAULT = [
+  {nome:'Email 1', offset:0, angolo:'Primo contatto a freddo. Apertura, motivo del contatto, una singola domanda. Tono diretto e umano, niente vendita aggressiva.'},
+  {nome:'Follow-up 1', offset:3, angolo:'Promemoria leggero in risposta alla prima mail. Aggiunge UN esempio concreto/caso reale. Breve.'},
+  {nome:'Follow-up 2', offset:7, angolo:'Penultimo tentativo. Cambia angolo: spostati sul beneficio principale, una riga, bassa pressione.'},
+  {nome:'Follow-up 3', offset:14, angolo:'Ultimo contatto (break-up). Chiude con gentilezza, lascia la porta aperta, nessuna insistenza.'},
+];
+const PROMPT_SISTEMA_DEFAULT = `Sei un assistente che scrive email di outreach B2B a freddo in italiano per {azienda}.
+Tono richiesto: {tono}
+Regole generali: testo semplice (no HTML, no markdown, no liste puntate). Nessun oggetto sensazionalistico o spammy. Una sola call-to-action. Non inventare dati specifici sull'azienda destinataria che non conosci. Firma a nome di {mittente}.
+
+{regole_oggetto}
+{regole_corpo}
+
+Rispondi SOLO con JSON valido, nessun testo prima o dopo, nel formato: {"oggetto":"...","corpo":"..."}`;
+const TEMPLATES_DEFAULT = {
+  tono:'Diretto, umano, conversazionale, in italiano. Frasi brevi. Niente gergo da marketing, niente superlativi, nessun "soluzione innovativa". Si firma "Giuseppe Romano — FlowLine".',
+  mittente:'Giuseppe Romano',
+  azienda:'FlowLine',
+  promptSistema: PROMPT_SISTEMA_DEFAULT,
+  regoleOggetto:'OGGETTO: massimo 6-7 parole, in minuscolo, curioso ma sobrio. Niente nomi azienda forzati, niente punti esclamativi.',
+  regoleCorpo:'CORPO: massimo ~130 parole. Apri con un aggancio concreto, una sola domanda di chiusura. Niente parolone.',
+  disiscrizione:'Se non desidera ricevere altre comunicazioni, risponda a questa mail con un NO e non la contatterò più.',
+  logoUrl:'',
+  firmaTesto:'Il Team FlowLine\nFlowLine | Automazioni e Agenti AI per Aziende\nT: +39 3492977533 | E: info@flowline.it\nW: www.flowline.it',
+  firmaHtml:`<table cellpadding="0" cellspacing="0" style="font-family:Arial,Helvetica,sans-serif;color:#222222"><tr>
+<td style="padding-right:14px;border-right:2px solid #e2e2e2;vertical-align:middle">{logo_block}</td>
+<td style="padding-left:14px;vertical-align:middle;font-size:13px;line-height:1.5">
+<div style="font-weight:bold;font-size:15px;color:#1a1a1a">Il Team FlowLine</div>
+<div style="margin:2px 0 6px"><a href="https://www.flowline.it" style="color:#1a4fd6;text-decoration:none;font-weight:bold">Info &amp; Contatti</a> <span style="color:#aaa">|</span> <b>FlowLine</b> <span style="color:#aaa">|</span> Automazioni e Agenti AI per Aziende</div>
+<div style="color:#555"><b>T:</b> +39 3492977533 &nbsp;|&nbsp; <b>E:</b> <a href="mailto:info@flowline.it" style="color:#555;text-decoration:none">info@flowline.it</a></div>
+<div style="color:#555;margin-top:2px"><b>W:</b> <a href="https://www.flowline.it" style="color:#1a4fd6;text-decoration:none">www.flowline.it</a> &nbsp;|&nbsp; <a href="https://www.linkedin.com" style="color:#1a4fd6;text-decoration:none">LinkedIn</a> &nbsp;|&nbsp; <a href="https://www.instagram.com" style="color:#1a4fd6;text-decoration:none">Instagram</a></div>
+</td></tr></table>`
+};
+
+let state = {
+  config: load(LS.config, {googleClientId:'', googleApiKey:'', anthropicKey:'', supabaseUrl:'', supabaseKey:'', sheetId:'', sheetTab:'', testMode:true, saltaWeekend:true, oraInizio:9, oraFine:18, maxAlGiorno:10, autoStopReply:true, eurRate:EUR_DEFAULT, autoSync:true, autoSyncSec:60, formatoHtml:false}),
+  contacts: load(LS.contacts, []),
+  cadence: load(LS.cadence, STEPS_DEFAULT),
+  templates: load(LS.templates, TEMPLATES_DEFAULT),
+  usage: load(LS.usage, {input:0, output:0, gen:0, since:new Date().toISOString().slice(0,10)}),
+  view: 'dashboard',
+  module: load('flo_module','outbound'),
+  google: load(LS.gauth, {token:null, email:null, expires:0}),
+  sendAs: [],            // alias "Invia come" letti da Gmail
+  fromAddr: load('flo_from',null),   // mittente scelto (null = principale)
+  filter: 'tutti', search:'',
+  shifts: {members:[], rules:[], exceptions:[], gcal:[], meId:null, week:0, day:null, view:'griglia', needsSetup:false},
+};
+// i valori del team valgono se il singolo non ne ha di propri
+if(!state.config.supabaseUrl && APP_DEFAULTS.supabaseUrl) state.config.supabaseUrl=APP_DEFAULTS.supabaseUrl;
+if(!state.config.supabaseKey && APP_DEFAULTS.supabaseKey) state.config.supabaseKey=APP_DEFAULTS.supabaseKey;
+if(!state.config.googleClientId && APP_DEFAULTS.googleClientId) state.config.googleClientId=APP_DEFAULTS.googleClientId;
+if(state.config.eurRate==null) state.config.eurRate=EUR_DEFAULT;
+if(state.config.autoSync==null) state.config.autoSync=true;
+if(state.config.autoSyncSec==null) state.config.autoSyncSec=60;
+if(state.config.googleApiKey==null) state.config.googleApiKey='';
+if(state.config.supabaseUrl==null) state.config.supabaseUrl='';
+if(state.config.supabaseKey==null) state.config.supabaseKey='';
+if(state.config.formatoHtml==null) state.config.formatoHtml=false;
+if(!state.templates.promptSistema) state.templates.promptSistema=PROMPT_SISTEMA_DEFAULT;
+if(state.templates.regoleOggetto==null) state.templates.regoleOggetto=TEMPLATES_DEFAULT.regoleOggetto;
+if(state.templates.regoleCorpo==null) state.templates.regoleCorpo=TEMPLATES_DEFAULT.regoleCorpo;
+if(state.templates.firmaTesto==null) state.templates.firmaTesto=TEMPLATES_DEFAULT.firmaTesto;
+if(state.templates.firmaHtml==null) state.templates.firmaHtml=TEMPLATES_DEFAULT.firmaHtml;
+if(state.templates.logoUrl==null) state.templates.logoUrl='';
+
+/* ---------- storage helpers ---------- */
+function load(k,def){try{const v=localStorage.getItem(k);return v?JSON.parse(v):def}catch(e){return def}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){toast('Spazio di archiviazione pieno','err')}}
+function persist(){save(LS.config,state.config);save(LS.contacts,state.contacts);save(LS.cadence,state.cadence);save(LS.templates,state.templates);save(LS.usage,state.usage);schedulePush();}
+
+/* ---------- cost / usage ---------- */
+function costUSD(u){return (u.input/1e6*PRICE.in)+(u.output/1e6*PRICE.out)}
+function costEUR(u){return costUSD(u)*(state.config.eurRate||EUR_DEFAULT)}
+function recordUsage(inT,outT){
+  state.usage.input+=(inT||0);state.usage.output+=(outT||0);state.usage.gen++;
+  save(LS.usage,state.usage);renderSpend();
+}
+function fmtMoney(v){return v<0.01&&v>0 ? '<0,01' : v.toFixed(v<1?3:2).replace('.',',')}
+function resetUsage(){if(!confirm('Azzerare il conteggio di spesa stimata?'))return;state.usage={input:0,output:0,gen:0,since:new Date().toISOString().slice(0,10)};save(LS.usage,state.usage);renderSpend();closeModal();toast('Conteggio azzerato','ok')}
+
+/* ---------- date utils ---------- */
+function today(){const d=new Date();d.setHours(0,0,0,0);return d}
+function parseD(s){if(!s)return null;const p=String(s).slice(0,10).split('-');if(p.length===3&&p[0].length===4){const d=new Date(+p[0],+p[1]-1,+p[2]);d.setHours(0,0,0,0);return d}const d=new Date(s);d.setHours(0,0,0,0);return d}
+function fmtD(d){if(!d)return '—';return d.toLocaleDateString('it-IT',{day:'2-digit',month:'short'})}
+function fmtDLong(d){if(!d)return '—';return d.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'})}
+function isoD(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function addDays(d,n){const x=new Date(d);x.setDate(x.getDate()+n);x.setHours(0,0,0,0);return x}
+function daysBetween(a,b){return Math.round((b-a)/86400000)}
+function nextWorkday(d){if(!state.config.saltaWeekend)return d;let x=new Date(d);while(x.getDay()===0||x.getDay()===6)x=addDays(x,1);return x}
+function sameDay(a,b){return a&&b&&a.getTime()===b.getTime()}
+
+/* ---------- cadence engine ---------- */
+// returns {dueDate, stepIndex, label} for the NEXT action, or null if no more action
+function nextAction(c){
+  if(c.haRisposto) return null;
+  const step = c.step||0;
+  if(step>=state.cadence.length) return null;
+  const cad = state.cadence[step];
+  let due;
+  if(step===0){
+    // prima email: parte solo se PIANIFICATA
+    if(!c.scheduledDate) return null;            // backlog: da pianificare, non in coda
+    due = nextWorkday(parseD(c.scheduledDate));
+  } else {
+    if(!c.anchorDate){ due = nextWorkday(today()); }
+    else due = nextWorkday(addDays(parseD(c.anchorDate), cad.offset));
+  }
+  return {dueDate:due, stepIndex:step, label:cad.nome, cad};
+}
+function isUnplanned(c){return !c.haRisposto && (c.step||0)===0 && !c.scheduledDate}
+function statusOf(c){
+  if(c.haRisposto) return {key:'reply',label:'Ha risposto'};
+  if((c.step||0)>=state.cadence.length) return {key:'done',label:'Sequenza conclusa'};
+  if(c.fermato) return {key:'stop',label:'Fermato'};
+  if(isUnplanned(c)) return {key:'plan',label:'Da pianificare'};
+  const na = nextAction(c);
+  if(!na) return {key:'done',label:'Concluso'};
+  const t=today();
+  if((c.step||0)===0){
+    if(na.dueDate<t) return {key:'late',label:'In ritardo'};
+    if(sameDay(na.dueDate,t)) return {key:'today',label:'Da inviare oggi'};
+    return {key:'wait',label:'Pianificato '+fmtD(na.dueDate)};
+  }
+  // already in sequence (sent at least email1)
+  if(na.dueDate<t) return {key:'late',label:'In ritardo'};
+  if(sameDay(na.dueDate,t)) return {key:'today',label:'In coda oggi'};
+  return {key:'wait',label:'In attesa'};
+}
+function isDue(c){ // due today or overdue, action pending
+  if(c.haRisposto) return false;
+  const na=nextAction(c); if(!na) return false;
+  return na.dueDate<=today();
+}
+function dueToday(c){ // azione prevista esattamente oggi (incluse le prime email pronte)
+  if(c.haRisposto) return false;
+  const na=nextAction(c); if(!na) return false;
+  return sameDay(na.dueDate,today());
+}
+function isLate(c){
+  if(c.haRisposto) return false;
+  const na=nextAction(c); if(!na) return false;
+  return na.dueDate<today();
+}
+
+/* ---------- contact factory ---------- */
+function mkContact(o){
+  return {
+    id: o.id || ('c'+Math.random().toString(36).slice(2,9)),
+    n:o.n||'', azienda:o.azienda||'', sede:o.sede||'', email:(o.email||'').trim(),
+    ruolo:o.ruolo||'', settore:o.settore||'', tipoAsset:o.tipoAsset||'',
+    descrizione:o.descrizione||'', sitoWeb:o.sitoWeb||'',
+    oggettoBase:o.oggettoBase||'', corpoBase:o.corpoBase||'',
+    disiscrizione:o.disiscrizione||state.templates.disiscrizione,
+    step:0, scheduledDate:null, anchorDate:null, dataUltimoInvio:null, haRisposto:false, fermato:false,
+    threadId:null, messageId:null,
+    drafts:{}, history:[],
+  };
+}
+
+/* =======================================================
+   GOOGLE OAUTH + GMAIL + SHEETS
+   ======================================================= */
+let tokenClient=null;
+const SCOPES='https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.settings.basic https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/calendar.readonly';
+
+function googleReady(){return state.google.token && Date.now()<state.google.expires}
+function saveGAuth(){save(LS.gauth,{token:state.google.token,email:state.google.email,expires:state.google.expires})}
+let _refreshTimer=null;
+function scheduleRefresh(){
+  if(_refreshTimer)clearTimeout(_refreshTimer);
+  const ms=state.google.expires-Date.now()-5*60*1000; // 5 min prima della scadenza
+  if(ms>0)_refreshTimer=setTimeout(()=>refreshToken(),ms);
+}
+
+function initGoogle(){
+  if(!state.config.googleClientId) return;
+  if(typeof google==='undefined'||!google.accounts){setTimeout(initGoogle,400);return}
+  try{
+    tokenClient = google.accounts.oauth2.initTokenClient({
+      client_id: state.config.googleClientId,
+      scope: SCOPES,
+      callback: (resp)=>{
+        if(resp.error){if(resp.error!=='interaction_required'&&resp.error!=='access_denied')toast('Autorizzazione Google: '+resp.error,'warn');renderConn();return}
+        state.google.token=resp.access_token;
+        state.google.expires=Date.now()+((resp.expires_in||3600)*1000);
+        saveGAuth();scheduleRefresh();
+        afterGoogleAuth();
+      }
+    });
+  }catch(e){console.error(e)}
+}
+function connectGoogle(force){
+  if(!state.config.googleClientId){openSettings();toast('Inserisci prima il Client ID Google','warn');return}
+  if(!tokenClient) initGoogle();
+  if(!tokenClient){toast('Google Identity non caricato, riprova','err');return}
+  // force=true -> richiede di nuovo il consenso: serve quando si aggiungono nuovi permessi (es. calendario)
+  tokenClient.requestAccessToken({prompt: (force||!state.google.email)?'consent':''});
+}
+function reauthGoogle(){
+  state.google.token=null;state.google.expires=0;saveGAuth();
+  toast('Riautorizza e concedi TUTTI i permessi richiesti','warn');
+  connectGoogle(true);
+}
+function logoutGoogle(){
+  if(!confirm('Uscire dall\'account Google? I turni restano salvati sul database.'))return;
+  try{if(state.google.token&&google?.accounts?.oauth2)google.accounts.oauth2.revoke(state.google.token,()=>{});}catch(e){}
+  state.google={token:null,email:null,expires:0};saveGAuth();
+  state.shifts.meId=null;stopReplyPoll();
+  closeModal();render();toast('Disconnesso','ok');
+}
+// genera il blocco da incollare in cima al file: così il team non configura nulla
+function exportTeamConfig(){
+  const cfg=`const APP_DEFAULTS = {
+  supabaseUrl:    '${state.config.supabaseUrl}',
+  supabaseKey:    '${state.config.supabaseKey}',
+  googleClientId: '${state.config.googleClientId}',
+};`;
+  const ov=document.createElement('div');ov.className='overlay';ov.style.zIndex='60';ov.onclick=e=>{if(e.target===ov)ov.remove()};
+  ov.innerHTML=`<div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-h"><h3>Configurazione per il team</h3><div class="x" onclick="this.closest('.overlay').remove()">✕</div></div>
+    <div class="modal-b">
+      <div class="helptip">Copia questo blocco e sostituisci <code>APP_DEFAULTS</code> in cima al file <code>index.html</code>, poi ricarica su GitHub Pages. Da quel momento chi apre il link trova tutto già configurato: dovrà solo accedere con Google.</div>
+      <textarea class="body" style="min-height:150px;font-family:'JetBrains Mono',monospace;font-size:12px" readonly>${esc(cfg)}</textarea>
+      <button class="btn sm" onclick="navigator.clipboard.writeText(this.previousElementSibling.value).then(()=>toast('Configurazione copiata','ok'))">Copia</button>
+      <div class="helptip">Nota: la anon key di Supabase e il Client ID Google sono progettati per stare nel browser, quindi possono comparire nel file. La chiave Anthropic <b>no</b>: resta personale nelle Impostazioni.</div>
+    </div>
+    <div class="modal-f"><button class="btn primary" onclick="this.closest('.overlay').remove()">Chiudi</button></div>
+  </div>`;
+  document.body.appendChild(ov);
+}
+// rinnovo silenzioso: nessun popup se la sessione Google è attiva e il consenso è già stato dato
+function refreshToken(){
+  if(!tokenClient){initGoogle();}
+  if(!tokenClient)return;
+  try{ tokenClient.requestAccessToken({prompt:''}); }catch(e){}
+}
+async function afterGoogleAuth(){
+  try{
+    const r=await gfetch('https://gmail.googleapis.com/gmail/v1/users/me/profile');
+    state.google.email=r.emailAddress;saveGAuth();
+    toast('Connesso come '+r.emailAddress+' (Gmail pronto)','ok');
+    renderConn(); render();
+    startReplyPoll();
+    if(!state.config.testMode) setTimeout(()=>checkReplies({silent:true}),1500);
+    shiftsLoad().then(bindMe);
+    loadSendAs();
+  }catch(e){toast('Errore profilo Gmail','err')}
+}
+// legge gli indirizzi "Invia come" verificati (alias) dell'account Gmail
+async function loadSendAs(){
+  if(!googleReady())return;
+  try{
+    const r=await gfetch('https://gmail.googleapis.com/gmail/v1/users/me/settings/sendAs');
+    const list=(r.sendAs||[]).filter(a=>a.isPrimary||a.verificationStatus==='accepted'||a.isDefault);
+    state.sendAs=list.map(a=>({email:a.sendAsEmail,name:a.displayName||'',primary:!!a.isPrimary,def:!!a.isDefault}));
+    // se il mittente salvato non è più valido, torno al principale
+    if(state.fromAddr && !state.sendAs.find(a=>a.email.toLowerCase()===state.fromAddr.toLowerCase())){
+      state.fromAddr=null;save('flo_from',null);
+    }
+    renderConn();
+  }catch(e){console.warn('sendAs',e.message)}
+}
+// mittente effettivo (con nome visualizzato) per l'header From
+function fromHeader(){
+  const addr=state.fromAddr||state.google.email||'';
+  const a=state.sendAs.find(x=>x.email.toLowerCase()===addr.toLowerCase());
+  const name=(a&&a.name)|| (state.templates&&state.templates.firmaNome) || '';
+  return name?`${name} <${addr}>`:addr;
+}
+function setFrom(addr){
+  const a=state.sendAs.find(x=>x.email.toLowerCase()===addr.toLowerCase());
+  state.fromAddr = (a&&a.primary)?null:addr;   // principale = null (default)
+  save('flo_from',state.fromAddr);
+  renderConn();
+  toast('Mittente impostato: '+addr,'ok');
+}
+// l'identità è l'account Google: ritrovo il profilo turni ovunque, senza password
+function bindMe(){
+  const em=(state.google.email||'').toLowerCase();
+  if(!em)return;
+  const found=state.shifts.members.find(m=>(m.email||'').toLowerCase()===em);
+  state.shifts.meId=found?found.id:null;
+  if(state.module==='shifts')render();
+  // gli eventi salvati prima della correzione del fuso orario sono di un giorno indietro:
+  // li riscrivo una volta sola, in automatico
+  if(found && found.gcal && !load('flo_tzfix',false)){
+    save('flo_tzfix',true);
+    setTimeout(()=>syncGcal({repair:true}),1200);
+  }
+}
+async function gfetch(url,opts={}){
+  if(!googleReady()){ // prova un refresh silenzioso al volo
+    await new Promise(res=>{
+      const prev=tokenClient&&tokenClient.callback;
+      if(!tokenClient){res();return}
+      let done=false;
+      tokenClient.callback=(resp)=>{
+        if(resp&&resp.access_token){state.google.token=resp.access_token;state.google.expires=Date.now()+((resp.expires_in||3600)*1000);saveGAuth();scheduleRefresh();}
+        tokenClient.callback=prev;done=true;res();
+      };
+      try{tokenClient.requestAccessToken({prompt:''});}catch(e){res();}
+      setTimeout(()=>{if(!done){tokenClient.callback=prev;res();}},3000);
+    });
+  }
+  if(!googleReady()) throw new Error('Sessione Google scaduta, premi Riconnetti');
+  const r=await fetch(url,{...opts,headers:{'Authorization':'Bearer '+state.google.token,'Content-Type':'application/json',...(opts.headers||{})}});
+  if(r.status===401){state.google.token=null;state.google.expires=0;saveGAuth();renderConn();throw new Error('Sessione Google scaduta, riconnetti')}
+  if(!r.ok){const t=await r.text();throw new Error('Google '+r.status+': '+t.slice(0,160))}
+  return r.json();
+}
+
+/* ---- MIME build ---- */
+function utf8b64(s){return btoa(unescape(encodeURIComponent(s)))}
+function b64url(s){return s.replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
+function encSubject(s){return /[^\x00-\x7F]/.test(s)?'=?UTF-8?B?'+utf8b64(s)+'?=':s}
+function buildRaw({to,from,subject,body,inReplyTo,references}){
+  const headers=[
+    'From: '+from,
+    'To: '+to,
+    'Subject: '+encSubject(subject),
+    'MIME-Version: 1.0',
+    'Content-Type: text/plain; charset="UTF-8"',
+  ];
+  if(inReplyTo){headers.push('In-Reply-To: '+inReplyTo);headers.push('References: '+(references||inReplyTo));}
+  const msg=headers.join('\r\n')+'\r\n\r\n'+body;
+  return b64url(utf8b64(msg));
+}
+// multipart/alternative: testo semplice + HTML (firma e formattazione)
+function buildRawHtml({to,from,subject,text,html,inReplyTo,references}){
+  const b='flo'+Math.random().toString(36).slice(2,12);
+  const headers=[
+    'From: '+from,
+    'To: '+to,
+    'Subject: '+encSubject(subject),
+    'MIME-Version: 1.0',
+    'Content-Type: multipart/alternative; boundary="'+b+'"',
+  ];
+  if(inReplyTo){headers.push('In-Reply-To: '+inReplyTo);headers.push('References: '+(references||inReplyTo));}
+  const parts=[
+    '--'+b,
+    'Content-Type: text/plain; charset="UTF-8"','',
+    text,
+    '--'+b,
+    'Content-Type: text/html; charset="UTF-8"','',
+    html,
+    '--'+b+'--',''
+  ].join('\r\n');
+  const msg=headers.join('\r\n')+'\r\n\r\n'+parts;
+  return b64url(utf8b64(msg));
+}
+function textToHtml(t){return esc(t).replace(/\r?\n/g,'<br>');}
+function buildSigHtml(){
+  const url=(state.templates.logoUrl||'').trim();
+  const logo = url?`<img src="${escAttr(url)}" alt="logo" width="60" style="display:block;border:0">`:'';
+  return (state.templates.firmaHtml||'').replace(/{logo_block}/g,logo).replace(/{logo_url}/g,url);
+}
+
+async function sendEmailGmail(c, step, subject, body){
+  const unsub=(c.disiscrizione||state.templates.disiscrizione);
+  const sigText=state.templates.firmaTesto||'';
+  const textBody = body + (sigText?('\n\n'+sigText):'') + '\n\n— \n' + unsub;
+  if(state.config.testMode){
+    await new Promise(r=>setTimeout(r,500));
+    return {threadId:c.threadId||('sim_'+c.id), messageId:c.messageId||('<sim-'+c.id+'-'+step+'@flowline>'), simulated:true};
+  }
+  const inReplyTo = step>0?c.messageId:null;
+  let raw;
+  if(state.config.formatoHtml){
+    const sigHtml=buildSigHtml();
+    const htmlBody=`<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#222;line-height:1.55">`
+      + textToHtml(body)
+      + (sigHtml?('<br><br>'+sigHtml):'')
+      + `<br><br><span style="color:#9a9a9a;font-size:12px">${esc(unsub)}</span></div>`;
+    raw=buildRawHtml({to:c.email, from:fromHeader(), subject, text:textBody, html:htmlBody, inReplyTo, references:inReplyTo});
+  } else {
+    raw=buildRaw({to:c.email, from:fromHeader(), subject, body:textBody, inReplyTo, references:inReplyTo});
+  }
+  const payload={raw};
+  if(step>0 && c.threadId) payload.threadId=c.threadId;
+  const sent=await gfetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/send',{method:'POST',body:JSON.stringify(payload)});
+  // fetch message to read Message-ID header + threadId
+  let messageId=c.messageId, threadId=sent.threadId;
+  try{
+    const full=await gfetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/'+sent.id+'?format=metadata&metadataHeaders=Message-ID');
+    const h=(full.payload?.headers||[]).find(x=>x.name.toLowerCase()==='message-id');
+    if(h && step===0) messageId=h.value;
+  }catch(e){}
+  return {threadId, messageId, simulated:false};
+}
+
+/* ---- reply detection ---- */
+async function checkReplies(opts={}){
+  const silent=opts.silent;
+  if(!googleReady()){if(!silent)toast('Connetti Google per controllare le risposte','warn');return 0}
+  if(state.config.testMode){if(!silent)toast('Disattiva la modalità test per leggere le risposte reali','warn');return 0}
+  const active=state.contacts.filter(c=>c.threadId && !String(c.threadId).startsWith('sim_') && !c.haRisposto && (c.step||0)>0);
+  if(!active.length){if(!silent)toast('Nessun thread attivo da controllare','warn');return 0}
+  let found=0;
+  for(const c of active){
+    try{
+      // format=minimal: ogni messaggio riporta labelIds. Un messaggio nostro ha 'SENT'.
+      // Qualsiasi messaggio del thread SENZA 'SENT' (e non bozza) = risposta del destinatario.
+      const th=await gfetch('https://gmail.googleapis.com/gmail/v1/users/me/threads/'+c.threadId+'?format=minimal');
+      const msgs=th.messages||[];
+      const replied=msgs.some(m=>{const l=m.labelIds||[];return !l.includes('SENT') && !l.includes('DRAFT');});
+      if(replied){c.haRisposto=true;found++;}
+    }catch(e){console.warn('thread check',c.azienda,e.message)}
+  }
+  if(found){persist();render();}
+  if(!silent) toast(found?`${found} nuove risposte rilevate — follow-up fermati`:'Nessuna nuova risposta','ok');
+  else if(found) toast(`${found} nuove risposte rilevate`,'ok');
+  return found;
+}
+let _replyTimer=null;
+function startReplyPoll(){
+  if(_replyTimer)clearInterval(_replyTimer);
+  _replyTimer=setInterval(()=>{ if(googleReady() && !state.config.testMode) checkReplies({silent:true}); }, 180000); // ogni 3 min
+}
+function stopReplyPoll(){if(_replyTimer){clearInterval(_replyTimer);_replyTimer=null;}}
+
+/* =======================================================
+   GOOGLE SHEET SYNC (stato contatti)
+   ======================================================= */
+const SHEET_COLS=['id','azienda','sede','email','ruolo','settore','descrizione','sito_web','tipo_asset','oggetto','corpo','stato','step','data_ultimo_invio','anchor_date','ha_risposto','thread_id','message_id'];
+function colLetter(n){return String.fromCharCode(64+n)} // 16 -> 'P'
+const LASTCOL=colLetter(SHEET_COLS.length);
+let _autoSyncTimer=null;
+
+async function sheetTab(id){
+  if(state.config.sheetTab) return state.config.sheetTab;
+  try{
+    const meta=await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${id}?fields=sheets.properties.title`);
+    const t=(meta.sheets&&meta.sheets[0]&&meta.sheets[0].properties.title)||'Contatti';
+    state.config.sheetTab=t;persist();return t;
+  }catch(e){return 'Contatti'}
+}
+async function ensureSheet(){
+  if(!googleReady()) throw new Error('Google non connesso');
+  if(state.config.sheetId) return state.config.sheetId;
+  const r=await gfetch('https://sheets.googleapis.com/v4/spreadsheets',{method:'POST',body:JSON.stringify({
+    properties:{title:'FlowLine Outbound — contatti & stato'},
+    sheets:[{properties:{title:'Contatti'}}]
+  })});
+  state.config.sheetId=r.spreadsheetId;state.config.sheetTab='Contatti';persist();renderConn();
+  await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${r.spreadsheetId}/values/Contatti!A1?valueInputOption=RAW`,{method:'PUT',body:JSON.stringify({values:[SHEET_COLS]})});
+  return r.spreadsheetId;
+}
+function contactToRow(c){
+  const st=statusOf(c).label;
+  const d0=getDraft(c,0);
+  return [c.id,c.azienda,c.sede,c.email,c.ruolo,c.settore,
+    c.descrizione||'', c.sitoWeb||'', c.tipoAsset,
+    c.oggettoBase||d0.oggetto||'', c.corpoBase||'',
+    st,String(c.step||0),c.dataUltimoInvio||'',c.anchorDate||'',c.haRisposto?'sì':'no',c.threadId||'',c.messageId||''];
+}
+
+// LEGGE i nuovi lead dal foglio e li importa (Sheet -> app)
+async function pullFromSheet(opts={}){
+  const silent=opts.silent;
+  if(!googleReady()){if(!silent)toast('Connetti Google per sincronizzare','warn');return 0}
+  if(!state.config.sheetId){if(!silent)toast('Nessun foglio collegato. Premi "Sheet" una volta per crearlo.','warn');return 0}
+  let rows;
+  try{
+    const tab=await sheetTab(state.config.sheetId);
+    const r=await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${state.config.sheetId}/values/${encodeURIComponent(tab)}!A1:Z10000`);
+    rows=r.values||[];
+  }catch(e){if(!silent)toast('Lettura foglio fallita: '+e.message,'err');return 0}
+  if(rows.length<2) return 0;
+  const map=guessMap(rows[0]);
+  if(map.email==null){if(!silent)toast('Nel foglio non trovo una colonna email','warn');return 0}
+  const byEmail=new Map(state.contacts.map(c=>[(c.email||'').toLowerCase(),c]));
+  let added=0, updated=0;
+  for(let i=1;i<rows.length;i++){
+    const row=rows[i];const g=f=>map[f]!=null?String(row[map[f]]??'').trim():'';
+    const email=g('email');
+    if(!email||!email.includes('@')) continue;
+    const key=email.toLowerCase();
+    const existing=byEmail.get(key);
+    if(existing){
+      // aggiorna i campi di ricerca dal foglio (senza toccare lo stato)
+      let ch=false;
+      const desc=g('descrizione'), web=g('sitoWeb');
+      if(desc && desc!==existing.descrizione){existing.descrizione=desc;ch=true;}
+      if(web && web!==existing.sitoWeb){existing.sitoWeb=web;ch=true;}
+      // riempi i campi vuoti se il foglio ne ha
+      ['azienda','sede','ruolo','settore','tipoAsset'].forEach(f=>{const v=g(f);if(v&&!existing[f]){existing[f]=v;ch=true;}});
+      if(ch)updated++;
+      continue;
+    }
+    byEmail.set(key,true);
+    const c=mkContact({
+      azienda:g('azienda'),sede:g('sede'),email,ruolo:g('ruolo'),settore:g('settore'),
+      descrizione:g('descrizione'),sitoWeb:g('sitoWeb'),
+      tipoAsset:g('tipoAsset'),oggettoBase:g('oggetto'),corpoBase:g('corpo'),
+      disiscrizione:g('disiscrizione')||state.templates.disiscrizione,
+    });
+    state.contacts.push(c);byEmail.set(key,c);
+    added++;
+  }
+  if(added||updated){persist();render()}
+  if(!silent) toast(added||updated?`${added} nuovi · ${updated} aggiornati dal foglio`:'Foglio già allineato','ok');
+  else if(added||updated) toast(`${added} nuovi · ${updated} aggiornati`,'ok');
+  return added;
+}
+
+// SCRIVE lo stato di tutti i contatti sul foglio (app -> Sheet)
+async function pushToSheet(){
+  const id=await ensureSheet();
+  const tab=await sheetTab(id);
+  // ripulisce le righe dati per evitare residui, poi riscrive tutto
+  await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${id}/values/${encodeURIComponent(tab)}!A2:Z10000:clear`,{method:'POST',body:'{}'});
+  const values=[SHEET_COLS,...state.contacts.map(contactToRow)];
+  await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${id}/values/${encodeURIComponent(tab)}!A1:${LASTCOL}${values.length}?valueInputOption=RAW`,{method:'PUT',body:JSON.stringify({values})});
+}
+
+// Sincronizzazione completa: prima importa i nuovi lead, poi riallinea lo stato
+async function syncToSheet(opts={}){
+  if(!googleReady()){if(!opts.silent)toast('Connetti Google per sincronizzare','warn');return}
+  try{
+    await pullFromSheet({silent:true});
+    await pushToSheet();
+    if(!opts.silent)toast('Sincronizzato con il Google Sheet','ok');
+  }catch(e){if(!opts.silent)toast('Sync fallita: '+e.message,'err')}
+}
+
+// poller automatico: importa i nuovi contatti aggiunti al foglio
+function startAutoSync(){
+  stopAutoSync();
+  if(!state.config.autoSync) return;
+  const sec=Math.max(20,state.config.autoSyncSec||60);
+  _autoSyncTimer=setInterval(()=>{ if(googleReady())pullFromSheet({silent:true}); }, sec*1000);
+}
+function stopAutoSync(){if(_autoSyncTimer){clearInterval(_autoSyncTimer);_autoSyncTimer=null}}
+
+function linkExistingSheet(input){
+  const v=(input||'').trim();if(!v){return}
+  const m=v.match(/\/d\/([a-zA-Z0-9-_]+)/);
+  const id=m?m[1]:v;
+  state.config.sheetId=id;state.config.sheetTab='';persist();renderConn();
+  toast('Foglio collegato — sincronizzo...','ok');
+  syncToSheet();
+}
+function openSheet(){
+  if(state.config.sheetId) window.open('https://docs.google.com/spreadsheets/d/'+state.config.sheetId,'_blank');
+  else toast('Nessun Sheet collegato ancora','warn');
+}
+
+/* =======================================================
+   SUPABASE — database condiviso sempre online
+   ======================================================= */
+let supa=null, _supaChan=null, _pushTimer=null, _suppressPush=false;
+function supaConfigured(){return !!(state.config.supabaseUrl && state.config.supabaseKey)}
+function supaReady(){return !!supa}
+function initSupabase(){
+  if(!supaConfigured()){supa=null;return}
+  if(typeof window.supabase==='undefined'){setTimeout(initSupabase,400);return}
+  try{
+    supa=window.supabase.createClient(state.config.supabaseUrl, state.config.supabaseKey, {auth:{persistSession:false}});
+    _lastPushed=new Map();
+    supaLoad().then(()=>supaSubscribe());
+    shiftsLoad().then(()=>shiftsSubscribe());
+  }catch(e){console.error(e);toast('Supabase: '+e.message,'err')}
+}
+// se chiudi la pagina con un salvataggio in sospeso, lo forzo subito
+window.addEventListener('beforeunload',()=>{ if(_pushTimer){clearTimeout(_pushTimer);pushAllToSupabase();} });
+// mappa RIGA (colonne Supabase) -> contatto app
+function contactFromRow(r){
+  const c=mkContact({email:r.email||''});
+  c.id=r.id||c.id;
+  c.azienda=r.azienda||''; c.sede=r.sede||''; c.ruolo=r.ruolo||''; c.settore=r.settore||'';
+  c.descrizione=r.descrizione||''; c.sitoWeb=r.sito_web||''; c.tipoAsset=r.tipo_asset||'';
+  c.oggettoBase=r.oggetto||''; c.corpoBase=r.corpo||'';
+  c.scheduledDate=r.scheduled_date||null; c.step=r.step||0;
+  c.anchorDate=r.anchor_date||null; c.dataUltimoInvio=r.data_ultimo_invio||null;
+  c.haRisposto=!!r.ha_risposto; c.threadId=r.thread_id||null; c.messageId=r.message_id||null;
+  const d=r.data||{};
+  c.drafts=d.drafts||{}; c.history=d.history||[];
+  c.disiscrizione=d.disiscrizione||state.templates.disiscrizione; c.fermato=!!d.fermato; c.n=d.n||'';
+  return c;
+}
+// mappa contatto app -> RIGA (colonne Supabase)
+function contactToSupaRow(c){
+  const nn=v=>(v===''||v===undefined)?null:v; // vuoti -> null (date/testo)
+  return {
+    id:c.id, email:c.email||null, azienda:nn(c.azienda), sede:nn(c.sede), ruolo:nn(c.ruolo), settore:nn(c.settore),
+    descrizione:nn(c.descrizione), sito_web:nn(c.sitoWeb), tipo_asset:nn(c.tipoAsset),
+    oggetto:nn(c.oggettoBase), corpo:nn(c.corpoBase),
+    scheduled_date:nn(c.scheduledDate), step:c.step||0, stato:statusOf(c).label,
+    anchor_date:nn(c.anchorDate), data_ultimo_invio:nn(c.dataUltimoInvio),
+    ha_risposto:!!c.haRisposto, thread_id:nn(c.threadId), message_id:nn(c.messageId),
+    data:{drafts:c.drafts||{}, history:c.history||[], disiscrizione:c.disiscrizione, fermato:!!c.fermato, n:c.n||''},
+    updated_at:new Date().toISOString()
+  };
+}
+async function supaLoad(){
+  if(!supa)return;
+  try{
+    const {data,error}=await supa.from('contacts').select('*').order('updated_at',{ascending:true});
+    if(error)throw error;
+    if(data && data.length){
+      _suppressPush=true;
+      // il DATABASE è la verità: sostituisco lo stato locale
+      state.contacts=data.map(contactFromRow);
+      // ripulisco le lapidi ormai confermate (la riga non c'è più sul DB)
+      const live=new Set(state.contacts.map(c=>c.id));
+      [..._deleted].forEach(id=>{if(!live.has(id))forgetDeleted(id)});
+      // inizializzo lo snapshot: così non rispingo dati appena letti
+      _lastPushed=new Map();
+      state.contacts.forEach(c=>{const row=contactToSupaRow(c);_lastPushed.set(c.id,JSON.stringify({...row,updated_at:0}));});
+      save(LS.contacts,state.contacts);
+      _suppressPush=false;
+      renderConn();render();
+      toast(state.contacts.length+' contatti dal database','ok');
+    } else if(state.contacts.length){
+      await pushAllToSupabase();
+      renderConn();
+      toast('Database inizializzato con i contatti locali','ok');
+    } else {
+      renderConn();
+    }
+  }catch(e){toast('Supabase load: '+e.message,'err')}
+}
+function supaSubscribe(){
+  if(!supa)return;
+  if(_supaChan){supa.removeChannel(_supaChan);_supaChan=null;}
+  _supaChan=supa.channel('contacts-rt')
+    .on('postgres_changes',{event:'*',schema:'public',table:'contacts'},payload=>{
+      if(payload.eventType==='DELETE'){
+        const id=payload.old&&payload.old.id;
+        if(id){state.contacts=state.contacts.filter(c=>c.id!==id);_lastPushed.delete(id);save(LS.contacts,state.contacts);softRender();}
+        return;
+      }
+      const row=payload.new; if(!row||!row.id)return;
+      if(_deleted.has(row.id)) return;            // l'abbiamo eliminato noi: non farlo tornare
+      const inc=contactFromRow(row); const cur=state.contacts.find(c=>c.id===inc.id);
+      if(cur && JSON.stringify(cur)===JSON.stringify(inc)) return; // stesso dato nostro, ignora
+      _suppressPush=true;
+      if(cur)Object.assign(cur,inc); else state.contacts.push(inc);
+      // allineo lo snapshot al dato appena arrivato: evita un push inutile
+      _lastPushed.set(inc.id,JSON.stringify({...contactToSupaRow(inc),updated_at:0}));
+      save(LS.contacts,state.contacts);
+      _suppressPush=false;
+      softRender();
+    })
+    .subscribe();
+}
+// re-render che NON disturba ciò che stai scrivendo nella Coda
+function softRender(){
+  const a=document.activeElement;
+  if(a&&(a.tagName==='TEXTAREA'||a.tagName==='INPUT')&&a.closest('#content')){ _pendingRender=true; return; }
+  render();
+}
+let _pendingRender=false;
+document.addEventListener('focusout',e=>{ if(_pendingRender){_pendingRender=false;setTimeout(()=>render(),50);} });
+
+function schedulePush(){
+  if(!supaReady()||_suppressPush)return;
+  if(_pushTimer)clearTimeout(_pushTimer);
+  _pushTimer=setTimeout(()=>pushAllToSupabase(),700);
+}
+// snapshot dell'ultimo stato scritto sul DB: serve a spingere SOLO ciò che è cambiato
+let _lastPushed=new Map();
+// "lapidi": id eliminati da noi. Impediscono che un upsert li resusciti.
+let _deleted=new Set(load('flo_deleted',[]));
+function rememberDeleted(id){_deleted.add(id);save('flo_deleted',[..._deleted]);}
+function forgetDeleted(id){_deleted.delete(id);save('flo_deleted',[..._deleted]);}
+
+function setSyncState(s,msg){
+  const dot=document.getElementById('sdot'),txt=document.getElementById('stxt');
+  if(!dot||!txt)return;
+  if(s==='saving'){dot.className='dot warn';txt.textContent='Salvataggio…';}
+  else if(s==='err'){dot.className='dot';txt.style.color='var(--late)';txt.textContent=msg||'Errore sync';}
+  else{dot.className='dot on';txt.style.color='';txt.textContent='Database online';}
+}
+
+async function pushAllToSupabase(){
+  if(!supaReady()||_suppressPush)return;
+  // spingi SOLO i contatti nuovi o modificati (mai tutti: eviterebbe di riscrivere righe altrui)
+  const changed=[];
+  for(const c of state.contacts){
+    if(_deleted.has(c.id)) continue;            // mai reinserire ciò che abbiamo eliminato
+    const row=contactToSupaRow(c);
+    const sig=JSON.stringify({...row,updated_at:0}); // ignora il timestamp nel confronto
+    if(_lastPushed.get(c.id)!==sig){ changed.push({row,sig,id:c.id}); }
+  }
+  if(!changed.length)return;
+  setSyncState('saving');
+  try{
+    const {error}=await supa.from('contacts').upsert(changed.map(x=>x.row),{onConflict:'id'});
+    if(error)throw error;
+    changed.forEach(x=>_lastPushed.set(x.id,x.sig));
+    setSyncState('ok');
+  }catch(e){
+    setSyncState('err','Sync fallita');
+    toast('Salvataggio su Supabase fallito: '+e.message,'err');
+    console.warn('supabase push',e);
+  }
+}
+// elimina davvero: attende la conferma del DB, altrimenti ripristina il contatto
+async function supaDelete(id){
+  if(!supaReady())return {ok:true,local:true};
+  setSyncState('saving');
+  try{
+    const {error}=await supa.from('contacts').delete().eq('id',id);
+    if(error)throw error;
+    _lastPushed.delete(id);
+    rememberDeleted(id);
+    setSyncState('ok');
+    return {ok:true};
+  }catch(e){
+    setSyncState('err','Eliminazione fallita');
+    return {ok:false,err:e.message};
+  }
+}
+const SUPA_SQL=`-- Esegui una volta nell'editor SQL di Supabase (SQL Editor -> New query)
+create table if not exists contacts (
+  id            text primary key default gen_random_uuid()::text,
+  email         text,
+  azienda       text,
+  sede          text,
+  ruolo         text,
+  settore       text,
+  descrizione   text,
+  sito_web      text,
+  tipo_asset    text,
+  oggetto       text,   -- oggetto della prima email (facoltativo)
+  corpo         text,   -- corpo della prima email (facoltativo)
+  scheduled_date  date,  -- lasciare vuoto = "da pianificare"
+  step          int  default 0,
+  stato         text,
+  anchor_date     date,
+  data_ultimo_invio date,
+  ha_risposto   boolean default false,
+  thread_id     text,
+  message_id    text,
+  data          jsonb,  -- bozze e cronologia (gestito dall'app)
+  updated_at    timestamptz default now()
+);
+alter table contacts enable row level security;
+create policy "full access anon" on contacts for all using (true) with check (true);
+alter publication supabase_realtime add table contacts;
+
+-- Per aggiungere un lead: inserisci una riga con almeno email e azienda.
+-- Comparira' nell'app come "da pianificare".`;
+
+/* ---- selezione file sorgente (Google Picker) + tab ---- */
+function openPicker(){
+  if(!googleReady()){toast('Connetti prima Google','warn');connectGoogle();return}
+  if(!state.config.googleApiKey){toast('Serve la Google API key per il selettore Drive (Impostazioni)','warn');return}
+  if(typeof gapi==='undefined'){toast('API Google non ancora caricate, riprova tra un attimo','err');return}
+  gapi.load('picker',()=>{
+    try{
+      const view=new google.picker.DocsView(google.picker.ViewId.SPREADSHEETS).setSelectFolderEnabled(false);
+      const picker=new google.picker.PickerBuilder()
+        .addView(view)
+        .setOAuthToken(state.google.token)
+        .setDeveloperKey(state.config.googleApiKey)
+        .setCallback(data=>{
+          if(data.action===google.picker.Action.PICKED && data.docs && data.docs[0]){
+            const doc=data.docs[0];
+            state.config.sheetId=doc.id;state.config.sheetTab='';persist();renderConn();
+            const inp=document.getElementById('set-sheet');if(inp)inp.value=doc.id;
+            const nm=document.getElementById('sheet-name');if(nm)nm.textContent='Collegato: '+(doc.name||doc.id);
+            toast('File selezionato: '+(doc.name||doc.id),'ok');
+            loadTabs().then(()=>pullFromSheet());
+          }
+        }).build();
+      picker.setVisible(true);
+    }catch(e){toast('Picker: '+e.message,'err')}
+  });
+}
+async function loadTabs(){
+  if(!state.config.sheetId){toast('Nessun file selezionato','warn');return}
+  if(!googleReady()){toast('Connetti Google','warn');return}
+  try{
+    const meta=await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${state.config.sheetId}?fields=properties.title,sheets.properties.title`);
+    const tabs=(meta.sheets||[]).map(s=>s.properties.title);
+    if(!state.config.sheetTab && tabs.length){state.config.sheetTab=tabs[0];persist();}
+    const sel=document.getElementById('set-tab');
+    if(sel&&tabs.length)sel.innerHTML=tabs.map(t=>`<option ${t===state.config.sheetTab?'selected':''}>${esc(t)}</option>`).join('');
+    const row=document.getElementById('tab-row');if(row)row.style.display='';
+    const nm=document.getElementById('sheet-name');if(nm)nm.textContent='Collegato: '+esc(meta.properties?.title||state.config.sheetId)+' · '+tabs.length+' tab';
+  }catch(e){toast('Lettura fogli fallita: '+e.message,'err')}
+}
+function copySupaSQL(){navigator.clipboard.writeText(SUPA_SQL).then(()=>toast('SQL copiato','ok')).catch(()=>toast('Copia non riuscita','err'))}
+
+/* migrazione una-tantum dal vecchio Google Sheet -> Supabase */
+async function migrateFromSheet(){
+  const url=(document.getElementById('mig-sheet')?.value||'').trim();
+  if(!url){toast('Incolla il link (o ID) del vecchio Google Sheet','warn');return}
+  if(!googleReady()){toast('Connetti prima Google (serve per leggere il foglio)','warn');connectGoogle();return}
+  if(!supaReady()){ if(!confirm('Supabase non risulta connesso: i contatti verrebbero importati solo in locale. Continuare comunque?'))return; }
+  const btn=document.getElementById('mig-btn');const old=btn?btn.innerHTML:'';
+  if(btn){btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Migro…';}
+  const prevId=state.config.sheetId, prevTab=state.config.sheetTab;
+  try{
+    const m=url.match(/\/d\/([a-zA-Z0-9-_]+)/); const id=m?m[1]:url;
+    state.config.sheetId=id; state.config.sheetTab='';
+    const before=state.contacts.length;
+    await pullFromSheet({});                 // legge il foglio, importa i nuovi + aggiorna esistenti, persiste
+    const imported=state.contacts.length-before;
+    if(supaReady()) await pushAllToSupabase(); // spinge subito tutto su Supabase
+    toast(`Migrazione completata: ${imported} nuovi contatti su Supabase`,'ok');
+  }catch(e){toast('Migrazione fallita: '+e.message,'err');}
+  finally{
+    // non lascio il foglio collegato: Supabase resta l'unica sorgente
+    state.config.sheetId=prevId||''; state.config.sheetTab=prevTab||''; persist();
+    if(btn){btn.disabled=false;btn.innerHTML=old;}
+    render();
+  }
+}
+
+/* ---- aggiorna & reset ---- */
+async function refreshAll(){
+  const btn=document.getElementById('btnRefresh');
+  if(btn)btn.classList.add('spinning');
+  try{
+    if(supaReady()){ await supaLoad(); }
+    else toast('Collega Supabase per sincronizzare i dati','warn');
+    if(googleReady() && !state.config.testMode) await checkReplies({silent:true});
+  }catch(e){toast('Aggiornamento: '+e.message,'err')}
+  if(btn)btn.classList.remove('spinning');
+  render();
+}
+async function resetAll(){
+  if(!confirm('RESETTA TUTTO: elimina tutti i contatti, le bozze e lo storico invii. Le credenziali (Google, Supabase, Anthropic) restano. Continuare?'))return;
+  let wipeRemote=false;
+  if(supaReady()) wipeRemote=confirm('Vuoi svuotare anche il database condiviso Supabase?\n\nOK = cancella per tutto il team.\nAnnulla = pulisci solo questo dispositivo (i dati torneranno dal database al prossimo aggiornamento).');
+  if(wipeRemote){
+    try{const {error}=await supa.from('contacts').delete().neq('id','');if(error)throw error;}
+    catch(e){toast('Supabase: '+e.message,'err');return}
+  }
+  _suppressPush=true;
+  state.contacts=[];
+  _lastPushed=new Map();
+  _deleted=new Set(); save('flo_deleted',[]);   // niente lapidi: il DB è già stato svuotato (o resta intatto)
+  state.usage={input:0,output:0,gen:0,since:new Date().toISOString().slice(0,10)};
+  save(LS.contacts,state.contacts);save(LS.usage,state.usage);
+  _suppressPush=false;
+  closeModal();render();renderSpend();
+  toast(wipeRemote?'Tutto resettato (anche sul database)':'Dati locali resettati','ok');
+}
+function showSupaSQL(){
+  modal(`<div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-h"><h3>SQL di setup Supabase</h3><div class="x" onclick="openSettings()">✕</div></div>
+    <div class="modal-b">
+      <div class="helptip">Nel tuo progetto Supabase apri <b>SQL Editor → New query</b>, incolla ed esegui una volta. Crea la tabella <code>contacts</code> e attiva gli aggiornamenti in tempo reale.</div>
+      <textarea class="body" style="min-height:240px;font-family:'JetBrains Mono',monospace;font-size:12px" readonly>${esc(SUPA_SQL)}</textarea>
+      <button class="btn sm" onclick="copySupaSQL()">Copia SQL</button>
+    </div>
+    <div class="modal-f"><button class="btn primary" onclick="openSettings()">← Torna alle impostazioni</button></div>
+  </div>`);
+}
+
+/* =======================================================
+   ANTHROPIC — generazione email
+   ======================================================= */
+async function generateEmail(c, step){
+  const key=state.config.anthropicKey;
+  if(!key) throw new Error('Manca la chiave API Anthropic (Impostazioni)');
+  const cad=state.cadence[step];
+  const prevSent=c.history.filter(h=>h.step<step).map(h=>`[${state.cadence[h.step]?.nome}] Oggetto: ${h.oggetto}\n${h.corpo}`).join('\n\n---\n\n');
+  const sys=(state.templates.promptSistema||PROMPT_SISTEMA_DEFAULT)
+    .replace(/{azienda}/g, state.templates.azienda||'')
+    .replace(/{mittente}/g, state.templates.mittente||'')
+    .replace(/{tono}/g, state.templates.tono||'')
+    .replace(/{regole_oggetto}/g, state.templates.regoleOggetto||'')
+    .replace(/{regole_corpo}/g, state.templates.regoleCorpo||'');
+  const ctx=`Destinatario:
+- Azienda: ${c.azienda||'n/d'}
+- Sede: ${c.sede||'n/d'}
+- Ruolo/Contatto: ${c.ruolo||'n/d'}
+- Settore: ${c.settore||'n/d'}
+- Sito web: ${c.sitoWeb||'n/d'}
+- Tipo asset/offerta: ${c.tipoAsset||'automazione dei processi (preventivi, ordini, listini)'}
+${c.descrizione?`
+DESCRIZIONE AZIENDA (informazione reale e verificata su cui basare la personalizzazione — usala per un aggancio concreto e specifico, senza copiarla parola per parola):
+${c.descrizione}`:''}
+
+Step da scrivere: "${cad.nome}".
+Angolo/obiettivo di questo step: ${cad.angolo}
+${step===0&&c.corpoBase?`\nBozza esistente da migliorare/riadattare (mantieni il senso, rendila naturale):\nOggetto: ${c.oggettoBase}\n${c.corpoBase}`:''}
+${prevSent?`\nEmail già inviate in questo thread (NON ripeterti, costruisci sopra):\n${prevSent}`:''}`;
+  const r=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:MODEL,max_tokens:900,system:sys,messages:[{role:'user',content:ctx}]})
+  });
+  if(!r.ok){const t=await r.text();throw new Error('Anthropic '+r.status+': '+t.slice(0,200))}
+  const data=await r.json();
+  const u=data.usage||{};
+  const inT=(u.input_tokens||0)+(u.cache_read_input_tokens||0)+(u.cache_creation_input_tokens||0);
+  const outT=u.output_tokens||0;
+  recordUsage(inT,outT);
+  const callCost=costEUR({input:inT,output:outT});
+  let txt=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('').trim();
+  txt=txt.replace(/```json|```/g,'').trim();
+  const m=txt.match(/\{[\s\S]*\}/); if(m)txt=m[0];
+  const obj=JSON.parse(txt);
+  return {oggetto:obj.oggetto||'', corpo:obj.corpo||'', cost:callCost};
+}
+
+/* get or build the draft for a contact's current step */
+function getDraft(c, step){
+  if(c.drafts && c.drafts[step]) return c.drafts[step];
+  // default seed
+  if(step===0 && c.oggettoBase){ return {oggetto:c.oggettoBase, corpo:c.corpoBase, seeded:true}; }
+  // follow-ups: subject = same as email1 (stesso thread) ; body from template angle placeholder
+  const subj = c.history[0]?.oggetto || c.oggettoBase || 'Seguito';
+  return {oggetto:subj, corpo:'(Genera con AI o scrivi il testo del follow-up)', seeded:true};
+}
+function setDraft(c,step,d){c.drafts=c.drafts||{};c.drafts[step]={...d,seeded:false};persist()}
+
+/* =======================================================
+   IMPORT
+   ======================================================= */
+const HEADER_MAP={
+  email:['email','e-mail','mail','indirizzo email','posta'],
+  azienda:['azienda','company','ragione sociale','nome azienda','ditta','cliente'],
+  sede:['sede','città','city','luogo','indirizzo','provincia','località'],
+  nome:['nome','contatto','referente','name','persona'],
+  ruolo:['ruolo','role','posizione','carica','title','qualifica'],
+  settore:['settore','industry','categoria','comparto','ambito'],
+  descrizione:['descrizione azienda','descrizione','description','note azienda','info azienda','profilo','about','bio'],
+  sitoWeb:['sito web','sito internet','sito','website','web','url','homepage','pagina web'],
+  tipoAsset:['tipo asset','asset','offerta','offer','prodotto','servizio','proposta'],
+  oggetto:['oggetto','subject','titolo'],
+  corpo:['corpo email 1','corpo','body','testo','email 1','messaggio','corpo email'],
+  disiscrizione:['disiscrizione','unsubscribe','opt-out','disisc'],
+  n:['n','#','num','numero','id'],
+};
+function guessMap(headers){
+  const map={};
+  const norm=h=>String(h||'').toLowerCase().trim();
+  for(const field in HEADER_MAP){
+    for(let i=0;i<headers.length;i++){
+      const h=norm(headers[i]);
+      if(HEADER_MAP[field].some(k=>h===k||h.includes(k))){map[field]=i;break;}
+    }
+  }
+  return map;
+}
+function handleFile(file){
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=new Uint8Array(e.target.result);
+      const wb=XLSX.read(data,{type:'array'});
+      // pick the sheet with most rows that has an email-like column
+      let best=null,bestRows=null;
+      for(const name of wb.SheetNames){
+        const rows=XLSX.utils.sheet_to_json(wb.Sheets[name],{header:1,blankrows:false});
+        if(rows.length<2)continue;
+        const hdr=rows[0].map(x=>String(x||'').toLowerCase());
+        const score=rows.length + (hdr.some(h=>h.includes('email')||h.includes('mail'))?1000:0);
+        if(!best||score>best.score){best={name,score};bestRows=rows;}
+      }
+      if(!bestRows){toast('Nessun foglio valido trovato','err');return}
+      openImportModal(bestRows[0], bestRows.slice(1), best.name, wb.SheetNames);
+    }catch(err){toast('Errore lettura file: '+err.message,'err')}
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+/* =======================================================
+   RENDER
+   ======================================================= */
+const NAV=[
+  {id:'dashboard',label:'Dashboard',icon:'M3 3v18h18 M7 14l3-3 3 3 5-6'},
+  {id:'pianifica',label:'Pianificazione',icon:'M3 4h18v18H3z M16 2v4 M8 2v4 M3 10h18 M8 14h2 M14 14h2 M8 18h2'},
+  {id:'coda',label:'Coda invio',icon:'M22 2 11 13 M22 2l-7 20-4-9-9-4 20-7z'},
+  {id:'contatti',label:'Contatti',icon:'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2 M9 7a4 4 0 1 0 0 8 4 4 0 0 0 0-8z M23 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75'},
+  {id:'calendario',label:'Calendario',icon:'M3 4h18v18H3z M16 2v4 M8 2v4 M3 10h18'},
+];
+const NAV_SHIFTS=[
+  {id:'griglia',label:'Turni team',icon:'M3 4h18v18H3z M16 2v4 M8 2v4 M3 10h18'},
+  {id:'miadispo',label:'La mia disponibilità',icon:'M12 8v4l3 3 M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z'},
+];
+function setModule(m){
+  state.module=m;save('flo_module',m);
+  state.view = m==='shifts' ? (state.shifts.view||'griglia') : 'dashboard';
+  closeRail();render();
+}
+function renderNav(){
+  const outb=state.module!=='shifts';
+  const sub=document.getElementById('brandSub');if(sub)sub.textContent=outb?'Outbound Manager':'Turni & Disponibilità';
+  const mo=document.getElementById('mod-outbound'),ms=document.getElementById('mod-shifts');
+  if(mo)mo.className=outb?'':'';if(mo)mo.classList.toggle('active',outb);
+  if(ms)ms.classList.toggle('active',!outb);
+  if(!outb){
+    document.getElementById('nav').innerHTML=NAV_SHIFTS.map(n=>`<button class="${state.view===n.id?'active':''}" onclick="go('${n.id}')">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${n.icon}"/></svg>
+      <span>${n.label}</span></button>`).join('');
+    return;
+  }
+  const todayN=state.contacts.filter(dueToday).length;
+  const late=state.contacts.filter(isLate).length;
+  const backlog=state.contacts.filter(isUnplanned).length;
+  document.getElementById('nav').innerHTML=NAV.map(n=>{
+    let badge='';
+    if(n.id==='coda'&&(todayN||late)) badge=`<span class="badge${late?' late':''}">${todayN||late}</span>`;
+    if(n.id==='pianifica'&&backlog) badge=`<span class="badge" style="background:#7c3aed">${backlog}</span>`;
+    return `<button class="${state.view===n.id?'active':''}" onclick="go('${n.id}')">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${n.icon}"/></svg>
+      <span>${n.label}</span>${badge}</button>`;
+  }).join('');
+}
+function renderSpend(){
+  const eur=costEUR(state.usage);
+  const txt=document.getElementById('spendTxt');
+  const gen=document.getElementById('spendGen');
+  if(txt)txt.textContent='≈ €'+fmtMoney(eur);
+  if(gen)gen.textContent=state.usage.gen+' gen.';
+}
+function openSpend(){
+  const u=state.usage;const usd=costUSD(u);const eur=costEUR(u);
+  const tot=u.input+u.output;
+  const avg=u.gen?eur/u.gen:0;
+  modal(`<div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-h"><h3>Spesa API stimata</h3><div class="x" onclick="closeModal()">✕</div></div>
+    <div class="modal-b">
+      <div style="text-align:center;padding:6px 0">
+        <div class="spend-big">≈ €${fmtMoney(eur)}</div>
+        <div class="email-cell">$${fmtMoney(usd)} USD · dal ${esc(u.since)}</div>
+      </div>
+      <table class="spend-table">
+        <tr><td>Generazioni AI</td><td>${u.gen}</td></tr>
+        <tr><td>Token input <span class="email-cell">($${PRICE.in}/M)</span></td><td>${u.input.toLocaleString('it-IT')}</td></tr>
+        <tr><td>Token output <span class="email-cell">($${PRICE.out}/M)</span></td><td>${u.output.toLocaleString('it-IT')}</td></tr>
+        <tr><td>Token totali</td><td>${tot.toLocaleString('it-IT')}</td></tr>
+        <tr><td>Costo medio per email</td><td>≈ €${fmtMoney(avg)}</td></tr>
+      </table>
+      <div class="form-row">
+        <label>Cambio USD→EUR</label>
+        <input id="eur-rate" type="number" step="0.01" value="${state.config.eurRate}" onchange="state.config.eurRate=+this.value||${EUR_DEFAULT};persist();renderSpend();openSpend()">
+        <span class="hint">Stima indicativa. La fatturazione reale è in USD nella console Anthropic, che resta la fonte ufficiale.</span>
+      </div>
+      <div class="helptip">Conta solo le chiamate AI di generazione/rigenerazione. Gmail, Sheets e l'hosting non hanno costi. Gli invii in modalità test non generano email ma la generazione del testo sì.</div>
+    </div>
+    <div class="modal-f" style="justify-content:space-between">
+      <button class="btn sm ghost danger" onclick="resetUsage()">Azzera conteggio</button>
+      <button class="btn primary" onclick="closeModal()">Chiudi</button>
+    </div>
+  </div>`);
+}
+function renderConn(){
+  const g=googleReady();
+  document.getElementById('gdot').className='dot'+(g?' on':(state.config.googleClientId?' warn':''));
+  const fromA=state.fromAddr&&state.fromAddr.toLowerCase()!==(state.google.email||'').toLowerCase();
+  document.getElementById('gtxt').textContent=g?(fromA?('Invia da: '+state.fromAddr):(state.google.email||'Google connesso')):(state.config.googleClientId?'Google da autorizzare':'Google non connesso');
+  const sdot=document.getElementById('sdot'),stxt=document.getElementById('stxt');
+  if(sdot){sdot.className='dot'+(supaReady()?' on':(supaConfigured()?' warn':''));}
+  if(stxt){stxt.textContent=supaReady()?'Database online':(supaConfigured()?'Database in connessione…':'Database locale');}
+  document.getElementById('testBanner').style.display=state.config.testMode?'flex':'none';
+}
+function go(v){state.view=v;state.search='';state.filter='tutti';if(state.module==='shifts')state.shifts.view=v;closeRail();render()}
+function render(){
+  renderNav();renderConn();renderSpend();
+  if(state.module==='shifts'){ renderShifts(); return; }
+  const titles={dashboard:'Dashboard',pianifica:'Pianificazione',coda:'Coda invio',contatti:'Contatti',calendario:'Calendario'};
+  document.getElementById('viewTitle').textContent=titles[state.view]||'Dashboard';
+  const ta=document.getElementById('topActions');
+  ta.innerHTML=`
+      <button class="btn sm ghost" id="btnRefresh" onclick="refreshAll()" title="Aggiorna dati dal database e dal foglio">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6 M1 20v-6h6 M3.51 9a9 9 0 0 1 14.85-3.36L23 10 M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>Aggiorna</button>`;
+  if(state.contacts.length){
+    ta.innerHTML+=`
+      <button class="btn sm ghost" onclick="checkReplies()" title="Controlla risposte nei thread">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Risposte</button>
+      <button class="btn sm primary" onclick="pickFile()">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14 M5 12h14"/></svg>Importa</button>`;
+  }
+  const C=document.getElementById('content');
+  if(state.view==='dashboard')C.innerHTML=viewDashboard();
+  else if(state.view==='coda')C.innerHTML=viewCoda();
+  else if(state.view==='pianifica')C.innerHTML=viewPianifica();
+  else if(state.view==='contatti')C.innerHTML=viewContatti();
+  else if(state.view==='calendario')C.innerHTML=viewCalendario();
+  if(state.view==='coda')bindCodaInputs();
+  if(state.view==='pianifica')bindPianifica();
+}
+
+/* =======================================================
+   MODULO TURNI / DISPONIBILITÀ
+   ======================================================= */
+const SHIFT_COLORS=['#4f46e5','#0d9488','#d97706','#dc2626','#7c3aed','#2563eb','#db2777','#65a30d'];
+const WD_NAMES=['','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato','Domenica'];
+let _shiftChan=null, _shiftLoadT=null;
+function m2t(m){if(m==null)return'';const h=Math.floor(m/60),mm=m%60;return String(h).padStart(2,'0')+':'+String(mm).padStart(2,'0')}
+function t2m(t){const p=String(t).split(':');return (+p[0]||0)*60+(+p[1]||0)}
+function isoWd(d){return ((d.getDay()+6)%7)+1} // Lun=1..Dom=7
+function me(){return state.shifts.members.find(m=>m.id===state.shifts.meId)||null}
+function siItem(kind,extra){return {id:'si'+Math.random().toString(36).slice(2,11),member_id:state.shifts.meId,kind,weekday:null,date:null,start_min:null,end_min:null,title:null,...extra,updated_at:new Date().toISOString()}}
+
+function subtractRange(blocks,off){
+  const res=[];
+  blocks.forEach(b=>{
+    if(off.start<=b.start&&off.end>=b.end)return;
+    if(off.end<=b.start||off.start>=b.end){res.push(b);return;}
+    if(off.start>b.start)res.push({start:b.start,end:off.start});
+    if(off.end<b.end)res.push({start:off.end,end:b.end});
+  });
+  return res.filter(b=>b.end>b.start);
+}
+function mergeBlocks(bl){const b=bl.slice().sort((a,c)=>a.start-c.start);const m=[];b.forEach(x=>{const l=m[m.length-1];if(l&&x.start<=l.end)l.end=Math.max(l.end,x.end);else m.push({...x})});return m}
+function subtractAll(blocks,offs){let r=blocks;offs.forEach(o=>{r=subtractRange(r,o)});return r}
+function intersectRanges(a,b){const res=[];a.forEach(x=>b.forEach(y=>{const s=Math.max(x.start,y.start),e=Math.min(x.end,y.end);if(e>s)res.push({start:s,end:e})}));return mergeBlocks(res)}
+// scompone la giornata di una persona in fasce LIBERE e fasce OCCUPATE (impegni calendario)
+function daySplit(memberId,iso){
+  const avail=effectiveBlocks(memberId,iso);
+  const busy=mergeBlocks(state.shifts.gcal.filter(g=>g.member_id===memberId&&g.date===iso).map(g=>({start:g.start_min,end:g.end_min})));
+  return {avail, free:subtractAll(avail,busy), occupied:intersectRanges(avail,busy)};
+}
+function effectiveBlocks(memberId,iso){
+  const wd=isoWd(parseD(iso));
+  let blocks=state.shifts.rules.filter(r=>r.member_id===memberId&&r.weekday===wd).map(r=>({start:r.start_min,end:r.end_min}));
+  state.shifts.exceptions.filter(e=>e.member_id===memberId&&e.date===iso&&e.kind==='extra').forEach(e=>blocks.push({start:e.start_min,end:e.end_min}));
+  state.shifts.exceptions.filter(e=>e.member_id===memberId&&e.date===iso&&e.kind==='off').forEach(e=>{
+    if(e.start_min==null)blocks=[];else blocks=subtractRange(blocks,{start:e.start_min,end:e.end_min});
+  });
+  blocks.sort((a,b)=>a.start-b.start);
+  const merged=[];blocks.forEach(b=>{const last=merged[merged.length-1];if(last&&b.start<=last.end)last.end=Math.max(last.end,b.end);else merged.push({...b})});
+  return merged;
+}
+
+async function shiftsLoad(){
+  if(!supaReady())return;
+  try{
+    const [m,i]=await Promise.all([supa.from('shift_members').select('*'),supa.from('shift_items').select('*')]);
+    if(m.error||i.error)throw(m.error||i.error);
+    state.shifts.needsSetup=false;
+    state.shifts.members=m.data||[];
+    const items=i.data||[];
+    state.shifts.rules=items.filter(x=>x.kind==='rule');
+    state.shifts.exceptions=items.filter(x=>x.kind==='off'||x.kind==='extra');
+    state.shifts.gcal=items.filter(x=>x.kind==='gcal');
+    // riaggancio il profilo all'account Google connesso
+    const em=(state.google.email||'').toLowerCase();
+    if(em){const f=state.shifts.members.find(m=>(m.email||'').toLowerCase()===em);state.shifts.meId=f?f.id:null;}
+    if(state.module==='shifts')render();
+  }catch(e){
+    if(/relation|does not exist|Could not find|schema cache/i.test(e.message||'')){state.shifts.needsSetup=true;if(state.module==='shifts')render();}
+    else console.warn('shifts load',e.message);
+  }
+}
+function shiftsLoadDebounced(){clearTimeout(_shiftLoadT);_shiftLoadT=setTimeout(shiftsLoad,300);}
+function shiftsSubscribe(){
+  if(!supa)return;
+  if(_shiftChan){supa.removeChannel(_shiftChan);_shiftChan=null;}
+  _shiftChan=supa.channel('shifts-rt')
+    .on('postgres_changes',{event:'*',schema:'public',table:'shift_members'},shiftsLoadDebounced)
+    .on('postgres_changes',{event:'*',schema:'public',table:'shift_items'},shiftsLoadDebounced)
+    .subscribe();
+}
+function refreshShifts(){shiftsLoad();const m=me();if(m&&m.gcal)syncGcal();}
+
+async function saveMe(){
+  if(!supaReady()){toast('Database non collegato','warn');return false}
+  if(!googleReady()){toast('Accedi con Google per creare il profilo','warn');connectGoogle();return false}
+  const name=(document.getElementById('me-name')?.value||'').trim();
+  if(!name){toast('Inserisci il tuo nome','warn');return false}
+  const color=document.getElementById('me-color')?.value||SHIFT_COLORS[0];
+  const gcalOn=document.getElementById('me-gcal')?.classList.contains('on');
+  const em=(state.google.email||'').toLowerCase();
+  // niente doppioni: se esiste già un profilo con questa email, aggiorno quello
+  const existing=state.shifts.members.find(x=>(x.email||'').toLowerCase()===em);
+  const id=state.shifts.meId||existing?.id||('m'+Math.random().toString(36).slice(2,9));
+  const row={id,name,color,email:em,gcal:!!gcalOn,updated_at:new Date().toISOString()};
+  const {error}=await supa.from('shift_members').upsert(row,{onConflict:'id'});
+  if(error){toast('Errore profilo: '+error.message,'err');return false}
+  state.shifts.meId=id;
+  await shiftsLoad();
+  toast('Profilo salvato','ok');
+  if(gcalOn) syncGcal();
+  return true;
+}
+// rimozione profilo: elimina anche tutte le sue fasce e impegni
+async function deleteProfile(id){
+  const m=state.shifts.members.find(x=>x.id===id);if(!m)return;
+  const mine=id===state.shifts.meId;
+  if(!confirm(`Eliminare il profilo "${m.name}"${m.email?' ('+m.email+')':''}?\n\nVerranno rimosse anche tutte le sue disponibilità.${mine?'\n\nÈ il TUO profilo: dovrai ricrearlo.':''}`))return;
+  try{
+    const r1=await supa.from('shift_items').delete().eq('member_id',id);
+    if(r1.error)throw r1.error;
+    const r2=await supa.from('shift_members').delete().eq('id',id);
+    if(r2.error)throw r2.error;
+    if(mine)state.shifts.meId=null;
+    await shiftsLoad();
+    toast('Profilo eliminato','ok');
+  }catch(e){toast('Eliminazione fallita: '+e.message,'err')}
+}
+function ensureMe(){if(!state.shifts.meId){toast('Crea prima il tuo profilo','warn');state.view='miadispo';render();return false}return true}
+async function addItem(kind,extra){
+  if(!ensureMe())return;
+  const {error}=await supa.from('shift_items').insert(siItem(kind,extra));
+  if(error){toast('Errore: '+error.message,'err');return}
+  await shiftsLoad();
+}
+async function delItem(id){const {error}=await supa.from('shift_items').delete().eq('id',id);if(error)toast(error.message,'err');else await shiftsLoad();}
+// modifica completa di una fascia ricorrente
+function editRule(id){
+  const r=state.shifts.rules.find(x=>x.id===id);if(!r)return;
+  const ov=document.createElement('div');ov.className='overlay';ov.style.zIndex='60';ov.onclick=e=>{if(e.target===ov)ov.remove()};
+  ov.innerHTML=`<div class="modal" style="max-width:380px" onclick="event.stopPropagation()">
+    <div class="modal-h"><h3>Modifica fascia · ${WD_NAMES[r.weekday]}</h3><div class="x" onclick="this.closest('.overlay').remove()">✕</div></div>
+    <div class="modal-b">
+      <div style="display:flex;gap:10px;align-items:center;justify-content:center">
+        <input type="time" id="er-s" value="${m2t(r.start_min)}" style="background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:9px 11px;font-size:15px">
+        <span>–</span>
+        <input type="time" id="er-e" value="${m2t(r.end_min)}" style="background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:9px 11px;font-size:15px">
+      </div>
+      <div class="helptip">Vale per tutti i ${WD_NAMES[r.weekday].toLowerCase()}. Per cambiare un solo giorno, usa le eccezioni.</div>
+    </div>
+    <div class="modal-f" style="justify-content:space-between">
+      <button class="btn sm ghost danger" onclick="this.closest('.overlay').remove();delItem('${id}')">Elimina</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn" onclick="this.closest('.overlay').remove()">Annulla</button>
+        <button class="btn primary" onclick="saveRule('${id}')">Salva</button>
+      </div>
+    </div>
+  </div>`;
+  document.body.appendChild(ov);
+}
+async function saveRule(id){
+  const s=document.getElementById('er-s').value,e=document.getElementById('er-e').value;
+  if(!s||!e){toast('Imposta inizio e fine','warn');return}
+  if(t2m(e)<=t2m(s)){toast("La fine deve essere dopo l'inizio",'warn');return}
+  const ov=document.querySelector('.overlay[style*="60"]');if(ov)ov.remove();
+  const {error}=await supa.from('shift_items').update({start_min:t2m(s),end_min:t2m(e),updated_at:new Date().toISOString()}).eq('id',id);
+  if(error){toast(error.message,'err');return}
+  await shiftsLoad();toast('Fascia aggiornata','ok');
+}
+async function clearDay(wd){
+  const m=me();if(!m)return;
+  if(!confirm(`Rimuovere tutte le fasce del ${WD_NAMES[wd].toLowerCase()}?`))return;
+  const {error}=await supa.from('shift_items').delete().eq('member_id',m.id).eq('kind','rule').eq('weekday',wd);
+  if(error){toast(error.message,'err');return}
+  await shiftsLoad();toast(WD_NAMES[wd]+' svuotato','ok');
+}
+async function clearWeek(){
+  const m=me();if(!m)return;
+  if(!confirm('Rimuovere TUTTA la disponibilità settimanale ricorrente?\n\nLe eccezioni sui singoli giorni restano.'))return;
+  const {error}=await supa.from('shift_items').delete().eq('member_id',m.id).eq('kind','rule');
+  if(error){toast(error.message,'err');return}
+  await shiftsLoad();toast('Disponibilità settimanale azzerata','warn');
+}
+async function disableGcal(){
+  const m=me();if(!m)return;
+  if(!confirm('Scollegare il Google Calendar?\n\nGli impegni importati verranno rimossi dalla vista turni.'))return;
+  await supa.from('shift_items').delete().eq('member_id',m.id).eq('kind','gcal');
+  await supa.from('shift_members').update({gcal:false,updated_at:new Date().toISOString()}).eq('id',m.id);
+  await shiftsLoad();toast('Calendario scollegato','ok');
+}
+function addRuleUI(wd){
+  const s=document.getElementById('rb-s-'+wd).value,e=document.getElementById('rb-e-'+wd).value;
+  if(!s||!e){toast('Imposta inizio e fine','warn');return}
+  if(t2m(e)<=t2m(s)){toast("La fine deve essere dopo l'inizio",'warn');return}
+  addItem('rule',{weekday:wd,start_min:t2m(s),end_min:t2m(e)});
+}
+async function presetStandard(){
+  if(!ensureMe())return;
+  const rows=[];for(let wd=1;wd<=5;wd++){rows.push(siItem('rule',{weekday:wd,start_min:540,end_min:780}));rows.push(siItem('rule',{weekday:wd,start_min:900,end_min:1140}));}
+  const {error}=await supa.from('shift_items').insert(rows);
+  if(error){toast(error.message,'err');return}
+  await shiftsLoad();toast('Disponibilità standard impostata (Lun–Ven 9–13, 15–19)','ok');
+}
+function offForDay(memberId,iso,start,end){
+  if(memberId!==state.shifts.meId){toast('Puoi modificare solo la tua disponibilità','warn');return}
+  if(!confirm(`Rimuovere la fascia ${m2t(start)}–${m2t(end)} solo per ${fmtDLong(parseD(iso))}?`))return;
+  addItem('off',{date:iso,start_min:start,end_min:end});
+}
+function addExceptionUI(){
+  const date=document.getElementById('ex-date').value;
+  const type=document.getElementById('ex-type').value;
+  const whole=document.getElementById('ex-whole').checked;
+  if(!date){toast('Scegli una data','warn');return}
+  if(type==='off'&&whole){addItem('off',{date});return}
+  const s=document.getElementById('ex-s').value,e=document.getElementById('ex-e').value;
+  if(!s||!e){toast("Imposta l'orario (o spunta tutto il giorno)",'warn');return}
+  if(t2m(e)<=t2m(s)){toast("La fine deve essere dopo l'inizio",'warn');return}
+  addItem(type,{date,start_min:t2m(s),end_min:t2m(e)});
+}
+
+// elenco di TUTTI i calendari collegati all'account
+async function listCalendars(){
+  const r=await gfetch('https://www.googleapis.com/calendar/v3/users/me/calendarList?minAccessRole=freeBusyReader&maxResults=250');
+  return (r.items||[]).filter(c=>!c.deleted);
+}
+function chosenCals(){return load('flo_cals',null)}   // null = tutti quelli attivi su Google
+// spezza un impegno in segmenti giornalieri (gestisce eventi oltre la mezzanotte)
+function busyToSegments(startISO,endISO){
+  const s=new Date(startISO), e=new Date(endISO);
+  const segs=[];
+  let cur=new Date(s.getFullYear(),s.getMonth(),s.getDate());
+  let guard=0;
+  while(cur<=e && guard++<40){
+    const dayStart=new Date(cur), dayEnd=new Date(cur); dayEnd.setDate(dayEnd.getDate()+1);
+    const a=Math.max(s.getTime(),dayStart.getTime()), b=Math.min(e.getTime(),dayEnd.getTime());
+    if(b>a){
+      const sm=Math.round((a-dayStart.getTime())/60000);
+      const em=Math.round((b-dayStart.getTime())/60000);
+      if(em>sm) segs.push({date:isoD(dayStart),start_min:sm,end_min:Math.min(em,24*60)});
+    }
+    cur.setDate(cur.getDate()+1);
+  }
+  return segs;
+}
+async function syncGcal(opts={}){
+  if(!state.shifts.meId){if(!opts.repair)toast('Crea prima il profilo','warn');return}
+  if(!googleReady()){if(!opts.repair){toast('Connetti Google per il calendario','warn');connectGoogle();}return}
+  try{
+    // 1) quali calendari leggere
+    const all=await listCalendars();
+    const sel=chosenCals();
+    const use=all.filter(c=> sel? sel.includes(c.id) : c.selected!==false);
+    if(!use.length){toast('Nessun calendario selezionato','warn');return}
+    // 2) FreeBusy: legge TUTTI i calendari scelti e torna solo le fasce occupate (nessun dettaglio)
+    const tMin=startOfWeek(addDays(today(),-7)), tMax=addDays(startOfWeek(today()),42);
+    const busyAll=[];
+    for(let i=0;i<use.length;i+=45){                       // il limite è 50 calendari per richiesta
+      const chunk=use.slice(i,i+45);
+      const r=await gfetch('https://www.googleapis.com/calendar/v3/freeBusy',{method:'POST',body:JSON.stringify({
+        timeMin:tMin.toISOString(), timeMax:tMax.toISOString(),
+        items:chunk.map(c=>({id:c.id}))
+      })});
+      Object.values(r.calendars||{}).forEach(c=>(c.busy||[]).forEach(b=>busyAll.push(b)));
+    }
+    // 3) in segmenti giornalieri, poi fondo le sovrapposizioni tra calendari diversi
+    const byDay={};
+    busyAll.forEach(b=>busyToSegments(b.start,b.end).forEach(sg=>{(byDay[sg.date]=byDay[sg.date]||[]).push({start:sg.start_min,end:sg.end_min})}));
+    const rows=[];
+    Object.keys(byDay).forEach(dt=>mergeBlocks(byDay[dt]).forEach(b=>rows.push(siItem('gcal',{date:dt,start_min:b.start,end_min:b.end,title:null}))));
+    // 4) riscrivo
+    await supa.from('shift_items').delete().eq('member_id',state.shifts.meId).eq('kind','gcal');
+    if(rows.length){const {error}=await supa.from('shift_items').insert(rows);if(error)throw error;}
+    await shiftsLoad();
+    toast(`${rows.length} impegni da ${use.length} calendar${use.length>1?'i':'io'}`,'ok');
+  }catch(e){
+    if(/insufficient authentication scopes|403|Insufficient Permission/i.test(e.message||'')){
+      toast('Permesso calendario mancante: riautorizza Google','err');
+      if(confirm('Il permesso per il Google Calendar non è ancora stato concesso.\n\n1) Su Google Cloud aggiungi lo scope calendar.readonly (Auth Platform → Accesso ai dati)\n2) Riautorizza qui concedendo TUTTI i permessi\n\nRiautorizzare ora?')) reauthGoogle();
+    } else toast('Sync calendario: '+e.message,'err');
+  }
+}
+// scelta dei calendari da includere
+async function pickCalendars(){
+  if(!googleReady()){toast('Connetti Google','warn');return}
+  let all;
+  try{ all=await listCalendars(); }catch(e){toast('Lettura calendari: '+e.message,'err');return}
+  const sel=chosenCals();
+  const isOn=c=> sel? sel.includes(c.id) : c.selected!==false;
+  const ov=document.createElement('div');ov.className='overlay';ov.style.zIndex='60';ov.onclick=e=>{if(e.target===ov)ov.remove()};
+  ov.innerHTML=`<div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-h"><h3>Calendari da includere</h3><div class="x" onclick="this.closest('.overlay').remove()">✕</div></div>
+    <div class="modal-b">
+      <div class="helptip">Vengono lette solo le <b>fasce occupate</b>, mai i dettagli degli eventi. Sono inclusi anche i calendari di cui non vedi il contenuto.</div>
+      <div style="display:flex;flex-direction:column;gap:4px;max-height:340px;overflow:auto">
+        ${all.map(c=>`<label class="cal-pick">
+          <input type="checkbox" data-cal="${escAttr(c.id)}" ${isOn(c)?'checked':''}>
+          <span class="cal-sw" style="background:${c.backgroundColor||'var(--accent)'}"></span>
+          <span class="cal-nm">${esc(c.summary||c.id)}${c.primary?' <b>(principale)</b>':''}</span>
+          <span class="cal-role">${c.accessRole==='freeBusyReader'?'solo libero/occupato':''}</span>
+        </label>`).join('')}
+      </div>
+    </div>
+    <div class="modal-f" style="justify-content:space-between">
+      <button class="btn sm ghost" onclick="this.closest('.overlay').querySelectorAll('input[data-cal]').forEach(i=>i.checked=true)">Seleziona tutti</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn" onclick="this.closest('.overlay').remove()">Annulla</button>
+        <button class="btn primary" onclick="saveCals(this)">Salva e sincronizza</button>
+      </div>
+    </div>
+  </div>`;
+  document.body.appendChild(ov);
+}
+function saveCals(btn){
+  const ov=btn.closest('.overlay');
+  const ids=[...ov.querySelectorAll('input[data-cal]')].filter(i=>i.checked).map(i=>i.dataset.cal);
+  if(!ids.length){toast('Seleziona almeno un calendario','warn');return}
+  save('flo_cals',ids);
+  ov.remove();
+  syncGcal();
+}
+
+const SHIFTS_SQL=`-- Tabelle del modulo Turni (esegui una volta)
+create table if not exists shift_members (
+  id text primary key,
+  name text,
+  color text,
+  email text,
+  gcal boolean default false,
+  updated_at timestamptz default now()
+);
+create table if not exists shift_items (
+  id text primary key,
+  member_id text,
+  kind text,           -- 'rule' | 'off' | 'extra' | 'gcal'
+  weekday int,         -- 1=Lun .. 7=Dom (regole ricorrenti)
+  date date,           -- eccezioni ed eventi calendario
+  start_min int,
+  end_min int,
+  title text,
+  updated_at timestamptz default now()
+);
+alter table shift_members enable row level security;
+alter table shift_items enable row level security;
+create policy "sm all" on shift_members for all using (true) with check (true);
+create policy "si all" on shift_items for all using (true) with check (true);
+alter publication supabase_realtime add table shift_members;
+alter publication supabase_realtime add table shift_items;`;
+
+function showShiftsSQL(){
+  const ov=document.createElement('div');ov.className='overlay';ov.style.zIndex='60';ov.onclick=e=>{if(e.target===ov)ov.remove()};
+  ov.innerHTML=`<div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-h"><h3>SQL — tabelle turni</h3><div class="x" onclick="this.closest('.overlay').remove()">✕</div></div>
+    <div class="modal-b">
+      <div class="helptip">Supabase → SQL Editor → New query → incolla ed esegui.</div>
+      <textarea class="body" style="min-height:280px;font-family:'JetBrains Mono',monospace;font-size:12px" readonly>${esc(SHIFTS_SQL)}</textarea>
+      <button class="btn sm" onclick="copyShiftsSQL()">Copia SQL</button>
+    </div>
+    <div class="modal-f"><button class="btn primary" onclick="this.closest('.overlay').remove();shiftsLoad()">Ho eseguito l'SQL</button></div>
+  </div>`;
+  document.body.appendChild(ov);
+}
+function copyShiftsSQL(){navigator.clipboard.writeText(SHIFTS_SQL).then(()=>toast('SQL copiato','ok')).catch(()=>toast('Copia non riuscita','err'))}
+
+/* ---- render turni ---- */
+function renderShifts(){
+  document.getElementById('viewTitle').textContent=state.view==='miadispo'?'La mia disponibilità':(state.view==='giorno'?'Dettaglio giorno':'Turni team');
+  const ta=document.getElementById('topActions');
+  ta.innerHTML=`<button class="btn sm ghost" onclick="refreshShifts()" title="Aggiorna"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6 M1 20v-6h6 M3.51 9a9 9 0 0 1 14.85-3.36L23 10 M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>Aggiorna</button>`;
+  const C=document.getElementById('content');
+  if(!supaReady()){C.innerHTML=`<div class="empty"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z M12 8v4 M12 16h.01"/></svg><h4>Database non raggiungibile</h4><p>${APP_DEFAULTS.supabaseUrl?'Connessione al database in corso… se il problema resta, avvisa Giuseppe.':'La suite non è ancora configurata. Vai in Impostazioni e collega Supabase.'}</p><button class="btn primary" onclick="openSettings()">Apri impostazioni</button></div>`;return;}
+  if(state.shifts.needsSetup){C.innerHTML=`<div class="empty"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 4h18v18H3z M16 2v4 M8 2v4 M3 10h18"/></svg>
+    <h4>Configura le tabelle dei turni</h4>
+    <p>Manca lo schema sul database. Esegui una volta l'SQL nel <b>SQL Editor</b> di Supabase, poi ricontrolla.</p>
+    <button class="btn primary" onclick="showShiftsSQL()">Mostra SQL turni</button>
+    <div style="margin-top:10px"><button class="btn sm ghost" onclick="shiftsLoad()">Ho eseguito l'SQL — ricontrolla</button></div></div>`;return;}
+  if(!googleReady()){C.innerHTML=viewLogin();return;}
+  C.innerHTML = state.view==='miadispo'?viewMiaDispo():(state.view==='giorno'?viewGiorno():viewGriglia());
+}
+function viewLogin(){
+  return `<div class="empty" style="padding-top:60px">
+    <div style="width:54px;height:54px;border-radius:14px;margin:0 auto 18px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center">
+      <svg style="width:28px;height:28px" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M3 4h18v18H3z M16 2v4 M8 2v4 M3 10h18"/></svg>
+    </div>
+    <h4 style="font-size:17px">Accedi per vedere i turni</h4>
+    <p>Usa il tuo account Google FlowLine. I tuoi turni ti seguono su qualsiasi dispositivo: nessuna password, nessuna configurazione.</p>
+    <button class="btn primary" onclick="connectGoogle(true)">
+      <svg class="ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 11v2.6h6.2c-.2 1.6-1.8 4.7-6.2 4.7-3.7 0-6.8-3.1-6.8-6.9S8.3 4.5 12 4.5c2.1 0 3.6.9 4.4 1.7l3-2.9C17.5 1.5 15 .5 12 .5 5.7.5.6 5.6.6 12S5.7 23.5 12 23.5c6.6 0 11-4.6 11-11.2 0-.8-.1-1.3-.2-1.9H12z"/></svg>
+      Accedi con Google</button>
+  </div>`;
+}
+
+/* ---- vista: griglia turni team ---- */
+function viewGriglia(){
+  const members=state.shifts.members;
+  if(!members.length){
+    return `<div class="empty"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2 M9 7a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/></svg>
+      <h4>Nessuna disponibilità ancora</h4><p>Crea il tuo profilo e imposta le tue fasce: compariranno qui per tutto il team.</p>
+      <button class="btn primary" onclick="go('miadispo')">Imposta la mia disponibilità</button></div>`;
+  }
+  const t=today();const ws=startOfWeek(addDays(t,state.shifts.week*7));
+  const days=[];for(let i=0;i<7;i++)days.push(addDays(ws,i));
+  const wkLabel=`${ws.getDate()} ${ws.toLocaleDateString('it-IT',{month:'short'})} – ${addDays(ws,6).getDate()} ${addDays(ws,6).toLocaleDateString('it-IT',{month:'short'})}`;
+  const legend=members.map(m=>`<span class="cal-leg"><span class="sh-dot" style="background:${m.color}"></span>${esc(m.name)}${m.id===state.shifts.meId?' (tu)':''}</span>`).join('');
+  const grid=days.map(d=>{
+    const iso=isoD(d);const isToday=sameDay(d,t);const wknd=(d.getDay()===0||d.getDay()===6);
+    const rows=members.map(m=>{
+      const {avail,free,occupied}=daySplit(m.id,iso);
+      if(!avail.length)return '';
+      const mine=m.id===state.shifts.meId;
+      return `<div class="sh-m">
+        <span class="sh-dot" style="background:${m.color}"></span>
+        <div class="sh-m-body">
+          <div class="sh-name">${esc(m.name)}</div>
+          ${free.length?`<div class="sh-blocks">${free.map(b=>`<span class="sh-chip"${mine?` onclick="offForDay('${m.id}','${iso}',${b.start},${b.end})" title="Rimuovi solo per questo giorno"`:''}>${m2t(b.start)}–${m2t(b.end)}</span>`).join('')}</div>`:'<div class="sh-nofree">nessuna fascia libera</div>'}
+          ${occupied.map(b=>`<div class="sh-busy">🔒 ${m2t(b.start)}–${m2t(b.end)} · non disponibile</div>`).join('')}
+        </div></div>`;
+    }).join('');
+    return `<div class="cal-cell${isToday?' today':''}${wknd?' wknd':''}">
+      <div class="cal-cell-h zoom" onclick="openDay('${iso}')" title="Apri il dettaglio del giorno">
+        <span class="cal-dname">${d.toLocaleDateString('it-IT',{weekday:'short'})}</span>
+        <span class="cal-dnum">${d.getDate()}</span>
+        <svg class="cal-zoom" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3 M11 8v6 M8 11h6"/></svg>
+      </div>
+      <div class="cal-items">${rows||'<div class="cal-empty">—</div>'}</div>
+    </div>`;
+  }).join('');
+  return `
+  <div class="cal-bar">
+    <button class="btn sm ghost" onclick="state.shifts.week--;render()"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <div class="cal-title"><b>${wkLabel}</b><span class="email-cell">${members.length} collaboratori${state.shifts.week===0?' · settimana corrente':''}</span></div>
+    <button class="btn sm ghost" onclick="state.shifts.week++;render()"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+    ${state.shifts.week!==0?`<button class="btn sm" onclick="state.shifts.week=0;render()">Oggi</button>`:''}
+    <button class="btn sm primary" onclick="go('miadispo')">La mia disponibilità</button>
+  </div>
+  <div class="cal-grid">${grid}</div>
+  <div class="cal-legend">${legend}<span class="cal-leg" style="margin-left:auto;color:var(--faint)">🔒 = impegno da Google Calendar</span></div>`;
+}
+
+/* ---- vista: giorno ingrandito (timeline oraria) ---- */
+function openDay(iso){state.shifts.day=iso;state.view='giorno';render()}
+function closeDay(){state.shifts.day=null;state.view='griglia';render()}
+function viewGiorno(){
+  const iso=state.shifts.day;const d=parseD(iso);const t=today();
+  const members=state.shifts.members;
+  // finestra oraria adattiva sui dati del giorno
+  let lo=24*60, hi=0;
+  members.forEach(m=>{
+    const s=daySplit(m.id,iso);
+    s.avail.forEach(b=>{lo=Math.min(lo,b.start);hi=Math.max(hi,b.end)});
+  });
+  if(lo>hi){lo=8*60;hi=20*60;}
+  lo=Math.max(0,Math.floor(lo/60)*60-60); hi=Math.min(24*60,Math.ceil(hi/60)*60+60);
+  const span=hi-lo;
+  const PX=52;                       // altezza di un'ora
+  const H=span/60*PX;
+  const y=v=>(v-lo)/60*PX;
+  const hours=[];for(let h=Math.ceil(lo/60);h<=Math.floor(hi/60);h++)hours.push(h);
+  const now=new Date();const nowMin=now.getHours()*60+now.getMinutes();
+  const showNow=sameDay(d,t)&&nowMin>=lo&&nowMin<=hi;
+
+  const cols=members.map(m=>{
+    const {avail,free,occupied}=daySplit(m.id,iso);
+    const mine=m.id===state.shifts.meId;
+    const tot=free.reduce((s,b)=>s+(b.end-b.start),0);
+    const busyTot=occupied.reduce((s,b)=>s+(b.end-b.start),0);
+    const body = avail.length ? `
+      ${free.map(b=>{const hgt=(b.end-b.start)/60*PX;
+        return `<div class="gc-ev free${mine?' mine':''}" style="top:${y(b.start)}px;height:${hgt}px;--c:${m.color}"
+          ${mine?`onclick="offForDay('${m.id}','${iso}',${b.start},${b.end})" title="Clicca per rimuovere questa fascia solo oggi"`:''}>
+          <span class="gc-ev-t">${m2t(b.start)} – ${m2t(b.end)}</span>
+          ${hgt>34?'<span class="gc-ev-s">disponibile</span>':''}
+        </div>`}).join('')}
+      ${occupied.map(b=>{const hgt=(b.end-b.start)/60*PX;
+        return `<div class="gc-ev busy" style="top:${y(b.start)}px;height:${hgt}px" title="Non disponibile ${escAttr(m2t(b.start)+'–'+m2t(b.end))}">
+          <span class="gc-ev-t">${m2t(b.start)} – ${m2t(b.end)}</span>
+          ${hgt>34?'<span class="gc-ev-s">non disponibile</span>':'<span class="gc-lock">🔒</span>'}
+        </div>`}).join('')}`
+      : `<div class="gc-noavail" style="top:0;height:${H}px"><span>non disponibile</span></div>`;
+    return `<div class="gc-col">
+      <div class="gc-col-h${mine?' mine':''}">
+        <span class="sh-dot" style="background:${m.color}"></span>
+        <div class="gc-col-n">${esc(m.name)}${mine?' <span class="tl-you">tu</span>':''}</div>
+        <div class="gc-col-s">${tot?Math.floor(tot/60)+'h'+(tot%60?String(tot%60).padStart(2,'0'):'')+' libere':'non disponibile'}${busyTot?` · <span class="gc-busy-n">${Math.floor(busyTot/60)?Math.floor(busyTot/60)+'h':''}${busyTot%60?String(busyTot%60)+'m':''} occupate</span>`:''}</div>
+      </div>
+      <div class="gc-track" style="height:${H}px">
+        ${hours.map(h=>`<div class="gc-line" style="top:${y(h*60)}px"></div>`).join('')}
+        ${body}
+        ${showNow?`<div class="gc-now" style="top:${y(nowMin)}px"></div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+
+  const dispon=members.filter(m=>daySplit(m.id,iso).free.length).length;
+  return `
+  <div class="cal-bar">
+    <button class="btn sm ghost" onclick="openDay('${isoD(addDays(d,-1))}')"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <div class="cal-title"><b style="font-size:17px;text-transform:capitalize">${fmtDLong(d)}</b><span class="email-cell">${sameDay(d,t)?'oggi · ':''}${dispon} disponibili su ${members.length}</span></div>
+    <button class="btn sm ghost" onclick="openDay('${isoD(addDays(d,1))}')"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+    ${!sameDay(d,t)?`<button class="btn sm" onclick="openDay('${isoD(t)}')">Oggi</button>`:''}
+    <button class="btn sm" onclick="closeDay()">← Settimana</button>
+  </div>
+  <div class="card gc-card">
+    <div class="gc-grid" style="--gutter:52px">
+      <div class="gc-gutter">
+        <div class="gc-gutter-h"></div>
+        <div class="gc-gutter-b" style="height:${H}px">
+          ${hours.map(h=>`<div class="gc-hl" style="top:${y(h*60)}px">${String(h).padStart(2,'0')}:00</div>`).join('')}
+          ${showNow?`<div class="gc-now-lbl" style="top:${y(nowMin)}px">${m2t(nowMin)}</div>`:''}
+        </div>
+      </div>
+      <div class="gc-cols">${cols||'<div class="cal-empty" style="padding:20px">Nessun collaboratore</div>'}</div>
+    </div>
+  </div>
+  <div class="cal-legend">
+    <span class="cal-leg"><span class="lg-free"></span>Disponibile</span>
+    <span class="cal-leg"><span class="lg-busy"></span>Occupato da un impegno in calendario</span>
+    <span class="cal-leg"><span class="lg-none"></span>Fuori disponibilità</span>
+    <span class="cal-leg" style="margin-left:auto;color:var(--faint)">Clicca una tua fascia verde per rimuoverla solo oggi</span>
+  </div>`;
+}
+
+/* ---- vista: la mia disponibilità ---- */
+function viewMiaDispo(){
+  const m=me();
+  if(!m){
+    const guess=(state.google.email||'').split('@')[0].replace(/[._-]/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+    return `<div class="card" style="max-width:520px;padding:20px"><div class="section-h" style="margin-top:0"><h3>Benvenuto — crea il tuo profilo</h3><div class="line"></div></div>
+      <div class="helptip" style="margin-bottom:12px">Accesso effettuato come <b>${esc(state.google.email||'')}</b>. Il profilo resta legato a questo account: lo ritrovi da qualsiasi dispositivo.</div>
+      <div class="form-row"><label>Nome visualizzato</label><input id="me-name" value="${escAttr(guess)}" placeholder="Es. Giuseppe"></div>
+      <div class="form-row"><label>Colore</label><input id="me-color" type="color" value="${SHIFT_COLORS[state.shifts.members.length%SHIFT_COLORS.length]}" style="width:60px;height:38px;padding:2px"></div>
+      <label class="toggle" id="me-gcal" onclick="this.classList.toggle('on')"><span class="sw"></span><span>Sincronizza il mio Google Calendar (facoltativo)</span></label>
+      <div style="margin-top:14px"><button class="btn primary" onclick="saveMe()">Crea profilo</button></div></div>`;
+  }
+  const rulesByDay=wd=>state.shifts.rules.filter(r=>r.member_id===m.id&&r.weekday===wd).sort((a,b)=>a.start_min-b.start_min);
+  const t=today();
+  const myExc=state.shifts.exceptions.filter(e=>e.member_id===m.id&&parseD(e.date)>=addDays(t,-1)).sort((a,b)=>parseD(a.date)-parseD(b.date));
+  const myGcal=state.shifts.gcal.filter(g=>g.member_id===m.id).length;
+  const weekEditor=[1,2,3,4,5,6,7].map(wd=>{
+    const rs=rulesByDay(wd);
+    return `<div class="mp-day">
+      <div class="mp-dname">${WD_NAMES[wd]}${rs.length?`<button class="mp-clear" onclick="clearDay(${wd})" title="Svuota il giorno">svuota</button>`:''}</div>
+      <div class="mp-blocks">
+        ${rs.length?rs.map(r=>`<span class="sh-chip edit"><button class="chip-t" onclick="editRule('${r.id}')" title="Modifica orario">${m2t(r.start_min)}–${m2t(r.end_min)}</button><button onclick="delItem('${r.id}')" title="Rimuovi">✕</button></span>`).join(''):'<span class="mp-none">nessuna fascia</span>'}
+      </div>
+      <div class="mp-add">
+        <input type="time" id="rb-s-${wd}" value="09:00"><span>–</span><input type="time" id="rb-e-${wd}" value="13:00">
+        <button class="btn sm" onclick="addRuleUI(${wd})">+ Aggiungi</button>
+      </div>
+    </div>`;
+  }).join('');
+  return `
+  <div class="card" style="padding:16px;margin-bottom:16px">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <span class="sh-dot" style="width:14px;height:14px;background:${m.color}"></span>
+      <b style="font-size:15px">${esc(m.name)}</b>
+      <span class="email-cell">${esc(m.email||'')}</span>
+      <div style="flex:1"></div>
+      <button class="btn sm ghost" onclick="editProfile()">Modifica profilo</button>
+      <button class="btn sm ghost danger" onclick="deleteProfile('${m.id}')">Elimina profilo</button>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px">
+      <span class="chip ${m.gcal?'reply':'da'}"><span class="d"></span>${m.gcal?'Google Calendar attivo':'Google Calendar non collegato'}</span>
+      ${m.gcal?`<span class="email-cell">${myGcal} impegni importati</span><button class="btn sm" onclick="syncGcal()">Sincronizza ora</button><button class="btn sm ghost" onclick="pickCalendars()">Scegli calendari</button><button class="btn sm ghost danger" onclick="disableGcal()">Scollega</button>`:`<button class="btn sm" onclick="enableGcal()">Collega il mio calendario</button>`}
+    </div>
+    ${m.gcal?`<div class="helptip" style="margin-top:8px">Vengono letti <b>tutti i calendari</b> del tuo account (anche quelli condivisi da altri) tramite libero/occupato: agli altri compaiono <b>solo gli orari</b> in cui non sei disponibile, mai il nome degli eventi.</div>`:''}
+  </div>
+
+  <div class="section-h" style="margin-top:0"><h3>Disponibilità settimanale ricorrente</h3><div class="line"></div>
+    <button class="btn sm" onclick="presetStandard()">Preset Lun–Ven 9–13, 15–19</button>
+    <button class="btn sm ghost danger" onclick="clearWeek()">Svuota tutto</button></div>
+  <div class="card" style="padding:6px 14px">${weekEditor}</div>
+
+  <div class="section-h"><h3>Eccezioni (giorni specifici)</h3><div class="line"></div></div>
+  <div class="card" style="padding:14px">
+    <div class="helptip" style="margin-bottom:10px">Togli o aggiungi disponibilità per un singolo giorno, senza toccare la regola settimanale. Puoi anche cliccare una tua fascia in "Turni team" per rimuoverla solo quel giorno.</div>
+    <div class="ex-add">
+      <input type="date" id="ex-date" value="${isoD(t)}">
+      <select id="ex-type"><option value="off">Rimuovi disponibilità</option><option value="extra">Aggiungi disponibilità</option></select>
+      <label class="ex-whole"><input type="checkbox" id="ex-whole"> tutto il giorno</label>
+      <input type="time" id="ex-s" value="09:00"><span>–</span><input type="time" id="ex-e" value="13:00">
+      <button class="btn sm primary" onclick="addExceptionUI()">Applica</button>
+    </div>
+    ${myExc.length?`<div style="margin-top:12px;display:flex;flex-direction:column;gap:6px">
+      ${myExc.map(e=>`<div class="ex-row">
+        <span class="chip ${e.kind==='off'?'stop':'reply'}"><span class="d"></span>${e.kind==='off'?'Rimossa':'Aggiunta'}</span>
+        <span>${fmtDLong(parseD(e.date))}</span>
+        <span class="email-cell">${e.start_min==null?'tutto il giorno':m2t(e.start_min)+'–'+m2t(e.end_min)}</span>
+        <div style="flex:1"></div>
+        <button class="btn sm ghost danger" onclick="delItem('${e.id}')">Annulla</button>
+      </div>`).join('')}
+    </div>`:'<div class="email-cell" style="margin-top:8px">Nessuna eccezione in programma.</div>'}
+  </div>
+
+  <div class="section-h"><h3>Profili del team</h3><span class="count">${state.shifts.members.length}</span><div class="line"></div></div>
+  <div class="card" style="padding:14px">
+    <div class="helptip" style="margin-bottom:10px">Elenco dei profili sul database. Elimina eventuali doppioni o profili non più in uso: verranno rimosse anche le loro disponibilità.</div>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      ${state.shifts.members.map(x=>{
+        const mine=x.id===m.id;
+        const nRules=state.shifts.rules.filter(r=>r.member_id===x.id).length;
+        return `<div class="ex-row">
+          <span class="sh-dot" style="background:${x.color}"></span>
+          <b>${esc(x.name)}</b>
+          ${mine?'<span class="tl-you">tu</span>':''}
+          <span class="email-cell">${esc(x.email||'— nessuna email —')}</span>
+          <span class="email-cell">${nRules} fasce</span>
+          <div style="flex:1"></div>
+          ${mine?`<button class="btn sm ghost" onclick="editProfile()">Modifica</button>`:''}
+          <button class="btn sm ghost danger" onclick="deleteProfile('${x.id}')">Elimina</button>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>`;
+}
+function editProfile(){
+  const m=me();if(!m)return;
+  const ov=document.createElement('div');ov.className='overlay';ov.style.zIndex='60';ov.onclick=e=>{if(e.target===ov)ov.remove()};
+  ov.innerHTML=`<div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-h"><h3>Modifica profilo</h3><div class="x" onclick="this.closest('.overlay').remove()">✕</div></div>
+    <div class="modal-b">
+      <div class="form-row"><label>Nome</label><input id="me-name" value="${escAttr(m.name)}"></div>
+      <div class="form-row"><label>Colore</label><input id="me-color" type="color" value="${m.color}" style="width:60px;height:38px;padding:2px"></div>
+      <label class="toggle ${m.gcal?'on':''}" id="me-gcal" onclick="this.classList.toggle('on')"><span class="sw"></span><span>Sincronizza il mio Google Calendar</span></label>
+    </div>
+    <div class="modal-f"><button class="btn" onclick="this.closest('.overlay').remove()">Annulla</button><button class="btn primary" onclick="saveMeFromModal(this)">Salva</button></div>
+  </div>`;
+  document.body.appendChild(ov);
+}
+// legge i campi MENTRE la finestra è ancora aperta, poi chiude
+async function saveMeFromModal(btn){
+  const ov=btn.closest('.overlay');
+  const ok=await saveMe();
+  if(ok!==false && ov) ov.remove();
+}
+function enableGcal(){
+  if(!googleReady()){toast('Prima connetti Google (Impostazioni)','warn');connectGoogle();return}
+  const m=me();if(!m)return;
+  supa.from('shift_members').update({gcal:true,updated_at:new Date().toISOString()}).eq('id',m.id).then(()=>{shiftsLoad().then(()=>syncGcal())});
+}
+
+/* ---------- DASHBOARD ---------- */
+function viewDashboard(){
+  if(!state.contacts.length) return emptyState();
+  const t=today();
+  const tot=state.contacts.length;
+  const due=state.contacts.filter(dueToday).length;
+  const late=state.contacts.filter(isLate).length;
+  const waiting=state.contacts.filter(c=>!c.haRisposto && (c.step||0)>0 && (c.step||0)<state.cadence.length && !isDue(c)).length;
+  const replied=state.contacts.filter(c=>c.haRisposto).length;
+  const concluded=state.contacts.filter(c=>!c.haRisposto && (c.step||0)>=state.cadence.length).length;
+
+  // weekly outlook
+  const week=[];for(let i=0;i<7;i++)week.push(addDays(t,i));
+  const wcount=week.map(d=>state.contacts.filter(c=>{const na=nextAction(c);return na&&sameDay(na.dueDate,d)}).length);
+  const maxW=Math.max(1,...wcount);
+
+  return `
+  <div class="grid stats">
+    <div class="card stat today"><div class="accent-bar"></div>
+      <div class="k">In coda oggi</div><div class="v">${due}</div>
+      <div class="meta">${late?`<span style="color:var(--late)">${late} in ritardo</span>`:'tutto in pari'}</div></div>
+    <div class="card stat"><div class="accent-bar"></div>
+      <div class="k">Contatti totali</div><div class="v">${tot}</div>
+      <div class="meta">${concluded} sequenze concluse</div></div>
+    <div class="card stat wait"><div class="accent-bar"></div>
+      <div class="k">In attesa di risposta</div><div class="v">${waiting}</div>
+      <div class="meta">follow-up programmati</div></div>
+    <div class="card stat reply"><div class="accent-bar"></div>
+      <div class="k">Risposte ricevute</div><div class="v">${replied}</div>
+      <div class="meta">${tot?Math.round(replied/tot*100):0}% tasso risposta</div></div>
+  </div>
+
+  <div class="section-h"><h3>Prossimi 7 giorni</h3><div class="line"></div></div>
+  <div class="card" style="padding:18px">
+    <div style="display:flex;gap:10px;align-items:flex-end;height:120px">
+      ${week.map((d,i)=>{
+        const h=wcount[i]/maxW*100;const isToday=sameDay(d,t);
+        return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;height:100%;justify-content:flex-end">
+          <div style="font-size:12px;font-weight:700;color:${wcount[i]?'var(--text)':'var(--faint)'}">${wcount[i]||''}</div>
+          <div style="width:100%;max-width:42px;height:${Math.max(4,h)}%;border-radius:6px 6px 0 0;background:${isToday?'var(--accent)':wcount[i]?'var(--accent-soft)':'var(--border)'};${isToday?'':'border:1px solid var(--border)'}" title="${wcount[i]} invii"></div>
+          <div style="font-size:11px;color:${isToday?'var(--accent)':'var(--muted)'};font-weight:${isToday?700:500};text-transform:capitalize">${d.toLocaleDateString('it-IT',{weekday:'short'})}<br><span style="font-size:10px;color:var(--faint)">${d.getDate()}</span></div>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>
+
+  ${due?`<div class="section-h"><h3>Da inviare oggi</h3><span class="count">${due} email</span><div class="line"></div>
+    <button class="btn sm primary" onclick="go('coda')">Vai alla coda →</button></div>
+  <div class="card"><div class="table-wrap" style="border:none">
+    <table><tbody>
+    ${state.contacts.filter(dueToday).slice(0,6).map(c=>{const na=nextAction(c);const st=statusOf(c);
+      return `<tr onclick="go('coda')" style="cursor:pointer">
+        <td class="az">${esc(c.azienda)}</td>
+        <td class="email-cell">${esc(c.email)}</td>
+        <td><span class="step-pill">${na?esc(na.label):''}</span></td>
+        <td>${chip(st)}</td></tr>`}).join('')}
+    </tbody></table></div></div>`:''}
+  `;
+}
+
+/* ---------- PIANIFICAZIONE ---------- */
+let _planSel=new Set();
+function viewPianifica(){
+  if(!state.contacts.length) return emptyState();
+  const t=today();
+  const cap=state.config.maxAlGiorno||10;
+  const backlog=state.contacts.filter(isUnplanned);
+  const planned=state.contacts.filter(c=>!c.haRisposto && (c.step||0)===0 && c.scheduledDate)
+    .sort((a,b)=>parseD(a.scheduledDate)-parseD(b.scheduledDate));
+  // carico per i prossimi giorni lavorativi (tutti gli step, non solo email 1)
+  const loadByDay={};
+  state.contacts.forEach(c=>{const na=nextAction(c);if(na&&na.dueDate>=t){const k=isoD(na.dueDate);loadByDay[k]=(loadByDay[k]||0)+1;}});
+  const strip=[];let d=new Date(t),guard=0;
+  while(strip.length<10 && guard<40){ if(!(state.config.saltaWeekend&&(d.getDay()===0||d.getDay()===6))) strip.push(new Date(d)); d=addDays(d,1);guard++; }
+  const defStart=isoD(nextWorkday(addDays(t,1)));
+
+  // strip carico
+  const stripHtml=strip.map(dd=>{const k=isoD(dd);const n=loadByDay[k]||0;const over=n>cap;const isToday=sameDay(dd,t);
+    return `<div class="load-cell${isToday?' today':''}" title="${n} invii previsti">
+      <div class="load-d">${dd.toLocaleDateString('it-IT',{weekday:'short'})}<br><b>${dd.getDate()}/${dd.getMonth()+1}</b></div>
+      <div class="load-bar-wrap"><div class="load-bar${over?' over':''}" style="height:${Math.min(100,n/Math.max(cap,1)*100)}%"></div></div>
+      <div class="load-n${over?' over':''}">${n}</div>
+    </div>`;}).join('');
+
+  if(!backlog.length && !planned.length){
+    return `<div class="empty"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 4h18v18H3z M16 2v4 M8 2v4 M3 10h18"/></svg>
+      <h4>Tutto pianificato</h4><p>Non ci sono contatti da pianificare. Importa nuovi lead per assegnare le date di contatto.</p>
+      <button class="btn primary" onclick="pickFile()">Importa contatti</button></div>`;
+  }
+
+  let html=`
+  <div class="section-h" style="margin-top:0"><h3>Carico per giorno</h3><span class="count">limite ${cap}/giorno</span><div class="line"></div></div>
+  <div class="card" style="padding:14px"><div class="load-strip">${stripHtml}</div></div>`;
+
+  if(backlog.length){
+    html+=`
+    <div class="card plan-bar">
+      <div class="plan-bar-row">
+        <div class="plan-sel-info"><b id="plan-count">0</b> selezionati su ${backlog.length}
+          <button class="btn sm ghost" onclick="planSelAll(true)">Tutti</button>
+          <button class="btn sm ghost" onclick="planSelAll(false)">Nessuno</button>
+        </div>
+      </div>
+      <div class="plan-bar-row">
+        <div class="plan-group">
+          <span class="plan-lbl">Assegna a una data</span>
+          <input type="date" id="plan-date" value="${defStart}">
+          <button class="btn sm primary" onclick="planSelected(document.getElementById('plan-date').value)">Pianifica selezionati</button>
+          <button class="btn sm ghost" onclick="planSelected('${isoD(t)}')">Oggi</button>
+          <button class="btn sm ghost" onclick="planSelected('${defStart}')">Domani</button>
+        </div>
+      </div>
+      <div class="plan-bar-row">
+        <div class="plan-group">
+          <span class="plan-lbl">Distribuzione automatica</span>
+          <input type="number" id="plan-perday" value="${cap}" style="width:64px"> al giorno, da
+          <input type="date" id="plan-autostart" value="${defStart}">
+          <button class="btn sm primary" onclick="planAuto(false)">Distribuisci selezionati</button>
+          <button class="btn sm" onclick="planAuto(true)">Distribuisci tutto il backlog</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-h"><h3>Da pianificare</h3><span class="count">${backlog.length}</span><div class="line"></div></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th style="width:34px"><input type="checkbox" id="plan-allcheck" onclick="planSelAll(this.checked)"></th>
+          <th>Azienda</th><th>Email</th><th>Sede</th></tr></thead>
+        <tbody>
+        ${backlog.map(c=>`<tr onclick="if(event.target.tagName!=='INPUT'){const cb=this.querySelector('input');cb.checked=!cb.checked;togglePlanSel('${c.id}',cb.checked)}">
+          <td><input type="checkbox" data-pid="${c.id}" ${_planSel.has(c.id)?'checked':''} onclick="togglePlanSel('${c.id}',this.checked)"></td>
+          <td class="az">${esc(c.azienda)}</td>
+          <td class="email-cell">${esc(c.email)}</td>
+          <td class="email-cell">${esc(c.sede||'—')}</td>
+        </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`;
+  }
+
+  if(planned.length){
+    html+=`<div class="section-h"><h3>Già pianificati (prima email)</h3><span class="count">${planned.length}</span><div class="line"></div></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Azienda</th><th>Email</th><th>Data prevista</th><th></th></tr></thead>
+      <tbody>
+      ${planned.map(c=>{const dd=parseD(c.scheduledDate);const lateP=dd<t;
+        return `<tr>
+          <td class="az">${esc(c.azienda)}</td>
+          <td class="email-cell">${esc(c.email)}</td>
+          <td><span class="chip ${lateP?'late':'wait'}"><span class="d"></span>${fmtDLong(dd)}</span></td>
+          <td style="text-align:right">
+            <input type="date" value="${c.scheduledDate}" onchange="rescheduleOne('${c.id}',this.value)" style="margin-right:6px">
+            <button class="btn sm ghost danger" onclick="unplan('${c.id}')">Rimetti in backlog</button>
+          </td>
+        </tr>`;}).join('')}
+      </tbody></table></div>`;
+  }
+  return html;
+}
+function bindPianifica(){ updatePlanCount(); }
+function updatePlanCount(){const el=document.getElementById('plan-count');if(el)el.textContent=_planSel.size;}
+function togglePlanSel(id,on){ if(on)_planSel.add(id);else _planSel.delete(id); updatePlanCount(); }
+function planSelAll(on){
+  const backlog=state.contacts.filter(isUnplanned);
+  _planSel=new Set(on?backlog.map(c=>c.id):[]);
+  render();
+}
+function planSelected(dateISO){
+  if(!dateISO){toast('Scegli una data','warn');return}
+  if(!_planSel.size){toast('Seleziona prima dei contatti','warn');return}
+  let n=0;
+  state.contacts.forEach(c=>{ if(_planSel.has(c.id) && isUnplanned(c)){ c.scheduledDate=dateISO; n++; } });
+  _planSel.clear();persist();render();
+  toast(`${n} contatti pianificati per ${fmtDLong(parseD(dateISO))}`,'ok');
+}
+function planAuto(all){
+  const perDay=Math.max(1, +(document.getElementById('plan-perday')?.value)||state.config.maxAlGiorno||10);
+  const startISO=document.getElementById('plan-autostart')?.value || isoD(nextWorkday(addDays(today(),1)));
+  let pool=state.contacts.filter(isUnplanned);
+  if(!all) pool=pool.filter(c=>_planSel.has(c.id));
+  if(!pool.length){toast(all?'Backlog vuoto':'Nessun contatto selezionato','warn');return}
+  let day=nextWorkday(parseD(startISO)); let cnt=0, days=0;
+  pool.forEach(c=>{
+    c.scheduledDate=isoD(day); cnt++;
+    if(cnt>=perDay){ cnt=0; days++; day=nextWorkday(addDays(day,1)); }
+  });
+  _planSel.clear();persist();render();
+  toast(`${pool.length} contatti distribuiti (${perDay}/giorno)`,'ok');
+}
+function rescheduleOne(id,dateISO){const c=state.contacts.find(x=>x.id===id);if(c&&dateISO){c.scheduledDate=dateISO;persist();render();toast('Data aggiornata','ok')}}
+function unplan(id){const c=state.contacts.find(x=>x.id===id);if(c){c.scheduledDate=null;persist();render();toast('Rimesso in backlog','warn')}}
+
+/* ---------- CODA INVIO ---------- */
+let _showLate=false;
+function toggleLate(){_showLate=!_showLate;render()}
+function viewCoda(){
+  if(!state.contacts.length) return emptyState();
+  const cap=state.config.maxAlGiorno||999;
+  const todayList=state.contacts.filter(dueToday).sort((a,b)=>(a.step||0)-(b.step||0));
+  const lateList=state.contacts.filter(isLate).sort((a,b)=>nextAction(a).dueDate-nextAction(b).dueDate);
+
+  if(!todayList.length && !lateList.length){
+    const backlog=state.contacts.filter(isUnplanned).length;
+    return `<div class="empty"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/></svg>
+    <h4>Niente da inviare oggi</h4>
+    <p>${backlog?`Hai <b>${backlog} contatti da pianificare</b>: assegna loro una data nella sezione Pianificazione e compariranno qui nel giorno scelto.`:'Nessun contatto previsto per oggi. I prossimi follow-up compariranno qui alla data prevista.'}</p>
+    <button class="btn primary" onclick="go('${backlog?'pianifica':'calendario'}')">${backlog?'Vai alla pianificazione →':'Vedi il calendario'}</button></div>`;
+  }
+
+  let html='';
+  // banner ritardi (fuori dal "solo oggi", ma recuperabili a richiesta)
+  if(lateList.length){
+    html+=`<div class="card" style="padding:12px 16px;margin-bottom:14px;border-left:3px solid var(--late);display:flex;align-items:center;gap:12px">
+      <svg style="width:18px;height:18px;color:var(--late)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4 M12 16h.01"/></svg>
+      <div style="flex:1"><b>${lateList.length} follow-up in ritardo</b><div class="email-cell">erano previsti nei giorni scorsi e non sono ancora partiti.</div></div>
+      <button class="btn sm" onclick="toggleLate()">${_showLate?'Nascondi':'Mostra e recupera'}</button>
+    </div>`;
+    if(_showLate){
+      html+=`<div class="section-h"><h3 style="color:var(--late)">In ritardo</h3><span class="count">${lateList.length}</span><div class="line"></div></div>`;
+      html+=lateList.map((c,i)=>codaCard(c,i,9999)).join('');
+    }
+  }
+
+  // intestazione di oggi
+  const dlabel=today().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
+  html+=`<div class="section-h"><h3>Oggi · ${dlabel}</h3><span class="count">${todayList.length} contatti</span><div class="line"></div>
+    ${todayList.length?`<button class="btn sm" onclick="generateAllDrafts()"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3v4 M3 5h4 M19 17v4 M17 19h4 M12 3l1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2z"/></svg>Genera mancanti</button>
+    <button class="btn sm primary" id="btnSendAll" onclick="sendAllToday()"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13 M22 2l-7 20-4-9-9-4 20-7z"/></svg>Invia tutte${state.config.testMode?' (test)':''}</button>`:''}</div>`;
+  if(!todayList.length){
+    html+=`<div class="email-cell" style="padding:6px 2px 14px">Nessun contatto previsto per oggi.${lateList.length&&!_showLate?' Hai però dei follow-up in ritardo qui sopra.':''}</div>`;
+  } else {
+    if(cap<todayList.length) html+=`<div class="helptip" style="margin-bottom:12px">Hai impostato un limite di <b>${cap} email/giorno</b>: oltre questa soglia i contatti sono marcati "oltre limite", così resti nel ritmo.</div>`;
+    html+=todayList.map((c,idx)=>codaCard(c,idx,cap)).join('');
+  }
+  return html;
+}
+function codaCard(c,idx,cap){
+  const na=nextAction(c);const step=na.stepIndex;const d=getDraft(c,step);const st=statusOf(c);
+  const over=idx>=cap;
+  const subjLen=(d.oggetto||'').length, bodyLen=(d.corpo||'').length;
+  return `<div class="card queue-card" id="card-${c.id}">
+    <div class="qc-head">
+      <div>
+        <div class="az">${esc(c.azienda)}</div>
+        <div class="meta">${esc(c.email)}${c.sede?' · '+esc(c.sede):''}</div>
+      </div>
+      <span class="step-pill">${esc(na.label)}</span>
+      ${chip(st)}
+      ${over?`<span class="chip da" title="Oltre il limite giornaliero">oltre limite</span>`:''}
+      <div class="spacer"></div>
+      <div class="meta">previsto ${fmtD(na.dueDate)}</div>
+    </div>
+    <div class="qc-body">
+      <div>
+        <div class="field-lbl">Oggetto <span class="cnt">${subjLen} car.</span></div>
+        <input class="subj" data-id="${c.id}" data-f="oggetto" value="${escAttr(d.oggetto)}" placeholder="Oggetto email">
+      </div>
+      <div>
+        <div class="field-lbl">Corpo ${step>0?'<span style="color:var(--accent-2);text-transform:none;letter-spacing:0;font-weight:600">· stesso thread</span>':''} <span class="cnt">${bodyLen} car.</span></div>
+        <textarea class="body" data-id="${c.id}" data-f="corpo" placeholder="Testo dell'email...">${esc(d.corpo)}</textarea>
+      </div>
+      <div class="preview-note">
+        <svg style="width:13px;height:13px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z M19 10v2a7 7 0 0 1-14 0v-2 M12 19v3"/></svg>
+        In calce vengono aggiunte automaticamente ${state.config.formatoHtml?'la <b>firma</b> e':''} la riga di disiscrizione${state.config.formatoHtml?' · invio in <b>HTML</b>':' · invio in testo'}.
+      </div>
+    </div>
+    <div class="qc-foot">
+      <button class="btn sm" onclick="regen('${c.id}',${step})" id="regen-${c.id}">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6 M1 20v-6h6 M3.51 9a9 9 0 0 1 14.85-3.36L23 10 M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        Rigenera con AI</button>
+      <button class="btn sm ghost danger" onclick="skipStep('${c.id}')" title="Salta questo step">Salta</button>
+      <div class="spacer"></div>
+      <button class="btn sm primary" onclick="doSend('${c.id}',${step})" id="send-${c.id}">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13 M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+        Invia${state.config.testMode?' (test)':''}</button>
+    </div>
+  </div>`;
+}
+function bindCodaInputs(){
+  document.querySelectorAll('#content [data-f]').forEach(el=>{
+    el.addEventListener('input',()=>{
+      const c=state.contacts.find(x=>x.id===el.dataset.id);if(!c)return;
+      const na=nextAction(c);if(!na)return;const step=na.stepIndex;
+      const cur=getDraft(c,step);
+      const nd={oggetto:cur.oggetto,corpo:cur.corpo};nd[el.dataset.f]=el.value;
+      setDraft(c,step,nd);
+      const cntEl=el.previousElementSibling?.querySelector('.cnt');
+      if(cntEl)cntEl.textContent=el.value.length+' car.';
+    });
+  });
+}
+
+async function regen(id,step){
+  const c=state.contacts.find(x=>x.id===id);if(!c)return;
+  const btn=document.getElementById('regen-'+id);const old=btn.innerHTML;
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Genero...';
+  try{
+    const r=await generateEmail(c,step);
+    setDraft(c,step,r);
+    toast('Email rigenerata · ≈ €'+fmtMoney(r.cost||0),'ok');render();
+  }catch(e){toast(e.message,'err');btn.disabled=false;btn.innerHTML=old}
+}
+async function generateAllDrafts(){
+  const list=state.contacts.filter(c=>dueToday(c)||(_showLate&&isLate(c)));
+  if(!state.config.anthropicKey){toast('Manca la chiave Anthropic','warn');openSettings();return}
+  let done=0,batchCost=0;toast('Genero '+list.length+' bozze...','warn');
+  for(const c of list){
+    const na=nextAction(c);if(!na)continue;
+    if(c.drafts&&c.drafts[na.stepIndex]&&!c.drafts[na.stepIndex].seeded)continue;
+    // for email1 with a base draft, skip (already good); generate only missing/followups
+    if(na.stepIndex===0 && c.oggettoBase) continue;
+    try{const r=await generateEmail(c,na.stepIndex);setDraft(c,na.stepIndex,r);batchCost+=(r.cost||0);done++;render();}catch(e){console.warn(e)}
+  }
+  toast(done+' bozze generate · ≈ €'+fmtMoney(batchCost),'ok');render();
+}
+function draftReady(c,step){const d=getDraft(c,step);return !!(d.oggetto&&d.corpo&&!(d.seeded&&step>0));}
+async function sendContact(c,step){
+  if(!c.email) return {err:'senza email'};
+  const d=getDraft(c,step);
+  if(!d.oggetto||!d.corpo||(d.seeded&&step>0)) return {skip:true};
+  const res=await sendEmailGmail(c,step,d.oggetto,d.corpo);
+  c.history.push({step,oggetto:d.oggetto,corpo:d.corpo,date:isoD(today())});
+  if(step===0){c.anchorDate=isoD(today());c.threadId=res.threadId;c.messageId=res.messageId||c.messageId;}
+  else{if(res.threadId)c.threadId=res.threadId;}
+  c.dataUltimoInvio=isoD(today());
+  c.step=step+1;
+  if(c.drafts)delete c.drafts[step];
+  persist();
+  return {ok:true, simulated:res.simulated};
+}
+async function doSend(id,step){
+  const c=state.contacts.find(x=>x.id===id);if(!c)return;
+  if(!c.email){toast('Contatto senza email','err');return}
+  if(!state.config.testMode && !googleReady()){toast('Connetti Google per inviare (o attiva la modalità test)','warn');connectGoogle();return}
+  if(!draftReady(c,step)){toast('Completa oggetto e corpo prima di inviare','warn');return}
+  const btn=document.getElementById('send-'+id);const old=btn.innerHTML;
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Invio...';
+  try{
+    const res=await sendContact(c,step);
+    toast(res.simulated?`Simulato invio a ${c.azienda}`:`Inviata a ${c.azienda}`,'ok');
+    render();
+  }catch(e){toast('Invio fallito: '+e.message,'err');btn.disabled=false;btn.innerHTML=old}
+}
+async function sendAllToday(){
+  const list=state.contacts.filter(c=>dueToday(c)||(_showLate&&isLate(c)));
+  const ready=list.filter(c=>{const na=nextAction(c);return na&&draftReady(c,na.stepIndex);});
+  const notReady=list.length-ready.length;
+  if(!ready.length){toast(notReady?'Nessuna bozza pronta: genera prima i testi mancanti':'Coda vuota','warn');return}
+  if(!state.config.testMode && !googleReady()){toast('Connetti Google per inviare (o attiva la modalità test)','warn');connectGoogle();return}
+  if(!confirm(`Inviare ${ready.length} email${state.config.testMode?' (SIMULATE — modalità test attiva)':''}?${notReady?`\n\n${notReady} verranno saltate perché senza testo.`:''}`))return;
+  const btn=document.getElementById('btnSendAll');const old=btn?btn.innerHTML:'';
+  if(btn)btn.disabled=true;
+  let sent=0,fail=0,skip=notReady;
+  for(const c of ready){
+    const na=nextAction(c);if(!na){skip++;continue;}
+    if(btn)btn.innerHTML=`<span class="spinner"></span> ${sent+1}/${ready.length}`;
+    try{ const r=await sendContact(c,na.stepIndex); if(r&&r.ok)sent++; else if(r&&r.skip)skip++; else fail++; }
+    catch(e){fail++;console.warn('invio',c.azienda,e.message);}
+  }
+  render();
+  toast(`${sent} email inviate${fail?` · ${fail} errori`:''}${skip?` · ${skip} saltate`:''}`, fail?'warn':'ok');
+}
+function skipStep(id){
+  const c=state.contacts.find(x=>x.id===id);if(!c)return;
+  const na=nextAction(c);if(!na)return;
+  c.history.push({step:na.stepIndex,oggetto:'(saltato)',corpo:'',date:isoD(today()),skipped:true});
+  if(na.stepIndex===0)c.anchorDate=isoD(today());
+  c.step=na.stepIndex+1;persist();render();toast('Step saltato','warn');
+}
+
+/* ---------- CONTATTI ---------- */
+function viewContatti(){
+  if(!state.contacts.length) return emptyState();
+  const filters=[['tutti','Tutti'],['da','Da inviare'],['today','Oggi'],['late','In ritardo'],['wait','In attesa'],['reply','Risposte'],['done','Conclusi']];
+  let rows=state.contacts.slice();
+  if(state.search){const q=state.search.toLowerCase();rows=rows.filter(c=>(c.azienda+' '+c.email+' '+c.sede).toLowerCase().includes(q))}
+  if(state.filter!=='tutti')rows=rows.filter(c=>statusKey(c)===state.filter);
+  return `
+  <div class="filters">
+    <div class="search">
+      <svg style="width:15px;height:15px;color:var(--faint)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input id="searchInput" placeholder="Cerca azienda, email, sede..." value="${escAttr(state.search)}">
+    </div>
+    ${filters.map(([k,l])=>`<button class="fbtn ${state.filter===k?'on':''}" onclick="setFilter('${k}')">${l}</button>`).join('')}
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Azienda</th><th>Email</th><th>Stato</th><th>Step</th><th>Prossima azione</th><th></th></tr></thead>
+      <tbody>
+      ${rows.length?rows.map(c=>{
+        const st=statusOf(c);const na=nextAction(c);
+        return `<tr>
+          <td class="az">${esc(c.azienda)}<div class="email-cell" style="font-weight:400">${esc(c.sede||'')}</div></td>
+          <td class="email-cell">${esc(c.email)}</td>
+          <td>${chip(st)}</td>
+          <td><span class="mono" style="color:var(--muted)">${(c.step||0)}/${state.cadence.length}</span></td>
+          <td>${na?`<span class="step-pill">${esc(na.label)}</span> <span class="email-cell">${fmtD(na.dueDate)}</span>`:'<span class="email-cell">—</span>'}</td>
+          <td style="text-align:right">
+            <button class="btn sm ghost" onclick="openContact('${c.id}')">Dettagli</button>
+          </td>
+        </tr>`;
+      }).join(''):`<tr><td colspan="6" class="email-cell" style="text-align:center;padding:30px">Nessun contatto con questo filtro</td></tr>`}
+      </tbody>
+    </table>
+  </div>`;
+}
+function setFilter(f){state.filter=f;render();const s=document.getElementById('searchInput');}
+function statusKey(c){return statusOf(c).key}
+
+/* ---------- CALENDARIO ---------- */
+let _calWeek=0; // offset settimane rispetto a questa
+function calNav(d){_calWeek+=d;render()}
+function calToday(){_calWeek=0;render()}
+function startOfWeek(d){const x=new Date(d);const g=(x.getDay()+6)%7;return addDays(x,-g);} // lunedì
+function viewCalendario(){
+  if(!state.contacts.length) return emptyState();
+  const t=today();
+  // mappa data->items
+  const byDay={};
+  let lateCount=0;
+  state.contacts.forEach(c=>{const na=nextAction(c);if(!na)return;
+    if(na.dueDate<t)lateCount++;
+    const k=isoD(na.dueDate);(byDay[k]=byDay[k]||[]).push({c,na});
+  });
+
+  const wkStart=startOfWeek(addDays(t,_calWeek*7));
+  const days=[];for(let i=0;i<7;i++)days.push(addDays(wkStart,i));
+  const wkLabel=`${wkStart.getDate()} ${wkStart.toLocaleDateString('it-IT',{month:'short'})} – ${addDays(wkStart,6).getDate()} ${addDays(wkStart,6).toLocaleDateString('it-IT',{month:'short'})}`;
+  const weekTotal=days.reduce((s,d)=>s+((byDay[isoD(d)]||[]).length),0);
+
+  const stepColors=['var(--accent)','var(--accent-2)','var(--warn)','var(--late)','var(--wait)'];
+
+  function dayCell(d){
+    const k=isoD(d);const items=(byDay[k]||[]);
+    const isToday=sameDay(d,t);const isPast=d<t;const wknd=(d.getDay()===0||d.getDay()===6);
+    const overdue=isPast&&items.length;
+    return `<div class="cal-cell${isToday?' today':''}${wknd?' wknd':''}${isPast&&!isToday?' past':''}">
+      <div class="cal-cell-h">
+        <span class="cal-dname">${d.toLocaleDateString('it-IT',{weekday:'short'})}</span>
+        <span class="cal-dnum">${d.getDate()}</span>
+        ${items.length?`<span class="cal-count${overdue?' late':''}">${items.length}</span>`:''}
+      </div>
+      <div class="cal-items">
+        ${items.slice(0,6).map(x=>{
+          const col=stepColors[Math.min(x.na.stepIndex,stepColors.length-1)];
+          return `<div class="cal-item" title="${escAttr(x.c.azienda+' — '+x.na.label+' ('+x.c.email+')')}" onclick="openContact('${x.c.id}')">
+            <span class="cal-dot" style="background:${col}"></span>
+            <span class="cal-az">${esc(x.c.azienda||x.c.email)}</span>
+          </div>`;
+        }).join('')}
+        ${items.length>6?`<div class="cal-more">+${items.length-6} altri</div>`:''}
+        ${!items.length?`<div class="cal-empty">—</div>`:''}
+      </div>
+    </div>`;
+  }
+
+  const legend=state.cadence.map((s,i)=>`<span class="cal-leg"><span class="cal-dot" style="background:${stepColors[Math.min(i,stepColors.length-1)]}"></span>${esc(s.nome)}</span>`).join('');
+
+  return `
+  ${lateCount?`<div class="card" style="padding:11px 16px;margin-bottom:14px;border-left:3px solid var(--late);display:flex;align-items:center;gap:12px">
+    <svg style="width:17px;height:17px;color:var(--late)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4 M12 16h.01"/></svg>
+    <div style="flex:1"><b>${lateCount} in ritardo</b> <span class="email-cell">— follow-up arretrati da recuperare</span></div>
+    <button class="btn sm primary" onclick="go('coda')">Vai alla coda →</button></div>`:''}
+
+  <div class="cal-bar">
+    <button class="btn sm ghost" onclick="calNav(-1)"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <div class="cal-title"><b>${wkLabel}</b><span class="email-cell">${weekTotal} invii in settimana${_calWeek===0?' · settimana corrente':''}</span></div>
+    <button class="btn sm ghost" onclick="calNav(1)"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+    ${_calWeek!==0?`<button class="btn sm" onclick="calToday()">Oggi</button>`:''}
+  </div>
+
+  <div class="cal-grid">${days.map(dayCell).join('')}</div>
+
+  <div class="cal-legend">${legend}<span class="cal-leg" style="margin-left:auto;color:var(--faint)">Tocca un contatto per i dettagli</span></div>
+  `;
+}
+
+/* ---------- EMPTY ---------- */
+function emptyState(){
+  return `<div class="empty">
+    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4h16v16H4z M4 8h16 M8 4v16"/></svg>
+    <h4>Nessun contatto ancora</h4>
+    <p>Carica un file CSV o Excel con la tua lista di lead. Le colonne (email, azienda, sede, oggetto, corpo...) vengono mappate in automatico.</p>
+    <button class="btn primary" onclick="pickFile()">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4 M17 8l-5-5-5 5 M12 3v12"/></svg>
+      Importa lista contatti</button>
+    <div style="margin-top:14px"><button class="btn sm ghost" onclick="loadDemo()">oppure carica i 28 contatti di esempio</button></div>
+  </div>`;
+}
+
+/* =======================================================
+   MODALS
+   ======================================================= */
+function modal(html){document.getElementById('modalRoot').innerHTML=`<div class="overlay" onclick="if(event.target===this)closeModal()">${html}</div>`}
+function closeModal(){document.getElementById('modalRoot').innerHTML=''}
+
+/* ---- import mapping modal ---- */
+let _importData=null;
+function openImportModal(headers, rows, sheetName, allSheets){
+  const map=guessMap(headers);
+  _importData={headers,rows,map};
+  const opts=i=>headers.map((h,j)=>`<option value="${j}" ${map[i]===j?'selected':''}>${esc(String(h||'col '+(j+1)))}</option>`).join('');
+  const fields=[
+    ['email','Email *','obbligatorio'],['azienda','Azienda',''],['sede','Sede / città',''],
+    ['nome','Referente',''],['ruolo','Ruolo',''],['settore','Settore',''],
+    ['descrizione','Descrizione azienda','usata dall\'AI'],['sitoWeb','Sito web',''],
+    ['tipoAsset','Tipo asset / offerta','usato dall\'AI'],['oggetto','Oggetto email 1',''],
+    ['corpo','Corpo email 1','bozza di partenza'],['disiscrizione','Disiscrizione','']
+  ];
+  modal(`<div class="modal wide" onclick="event.stopPropagation()">
+    <div class="modal-h"><h3>Importa contatti</h3><div class="x" onclick="closeModal()">✕</div></div>
+    <div class="modal-b">
+      <div class="helptip">Foglio <b>${esc(sheetName)}</b> · ${rows.length} righe. Controlla l'abbinamento delle colonne (rilevato in automatico).</div>
+      <div>
+        ${fields.map(([f,lbl,hint])=>`<div class="map-row">
+          <div class="lbl">${lbl}${hint?`<small>${hint}</small>`:''}</div>
+          <select id="map-${f}"><option value="">— nessuna —</option>${opts(f)}</select>
+        </div>`).join('')}
+      </div>
+      <label class="toggle ${'on'}" id="dedup-tog" onclick="this.classList.toggle('on')"><span class="sw"></span><span>Salta righe senza email o duplicate</span></label>
+    </div>
+    <div class="modal-f">
+      <button class="btn" onclick="closeModal()">Annulla</button>
+      <button class="btn primary" onclick="confirmImport()">Importa ${rows.length} contatti</button>
+    </div>
+  </div>`);
+}
+function confirmImport(){
+  const {headers,rows}=_importData;
+  const fields=['email','azienda','sede','nome','ruolo','settore','descrizione','sitoWeb','tipoAsset','oggetto','corpo','disiscrizione','n'];
+  const sel={};fields.forEach(f=>{const el=document.getElementById('map-'+f);sel[f]=el?(el.value===''?-1:+el.value):-1});
+  const dedup=document.getElementById('dedup-tog').classList.contains('on');
+  const seen=new Set(state.contacts.map(c=>c.email.toLowerCase()));
+  let added=0,skipped=0;
+  rows.forEach(r=>{
+    const g=f=>sel[f]>=0?String(r[sel[f]]??'').trim():'';
+    const email=g('email');
+    if(dedup&&(!email||seen.has(email.toLowerCase()))){skipped++;return}
+    if(email)seen.add(email.toLowerCase());
+    state.contacts.push(mkContact({
+      n:g('n'),azienda:g('azienda'),sede:g('sede'),email,ruolo:g('ruolo'),
+      settore:g('settore'),descrizione:g('descrizione'),sitoWeb:g('sitoWeb'),tipoAsset:g('tipoAsset'),
+      oggettoBase:g('oggetto'),corpoBase:g('corpo'),
+      disiscrizione:g('disiscrizione')||state.templates.disiscrizione,
+    }));
+    added++;
+  });
+  persist();closeModal();
+  if(added){state.view='pianifica';}
+  render();
+  toast(`${added} contatti importati — ora pianificali`,'ok');
+}
+
+/* ---- contact detail ---- */
+function openContact(id){
+  const c=state.contacts.find(x=>x.id===id);if(!c)return;
+  const st=statusOf(c);const na=nextAction(c);
+  const hist=c.history.length?c.history.map(h=>`<div style="padding:10px 12px;border:1px solid var(--border);border-radius:9px;margin-bottom:8px">
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:4px"><span class="step-pill">${esc(state.cadence[h.step]?.nome||'Step '+h.step)}</span><span class="email-cell">${esc(h.date)}</span>${h.skipped?'<span class="chip da">saltato</span>':''}</div>
+    ${h.skipped?'':`<div style="font-weight:600;font-size:13px">${esc(h.oggetto)}</div><div class="email-cell" style="white-space:pre-wrap;margin-top:4px">${esc((h.corpo||'').slice(0,300))}${(h.corpo||'').length>300?'…':''}</div>`}
+  </div>`).join(''):'<div class="email-cell">Nessun invio ancora.</div>';
+  modal(`<div class="modal wide" onclick="event.stopPropagation()">
+    <div class="modal-h"><h3>${esc(c.azienda)}</h3>${chip(st)}<div class="x" onclick="closeModal()">✕</div></div>
+    <div class="modal-b">
+      <div class="two-col">
+        <div class="form-row"><label>Email</label><input value="${escAttr(c.email)}" onchange="editC('${id}','email',this.value)"></div>
+        <div class="form-row"><label>Sede</label><input value="${escAttr(c.sede)}" onchange="editC('${id}','sede',this.value)"></div>
+        <div class="form-row"><label>Ruolo / referente</label><input value="${escAttr(c.ruolo)}" onchange="editC('${id}','ruolo',this.value)"></div>
+        <div class="form-row"><label>Settore</label><input value="${escAttr(c.settore)}" onchange="editC('${id}','settore',this.value)"></div>
+        <div class="form-row" style="grid-column:1/3"><label>Tipo asset / offerta</label><input value="${escAttr(c.tipoAsset)}" onchange="editC('${id}','tipoAsset',this.value)"></div>
+        <div class="form-row" style="grid-column:1/3"><label>Sito web</label><input value="${escAttr(c.sitoWeb||'')}" placeholder="https://..." onchange="editC('${id}','sitoWeb',this.value)"></div>
+        <div class="form-row" style="grid-column:1/3"><label>Descrizione azienda <span class="hint">(usata dall'AI per personalizzare)</span></label><textarea onchange="editC('${id}','descrizione',this.value)" placeholder="Note e approfondimenti sull'azienda...">${esc(c.descrizione||'')}</textarea></div>
+      </div>
+      <div style="display:flex;gap:18px;font-size:13px;padding:10px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+        <div><span class="email-cell">Step</span><br><b class="mono">${(c.step||0)}/${state.cadence.length}</b></div>
+        <div><span class="email-cell">Ultimo invio</span><br><b>${c.dataUltimoInvio?fmtD(parseD(c.dataUltimoInvio)):'—'}</b></div>
+        <div><span class="email-cell">Prossima</span><br><b>${na?fmtD(na.dueDate)+' · '+na.label:'—'}</b></div>
+        <div><span class="email-cell">Ha risposto</span><br><b>${c.haRisposto?'sì':'no'}</b></div>
+      </div>
+      <div class="field-lbl" style="margin:0">Cronologia thread</div>
+      ${hist}
+    </div>
+    <div class="modal-f" style="justify-content:space-between">
+      <div style="display:flex;gap:8px">
+        <button class="btn sm ghost danger" onclick="deleteContact('${id}')">Elimina</button>
+        <button class="btn sm" onclick="toggleReplied('${id}')">${c.haRisposto?'Segna non risposto':'Segna come risposto'}</button>
+        <button class="btn sm" onclick="resetSeq('${id}')">Reset sequenza</button>
+      </div>
+      <button class="btn primary" onclick="closeModal()">Chiudi</button>
+    </div>
+  </div>`);
+}
+function editC(id,f,v){
+  const c=state.contacts.find(x=>x.id===id);if(!c)return;
+  if(c[f]===v)return;
+  c[f]=v;persist();
+  if(supaReady())setSyncState('saving');
+}
+function toggleReplied(id){const c=state.contacts.find(x=>x.id===id);if(c){c.haRisposto=!c.haRisposto;persist();openContact(id);render()}}
+function resetSeq(id){const c=state.contacts.find(x=>x.id===id);if(c){c.step=0;c.anchorDate=null;c.dataUltimoInvio=null;c.haRisposto=false;c.history=[];c.drafts={};c.threadId=null;c.messageId=null;persist();openContact(id);render();toast('Sequenza azzerata','warn')}}
+async function deleteContact(id){
+  const c=state.contacts.find(x=>x.id===id);if(!c)return;
+  if(!confirm(`Eliminare "${c.azienda||c.email}"?\n\nVerrà rimosso anche dal database Supabase, per tutto il team.`))return;
+  const backup={...c};
+  state.contacts=state.contacts.filter(x=>x.id!==id);
+  save(LS.contacts,state.contacts);
+  closeModal();render();
+  const res=await supaDelete(id);
+  if(!res.ok){
+    // il DB ha rifiutato: rimetto il contatto e avviso, così non c'è divergenza silenziosa
+    state.contacts.push(backup);save(LS.contacts,state.contacts);render();
+    toast('Eliminazione fallita sul database: '+res.err,'err');
+  } else {
+    toast('Contatto eliminato','ok');
+  }
+}
+
+/* ---- settings ---- */
+function openSettings(){
+  const cf=state.config;
+  modal(`<div class="modal wide" onclick="event.stopPropagation()">
+    <div class="modal-h"><h3>Impostazioni</h3><div class="x" onclick="closeModal()">✕</div></div>
+    <div class="modal-b">
+      <label class="toggle ${cf.testMode?'on':''}" id="set-test"><span class="sw"></span>
+        <span><b>Modalità test</b><br><span class="hint">Gli invii sono simulati: niente email reali. Disattiva per inviare davvero.</span></span></label>
+
+      <div class="section-h" style="margin:4px 0 0"><h3 style="font-size:14px">Connessione Google</h3><div class="line"></div></div>
+      <div class="form-row"><label>Google OAuth Client ID</label>
+        <input id="set-gid" value="${escAttr(cf.googleClientId)}" placeholder="xxxxxx.apps.googleusercontent.com">
+        <span class="hint">Da Google Cloud Console → Credenziali → ID client OAuth (tipo: Web). Aggiungi l'origine del tuo sito GitHub Pages tra le origini JavaScript autorizzate.</span></div>
+      <div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap">
+        <button class="btn sm" onclick="saveGid()">${googleReady()?'Riconnetti':'Connetti Google'}</button>
+        ${googleReady()?`<button class="btn sm ghost" onclick="reauthGoogle()" title="Richiede di nuovo il consenso: serve dopo aver aggiunto nuovi permessi (es. calendario)">Riautorizza permessi</button>
+        <button class="btn sm ghost danger" onclick="logoutGoogle()">Esci</button>`:''}
+        ${googleReady()?`<span class="chip reply"><span class="d"></span>${esc(state.google.email||'connesso')}</span>`:''}
+      </div>
+      <div class="helptip">Google serve solo per <b>inviare le email</b> e rilevare le risposte via Gmail. La sorgente dei contatti è Supabase (sotto).</div>
+      ${googleReady()?`<div class="form-row"><label>Invia le email da <span class="hint">(alias "Invia come" del tuo account Gmail)</span></label>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <select id="set-from" onchange="setFrom(this.value)" style="flex:1;min-width:220px">
+            ${(state.sendAs.length?state.sendAs:[{email:state.google.email,name:'',primary:true}]).map(a=>{
+              const cur=(state.fromAddr||state.google.email||'').toLowerCase()===a.email.toLowerCase();
+              return `<option value="${escAttr(a.email)}" ${cur?'selected':''}>${esc((a.name?a.name+' — ':'')+a.email)}${a.primary?' (principale)':''}</option>`;
+            }).join('')}
+          </select>
+          <button class="btn sm ghost" onclick="loadSendAs().then(()=>{openSettings()})" title="Rileggi gli alias da Gmail">Aggiorna alias</button>
+        </div>
+        <span class="hint">Compaiono solo gli indirizzi <b>verificati</b> come "Invia come" in Gmail (Impostazioni → Account → Invia messaggi come). Se hai appena aggiunto l'alias, premi "Aggiorna alias".</span></div>`:''}
+
+      <div class="section-h" style="margin:4px 0 0"><h3 style="font-size:14px">Database contatti — Supabase</h3><div class="line"></div></div>
+      <div class="helptip">Supabase è l'<b>unica sorgente</b>: contatti, stato e ricerche stanno online e condivisi in tempo reale con tutto il team. Per aggiungere lead, il team inserisce righe nella tabella <code>contacts</code> (Table Editor di Supabase) con almeno email e azienda: compaiono qui da soli come "da pianificare". In alternativa usa il pulsante <b>Importa</b> (CSV/XLSX).</div>
+      <div class="two-col">
+        <div class="form-row"><label>Project URL</label><input id="set-supaurl" value="${escAttr(cf.supabaseUrl)}" placeholder="https://xxxx.supabase.co"></div>
+        <div class="form-row"><label>anon public key</label><input id="set-supakey" type="password" value="${escAttr(cf.supabaseKey)}" placeholder="eyJhbGci..."></div>
+      </div>
+      <div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap">
+        ${supaReady()?`<span class="chip reply"><span class="d"></span>Database connesso</span>`:`<span class="chip da"><span class="d"></span>Non connesso</span>`}
+        <button class="btn sm" onclick="supaLoad()">Ricarica dal database</button>
+        <button class="btn sm ghost" onclick="showSupaSQL()">Mostra SQL di setup</button>
+        <button class="btn sm ghost" onclick="exportTeamConfig()" title="Genera il blocco da incollare nel file per il team">Configurazione team</button>
+        ${cf.supabaseUrl?`<button class="btn sm ghost" onclick="window.open('${escAttr(cf.supabaseUrl)}','_blank')">Apri Supabase</button>`:''}
+      </div>
+      <div class="form-row" style="margin-top:4px"><label>Migrazione una-tantum dal vecchio Google Sheet <span class="hint">(legge il foglio col tuo login Google e copia i contatti su Supabase; il foglio non resta collegato)</span></label>
+        <div style="display:flex;gap:8px">
+          <input id="mig-sheet" placeholder="https://docs.google.com/spreadsheets/d/...">
+          <button class="btn sm" id="mig-btn" onclick="migrateFromSheet()">Migra su Supabase</button>
+        </div></div>
+
+      <div class="section-h" style="margin:4px 0 0"><h3 style="font-size:14px">Generazione AI</h3><div class="line"></div></div>
+      <div class="form-row"><label>Chiave API Anthropic</label>
+        <input id="set-akey" type="password" value="${escAttr(cf.anthropicKey)}" placeholder="sk-ant-...">
+        <span class="hint">Usata per generare oggetto e corpo (modello ${MODEL}). Salvata solo nel browser.</span></div>
+
+      <div class="section-h" style="margin:4px 0 0"><h3 style="font-size:14px">Regole di invio</h3><div class="line"></div></div>
+      <div class="two-col">
+        <div class="form-row"><label>Max email al giorno</label><input id="set-max" type="number" value="${cf.maxAlGiorno}"></div>
+        <div class="form-row"><label>Finestra oraria</label>
+          <div style="display:flex;gap:8px;align-items:center"><input id="set-oi" type="number" value="${cf.oraInizio}" style="width:70px">–<input id="set-of" type="number" value="${cf.oraFine}" style="width:70px"></div></div>
+      </div>
+      <label class="toggle ${cf.saltaWeekend?'on':''}" id="set-week"><span class="sw"></span><span>Salta sabato e domenica</span></label>
+      <label class="toggle ${cf.autoStopReply?'on':''}" id="set-stop"><span class="sw"></span><span>Ferma i follow-up quando il contatto risponde</span></label>
+    </div>
+    <div class="modal-f" style="justify-content:space-between">
+      <div style="display:flex;gap:9px">
+        <button class="btn sm ghost" onclick="openCadence()">Cadenza & template →</button>
+        <button class="btn sm ghost danger" onclick="resetAll()">Resetta tutto</button>
+      </div>
+      <div style="display:flex;gap:9px">
+        <button class="btn" onclick="closeModal()">Annulla</button>
+        <button class="btn primary" onclick="saveSettings()">Salva</button>
+      </div>
+    </div>
+  </div>`);
+  document.querySelectorAll('#set-test,#set-week,#set-stop').forEach(el=>el.onclick=()=>el.classList.toggle('on'));
+}
+function saveGid(){
+  const v=document.getElementById('set-gid').value.trim();
+  state.config.googleClientId=v;persist();tokenClient=null;initGoogle();
+  setTimeout(()=>connectGoogle(),300);
+}
+function saveSettings(){
+  const cf=state.config;
+  const prevSupaUrl=cf.supabaseUrl, prevSupaKey=cf.supabaseKey;
+  cf.googleClientId=document.getElementById('set-gid').value.trim();
+  cf.anthropicKey=document.getElementById('set-akey').value.trim();
+  cf.supabaseUrl=document.getElementById('set-supaurl').value.trim().replace(/\/$/,'');
+  cf.supabaseKey=document.getElementById('set-supakey').value.trim();
+  cf.maxAlGiorno=+document.getElementById('set-max').value||10;
+  cf.oraInizio=+document.getElementById('set-oi').value||9;
+  cf.oraFine=+document.getElementById('set-of').value||18;
+  cf.saltaWeekend=document.getElementById('set-week').classList.contains('on');
+  cf.autoStopReply=document.getElementById('set-stop').classList.contains('on');
+  cf.testMode=document.getElementById('set-test').classList.contains('on');
+  persist();closeModal();initGoogle();
+  if(cf.supabaseUrl!==prevSupaUrl||cf.supabaseKey!==prevSupaKey){supa=null;initSupabase();}
+  render();toast('Impostazioni salvate','ok');
+}
+
+/* ---- cadence & templates ---- */
+function openCadence(){
+  const cad=state.cadence;const tp=state.templates;
+  modal(`<div class="modal wide" onclick="event.stopPropagation()">
+    <div class="modal-h"><h3>Cadenza & template</h3><div class="x" onclick="closeModal()">✕</div></div>
+    <div class="modal-b">
+      <div class="field-lbl" style="margin:0">Sequenza di follow-up</div>
+      <div class="helptip">Giorni = scarto dalla prima email (giorno 0). I weekend vengono saltati se attivo.</div>
+      <div id="cad-list">
+        ${cad.map((s,i)=>`<div class="cad-step">
+          <input value="${escAttr(s.nome)}" data-i="${i}" data-k="nome" placeholder="Nome step">
+          <input type="number" value="${s.offset}" data-i="${i}" data-k="offset" placeholder="giorno">
+          <button class="x" onclick="rmStep(${i})" ${i===0?'style="visibility:hidden"':''}>✕</button>
+        </div>`).join('')}
+      </div>
+      <button class="btn sm" onclick="addStep()"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Aggiungi step</button>
+
+      <div class="section-h" style="margin:6px 0 0"><h3 style="font-size:14px">Tono & firma</h3><div class="line"></div></div>
+      <div class="form-row"><label>Tono / stile (istruzioni per l'AI)</label>
+        <textarea id="tp-tono">${esc(tp.tono)}</textarea></div>
+      <div class="two-col">
+        <div class="form-row"><label>Mittente (firma)</label><input id="tp-mit" value="${escAttr(tp.mittente)}"></div>
+        <div class="form-row"><label>Azienda</label><input id="tp-az" value="${escAttr(tp.azienda)}"></div>
+      </div>
+      <div class="form-row"><label>Riga di disiscrizione</label><input id="tp-dis" value="${escAttr(tp.disiscrizione)}"></div>
+
+      <div class="section-h" style="margin:6px 0 0"><h3 style="font-size:14px">Firma & formato email</h3><div class="line"></div></div>
+      <label class="toggle ${state.config.formatoHtml?'on':''}" id="tp-html" onclick="this.classList.toggle('on')"><span class="sw"></span>
+        <span><b>Invia in formato HTML</b><br><span class="hint">Necessario per la firma con logo e link colorati. Se spento, le email partono in solo testo (spesso meglio per la consegna a freddo).</span></span></label>
+      <div class="form-row"><label>URL del logo <span class="hint">(immagine pubblica, es. caricata sul tuo repo GitHub Pages)</span></label>
+        <input id="tp-logo" value="${escAttr(tp.logoUrl||'')}" placeholder="https://callforusit-aam.github.io/.../logo.png"></div>
+      <div class="form-row"><label>Firma — versione HTML <span class="hint">(usa <span class="kbd">{logo_block}</span> dove vuoi il logo)</span></label>
+        <textarea id="tp-sightml" style="min-height:130px;font-family:'JetBrains Mono',monospace;font-size:12px">${esc(tp.firmaHtml||'')}</textarea>
+        <button class="btn sm ghost" style="align-self:flex-start" onclick="previewSig()">Anteprima firma</button></div>
+      <div class="form-row"><label>Firma — versione testo <span class="hint">(usata in modalità solo testo e come fallback)</span></label>
+        <textarea id="tp-sigtesto" style="min-height:80px">${esc(tp.firmaTesto||'')}</textarea></div>
+
+      <div class="section-h" style="margin:6px 0 0"><h3 style="font-size:14px">Prompt di generazione AI</h3><div class="line"></div></div>
+      <div class="helptip">Questo è il prompt di sistema che guida l'AI. Puoi usare i segnaposto <span class="kbd">{azienda}</span> <span class="kbd">{mittente}</span> <span class="kbd">{tono}</span> <span class="kbd">{regole_oggetto}</span> <span class="kbd">{regole_corpo}</span>: vengono sostituiti automaticamente. Deve sempre chiedere una risposta in JSON con <span class="kbd">oggetto</span> e <span class="kbd">corpo</span>.</div>
+      <div class="form-row"><label>Prompt di sistema</label>
+        <textarea id="tp-prompt" style="min-height:170px;font-family:'JetBrains Mono',monospace;font-size:12.5px">${esc(tp.promptSistema||'')}</textarea>
+        <button class="btn sm ghost" style="align-self:flex-start" onclick="document.getElementById('tp-prompt').value=PROMPT_SISTEMA_DEFAULT">Ripristina default</button></div>
+      <div class="two-col">
+        <div class="form-row"><label>Regole per l'OGGETTO</label><textarea id="tp-rogg" style="min-height:80px">${esc(tp.regoleOggetto||'')}</textarea></div>
+        <div class="form-row"><label>Regole per il CORPO</label><textarea id="tp-rcorpo" style="min-height:80px">${esc(tp.regoleCorpo||'')}</textarea></div>
+      </div>
+
+      <div class="field-lbl" style="margin:0">Angolo per ogni step</div>
+      ${cad.map((s,i)=>`<div class="form-row"><label>${esc(s.nome)}</label><textarea data-ai="${i}" style="min-height:60px">${esc(s.angolo||'')}</textarea></div>`).join('')}
+    </div>
+    <div class="modal-f">
+      <button class="btn" onclick="openSettings()">← Indietro</button>
+      <button class="btn primary" onclick="saveCadence()">Salva</button>
+    </div>
+  </div>`);
+}
+function previewSig(){
+  const url=(document.getElementById('tp-logo')?.value||'').trim();
+  const html=(document.getElementById('tp-sightml')?.value||'');
+  const logo=url?`<img src="${escAttr(url)}" alt="logo" width="60" style="display:block;border:0">`:'<span style="color:#bbb;font-size:11px">[logo: aggiungi un URL]</span>';
+  const rendered=html.replace(/{logo_block}/g,logo).replace(/{logo_url}/g,url);
+  const ov=document.createElement('div');
+  ov.className='overlay';ov.style.zIndex='60';
+  ov.onclick=(e)=>{if(e.target===ov)ov.remove();};
+  ov.innerHTML=`<div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-h"><h3>Anteprima firma</h3><div class="x" onclick="this.closest('.overlay').remove()">✕</div></div>
+    <div class="modal-b">
+      <div class="helptip">Così apparirà in fondo alle email inviate in formato HTML.</div>
+      <div style="background:#ffffff;border:1px solid var(--border);border-radius:10px;padding:18px">${rendered}</div>
+    </div>
+    <div class="modal-f"><button class="btn primary" onclick="this.closest('.overlay').remove()">Chiudi</button></div>
+  </div>`;
+  document.body.appendChild(ov);
+}
+function addStep(){state.cadence.push({nome:'Follow-up '+state.cadence.length,offset:(state.cadence.at(-1)?.offset||0)+7,angolo:''});openCadence()}
+function rmStep(i){state.cadence.splice(i,1);openCadence()}
+function saveCadence(){
+  document.querySelectorAll('#cad-list [data-k]').forEach(el=>{
+    const i=+el.dataset.i,k=el.dataset.k;state.cadence[i][k]=k==='offset'?(+el.value||0):el.value;
+  });
+  document.querySelectorAll('[data-ai]').forEach(el=>{state.cadence[+el.dataset.ai].angolo=el.value});
+  state.templates.tono=document.getElementById('tp-tono').value;
+  state.templates.mittente=document.getElementById('tp-mit').value;
+  state.templates.azienda=document.getElementById('tp-az').value;
+  state.templates.disiscrizione=document.getElementById('tp-dis').value;
+  state.config.formatoHtml=document.getElementById('tp-html').classList.contains('on');
+  state.templates.logoUrl=document.getElementById('tp-logo').value.trim();
+  state.templates.firmaHtml=document.getElementById('tp-sightml').value;
+  state.templates.firmaTesto=document.getElementById('tp-sigtesto').value;
+  state.templates.promptSistema=document.getElementById('tp-prompt').value;
+  state.templates.regoleOggetto=document.getElementById('tp-rogg').value;
+  state.templates.regoleCorpo=document.getElementById('tp-rcorpo').value;
+  persist();closeModal();render();toast('Cadenza salvata','ok');
+}
+
+/* =======================================================
+   DEMO + UTIL
+   ======================================================= */
+function loadDemo(){
+  const demo=[
+    ['QUESTIONE DI GUSTO SRL','BRESCIA, BS','info@questionedigusto.net','una curiosità'],
+    ['OMIFER SRL','CAZZAGO SAN MARTINO, BS','sales@omifer.it','una domanda sui preventivi'],
+    ['FOKER SRL','TORBOLE CASAGLIA, BS','info@foker.com','le rubo un minuto'],
+    ['GRAFICA SETTE SRL SB','BAGNOLO MELLA, BS','info@seventyseven.biz','una curiosità sui preventivi'],
+    ['LECAPITAINE ITALIA SRL','RIVALTA DI TORINO, TO','info@icytruck.it','una domanda sugli allestimenti'],
+    ['TEKNOFERR SRL','GIVOLETTO, TO','amministrazione@teknoferr.it','le rubo due minuti'],
+    ['F.I.F.P.E. SRL','BAIRO, TO','info@fifpe.it','una curiosità'],
+  ];
+  demo.forEach(([az,sede,email,ogg])=>state.contacts.push(mkContact({
+    azienda:az,sede,email,oggettoBase:ogg,
+    corpoBase:`Buongiorno,\n\nmi occupo di automazione dei processi per piccole aziende manifatturiere della zona. Le scrivo perché in realtà come la vostra la preparazione di preventivi e ordini spesso pesa a mano su poche persone.\n\nSe da voi fila già tutto liscio, mi scusi il disturbo. Altrimenti le mostro volentieri come si alleggerisce.\n\nLe va?\n\nGiuseppe Romano\nFlowLine`,
+    tipoAsset:'automazione preventivi e ordini',settore:'manifatturiero',
+  })));
+  persist();render();toast('7 contatti di esempio caricati','ok');
+}
+function pickFile(){document.getElementById('fileInput').click()}
+document.getElementById('fileInput').addEventListener('change',e=>{const f=e.target.files[0];if(f)handleFile(f);e.target.value=''});
+
+function chip(st){return `<span class="chip ${st.key}"><span class="d"></span>${st.label}</span>`}
+function esc(s){return String(s??'').replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))}
+function escAttr(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function toast(msg,type=''){
+  const el=document.createElement('div');el.className='toast '+type;
+  el.innerHTML=`<span>${esc(msg)}</span>`;
+  document.getElementById('toasts').appendChild(el);
+  setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(20px)';setTimeout(()=>el.remove(),200)},3200);
+}
+function toggleTheme(){const cur=document.documentElement.getAttribute('data-theme');const nx=cur==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',nx);save(LS.theme,nx)}
+function openRail(){document.getElementById('rail').classList.add('open');document.getElementById('scrim').classList.add('show')}
+function closeRail(){document.getElementById('rail').classList.remove('open');document.getElementById('scrim').classList.remove('show')}
+
+/* search debounce binding (delegated) */
+document.addEventListener('input',e=>{
+  if(e.target.id==='searchInput'){state.search=e.target.value;clearTimeout(window._st);window._st=setTimeout(()=>{render();const i=document.getElementById('searchInput');if(i){i.focus();i.setSelectionRange(i.value.length,i.value.length)}},220)}
+});
+
+/* keyboard: i = import, c = coda */
+document.addEventListener('keydown',e=>{
+  if(e.target.matches('input,textarea,select'))return;
+  if(e.key==='i')pickFile();
+  if(e.key==='c')go('coda');
+  if(e.key==='d')go('dashboard');
+});
+
+/* ---- boot ---- */
+(function boot(){
+  const th=load(LS.theme,null)||(window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+  document.documentElement.setAttribute('data-theme',th);
+  initGoogle();
+  // ripristina la sessione Google salvata; se scaduta, tenta un rinnovo silenzioso
+  if(state.config.googleClientId){
+    if(googleReady()){ scheduleRefresh(); setTimeout(()=>afterGoogleAuth(),300); }
+    else if(state.google.email){ setTimeout(()=>refreshToken(),800); }
+  }
+  initSupabase();
+  render();
+})();
+</script>
+</body>
+</html>
