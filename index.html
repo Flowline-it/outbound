@@ -439,6 +439,7 @@ let state = {
   view: 'dashboard',
   google: load(LS.gauth, {token:null, email:null, expires:0}),
   sendAs: [],            // alias "Invia come" letti da Gmail
+  sendAsErr: '',
   fromAddr: load('flo_from',null),   // mittente scelto (null = principale)
   filter: 'tutti', search:'',
 };
@@ -656,6 +657,7 @@ async function afterGoogleAuth(){
   }
 }
 // legge gli indirizzi "Invia come" verificati (alias) dell'account Gmail
+let _sendAsRedraw=false;
 async function loadSendAs(){
   if(!googleReady())return;
   try{
@@ -666,8 +668,15 @@ async function loadSendAs(){
     if(state.fromAddr && !state.sendAs.find(a=>a.email.toLowerCase()===state.fromAddr.toLowerCase())){
       state.fromAddr=null;save('flo_from',null);
     }
+    state.sendAsErr='';
     renderConn();
-  }catch(e){console.warn('sendAs',e.message)}
+    // se le Impostazioni sono aperte, aggiorno l'elenco dei mittenti
+    if(document.getElementById('set-gid')&&!_sendAsRedraw){_sendAsRedraw=true;try{openSettings()}finally{_sendAsRedraw=false}}
+  }catch(e){
+    console.warn('sendAs',e.message);
+    const m=e.message||'';
+    state.sendAsErr=/insufficient|scope|403|PERMISSION/i.test(m)?'manca il permesso sulle impostazioni Gmail — premi "Riautorizza permessi" e spunta tutte le caselle':(m||'errore sconosciuto');
+  }
 }
 // mittente effettivo (con nome visualizzato) per l'header From
 function fromHeader(){
@@ -2094,8 +2103,8 @@ function openSettings(){
         ${googleReady()?`<span class="chip reply"><span class="d"></span>${esc(state.google.email||'connesso')}</span>`:''}
       </div>
       <div class="helptip">Google serve solo per <b>inviare le email</b> e rilevare le risposte via Gmail. La sorgente dei contatti è Supabase (sotto).</div>
-      ${googleReady()?`<div class="form-row"><label>Invia le email da <span class="hint">(alias "Invia come" del tuo account Gmail)</span></label>
-        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <div class="form-row"><label>Invia le email da <span class="hint">(alias "Invia come" del tuo account Gmail)</span></label>
+        ${googleReady()?`<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
           <select id="set-from" onchange="setFrom(this.value)" style="flex:1;min-width:220px">
             ${(state.sendAs.length?state.sendAs:[{email:state.google.email||'',name:'',primary:true}]).filter(a=>a&&a.email).map(a=>{
               const cur=(state.fromAddr||state.google.email||'').toLowerCase()===a.email.toLowerCase();
@@ -2104,7 +2113,15 @@ function openSettings(){
           </select>
           <button class="btn sm ghost" onclick="loadSendAs().then(()=>{openSettings()})" title="Rileggi gli alias da Gmail">Aggiorna alias</button>
         </div>
-        <span class="hint">Compaiono solo gli indirizzi <b>verificati</b> come "Invia come" in Gmail (Impostazioni → Account → Invia messaggi come). Se hai appena aggiunto l'alias, premi "Aggiorna alias".</span></div>`:''}
+        ${state.sendAsErr?`<span class="hint" style="color:var(--danger,#dc2626)">Non riesco a leggere gli alias da Gmail: ${esc(state.sendAsErr)}</span>`
+          :(state.sendAs.length<=1?`<span class="hint">Gmail restituisce solo l'indirizzo principale. Aggiungi gli alias in Gmail → Impostazioni → Account → "Invia messaggio come" → Aggiungi un altro indirizzo email, poi premi "Aggiorna alias".</span>`
+          :`<span class="hint">${state.sendAs.length} indirizzi disponibili. Compaiono solo quelli <b>verificati</b> come "Invia come" in Gmail.</span>`)}`
+        :`<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <select disabled style="flex:1;min-width:220px"><option>${esc(state.fromAddr||'Connetti Google per scegliere il mittente')}</option></select>
+          <button class="btn sm" onclick="saveGid()">Connetti Google</button>
+        </div>
+        <span class="hint">L'elenco degli alias si legge da Gmail: serve la connessione Google attiva.</span>`}
+      </div>
 
       <div class="section-h" style="margin:4px 0 0"><h3 style="font-size:14px">Database contatti — Supabase</h3><div class="line"></div></div>
       <div class="helptip">Supabase è l'<b>unica sorgente</b>: contatti, stato e ricerche stanno online e condivisi in tempo reale con tutto il team. Per aggiungere lead, il team inserisce righe nella tabella <code>contacts</code> (Table Editor di Supabase) con almeno email e azienda: compaiono qui da soli come "da pianificare". In alternativa usa il pulsante <b>Importa</b> (CSV/XLSX).</div>
@@ -2154,6 +2171,7 @@ function openSettings(){
     </div>
   </div>`);
   document.querySelectorAll('#set-test,#set-week,#set-stop').forEach(el=>el.onclick=()=>el.classList.toggle('on'));
+  if(googleReady()&&!state.sendAs.length&&!state.sendAsErr&&!_sendAsRedraw) loadSendAs();
 }
 function saveGid(){
   const v=document.getElementById('set-gid').value.trim();
