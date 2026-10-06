@@ -186,94 +186,6 @@ textarea.body{min-height:150px;line-height:1.55;white-space:pre-wrap;font-size:1
 .agenda-row .az{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .agenda-row .when{font-size:12px;color:var(--muted);white-space:nowrap}
 
-/* suite module switcher */
-.modswitch{display:flex;gap:4px;padding:8px 10px 4px}
-.modswitch button{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 6px;border-radius:8px;font-size:12.5px;font-weight:600;color:var(--muted);background:var(--surface-2);border:1px solid var(--border)}
-.modswitch button svg{width:14px;height:14px}
-.modswitch button.active{background:var(--accent);border-color:var(--accent);color:#fff}
-/* shifts */
-.sh-dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto;display:inline-block}
-.sh-m{display:flex;gap:7px;align-items:flex-start;padding:5px 6px;border-radius:7px}
-.sh-m:hover{background:var(--surface-2)}
-.sh-m-body{min-width:0;flex:1}
-.sh-name{font-size:12px;font-weight:600;line-height:1.3}
-.sh-blocks{display:flex;flex-wrap:wrap;gap:3px;margin-top:2px}
-.sh-chip{font-size:11px;font-weight:600;background:var(--accent-soft);color:var(--accent);padding:2px 6px;border-radius:6px;white-space:nowrap;font-family:'JetBrains Mono',monospace}
-.sh-chip[onclick]{cursor:pointer}
-.sh-chip[onclick]:hover{background:var(--late-soft);color:var(--late)}
-.sh-chip.edit{display:inline-flex;align-items:center;gap:5px;background:var(--surface-2);color:var(--text)}
-.sh-chip.edit button{color:var(--faint);font-weight:700;font-size:12px}
-.sh-chip.edit button:hover{color:var(--late)}
-.sh-busy{font-size:10.5px;color:var(--late);margin-top:3px;font-weight:600;background:var(--late-soft);padding:1px 5px;border-radius:5px;display:inline-block;font-family:'JetBrains Mono',monospace}
-.sh-nofree{font-size:10.5px;color:var(--faint);margin-top:2px;font-style:italic}
-.mp-day{display:grid;grid-template-columns:110px 1fr auto;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)}
-.mp-day:last-child{border-bottom:none}
-.mp-dname{font-size:13px;font-weight:600}
-.mp-blocks{display:flex;flex-wrap:wrap;gap:5px}
-.mp-none{font-size:12px;color:var(--faint)}
-.mp-add{display:flex;align-items:center;gap:5px}
-.mp-add input[type=time]{background:var(--surface-2);border:1px solid var(--border);border-radius:7px;padding:5px 7px;font-size:12px}
-.ex-add{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.ex-add input,.ex-add select{background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:7px 9px;font-size:13px}
-.ex-whole{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted)}
-.ex-row{display:flex;align-items:center;gap:10px;font-size:13px;padding:7px 10px;border:1px solid var(--border);border-radius:8px}
-.cal-pick{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:13px}
-.cal-pick:hover{background:var(--surface-2)}
-.cal-pick input{width:16px;height:16px;accent-color:var(--accent);cursor:pointer}
-.cal-sw{width:10px;height:10px;border-radius:3px;flex:0 0 auto}
-.cal-nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.cal-role{font-size:10.5px;color:var(--faint);white-space:nowrap}
-/* editing avanzato */
-.sh-chip.edit .chip-t{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--text);padding:0}
-.sh-chip.edit .chip-t:hover{color:var(--accent);text-decoration:underline}
-.mp-dname{display:flex;align-items:center;gap:8px}
-.mp-clear{font-size:10px;font-weight:600;color:var(--faint);text-transform:uppercase;letter-spacing:.03em}
-.mp-clear:hover{color:var(--late)}
-.cal-cell-h.zoom{cursor:pointer}
-.cal-cell-h.zoom:hover{background:var(--accent-soft)}
-.cal-cell-h.zoom:hover .cal-zoom{opacity:1}
-.cal-zoom{width:13px;height:13px;opacity:0;color:var(--accent);transition:opacity .12s}
-/* vista giorno stile calendario */
-.gc-card{padding:0;overflow:hidden}
-.gc-grid{display:flex;overflow-x:auto}
-.gc-gutter{flex:0 0 var(--gutter);position:sticky;left:0;z-index:4;background:var(--surface);border-right:1px solid var(--border)}
-.gc-gutter-h{height:56px;border-bottom:1px solid var(--border)}
-.gc-gutter-b{position:relative}
-.gc-hl{position:absolute;right:8px;transform:translateY(-50%);font-size:10.5px;color:var(--faint);font-family:'JetBrains Mono',monospace;font-weight:600;white-space:nowrap}
-.gc-now-lbl{position:absolute;right:4px;transform:translateY(-50%);font-size:9.5px;font-weight:700;color:#fff;background:var(--late);border-radius:4px;padding:1px 4px;font-family:'JetBrains Mono',monospace;z-index:5}
-.gc-cols{display:flex;flex:1;min-width:0}
-.gc-col{flex:1;min-width:150px;border-right:1px solid var(--border)}
-.gc-col:last-child{border-right:none}
-.gc-col-h{height:56px;padding:8px 10px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;justify-content:center;gap:2px;background:var(--surface-2);position:sticky;top:0;z-index:3}
-.gc-col-h.mine{background:var(--accent-soft)}
-.gc-col-h .sh-dot{position:absolute;top:10px;right:10px}
-.gc-col-n{font-size:13px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.gc-col-s{font-size:10.5px;color:var(--muted);font-family:'JetBrains Mono',monospace}
-.gc-busy-n{color:var(--late)}
-.gc-track{position:relative;background:var(--surface)}
-.gc-line{position:absolute;left:0;right:0;height:1px;background:var(--border);opacity:.6}
-.gc-ev{position:absolute;left:4px;right:4px;border-radius:6px;padding:3px 7px;overflow:hidden;display:flex;flex-direction:column;justify-content:center;z-index:2}
-.gc-ev-t{font-size:11px;font-weight:700;font-family:'JetBrains Mono',monospace;white-space:nowrap;line-height:1.3}
-.gc-ev-s{font-size:10px;font-weight:600;opacity:.85;white-space:nowrap;line-height:1.2}
-.gc-ev.free{background:color-mix(in srgb,var(--c) 18%,var(--surface));border-left:3px solid var(--c);color:var(--c)}
-[data-theme="dark"] .gc-ev.free{background:color-mix(in srgb,var(--c) 30%,var(--surface));color:#fff}
-.gc-ev.free.mine{cursor:pointer}
-.gc-ev.free.mine:hover{background:color-mix(in srgb,var(--c) 32%,var(--surface));box-shadow:0 2px 8px rgba(0,0,0,.1)}
-.gc-ev.busy{z-index:3;background:repeating-linear-gradient(135deg,var(--late-soft) 0 7px,color-mix(in srgb,var(--late) 22%,var(--surface)) 7px 14px);
-  border-left:3px solid var(--late);color:var(--late);left:14px}
-.gc-lock{font-size:9px;line-height:1}
-.gc-noavail{position:absolute;left:4px;right:4px;border-radius:6px;background:repeating-linear-gradient(45deg,var(--border) 0 6px,transparent 6px 12px);opacity:.5;
-  display:flex;align-items:center;justify-content:center}
-.gc-noavail span{font-size:11px;color:var(--muted);font-weight:600;background:var(--surface);padding:2px 8px;border-radius:6px;border:1px solid var(--border)}
-.gc-now{position:absolute;left:0;right:0;height:2px;background:var(--late);z-index:5}
-.gc-now::before{content:'';position:absolute;left:-1px;top:-3px;width:8px;height:8px;border-radius:50%;background:var(--late)}
-.lg-free{width:16px;height:10px;border-radius:3px;background:color-mix(in srgb,var(--accent) 18%,var(--surface));border-left:3px solid var(--accent);display:inline-block}
-.lg-busy{width:16px;height:10px;border-radius:3px;display:inline-block;border-left:3px solid var(--late);
-  background:repeating-linear-gradient(135deg,var(--late-soft) 0 4px,color-mix(in srgb,var(--late) 22%,var(--surface)) 4px 8px)}
-.lg-none{width:16px;height:10px;border-radius:3px;display:inline-block;background:repeating-linear-gradient(45deg,var(--border) 0 4px,transparent 4px 8px);border:1px solid var(--border)}
-@media(max-width:840px){.gc-col{min-width:120px}.gc-col-n{font-size:12px}}
-@media(max-width:840px){.mp-day{grid-template-columns:1fr;gap:6px}}
-
 /* planning */
 .load-strip{display:flex;gap:8px;align-items:stretch}
 .load-cell{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:6px 4px;border-radius:9px}
@@ -411,12 +323,8 @@ textarea.body{min-height:150px;line-height:1.55;white-space:pre-wrap;font-size:1
       </div>
       <div>
         <h1>FlowLine</h1>
-        <div class="sub" id="brandSub">Suite</div>
+        <div class="sub" id="brandSub">Outbound Manager</div>
       </div>
-    </div>
-    <div class="modswitch">
-      <button id="mod-outbound" onclick="setModule('outbound')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13 M22 2l-7 20-4-9-9-4 20-7z"/></svg>Outbound</button>
-      <button id="mod-shifts" onclick="setModule('shifts')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4h18v18H3z M16 2v4 M8 2v4 M3 10h18 M8 15h3"/></svg>Turni</button>
     </div>
     <nav class="nav" id="nav"></nav>
     <div class="rail-foot">
@@ -529,12 +437,10 @@ let state = {
   templates: load(LS.templates, TEMPLATES_DEFAULT),
   usage: load(LS.usage, {input:0, output:0, gen:0, since:new Date().toISOString().slice(0,10)}),
   view: 'dashboard',
-  module: load('flo_module','outbound'),
   google: load(LS.gauth, {token:null, email:null, expires:0}),
   sendAs: [],            // alias "Invia come" letti da Gmail
   fromAddr: load('flo_from',null),   // mittente scelto (null = principale)
   filter: 'tutti', search:'',
-  shifts: {members:[], rules:[], exceptions:[], gcal:[], meId:null, week:0, day:null, view:'griglia', needsSetup:false},
 };
 // i valori del team valgono se il singolo non ne ha di propri
 if(!state.config.supabaseUrl && APP_DEFAULTS.supabaseUrl) state.config.supabaseUrl=APP_DEFAULTS.supabaseUrl;
@@ -657,7 +563,7 @@ function mkContact(o){
    GOOGLE OAUTH + GMAIL + SHEETS
    ======================================================= */
 let tokenClient=null;
-const SCOPES='https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.settings.basic https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/calendar.readonly';
+const SCOPES='https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.settings.basic https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file';
 
 function googleReady(){return state.google.token && Date.now()<state.google.expires}
 function saveGAuth(){save(LS.gauth,{token:state.google.token,email:state.google.email,expires:state.google.expires})}
@@ -689,7 +595,7 @@ function connectGoogle(force){
   if(!state.config.googleClientId){openSettings();toast('Inserisci prima il Client ID Google','warn');return}
   if(!tokenClient) initGoogle();
   if(!tokenClient){toast('Google Identity non caricato, riprova','err');return}
-  // force=true -> richiede di nuovo il consenso: serve quando si aggiungono nuovi permessi (es. calendario)
+  // force=true -> richiede di nuovo il consenso: serve quando si aggiungono nuovi permessi
   tokenClient.requestAccessToken({prompt: (force||!state.google.email)?'consent':''});
 }
 function reauthGoogle(){
@@ -698,10 +604,10 @@ function reauthGoogle(){
   connectGoogle(true);
 }
 function logoutGoogle(){
-  if(!confirm('Uscire dall\'account Google? I turni restano salvati sul database.'))return;
+  if(!confirm('Uscire dall\'account Google? I contatti restano salvati sul database.'))return;
   try{if(state.google.token&&google?.accounts?.oauth2)google.accounts.oauth2.revoke(state.google.token,()=>{});}catch(e){}
   state.google={token:null,email:null,expires:0};saveGAuth();
-  state.shifts.meId=null;stopReplyPoll();
+  stopReplyPoll();
   closeModal();render();toast('Disconnesso','ok');
 }
 // genera il blocco da incollare in cima al file: così il team non configura nulla
@@ -738,9 +644,16 @@ async function afterGoogleAuth(){
     renderConn(); render();
     startReplyPoll();
     if(!state.config.testMode) setTimeout(()=>checkReplies({silent:true}),1500);
-    shiftsLoad().then(bindMe);
     loadSendAs();
-  }catch(e){toast('Errore profilo Gmail','err')}
+  }catch(e){
+    // accesso riuscito ma Gmail non risponde: quasi sempre Gmail API non attiva nel progetto Google o permessi Gmail non spuntati
+    const m=(e&&e.message)||'';
+    console.error('Profilo Gmail',m);
+    const hint=/has not been used|is disabled|accessNotConfigured|SERVICE_DISABLED/i.test(m)?'attiva la Gmail API nel progetto Google Cloud'
+      :(/insufficient|scope|403|PERMISSION/i.test(m)?'premi "Riautorizza permessi" e spunta tutte le caselle Gmail':(m||'riprova'));
+    toast('Gmail non accessibile: '+hint,'err');
+    renderConn();
+  }
 }
 // legge gli indirizzi "Invia come" verificati (alias) dell'account Gmail
 async function loadSendAs(){
@@ -769,20 +682,6 @@ function setFrom(addr){
   save('flo_from',state.fromAddr);
   renderConn();
   toast('Mittente impostato: '+addr,'ok');
-}
-// l'identità è l'account Google: ritrovo il profilo turni ovunque, senza password
-function bindMe(){
-  const em=(state.google.email||'').toLowerCase();
-  if(!em)return;
-  const found=state.shifts.members.find(m=>(m.email||'').toLowerCase()===em);
-  state.shifts.meId=found?found.id:null;
-  if(state.module==='shifts')render();
-  // gli eventi salvati prima della correzione del fuso orario sono di un giorno indietro:
-  // li riscrivo una volta sola, in automatico
-  if(found && found.gcal && !load('flo_tzfix',false)){
-    save('flo_tzfix',true);
-    setTimeout(()=>syncGcal({repair:true}),1200);
-  }
 }
 async function gfetch(url,opts={}){
   if(!googleReady()){ // prova un refresh silenzioso al volo
@@ -1054,7 +953,6 @@ function initSupabase(){
     supa=window.supabase.createClient(state.config.supabaseUrl, state.config.supabaseKey, {auth:{persistSession:false}});
     _lastPushed=new Map();
     supaLoad().then(()=>supaSubscribe());
-    shiftsLoad().then(()=>shiftsSubscribe());
   }catch(e){console.error(e);toast('Supabase: '+e.message,'err')}
 }
 // se chiudi la pagina con un salvataggio in sospeso, lo forzo subito
@@ -1468,27 +1366,7 @@ const NAV=[
   {id:'contatti',label:'Contatti',icon:'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2 M9 7a4 4 0 1 0 0 8 4 4 0 0 0 0-8z M23 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75'},
   {id:'calendario',label:'Calendario',icon:'M3 4h18v18H3z M16 2v4 M8 2v4 M3 10h18'},
 ];
-const NAV_SHIFTS=[
-  {id:'griglia',label:'Turni team',icon:'M3 4h18v18H3z M16 2v4 M8 2v4 M3 10h18'},
-  {id:'miadispo',label:'La mia disponibilità',icon:'M12 8v4l3 3 M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z'},
-];
-function setModule(m){
-  state.module=m;save('flo_module',m);
-  state.view = m==='shifts' ? (state.shifts.view||'griglia') : 'dashboard';
-  closeRail();render();
-}
 function renderNav(){
-  const outb=state.module!=='shifts';
-  const sub=document.getElementById('brandSub');if(sub)sub.textContent=outb?'Outbound Manager':'Turni & Disponibilità';
-  const mo=document.getElementById('mod-outbound'),ms=document.getElementById('mod-shifts');
-  if(mo)mo.className=outb?'':'';if(mo)mo.classList.toggle('active',outb);
-  if(ms)ms.classList.toggle('active',!outb);
-  if(!outb){
-    document.getElementById('nav').innerHTML=NAV_SHIFTS.map(n=>`<button class="${state.view===n.id?'active':''}" onclick="go('${n.id}')">
-      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${n.icon}"/></svg>
-      <span>${n.label}</span></button>`).join('');
-    return;
-  }
   const todayN=state.contacts.filter(dueToday).length;
   const late=state.contacts.filter(isLate).length;
   const backlog=state.contacts.filter(isUnplanned).length;
@@ -1549,10 +1427,9 @@ function renderConn(){
   if(stxt){stxt.textContent=supaReady()?'Database online':(supaConfigured()?'Database in connessione…':'Database locale');}
   document.getElementById('testBanner').style.display=state.config.testMode?'flex':'none';
 }
-function go(v){state.view=v;state.search='';state.filter='tutti';if(state.module==='shifts')state.shifts.view=v;closeRail();render()}
+function go(v){state.view=v;state.search='';state.filter='tutti';closeRail();render()}
 function render(){
   renderNav();renderConn();renderSpend();
-  if(state.module==='shifts'){ renderShifts(); return; }
   const titles={dashboard:'Dashboard',pianifica:'Pianificazione',coda:'Coda invio',contatti:'Contatti',calendario:'Calendario'};
   document.getElementById('viewTitle').textContent=titles[state.view]||'Dashboard';
   const ta=document.getElementById('topActions');
@@ -1574,627 +1451,6 @@ function render(){
   else if(state.view==='calendario')C.innerHTML=viewCalendario();
   if(state.view==='coda')bindCodaInputs();
   if(state.view==='pianifica')bindPianifica();
-}
-
-/* =======================================================
-   MODULO TURNI / DISPONIBILITÀ
-   ======================================================= */
-const SHIFT_COLORS=['#4f46e5','#0d9488','#d97706','#dc2626','#7c3aed','#2563eb','#db2777','#65a30d'];
-const WD_NAMES=['','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato','Domenica'];
-let _shiftChan=null, _shiftLoadT=null;
-function m2t(m){if(m==null)return'';const h=Math.floor(m/60),mm=m%60;return String(h).padStart(2,'0')+':'+String(mm).padStart(2,'0')}
-function t2m(t){const p=String(t).split(':');return (+p[0]||0)*60+(+p[1]||0)}
-function isoWd(d){return ((d.getDay()+6)%7)+1} // Lun=1..Dom=7
-function me(){return state.shifts.members.find(m=>m.id===state.shifts.meId)||null}
-function siItem(kind,extra){return {id:'si'+Math.random().toString(36).slice(2,11),member_id:state.shifts.meId,kind,weekday:null,date:null,start_min:null,end_min:null,title:null,...extra,updated_at:new Date().toISOString()}}
-
-function subtractRange(blocks,off){
-  const res=[];
-  blocks.forEach(b=>{
-    if(off.start<=b.start&&off.end>=b.end)return;
-    if(off.end<=b.start||off.start>=b.end){res.push(b);return;}
-    if(off.start>b.start)res.push({start:b.start,end:off.start});
-    if(off.end<b.end)res.push({start:off.end,end:b.end});
-  });
-  return res.filter(b=>b.end>b.start);
-}
-function mergeBlocks(bl){const b=bl.slice().sort((a,c)=>a.start-c.start);const m=[];b.forEach(x=>{const l=m[m.length-1];if(l&&x.start<=l.end)l.end=Math.max(l.end,x.end);else m.push({...x})});return m}
-function subtractAll(blocks,offs){let r=blocks;offs.forEach(o=>{r=subtractRange(r,o)});return r}
-function intersectRanges(a,b){const res=[];a.forEach(x=>b.forEach(y=>{const s=Math.max(x.start,y.start),e=Math.min(x.end,y.end);if(e>s)res.push({start:s,end:e})}));return mergeBlocks(res)}
-// scompone la giornata di una persona in fasce LIBERE e fasce OCCUPATE (impegni calendario)
-function daySplit(memberId,iso){
-  const avail=effectiveBlocks(memberId,iso);
-  const busy=mergeBlocks(state.shifts.gcal.filter(g=>g.member_id===memberId&&g.date===iso).map(g=>({start:g.start_min,end:g.end_min})));
-  return {avail, free:subtractAll(avail,busy), occupied:intersectRanges(avail,busy)};
-}
-function effectiveBlocks(memberId,iso){
-  const wd=isoWd(parseD(iso));
-  let blocks=state.shifts.rules.filter(r=>r.member_id===memberId&&r.weekday===wd).map(r=>({start:r.start_min,end:r.end_min}));
-  state.shifts.exceptions.filter(e=>e.member_id===memberId&&e.date===iso&&e.kind==='extra').forEach(e=>blocks.push({start:e.start_min,end:e.end_min}));
-  state.shifts.exceptions.filter(e=>e.member_id===memberId&&e.date===iso&&e.kind==='off').forEach(e=>{
-    if(e.start_min==null)blocks=[];else blocks=subtractRange(blocks,{start:e.start_min,end:e.end_min});
-  });
-  blocks.sort((a,b)=>a.start-b.start);
-  const merged=[];blocks.forEach(b=>{const last=merged[merged.length-1];if(last&&b.start<=last.end)last.end=Math.max(last.end,b.end);else merged.push({...b})});
-  return merged;
-}
-
-async function shiftsLoad(){
-  if(!supaReady())return;
-  try{
-    const [m,i]=await Promise.all([supa.from('shift_members').select('*'),supa.from('shift_items').select('*')]);
-    if(m.error||i.error)throw(m.error||i.error);
-    state.shifts.needsSetup=false;
-    state.shifts.members=m.data||[];
-    const items=i.data||[];
-    state.shifts.rules=items.filter(x=>x.kind==='rule');
-    state.shifts.exceptions=items.filter(x=>x.kind==='off'||x.kind==='extra');
-    state.shifts.gcal=items.filter(x=>x.kind==='gcal');
-    // riaggancio il profilo all'account Google connesso
-    const em=(state.google.email||'').toLowerCase();
-    if(em){const f=state.shifts.members.find(m=>(m.email||'').toLowerCase()===em);state.shifts.meId=f?f.id:null;}
-    if(state.module==='shifts')render();
-  }catch(e){
-    if(/relation|does not exist|Could not find|schema cache/i.test(e.message||'')){state.shifts.needsSetup=true;if(state.module==='shifts')render();}
-    else console.warn('shifts load',e.message);
-  }
-}
-function shiftsLoadDebounced(){clearTimeout(_shiftLoadT);_shiftLoadT=setTimeout(shiftsLoad,300);}
-function shiftsSubscribe(){
-  if(!supa)return;
-  if(_shiftChan){supa.removeChannel(_shiftChan);_shiftChan=null;}
-  _shiftChan=supa.channel('shifts-rt')
-    .on('postgres_changes',{event:'*',schema:'public',table:'shift_members'},shiftsLoadDebounced)
-    .on('postgres_changes',{event:'*',schema:'public',table:'shift_items'},shiftsLoadDebounced)
-    .subscribe();
-}
-function refreshShifts(){shiftsLoad();const m=me();if(m&&m.gcal)syncGcal();}
-
-async function saveMe(){
-  if(!supaReady()){toast('Database non collegato','warn');return false}
-  if(!googleReady()){toast('Accedi con Google per creare il profilo','warn');connectGoogle();return false}
-  const name=(document.getElementById('me-name')?.value||'').trim();
-  if(!name){toast('Inserisci il tuo nome','warn');return false}
-  const color=document.getElementById('me-color')?.value||SHIFT_COLORS[0];
-  const gcalOn=document.getElementById('me-gcal')?.classList.contains('on');
-  const em=(state.google.email||'').toLowerCase();
-  // niente doppioni: se esiste già un profilo con questa email, aggiorno quello
-  const existing=state.shifts.members.find(x=>(x.email||'').toLowerCase()===em);
-  const id=state.shifts.meId||existing?.id||('m'+Math.random().toString(36).slice(2,9));
-  const row={id,name,color,email:em,gcal:!!gcalOn,updated_at:new Date().toISOString()};
-  const {error}=await supa.from('shift_members').upsert(row,{onConflict:'id'});
-  if(error){toast('Errore profilo: '+error.message,'err');return false}
-  state.shifts.meId=id;
-  await shiftsLoad();
-  toast('Profilo salvato','ok');
-  if(gcalOn) syncGcal();
-  return true;
-}
-// rimozione profilo: elimina anche tutte le sue fasce e impegni
-async function deleteProfile(id){
-  const m=state.shifts.members.find(x=>x.id===id);if(!m)return;
-  const mine=id===state.shifts.meId;
-  if(!confirm(`Eliminare il profilo "${m.name}"${m.email?' ('+m.email+')':''}?\n\nVerranno rimosse anche tutte le sue disponibilità.${mine?'\n\nÈ il TUO profilo: dovrai ricrearlo.':''}`))return;
-  try{
-    const r1=await supa.from('shift_items').delete().eq('member_id',id);
-    if(r1.error)throw r1.error;
-    const r2=await supa.from('shift_members').delete().eq('id',id);
-    if(r2.error)throw r2.error;
-    if(mine)state.shifts.meId=null;
-    await shiftsLoad();
-    toast('Profilo eliminato','ok');
-  }catch(e){toast('Eliminazione fallita: '+e.message,'err')}
-}
-function ensureMe(){if(!state.shifts.meId){toast('Crea prima il tuo profilo','warn');state.view='miadispo';render();return false}return true}
-async function addItem(kind,extra){
-  if(!ensureMe())return;
-  const {error}=await supa.from('shift_items').insert(siItem(kind,extra));
-  if(error){toast('Errore: '+error.message,'err');return}
-  await shiftsLoad();
-}
-async function delItem(id){const {error}=await supa.from('shift_items').delete().eq('id',id);if(error)toast(error.message,'err');else await shiftsLoad();}
-// modifica completa di una fascia ricorrente
-function editRule(id){
-  const r=state.shifts.rules.find(x=>x.id===id);if(!r)return;
-  const ov=document.createElement('div');ov.className='overlay';ov.style.zIndex='60';ov.onclick=e=>{if(e.target===ov)ov.remove()};
-  ov.innerHTML=`<div class="modal" style="max-width:380px" onclick="event.stopPropagation()">
-    <div class="modal-h"><h3>Modifica fascia · ${WD_NAMES[r.weekday]}</h3><div class="x" onclick="this.closest('.overlay').remove()">✕</div></div>
-    <div class="modal-b">
-      <div style="display:flex;gap:10px;align-items:center;justify-content:center">
-        <input type="time" id="er-s" value="${m2t(r.start_min)}" style="background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:9px 11px;font-size:15px">
-        <span>–</span>
-        <input type="time" id="er-e" value="${m2t(r.end_min)}" style="background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:9px 11px;font-size:15px">
-      </div>
-      <div class="helptip">Vale per tutti i ${WD_NAMES[r.weekday].toLowerCase()}. Per cambiare un solo giorno, usa le eccezioni.</div>
-    </div>
-    <div class="modal-f" style="justify-content:space-between">
-      <button class="btn sm ghost danger" onclick="this.closest('.overlay').remove();delItem('${id}')">Elimina</button>
-      <div style="display:flex;gap:8px">
-        <button class="btn" onclick="this.closest('.overlay').remove()">Annulla</button>
-        <button class="btn primary" onclick="saveRule('${id}')">Salva</button>
-      </div>
-    </div>
-  </div>`;
-  document.body.appendChild(ov);
-}
-async function saveRule(id){
-  const s=document.getElementById('er-s').value,e=document.getElementById('er-e').value;
-  if(!s||!e){toast('Imposta inizio e fine','warn');return}
-  if(t2m(e)<=t2m(s)){toast("La fine deve essere dopo l'inizio",'warn');return}
-  const ov=document.querySelector('.overlay[style*="60"]');if(ov)ov.remove();
-  const {error}=await supa.from('shift_items').update({start_min:t2m(s),end_min:t2m(e),updated_at:new Date().toISOString()}).eq('id',id);
-  if(error){toast(error.message,'err');return}
-  await shiftsLoad();toast('Fascia aggiornata','ok');
-}
-async function clearDay(wd){
-  const m=me();if(!m)return;
-  if(!confirm(`Rimuovere tutte le fasce del ${WD_NAMES[wd].toLowerCase()}?`))return;
-  const {error}=await supa.from('shift_items').delete().eq('member_id',m.id).eq('kind','rule').eq('weekday',wd);
-  if(error){toast(error.message,'err');return}
-  await shiftsLoad();toast(WD_NAMES[wd]+' svuotato','ok');
-}
-async function clearWeek(){
-  const m=me();if(!m)return;
-  if(!confirm('Rimuovere TUTTA la disponibilità settimanale ricorrente?\n\nLe eccezioni sui singoli giorni restano.'))return;
-  const {error}=await supa.from('shift_items').delete().eq('member_id',m.id).eq('kind','rule');
-  if(error){toast(error.message,'err');return}
-  await shiftsLoad();toast('Disponibilità settimanale azzerata','warn');
-}
-async function disableGcal(){
-  const m=me();if(!m)return;
-  if(!confirm('Scollegare il Google Calendar?\n\nGli impegni importati verranno rimossi dalla vista turni.'))return;
-  await supa.from('shift_items').delete().eq('member_id',m.id).eq('kind','gcal');
-  await supa.from('shift_members').update({gcal:false,updated_at:new Date().toISOString()}).eq('id',m.id);
-  await shiftsLoad();toast('Calendario scollegato','ok');
-}
-function addRuleUI(wd){
-  const s=document.getElementById('rb-s-'+wd).value,e=document.getElementById('rb-e-'+wd).value;
-  if(!s||!e){toast('Imposta inizio e fine','warn');return}
-  if(t2m(e)<=t2m(s)){toast("La fine deve essere dopo l'inizio",'warn');return}
-  addItem('rule',{weekday:wd,start_min:t2m(s),end_min:t2m(e)});
-}
-async function presetStandard(){
-  if(!ensureMe())return;
-  const rows=[];for(let wd=1;wd<=5;wd++){rows.push(siItem('rule',{weekday:wd,start_min:540,end_min:780}));rows.push(siItem('rule',{weekday:wd,start_min:900,end_min:1140}));}
-  const {error}=await supa.from('shift_items').insert(rows);
-  if(error){toast(error.message,'err');return}
-  await shiftsLoad();toast('Disponibilità standard impostata (Lun–Ven 9–13, 15–19)','ok');
-}
-function offForDay(memberId,iso,start,end){
-  if(memberId!==state.shifts.meId){toast('Puoi modificare solo la tua disponibilità','warn');return}
-  if(!confirm(`Rimuovere la fascia ${m2t(start)}–${m2t(end)} solo per ${fmtDLong(parseD(iso))}?`))return;
-  addItem('off',{date:iso,start_min:start,end_min:end});
-}
-function addExceptionUI(){
-  const date=document.getElementById('ex-date').value;
-  const type=document.getElementById('ex-type').value;
-  const whole=document.getElementById('ex-whole').checked;
-  if(!date){toast('Scegli una data','warn');return}
-  if(type==='off'&&whole){addItem('off',{date});return}
-  const s=document.getElementById('ex-s').value,e=document.getElementById('ex-e').value;
-  if(!s||!e){toast("Imposta l'orario (o spunta tutto il giorno)",'warn');return}
-  if(t2m(e)<=t2m(s)){toast("La fine deve essere dopo l'inizio",'warn');return}
-  addItem(type,{date,start_min:t2m(s),end_min:t2m(e)});
-}
-
-// elenco di TUTTI i calendari collegati all'account
-async function listCalendars(){
-  const r=await gfetch('https://www.googleapis.com/calendar/v3/users/me/calendarList?minAccessRole=freeBusyReader&maxResults=250');
-  return (r.items||[]).filter(c=>!c.deleted);
-}
-function chosenCals(){return load('flo_cals',null)}   // null = tutti quelli attivi su Google
-// spezza un impegno in segmenti giornalieri (gestisce eventi oltre la mezzanotte)
-function busyToSegments(startISO,endISO){
-  const s=new Date(startISO), e=new Date(endISO);
-  const segs=[];
-  let cur=new Date(s.getFullYear(),s.getMonth(),s.getDate());
-  let guard=0;
-  while(cur<=e && guard++<40){
-    const dayStart=new Date(cur), dayEnd=new Date(cur); dayEnd.setDate(dayEnd.getDate()+1);
-    const a=Math.max(s.getTime(),dayStart.getTime()), b=Math.min(e.getTime(),dayEnd.getTime());
-    if(b>a){
-      const sm=Math.round((a-dayStart.getTime())/60000);
-      const em=Math.round((b-dayStart.getTime())/60000);
-      if(em>sm) segs.push({date:isoD(dayStart),start_min:sm,end_min:Math.min(em,24*60)});
-    }
-    cur.setDate(cur.getDate()+1);
-  }
-  return segs;
-}
-async function syncGcal(opts={}){
-  if(!state.shifts.meId){if(!opts.repair)toast('Crea prima il profilo','warn');return}
-  if(!googleReady()){if(!opts.repair){toast('Connetti Google per il calendario','warn');connectGoogle();}return}
-  try{
-    // 1) quali calendari leggere
-    const all=await listCalendars();
-    const sel=chosenCals();
-    const use=all.filter(c=> sel? sel.includes(c.id) : c.selected!==false);
-    if(!use.length){toast('Nessun calendario selezionato','warn');return}
-    // 2) FreeBusy: legge TUTTI i calendari scelti e torna solo le fasce occupate (nessun dettaglio)
-    const tMin=startOfWeek(addDays(today(),-7)), tMax=addDays(startOfWeek(today()),42);
-    const busyAll=[];
-    for(let i=0;i<use.length;i+=45){                       // il limite è 50 calendari per richiesta
-      const chunk=use.slice(i,i+45);
-      const r=await gfetch('https://www.googleapis.com/calendar/v3/freeBusy',{method:'POST',body:JSON.stringify({
-        timeMin:tMin.toISOString(), timeMax:tMax.toISOString(),
-        items:chunk.map(c=>({id:c.id}))
-      })});
-      Object.values(r.calendars||{}).forEach(c=>(c.busy||[]).forEach(b=>busyAll.push(b)));
-    }
-    // 3) in segmenti giornalieri, poi fondo le sovrapposizioni tra calendari diversi
-    const byDay={};
-    busyAll.forEach(b=>busyToSegments(b.start,b.end).forEach(sg=>{(byDay[sg.date]=byDay[sg.date]||[]).push({start:sg.start_min,end:sg.end_min})}));
-    const rows=[];
-    Object.keys(byDay).forEach(dt=>mergeBlocks(byDay[dt]).forEach(b=>rows.push(siItem('gcal',{date:dt,start_min:b.start,end_min:b.end,title:null}))));
-    // 4) riscrivo
-    await supa.from('shift_items').delete().eq('member_id',state.shifts.meId).eq('kind','gcal');
-    if(rows.length){const {error}=await supa.from('shift_items').insert(rows);if(error)throw error;}
-    await shiftsLoad();
-    toast(`${rows.length} impegni da ${use.length} calendar${use.length>1?'i':'io'}`,'ok');
-  }catch(e){
-    if(/insufficient authentication scopes|403|Insufficient Permission/i.test(e.message||'')){
-      toast('Permesso calendario mancante: riautorizza Google','err');
-      if(confirm('Il permesso per il Google Calendar non è ancora stato concesso.\n\n1) Su Google Cloud aggiungi lo scope calendar.readonly (Auth Platform → Accesso ai dati)\n2) Riautorizza qui concedendo TUTTI i permessi\n\nRiautorizzare ora?')) reauthGoogle();
-    } else toast('Sync calendario: '+e.message,'err');
-  }
-}
-// scelta dei calendari da includere
-async function pickCalendars(){
-  if(!googleReady()){toast('Connetti Google','warn');return}
-  let all;
-  try{ all=await listCalendars(); }catch(e){toast('Lettura calendari: '+e.message,'err');return}
-  const sel=chosenCals();
-  const isOn=c=> sel? sel.includes(c.id) : c.selected!==false;
-  const ov=document.createElement('div');ov.className='overlay';ov.style.zIndex='60';ov.onclick=e=>{if(e.target===ov)ov.remove()};
-  ov.innerHTML=`<div class="modal" onclick="event.stopPropagation()">
-    <div class="modal-h"><h3>Calendari da includere</h3><div class="x" onclick="this.closest('.overlay').remove()">✕</div></div>
-    <div class="modal-b">
-      <div class="helptip">Vengono lette solo le <b>fasce occupate</b>, mai i dettagli degli eventi. Sono inclusi anche i calendari di cui non vedi il contenuto.</div>
-      <div style="display:flex;flex-direction:column;gap:4px;max-height:340px;overflow:auto">
-        ${all.map(c=>`<label class="cal-pick">
-          <input type="checkbox" data-cal="${escAttr(c.id)}" ${isOn(c)?'checked':''}>
-          <span class="cal-sw" style="background:${c.backgroundColor||'var(--accent)'}"></span>
-          <span class="cal-nm">${esc(c.summary||c.id)}${c.primary?' <b>(principale)</b>':''}</span>
-          <span class="cal-role">${c.accessRole==='freeBusyReader'?'solo libero/occupato':''}</span>
-        </label>`).join('')}
-      </div>
-    </div>
-    <div class="modal-f" style="justify-content:space-between">
-      <button class="btn sm ghost" onclick="this.closest('.overlay').querySelectorAll('input[data-cal]').forEach(i=>i.checked=true)">Seleziona tutti</button>
-      <div style="display:flex;gap:8px">
-        <button class="btn" onclick="this.closest('.overlay').remove()">Annulla</button>
-        <button class="btn primary" onclick="saveCals(this)">Salva e sincronizza</button>
-      </div>
-    </div>
-  </div>`;
-  document.body.appendChild(ov);
-}
-function saveCals(btn){
-  const ov=btn.closest('.overlay');
-  const ids=[...ov.querySelectorAll('input[data-cal]')].filter(i=>i.checked).map(i=>i.dataset.cal);
-  if(!ids.length){toast('Seleziona almeno un calendario','warn');return}
-  save('flo_cals',ids);
-  ov.remove();
-  syncGcal();
-}
-
-const SHIFTS_SQL=`-- Tabelle del modulo Turni (esegui una volta)
-create table if not exists shift_members (
-  id text primary key,
-  name text,
-  color text,
-  email text,
-  gcal boolean default false,
-  updated_at timestamptz default now()
-);
-create table if not exists shift_items (
-  id text primary key,
-  member_id text,
-  kind text,           -- 'rule' | 'off' | 'extra' | 'gcal'
-  weekday int,         -- 1=Lun .. 7=Dom (regole ricorrenti)
-  date date,           -- eccezioni ed eventi calendario
-  start_min int,
-  end_min int,
-  title text,
-  updated_at timestamptz default now()
-);
-alter table shift_members enable row level security;
-alter table shift_items enable row level security;
-create policy "sm all" on shift_members for all using (true) with check (true);
-create policy "si all" on shift_items for all using (true) with check (true);
-alter publication supabase_realtime add table shift_members;
-alter publication supabase_realtime add table shift_items;`;
-
-function showShiftsSQL(){
-  const ov=document.createElement('div');ov.className='overlay';ov.style.zIndex='60';ov.onclick=e=>{if(e.target===ov)ov.remove()};
-  ov.innerHTML=`<div class="modal" onclick="event.stopPropagation()">
-    <div class="modal-h"><h3>SQL — tabelle turni</h3><div class="x" onclick="this.closest('.overlay').remove()">✕</div></div>
-    <div class="modal-b">
-      <div class="helptip">Supabase → SQL Editor → New query → incolla ed esegui.</div>
-      <textarea class="body" style="min-height:280px;font-family:'JetBrains Mono',monospace;font-size:12px" readonly>${esc(SHIFTS_SQL)}</textarea>
-      <button class="btn sm" onclick="copyShiftsSQL()">Copia SQL</button>
-    </div>
-    <div class="modal-f"><button class="btn primary" onclick="this.closest('.overlay').remove();shiftsLoad()">Ho eseguito l'SQL</button></div>
-  </div>`;
-  document.body.appendChild(ov);
-}
-function copyShiftsSQL(){navigator.clipboard.writeText(SHIFTS_SQL).then(()=>toast('SQL copiato','ok')).catch(()=>toast('Copia non riuscita','err'))}
-
-/* ---- render turni ---- */
-function renderShifts(){
-  document.getElementById('viewTitle').textContent=state.view==='miadispo'?'La mia disponibilità':(state.view==='giorno'?'Dettaglio giorno':'Turni team');
-  const ta=document.getElementById('topActions');
-  ta.innerHTML=`<button class="btn sm ghost" onclick="refreshShifts()" title="Aggiorna"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6 M1 20v-6h6 M3.51 9a9 9 0 0 1 14.85-3.36L23 10 M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>Aggiorna</button>`;
-  const C=document.getElementById('content');
-  if(!supaReady()){C.innerHTML=`<div class="empty"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z M12 8v4 M12 16h.01"/></svg><h4>Database non raggiungibile</h4><p>${APP_DEFAULTS.supabaseUrl?'Connessione al database in corso… se il problema resta, avvisa Giuseppe.':'La suite non è ancora configurata. Vai in Impostazioni e collega Supabase.'}</p><button class="btn primary" onclick="openSettings()">Apri impostazioni</button></div>`;return;}
-  if(state.shifts.needsSetup){C.innerHTML=`<div class="empty"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 4h18v18H3z M16 2v4 M8 2v4 M3 10h18"/></svg>
-    <h4>Configura le tabelle dei turni</h4>
-    <p>Manca lo schema sul database. Esegui una volta l'SQL nel <b>SQL Editor</b> di Supabase, poi ricontrolla.</p>
-    <button class="btn primary" onclick="showShiftsSQL()">Mostra SQL turni</button>
-    <div style="margin-top:10px"><button class="btn sm ghost" onclick="shiftsLoad()">Ho eseguito l'SQL — ricontrolla</button></div></div>`;return;}
-  if(!googleReady()){C.innerHTML=viewLogin();return;}
-  C.innerHTML = state.view==='miadispo'?viewMiaDispo():(state.view==='giorno'?viewGiorno():viewGriglia());
-}
-function viewLogin(){
-  return `<div class="empty" style="padding-top:60px">
-    <div style="width:54px;height:54px;border-radius:14px;margin:0 auto 18px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center">
-      <svg style="width:28px;height:28px" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M3 4h18v18H3z M16 2v4 M8 2v4 M3 10h18"/></svg>
-    </div>
-    <h4 style="font-size:17px">Accedi per vedere i turni</h4>
-    <p>Usa il tuo account Google FlowLine. I tuoi turni ti seguono su qualsiasi dispositivo: nessuna password, nessuna configurazione.</p>
-    <button class="btn primary" onclick="connectGoogle(true)">
-      <svg class="ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 11v2.6h6.2c-.2 1.6-1.8 4.7-6.2 4.7-3.7 0-6.8-3.1-6.8-6.9S8.3 4.5 12 4.5c2.1 0 3.6.9 4.4 1.7l3-2.9C17.5 1.5 15 .5 12 .5 5.7.5.6 5.6.6 12S5.7 23.5 12 23.5c6.6 0 11-4.6 11-11.2 0-.8-.1-1.3-.2-1.9H12z"/></svg>
-      Accedi con Google</button>
-  </div>`;
-}
-
-/* ---- vista: griglia turni team ---- */
-function viewGriglia(){
-  const members=state.shifts.members;
-  if(!members.length){
-    return `<div class="empty"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2 M9 7a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/></svg>
-      <h4>Nessuna disponibilità ancora</h4><p>Crea il tuo profilo e imposta le tue fasce: compariranno qui per tutto il team.</p>
-      <button class="btn primary" onclick="go('miadispo')">Imposta la mia disponibilità</button></div>`;
-  }
-  const t=today();const ws=startOfWeek(addDays(t,state.shifts.week*7));
-  const days=[];for(let i=0;i<7;i++)days.push(addDays(ws,i));
-  const wkLabel=`${ws.getDate()} ${ws.toLocaleDateString('it-IT',{month:'short'})} – ${addDays(ws,6).getDate()} ${addDays(ws,6).toLocaleDateString('it-IT',{month:'short'})}`;
-  const legend=members.map(m=>`<span class="cal-leg"><span class="sh-dot" style="background:${m.color}"></span>${esc(m.name)}${m.id===state.shifts.meId?' (tu)':''}</span>`).join('');
-  const grid=days.map(d=>{
-    const iso=isoD(d);const isToday=sameDay(d,t);const wknd=(d.getDay()===0||d.getDay()===6);
-    const rows=members.map(m=>{
-      const {avail,free,occupied}=daySplit(m.id,iso);
-      if(!avail.length)return '';
-      const mine=m.id===state.shifts.meId;
-      return `<div class="sh-m">
-        <span class="sh-dot" style="background:${m.color}"></span>
-        <div class="sh-m-body">
-          <div class="sh-name">${esc(m.name)}</div>
-          ${free.length?`<div class="sh-blocks">${free.map(b=>`<span class="sh-chip"${mine?` onclick="offForDay('${m.id}','${iso}',${b.start},${b.end})" title="Rimuovi solo per questo giorno"`:''}>${m2t(b.start)}–${m2t(b.end)}</span>`).join('')}</div>`:'<div class="sh-nofree">nessuna fascia libera</div>'}
-          ${occupied.map(b=>`<div class="sh-busy">🔒 ${m2t(b.start)}–${m2t(b.end)} · non disponibile</div>`).join('')}
-        </div></div>`;
-    }).join('');
-    return `<div class="cal-cell${isToday?' today':''}${wknd?' wknd':''}">
-      <div class="cal-cell-h zoom" onclick="openDay('${iso}')" title="Apri il dettaglio del giorno">
-        <span class="cal-dname">${d.toLocaleDateString('it-IT',{weekday:'short'})}</span>
-        <span class="cal-dnum">${d.getDate()}</span>
-        <svg class="cal-zoom" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3 M11 8v6 M8 11h6"/></svg>
-      </div>
-      <div class="cal-items">${rows||'<div class="cal-empty">—</div>'}</div>
-    </div>`;
-  }).join('');
-  return `
-  <div class="cal-bar">
-    <button class="btn sm ghost" onclick="state.shifts.week--;render()"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
-    <div class="cal-title"><b>${wkLabel}</b><span class="email-cell">${members.length} collaboratori${state.shifts.week===0?' · settimana corrente':''}</span></div>
-    <button class="btn sm ghost" onclick="state.shifts.week++;render()"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
-    ${state.shifts.week!==0?`<button class="btn sm" onclick="state.shifts.week=0;render()">Oggi</button>`:''}
-    <button class="btn sm primary" onclick="go('miadispo')">La mia disponibilità</button>
-  </div>
-  <div class="cal-grid">${grid}</div>
-  <div class="cal-legend">${legend}<span class="cal-leg" style="margin-left:auto;color:var(--faint)">🔒 = impegno da Google Calendar</span></div>`;
-}
-
-/* ---- vista: giorno ingrandito (timeline oraria) ---- */
-function openDay(iso){state.shifts.day=iso;state.view='giorno';render()}
-function closeDay(){state.shifts.day=null;state.view='griglia';render()}
-function viewGiorno(){
-  const iso=state.shifts.day;const d=parseD(iso);const t=today();
-  const members=state.shifts.members;
-  // finestra oraria adattiva sui dati del giorno
-  let lo=24*60, hi=0;
-  members.forEach(m=>{
-    const s=daySplit(m.id,iso);
-    s.avail.forEach(b=>{lo=Math.min(lo,b.start);hi=Math.max(hi,b.end)});
-  });
-  if(lo>hi){lo=8*60;hi=20*60;}
-  lo=Math.max(0,Math.floor(lo/60)*60-60); hi=Math.min(24*60,Math.ceil(hi/60)*60+60);
-  const span=hi-lo;
-  const PX=52;                       // altezza di un'ora
-  const H=span/60*PX;
-  const y=v=>(v-lo)/60*PX;
-  const hours=[];for(let h=Math.ceil(lo/60);h<=Math.floor(hi/60);h++)hours.push(h);
-  const now=new Date();const nowMin=now.getHours()*60+now.getMinutes();
-  const showNow=sameDay(d,t)&&nowMin>=lo&&nowMin<=hi;
-
-  const cols=members.map(m=>{
-    const {avail,free,occupied}=daySplit(m.id,iso);
-    const mine=m.id===state.shifts.meId;
-    const tot=free.reduce((s,b)=>s+(b.end-b.start),0);
-    const busyTot=occupied.reduce((s,b)=>s+(b.end-b.start),0);
-    const body = avail.length ? `
-      ${free.map(b=>{const hgt=(b.end-b.start)/60*PX;
-        return `<div class="gc-ev free${mine?' mine':''}" style="top:${y(b.start)}px;height:${hgt}px;--c:${m.color}"
-          ${mine?`onclick="offForDay('${m.id}','${iso}',${b.start},${b.end})" title="Clicca per rimuovere questa fascia solo oggi"`:''}>
-          <span class="gc-ev-t">${m2t(b.start)} – ${m2t(b.end)}</span>
-          ${hgt>34?'<span class="gc-ev-s">disponibile</span>':''}
-        </div>`}).join('')}
-      ${occupied.map(b=>{const hgt=(b.end-b.start)/60*PX;
-        return `<div class="gc-ev busy" style="top:${y(b.start)}px;height:${hgt}px" title="Non disponibile ${escAttr(m2t(b.start)+'–'+m2t(b.end))}">
-          <span class="gc-ev-t">${m2t(b.start)} – ${m2t(b.end)}</span>
-          ${hgt>34?'<span class="gc-ev-s">non disponibile</span>':'<span class="gc-lock">🔒</span>'}
-        </div>`}).join('')}`
-      : `<div class="gc-noavail" style="top:0;height:${H}px"><span>non disponibile</span></div>`;
-    return `<div class="gc-col">
-      <div class="gc-col-h${mine?' mine':''}">
-        <span class="sh-dot" style="background:${m.color}"></span>
-        <div class="gc-col-n">${esc(m.name)}${mine?' <span class="tl-you">tu</span>':''}</div>
-        <div class="gc-col-s">${tot?Math.floor(tot/60)+'h'+(tot%60?String(tot%60).padStart(2,'0'):'')+' libere':'non disponibile'}${busyTot?` · <span class="gc-busy-n">${Math.floor(busyTot/60)?Math.floor(busyTot/60)+'h':''}${busyTot%60?String(busyTot%60)+'m':''} occupate</span>`:''}</div>
-      </div>
-      <div class="gc-track" style="height:${H}px">
-        ${hours.map(h=>`<div class="gc-line" style="top:${y(h*60)}px"></div>`).join('')}
-        ${body}
-        ${showNow?`<div class="gc-now" style="top:${y(nowMin)}px"></div>`:''}
-      </div>
-    </div>`;
-  }).join('');
-
-  const dispon=members.filter(m=>daySplit(m.id,iso).free.length).length;
-  return `
-  <div class="cal-bar">
-    <button class="btn sm ghost" onclick="openDay('${isoD(addDays(d,-1))}')"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
-    <div class="cal-title"><b style="font-size:17px;text-transform:capitalize">${fmtDLong(d)}</b><span class="email-cell">${sameDay(d,t)?'oggi · ':''}${dispon} disponibili su ${members.length}</span></div>
-    <button class="btn sm ghost" onclick="openDay('${isoD(addDays(d,1))}')"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
-    ${!sameDay(d,t)?`<button class="btn sm" onclick="openDay('${isoD(t)}')">Oggi</button>`:''}
-    <button class="btn sm" onclick="closeDay()">← Settimana</button>
-  </div>
-  <div class="card gc-card">
-    <div class="gc-grid" style="--gutter:52px">
-      <div class="gc-gutter">
-        <div class="gc-gutter-h"></div>
-        <div class="gc-gutter-b" style="height:${H}px">
-          ${hours.map(h=>`<div class="gc-hl" style="top:${y(h*60)}px">${String(h).padStart(2,'0')}:00</div>`).join('')}
-          ${showNow?`<div class="gc-now-lbl" style="top:${y(nowMin)}px">${m2t(nowMin)}</div>`:''}
-        </div>
-      </div>
-      <div class="gc-cols">${cols||'<div class="cal-empty" style="padding:20px">Nessun collaboratore</div>'}</div>
-    </div>
-  </div>
-  <div class="cal-legend">
-    <span class="cal-leg"><span class="lg-free"></span>Disponibile</span>
-    <span class="cal-leg"><span class="lg-busy"></span>Occupato da un impegno in calendario</span>
-    <span class="cal-leg"><span class="lg-none"></span>Fuori disponibilità</span>
-    <span class="cal-leg" style="margin-left:auto;color:var(--faint)">Clicca una tua fascia verde per rimuoverla solo oggi</span>
-  </div>`;
-}
-
-/* ---- vista: la mia disponibilità ---- */
-function viewMiaDispo(){
-  const m=me();
-  if(!m){
-    const guess=(state.google.email||'').split('@')[0].replace(/[._-]/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
-    return `<div class="card" style="max-width:520px;padding:20px"><div class="section-h" style="margin-top:0"><h3>Benvenuto — crea il tuo profilo</h3><div class="line"></div></div>
-      <div class="helptip" style="margin-bottom:12px">Accesso effettuato come <b>${esc(state.google.email||'')}</b>. Il profilo resta legato a questo account: lo ritrovi da qualsiasi dispositivo.</div>
-      <div class="form-row"><label>Nome visualizzato</label><input id="me-name" value="${escAttr(guess)}" placeholder="Es. Giuseppe"></div>
-      <div class="form-row"><label>Colore</label><input id="me-color" type="color" value="${SHIFT_COLORS[state.shifts.members.length%SHIFT_COLORS.length]}" style="width:60px;height:38px;padding:2px"></div>
-      <label class="toggle" id="me-gcal" onclick="this.classList.toggle('on')"><span class="sw"></span><span>Sincronizza il mio Google Calendar (facoltativo)</span></label>
-      <div style="margin-top:14px"><button class="btn primary" onclick="saveMe()">Crea profilo</button></div></div>`;
-  }
-  const rulesByDay=wd=>state.shifts.rules.filter(r=>r.member_id===m.id&&r.weekday===wd).sort((a,b)=>a.start_min-b.start_min);
-  const t=today();
-  const myExc=state.shifts.exceptions.filter(e=>e.member_id===m.id&&parseD(e.date)>=addDays(t,-1)).sort((a,b)=>parseD(a.date)-parseD(b.date));
-  const myGcal=state.shifts.gcal.filter(g=>g.member_id===m.id).length;
-  const weekEditor=[1,2,3,4,5,6,7].map(wd=>{
-    const rs=rulesByDay(wd);
-    return `<div class="mp-day">
-      <div class="mp-dname">${WD_NAMES[wd]}${rs.length?`<button class="mp-clear" onclick="clearDay(${wd})" title="Svuota il giorno">svuota</button>`:''}</div>
-      <div class="mp-blocks">
-        ${rs.length?rs.map(r=>`<span class="sh-chip edit"><button class="chip-t" onclick="editRule('${r.id}')" title="Modifica orario">${m2t(r.start_min)}–${m2t(r.end_min)}</button><button onclick="delItem('${r.id}')" title="Rimuovi">✕</button></span>`).join(''):'<span class="mp-none">nessuna fascia</span>'}
-      </div>
-      <div class="mp-add">
-        <input type="time" id="rb-s-${wd}" value="09:00"><span>–</span><input type="time" id="rb-e-${wd}" value="13:00">
-        <button class="btn sm" onclick="addRuleUI(${wd})">+ Aggiungi</button>
-      </div>
-    </div>`;
-  }).join('');
-  return `
-  <div class="card" style="padding:16px;margin-bottom:16px">
-    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-      <span class="sh-dot" style="width:14px;height:14px;background:${m.color}"></span>
-      <b style="font-size:15px">${esc(m.name)}</b>
-      <span class="email-cell">${esc(m.email||'')}</span>
-      <div style="flex:1"></div>
-      <button class="btn sm ghost" onclick="editProfile()">Modifica profilo</button>
-      <button class="btn sm ghost danger" onclick="deleteProfile('${m.id}')">Elimina profilo</button>
-    </div>
-    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px">
-      <span class="chip ${m.gcal?'reply':'da'}"><span class="d"></span>${m.gcal?'Google Calendar attivo':'Google Calendar non collegato'}</span>
-      ${m.gcal?`<span class="email-cell">${myGcal} impegni importati</span><button class="btn sm" onclick="syncGcal()">Sincronizza ora</button><button class="btn sm ghost" onclick="pickCalendars()">Scegli calendari</button><button class="btn sm ghost danger" onclick="disableGcal()">Scollega</button>`:`<button class="btn sm" onclick="enableGcal()">Collega il mio calendario</button>`}
-    </div>
-    ${m.gcal?`<div class="helptip" style="margin-top:8px">Vengono letti <b>tutti i calendari</b> del tuo account (anche quelli condivisi da altri) tramite libero/occupato: agli altri compaiono <b>solo gli orari</b> in cui non sei disponibile, mai il nome degli eventi.</div>`:''}
-  </div>
-
-  <div class="section-h" style="margin-top:0"><h3>Disponibilità settimanale ricorrente</h3><div class="line"></div>
-    <button class="btn sm" onclick="presetStandard()">Preset Lun–Ven 9–13, 15–19</button>
-    <button class="btn sm ghost danger" onclick="clearWeek()">Svuota tutto</button></div>
-  <div class="card" style="padding:6px 14px">${weekEditor}</div>
-
-  <div class="section-h"><h3>Eccezioni (giorni specifici)</h3><div class="line"></div></div>
-  <div class="card" style="padding:14px">
-    <div class="helptip" style="margin-bottom:10px">Togli o aggiungi disponibilità per un singolo giorno, senza toccare la regola settimanale. Puoi anche cliccare una tua fascia in "Turni team" per rimuoverla solo quel giorno.</div>
-    <div class="ex-add">
-      <input type="date" id="ex-date" value="${isoD(t)}">
-      <select id="ex-type"><option value="off">Rimuovi disponibilità</option><option value="extra">Aggiungi disponibilità</option></select>
-      <label class="ex-whole"><input type="checkbox" id="ex-whole"> tutto il giorno</label>
-      <input type="time" id="ex-s" value="09:00"><span>–</span><input type="time" id="ex-e" value="13:00">
-      <button class="btn sm primary" onclick="addExceptionUI()">Applica</button>
-    </div>
-    ${myExc.length?`<div style="margin-top:12px;display:flex;flex-direction:column;gap:6px">
-      ${myExc.map(e=>`<div class="ex-row">
-        <span class="chip ${e.kind==='off'?'stop':'reply'}"><span class="d"></span>${e.kind==='off'?'Rimossa':'Aggiunta'}</span>
-        <span>${fmtDLong(parseD(e.date))}</span>
-        <span class="email-cell">${e.start_min==null?'tutto il giorno':m2t(e.start_min)+'–'+m2t(e.end_min)}</span>
-        <div style="flex:1"></div>
-        <button class="btn sm ghost danger" onclick="delItem('${e.id}')">Annulla</button>
-      </div>`).join('')}
-    </div>`:'<div class="email-cell" style="margin-top:8px">Nessuna eccezione in programma.</div>'}
-  </div>
-
-  <div class="section-h"><h3>Profili del team</h3><span class="count">${state.shifts.members.length}</span><div class="line"></div></div>
-  <div class="card" style="padding:14px">
-    <div class="helptip" style="margin-bottom:10px">Elenco dei profili sul database. Elimina eventuali doppioni o profili non più in uso: verranno rimosse anche le loro disponibilità.</div>
-    <div style="display:flex;flex-direction:column;gap:6px">
-      ${state.shifts.members.map(x=>{
-        const mine=x.id===m.id;
-        const nRules=state.shifts.rules.filter(r=>r.member_id===x.id).length;
-        return `<div class="ex-row">
-          <span class="sh-dot" style="background:${x.color}"></span>
-          <b>${esc(x.name)}</b>
-          ${mine?'<span class="tl-you">tu</span>':''}
-          <span class="email-cell">${esc(x.email||'— nessuna email —')}</span>
-          <span class="email-cell">${nRules} fasce</span>
-          <div style="flex:1"></div>
-          ${mine?`<button class="btn sm ghost" onclick="editProfile()">Modifica</button>`:''}
-          <button class="btn sm ghost danger" onclick="deleteProfile('${x.id}')">Elimina</button>
-        </div>`;
-      }).join('')}
-    </div>
-  </div>`;
-}
-function editProfile(){
-  const m=me();if(!m)return;
-  const ov=document.createElement('div');ov.className='overlay';ov.style.zIndex='60';ov.onclick=e=>{if(e.target===ov)ov.remove()};
-  ov.innerHTML=`<div class="modal" onclick="event.stopPropagation()">
-    <div class="modal-h"><h3>Modifica profilo</h3><div class="x" onclick="this.closest('.overlay').remove()">✕</div></div>
-    <div class="modal-b">
-      <div class="form-row"><label>Nome</label><input id="me-name" value="${escAttr(m.name)}"></div>
-      <div class="form-row"><label>Colore</label><input id="me-color" type="color" value="${m.color}" style="width:60px;height:38px;padding:2px"></div>
-      <label class="toggle ${m.gcal?'on':''}" id="me-gcal" onclick="this.classList.toggle('on')"><span class="sw"></span><span>Sincronizza il mio Google Calendar</span></label>
-    </div>
-    <div class="modal-f"><button class="btn" onclick="this.closest('.overlay').remove()">Annulla</button><button class="btn primary" onclick="saveMeFromModal(this)">Salva</button></div>
-  </div>`;
-  document.body.appendChild(ov);
-}
-// legge i campi MENTRE la finestra è ancora aperta, poi chiude
-async function saveMeFromModal(btn){
-  const ov=btn.closest('.overlay');
-  const ok=await saveMe();
-  if(ok!==false && ov) ov.remove();
-}
-function enableGcal(){
-  if(!googleReady()){toast('Prima connetti Google (Impostazioni)','warn');connectGoogle();return}
-  const m=me();if(!m)return;
-  supa.from('shift_members').update({gcal:true,updated_at:new Date().toISOString()}).eq('id',m.id).then(()=>{shiftsLoad().then(()=>syncGcal())});
 }
 
 /* ---------- DASHBOARD ---------- */
@@ -2830,7 +2086,7 @@ function openSettings(){
         <span class="hint">Da Google Cloud Console → Credenziali → ID client OAuth (tipo: Web). Aggiungi l'origine del tuo sito GitHub Pages tra le origini JavaScript autorizzate.</span></div>
       <div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap">
         <button class="btn sm" onclick="saveGid()">${googleReady()?'Riconnetti':'Connetti Google'}</button>
-        ${googleReady()?`<button class="btn sm ghost" onclick="reauthGoogle()" title="Richiede di nuovo il consenso: serve dopo aver aggiunto nuovi permessi (es. calendario)">Riautorizza permessi</button>
+        ${googleReady()?`<button class="btn sm ghost" onclick="reauthGoogle()" title="Richiede di nuovo il consenso: serve dopo aver aggiunto nuovi permessi">Riautorizza permessi</button>
         <button class="btn sm ghost danger" onclick="logoutGoogle()">Esci</button>`:''}
         ${googleReady()?`<span class="chip reply"><span class="d"></span>${esc(state.google.email||'connesso')}</span>`:''}
       </div>
@@ -2838,7 +2094,7 @@ function openSettings(){
       ${googleReady()?`<div class="form-row"><label>Invia le email da <span class="hint">(alias "Invia come" del tuo account Gmail)</span></label>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
           <select id="set-from" onchange="setFrom(this.value)" style="flex:1;min-width:220px">
-            ${(state.sendAs.length?state.sendAs:[{email:state.google.email,name:'',primary:true}]).map(a=>{
+            ${(state.sendAs.length?state.sendAs:[{email:state.google.email||'',name:'',primary:true}]).filter(a=>a&&a.email).map(a=>{
               const cur=(state.fromAddr||state.google.email||'').toLowerCase()===a.email.toLowerCase();
               return `<option value="${escAttr(a.email)}" ${cur?'selected':''}>${esc((a.name?a.name+' — ':'')+a.email)}${a.primary?' (principale)':''}</option>`;
             }).join('')}
