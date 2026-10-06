@@ -1277,10 +1277,13 @@ ${step===0&&c.corpoBase?`\nBozza esistente da migliorare/riadattare (mantieni il
 ${prevSent?`\nEmail già inviate in questo thread (NON ripeterti, costruisci sopra):\n${prevSent}`:''}`;
   const r=await fetch('https://api.anthropic.com/v1/messages',{
     method:'POST',
-    headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    headers:Object.assign({'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      state.config.anthropicWorkspace?{'anthropic-workspace-id':state.config.anthropicWorkspace}:{}),
     body:JSON.stringify({model:MODEL,max_tokens:900,system:sys,messages:[{role:'user',content:ctx}]})
   });
-  if(!r.ok){const t=await r.text();throw new Error('Anthropic '+r.status+': '+t.slice(0,200))}
+  if(!r.ok){const t=await r.text();
+    if(/anthropic-workspace-id|not scoped to a workspace/i.test(t)) throw new Error('La chiave Anthropic non è legata a un workspace: inserisci il Workspace ID in Impostazioni → Generazione AI');
+    throw new Error('Anthropic '+r.status+': '+t.slice(0,200))}
   const data=await r.json();
   const u=data.usage||{};
   const inT=(u.input_tokens||0)+(u.cache_read_input_tokens||0)+(u.cache_creation_input_tokens||0);
@@ -2126,6 +2129,9 @@ function openSettings(){
       <div class="form-row"><label>Chiave API Anthropic</label>
         <input id="set-akey" type="password" value="${escAttr(cf.anthropicKey)}" placeholder="sk-ant-...">
         <span class="hint">Usata per generare oggetto e corpo (modello ${MODEL}). Salvata solo nel browser.</span></div>
+      <div class="form-row"><label>Workspace ID Anthropic <span class="hint">(facoltativo)</span></label>
+        <input id="set-awsp" value="${escAttr(cf.anthropicWorkspace||'')}" placeholder="wrkspc_...">
+        <span class="hint">Serve solo se la chiave non è legata a un workspace (errore "not scoped to a workspace"). Si trova in Claude Console → Settings → Workspaces.</span></div>
 
       <div class="section-h" style="margin:4px 0 0"><h3 style="font-size:14px">Regole di invio</h3><div class="line"></div></div>
       <div class="two-col">
@@ -2159,6 +2165,7 @@ function saveSettings(){
   const prevSupaUrl=cf.supabaseUrl, prevSupaKey=cf.supabaseKey;
   cf.googleClientId=document.getElementById('set-gid').value.trim();
   cf.anthropicKey=document.getElementById('set-akey').value.trim();
+  cf.anthropicWorkspace=(document.getElementById('set-awsp')?.value||'').trim();
   cf.supabaseUrl=document.getElementById('set-supaurl').value.trim().replace(/\/$/,'');
   cf.supabaseKey=document.getElementById('set-supakey').value.trim();
   cf.maxAlGiorno=+document.getElementById('set-max').value||10;
