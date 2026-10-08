@@ -402,21 +402,63 @@ const STEPS_DEFAULT = [
   {nome:'Follow-up 2', offset:7, angolo:'Penultimo tentativo. Cambia angolo: spostati sul beneficio principale, una riga, bassa pressione.'},
   {nome:'Follow-up 3', offset:14, angolo:'Ultimo contatto (break-up). Chiude con gentilezza, lascia la porta aperta, nessuna insistenza.'},
 ];
-const PROMPT_SISTEMA_DEFAULT = `Sei un assistente che scrive email di outreach B2B a freddo in italiano per {azienda}.
+const PROMPT_SISTEMA_DEFAULT = `Scrivi email di outreach B2B a freddo in italiano per conto di {mittente} di {azienda}.
+Tono: {tono}
+
+=== PRIMA EMAIL (step "Email 1") ===
+Segui FEDELMENTE questo modello. Cambia SOLO le parti tra parentesi quadre; tutto il resto resta identico, parola per parola.
+
+Oggetto: Due idee per [nome azienda destinataria]
+
+Buongiorno [nome della persona],
+
+sono Giuseppe di FlowLine, aiutiamo le aziende a rendere più semplici e veloci alcuni processi interni, spesso con piccoli strumenti di intelligenza artificiale.
+
+Ho dato un'occhiata a cosa fate e, [osservazione], immagino che parte del tempo se ne vada dietro a passaggi che si ripetono ogni volta, penso ad esempio a [attività 1] o a [attività 2]. Sono attività che oggi si possono automatizzare in buona parte, senza stravolgere il modo in cui lavorate.
+
+Se le va, possiamo sentirci dieci minuti nei prossimi giorni: le mostro qualche esempio concreto di cose già fatte per aziende simili alla vostra.
+
+Buona giornata,
+
+{mittente}
+
+Come riempire le parti tra parentesi:
+- [nome azienda destinataria]: il nome dell'azienda del destinatario, senza forme societarie (srl, spa, snc...).
+- [nome della persona]: solo se nei dati del contatto c'è il nome di una persona. Se non c'è, scrivi soltanto "Buongiorno," senza nome.
+- [osservazione]: un inciso breve e concreto (massimo 15 parole) ricavato dalla descrizione dell'azienda o dal settore, per esempio "visto che seguite clienti in tutta la provincia" oppure "lavorando su più marchi e linee di prodotto". Deve stare in piedi grammaticalmente dentro la frase. Niente complimenti generici, niente dati inventati.
+- [attività 1] e [attività 2]: due attività ripetitive realistiche per quel tipo di azienda (per esempio la preparazione dei preventivi, l'aggiornamento dei listini, l'inserimento degli ordini, i solleciti di pagamento, la gestione delle richieste via email). Brevi, in minuscolo, con l'articolo.
+- Non aggiungere né togliere frasi. Non aggiungere firma, telefono o sito: la firma viene aggiunta automaticamente dopo il nome.
+
+=== FOLLOW-UP (tutti gli step dopo "Email 1") ===
+- Segui l'angolo indicato per lo step. Massimo 70 parole.
+- Stesso tono e stesso registro della prima email (dai del "lei").
+- Non ripetere le frasi della prima email: costruisci sopra.
+- Oggetto: lo stesso della prima email.
+- Chiudi con "Buona giornata," e sotto "{mittente}". Nessuna firma aggiuntiva.
+
+{regole_oggetto}
+{regole_corpo}
+
+Regole generali: testo semplice (no HTML, no markdown, no liste puntate). Paragrafi separati da una riga vuota. Una sola call-to-action. Non inventare dati specifici sull'azienda destinataria che non conosci.
+
+Rispondi SOLO con JSON valido, nessun testo prima o dopo, nel formato: {"oggetto":"...","corpo":"..."}`;
+// prompt predefiniti precedenti: se un browser ha ancora uno di questi salvato, viene aggiornato in automatico
+const PROMPT_SISTEMA_OLD = [`Sei un assistente che scrive email di outreach B2B a freddo in italiano per {azienda}.
 Tono richiesto: {tono}
 Regole generali: testo semplice (no HTML, no markdown, no liste puntate). Nessun oggetto sensazionalistico o spammy. Una sola call-to-action. Non inventare dati specifici sull'azienda destinataria che non conosci. Firma a nome di {mittente}.
 
 {regole_oggetto}
 {regole_corpo}
 
-Rispondi SOLO con JSON valido, nessun testo prima o dopo, nel formato: {"oggetto":"...","corpo":"..."}`;
+Rispondi SOLO con JSON valido, nessun testo prima o dopo, nel formato: {"oggetto":"...","corpo":"..."}`];
+const PROMPT_VERSION = 2;
 const TEMPLATES_DEFAULT = {
-  tono:'Diretto, umano, conversazionale, in italiano. Frasi brevi. Niente gergo da marketing, niente superlativi, nessun "soluzione innovativa". Si firma "Giuseppe Romano — FlowLine".',
+  tono:'Diretto, umano, cordiale, in italiano. Frasi semplici. Niente gergo da marketing, niente superlativi, nessun "soluzione innovativa".',
   mittente:'Giuseppe Romano',
   azienda:'FlowLine',
   promptSistema: PROMPT_SISTEMA_DEFAULT,
-  regoleOggetto:'OGGETTO: massimo 6-7 parole, in minuscolo, curioso ma sobrio. Niente nomi azienda forzati, niente punti esclamativi.',
-  regoleCorpo:'CORPO: massimo ~130 parole. Apri con un aggancio concreto, una sola domanda di chiusura. Niente parolone.',
+  regoleOggetto:'OGGETTO: prima email "Due idee per <nome azienda destinataria>"; follow-up con lo stesso oggetto della prima email. Niente punti esclamativi.',
+  regoleCorpo:'CORPO: prima email esattamente come il modello; follow-up massimo 70 parole.',
   disiscrizione:'Se non desidera ricevere altre comunicazioni, risponda a questa mail con un NO e non la contatterò più.',
   logoUrl:'',
   firmaTesto:'Il Team FlowLine\nFlowLine | Automazioni e Agenti AI per Aziende\nT: +39 3492977533 | E: info@flowline.it\nW: www.flowline.it',
@@ -460,6 +502,16 @@ if(state.config.supabaseUrl==null) state.config.supabaseUrl='';
 if(state.config.supabaseKey==null) state.config.supabaseKey='';
 if(state.config.formatoHtml==null) state.config.formatoHtml=false;
 if(!state.templates.promptSistema) state.templates.promptSistema=PROMPT_SISTEMA_DEFAULT;
+// aggiorna il prompt al nuovo modello se il browser ha ancora quello predefinito vecchio (le versioni personalizzate restano intatte)
+if((state.templates.promptVersion||1)<PROMPT_VERSION){
+  const T=state.templates, norm=x=>String(x||'').trim();
+  if(PROMPT_SISTEMA_OLD.some(p=>norm(p)===norm(T.promptSistema))) T.promptSistema=PROMPT_SISTEMA_DEFAULT;
+  if(norm(T.tono)===norm("Diretto, umano, conversazionale, in italiano. Frasi brevi. Niente gergo da marketing, niente superlativi, nessun \"soluzione innovativa\". Si firma \"Giuseppe Romano — FlowLine\".")) T.tono=TEMPLATES_DEFAULT.tono;
+  if(norm(T.regoleOggetto)===norm("OGGETTO: massimo 6-7 parole, in minuscolo, curioso ma sobrio. Niente nomi azienda forzati, niente punti esclamativi.")) T.regoleOggetto=TEMPLATES_DEFAULT.regoleOggetto;
+  if(norm(T.regoleCorpo)===norm("CORPO: massimo ~130 parole. Apri con un aggancio concreto, una sola domanda di chiusura. Niente parolone.")) T.regoleCorpo=TEMPLATES_DEFAULT.regoleCorpo;
+  T.promptVersion=PROMPT_VERSION;
+  save(LS.templates,T);
+}
 if(state.templates.regoleOggetto==null) state.templates.regoleOggetto=TEMPLATES_DEFAULT.regoleOggetto;
 if(state.templates.regoleCorpo==null) state.templates.regoleCorpo=TEMPLATES_DEFAULT.regoleCorpo;
 if(state.templates.firmaTesto==null) state.templates.firmaTesto=TEMPLATES_DEFAULT.firmaTesto;
@@ -893,7 +945,7 @@ async function pullFromSheet(opts={}){
     }
     byEmail.set(key,true);
     const c=mkContact({
-      azienda:g('azienda'),sede:g('sede'),email,ruolo:g('ruolo'),settore:g('settore'),
+      azienda:g('azienda'),sede:g('sede'),email,ruolo:[g('nome'),g('ruolo')].filter(Boolean).join(' — '),settore:g('settore'),
       descrizione:g('descrizione'),sitoWeb:g('sitoWeb'),
       tipoAsset:g('tipoAsset'),oggettoBase:g('oggetto'),corpoBase:g('corpo'),
       disiscrizione:g('disiscrizione')||state.templates.disiscrizione,
@@ -1272,7 +1324,7 @@ async function generateEmail(c, step){
   const ctx=`Destinatario:
 - Azienda: ${c.azienda||'n/d'}
 - Sede: ${c.sede||'n/d'}
-- Ruolo/Contatto: ${c.ruolo||'n/d'}
+- Persona di contatto / ruolo: ${c.ruolo||'n/d (nessun nome: saluta solo con "Buongiorno,")'}
 - Settore: ${c.settore||'n/d'}
 - Sito web: ${c.sitoWeb||'n/d'}
 - Tipo asset/offerta: ${c.tipoAsset||'automazione dei processi (preventivi, ordini, listini)'}
