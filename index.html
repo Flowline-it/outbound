@@ -398,11 +398,94 @@ const PRICE = {in:3, out:15}; // USD per 1M token — Claude Sonnet 4.6
 const EUR_DEFAULT = 0.92;     // USD→EUR di riferimento (modificabile)
 const STEPS_DEFAULT = [
   {nome:'Email 1', offset:0, angolo:'Primo contatto a freddo. Apertura, motivo del contatto, una singola domanda. Tono diretto e umano, niente vendita aggressiva.'},
-  {nome:'Follow-up 1', offset:3, angolo:'Promemoria leggero in risposta alla prima mail. Aggiunge UN esempio concreto/caso reale. Breve.'},
-  {nome:'Follow-up 2', offset:7, angolo:'Penultimo tentativo. Cambia angolo: spostati sul beneficio principale, una riga, bassa pressione.'},
-  {nome:'Follow-up 3', offset:14, angolo:'Ultimo contatto (break-up). Chiude con gentilezza, lascia la porta aperta, nessuna insistenza.'},
+  {nome:'Follow-up 1', offset:3, angolo:"Usa FEDELMENTE questo testo, parola per parola, cambiando solo la parte tra parentesi quadre:\n\nle riscrivo solo per lasciarle un esempio concreto, così è più chiaro di cosa parlo.\n\nPer un'azienda che si trovava con lo stesso tipo di lavoro ripetitivo su [una delle due attività citate nella prima email, con le stesse parole], abbiamo messo in piedi un piccolo strumento che se ne occupa da solo: quello che prima portava via diverse ore a settimana oggi richiede giusto un controllo finale.\n\nSe le può interessare vedere come funziona, bastano dieci minuti di chiamata. Altrimenti nessun problema, non la disturbo oltre.\n\nCHIUSURA: \"Buona giornata,\""},
+  {nome:'Follow-up 2', offset:7, angolo:"Usa FEDELMENTE questo testo, parola per parola:\n\nultimo messaggio da parte mia, così non le riempio la casella.\n\nSe il tema non è una priorità adesso lo capisco benissimo. Le lascio comunque i miei contatti: se più avanti vi ritrovate a dire \"questa cosa ci porta via troppo tempo\", mi scriva pure e ne parliamo con calma.\n\nCHIUSURA: \"In bocca al lupo per il lavoro,\""},
 ];
 const PROMPT_SISTEMA_DEFAULT = `Scrivi email di outreach B2B a freddo in italiano per conto di {mittente} di {azienda}.
+Tono: {tono}
+
+=== PRIMA EMAIL (step "Email 1") ===
+Segui FEDELMENTE questo modello. Cambia SOLO le parti tra parentesi quadre; tutto il resto resta identico, parola per parola.
+
+Oggetto: Due idee per [nome azienda destinataria]
+
+Buongiorno [nome della persona],
+
+sono Giuseppe di FlowLine, aiutiamo le aziende a rendere più semplici e veloci alcuni processi interni, spesso con piccoli strumenti di intelligenza artificiale.
+
+Ho dato un'occhiata a cosa fate e, [osservazione], immagino che parte del tempo se ne vada dietro a passaggi che si ripetono ogni volta, penso ad esempio a [attività 1] o a [attività 2]. Sono attività che oggi si possono automatizzare in buona parte, senza stravolgere il modo in cui lavorate.
+
+Se le va, possiamo sentirci dieci minuti nei prossimi giorni: le mostro qualche esempio concreto di cose già fatte per aziende simili alla vostra.
+
+Buona giornata,
+
+{mittente}
+
+Come riempire le parti tra parentesi:
+- [nome azienda destinataria]: il nome dell'azienda del destinatario, senza forme societarie (srl, spa, snc...).
+- [nome della persona]: solo se nei dati del contatto c'è il nome di una persona. Se non c'è, scrivi soltanto "Buongiorno," senza nome.
+- [osservazione]: un inciso breve e concreto (massimo 15 parole) ricavato dalla descrizione dell'azienda o dal settore, per esempio "visto che seguite clienti in tutta la provincia" oppure "lavorando su più marchi e linee di prodotto". Deve stare in piedi grammaticalmente dentro la frase. Niente complimenti generici, niente dati inventati.
+- [attività 1] e [attività 2]: due attività ripetitive realistiche per quel tipo di azienda (per esempio la preparazione dei preventivi, l'aggiornamento dei listini, l'inserimento degli ordini, i solleciti di pagamento, la gestione delle richieste via email). Brevi, in minuscolo, con l'articolo.
+- Non aggiungere né togliere frasi. Non aggiungere firma, telefono o sito: la firma viene aggiunta automaticamente dopo il nome.
+
+=== FOLLOW-UP (tutti gli step dopo "Email 1") ===
+- Se le istruzioni dello step contengono un testo modello, riportalo FEDELMENTE, parola per parola: cambia solo le parti tra parentesi quadre e non aggiungere né togliere frasi.
+- Le parti tra parentesi quadre che richiamano la prima email (per esempio una delle attività citate) vanno riempite con le stesse parole usate nella prima email del thread.
+- Inizia con lo stesso saluto della prima email ("Buongiorno [nome]," oppure "Buongiorno,").
+- Finisci con la CHIUSURA indicata nello step (se non è indicata usa "Buona giornata,") e, sulla riga sotto, "{mittente}". Nessuna firma, telefono o sito: la firma viene aggiunta automaticamente.
+- Se lo step NON contiene un testo modello: massimo 60 parole, stesso tono e registro della prima email (dai del "lei"), non ripetere le frasi della prima email.
+- VIETATO inventare casi cliente, aziende, percentuali, numeri o risultati. Unica eccezione: le frasi già scritte nel testo modello dello step, da riportare così come sono senza aggiungere dettagli.
+- Oggetto: lo stesso della prima email.
+
+{regole_oggetto}
+{regole_corpo}
+
+Regole generali: testo semplice (no HTML, no markdown, no liste puntate). Paragrafi separati da una riga vuota. Una sola call-to-action. Non inventare dati specifici sull'azienda destinataria che non conosci.
+
+Rispondi SOLO con JSON valido, nessun testo prima o dopo, nel formato: {"oggetto":"...","corpo":"..."}`;
+// prompt predefiniti precedenti: se un browser ha ancora uno di questi salvato, viene aggiornato in automatico
+const PROMPT_SISTEMA_OLD = [`Scrivi email di outreach B2B a freddo in italiano per conto di {mittente} di {azienda}.
+Tono: {tono}
+
+=== PRIMA EMAIL (step "Email 1") ===
+Segui FEDELMENTE questo modello. Cambia SOLO le parti tra parentesi quadre; tutto il resto resta identico, parola per parola.
+
+Oggetto: Due idee per [nome azienda destinataria]
+
+Buongiorno [nome della persona],
+
+sono Giuseppe di FlowLine, aiutiamo le aziende a rendere più semplici e veloci alcuni processi interni, spesso con piccoli strumenti di intelligenza artificiale.
+
+Ho dato un'occhiata a cosa fate e, [osservazione], immagino che parte del tempo se ne vada dietro a passaggi che si ripetono ogni volta, penso ad esempio a [attività 1] o a [attività 2]. Sono attività che oggi si possono automatizzare in buona parte, senza stravolgere il modo in cui lavorate.
+
+Se le va, possiamo sentirci dieci minuti nei prossimi giorni: le mostro qualche esempio concreto di cose già fatte per aziende simili alla vostra.
+
+Buona giornata,
+
+{mittente}
+
+Come riempire le parti tra parentesi:
+- [nome azienda destinataria]: il nome dell'azienda del destinatario, senza forme societarie (srl, spa, snc...).
+- [nome della persona]: solo se nei dati del contatto c'è il nome di una persona. Se non c'è, scrivi soltanto "Buongiorno," senza nome.
+- [osservazione]: un inciso breve e concreto (massimo 15 parole) ricavato dalla descrizione dell'azienda o dal settore, per esempio "visto che seguite clienti in tutta la provincia" oppure "lavorando su più marchi e linee di prodotto". Deve stare in piedi grammaticalmente dentro la frase. Niente complimenti generici, niente dati inventati.
+- [attività 1] e [attività 2]: due attività ripetitive realistiche per quel tipo di azienda (per esempio la preparazione dei preventivi, l'aggiornamento dei listini, l'inserimento degli ordini, i solleciti di pagamento, la gestione delle richieste via email). Brevi, in minuscolo, con l'articolo.
+- Non aggiungere né togliere frasi. Non aggiungere firma, telefono o sito: la firma viene aggiunta automaticamente dopo il nome.
+
+=== FOLLOW-UP (tutti gli step dopo "Email 1") ===
+- Segui l'angolo indicato per lo step.
+- Massimo 60 parole nel corpo, saluti esclusi. Frasi semplici.
+- Stesso tono e stesso registro della prima email (dai del "lei"). Saluta come nella prima email ("Buongiorno [nome]," oppure "Buongiorno,").
+- Non ripetere le frasi della prima email: costruisci sopra, puoi riprendere una delle due attività citate.
+- VIETATO inventare: niente casi cliente, niente aziende "che abbiamo aiutato", niente percentuali, numeri, tempi risparmiati o risultati. Parla solo di cosa si può fare, mai di cosa "abbiamo fatto" per altri.
+- Oggetto: lo stesso della prima email.
+- Chiudi con "Buona giornata," e sotto "{mittente}". Nessuna firma aggiuntiva.
+
+{regole_oggetto}
+{regole_corpo}
+
+Regole generali: testo semplice (no HTML, no markdown, no liste puntate). Paragrafi separati da una riga vuota. Una sola call-to-action. Non inventare dati specifici sull'azienda destinataria che non conosci.
+
+Rispondi SOLO con JSON valido, nessun testo prima o dopo, nel formato: {"oggetto":"...","corpo":"..."}`,`Scrivi email di outreach B2B a freddo in italiano per conto di {mittente} di {azienda}.
 Tono: {tono}
 
 === PRIMA EMAIL (step "Email 1") ===
@@ -441,9 +524,7 @@ Come riempire le parti tra parentesi:
 
 Regole generali: testo semplice (no HTML, no markdown, no liste puntate). Paragrafi separati da una riga vuota. Una sola call-to-action. Non inventare dati specifici sull'azienda destinataria che non conosci.
 
-Rispondi SOLO con JSON valido, nessun testo prima o dopo, nel formato: {"oggetto":"...","corpo":"..."}`;
-// prompt predefiniti precedenti: se un browser ha ancora uno di questi salvato, viene aggiornato in automatico
-const PROMPT_SISTEMA_OLD = [`Sei un assistente che scrive email di outreach B2B a freddo in italiano per {azienda}.
+Rispondi SOLO con JSON valido, nessun testo prima o dopo, nel formato: {"oggetto":"...","corpo":"..."}`,`Sei un assistente che scrive email di outreach B2B a freddo in italiano per {azienda}.
 Tono richiesto: {tono}
 Regole generali: testo semplice (no HTML, no markdown, no liste puntate). Nessun oggetto sensazionalistico o spammy. Una sola call-to-action. Non inventare dati specifici sull'azienda destinataria che non conosci. Firma a nome di {mittente}.
 
@@ -451,7 +532,7 @@ Regole generali: testo semplice (no HTML, no markdown, no liste puntate). Nessun
 {regole_corpo}
 
 Rispondi SOLO con JSON valido, nessun testo prima o dopo, nel formato: {"oggetto":"...","corpo":"..."}`];
-const PROMPT_VERSION = 2;
+const PROMPT_VERSION = 4;
 const TEMPLATES_DEFAULT = {
   tono:'Diretto, umano, cordiale, in italiano. Frasi semplici. Niente gergo da marketing, niente superlativi, nessun "soluzione innovativa".',
   mittente:'Giuseppe Romano',
@@ -509,6 +590,9 @@ if((state.templates.promptVersion||1)<PROMPT_VERSION){
   if(norm(T.tono)===norm("Diretto, umano, conversazionale, in italiano. Frasi brevi. Niente gergo da marketing, niente superlativi, nessun \"soluzione innovativa\". Si firma \"Giuseppe Romano — FlowLine\".")) T.tono=TEMPLATES_DEFAULT.tono;
   if(norm(T.regoleOggetto)===norm("OGGETTO: massimo 6-7 parole, in minuscolo, curioso ma sobrio. Niente nomi azienda forzati, niente punti esclamativi.")) T.regoleOggetto=TEMPLATES_DEFAULT.regoleOggetto;
   if(norm(T.regoleCorpo)===norm("CORPO: massimo ~130 parole. Apri con un aggancio concreto, una sola domanda di chiusura. Niente parolone.")) T.regoleCorpo=TEMPLATES_DEFAULT.regoleCorpo;
+  // sequenza follow-up: se nessuno step è stato personalizzato, passo alla nuova sequenza predefinita
+  const KNOWN_ANG=["Breve richiamo alla prima email. Riprendi UNA delle due attività citate e spiega in una frase cosa cambierebbe automatizzandola (oggi si fa a mano → domani parte da sola). Nessun numero, nessun caso cliente. Chiudi riproponendo i dieci minuti di chiamata.", "Cambia angolo: fai UNA domanda semplice e concreta sul loro modo di lavorare (per esempio come gestiscono oggi una delle attività citate). Massimo tre frasi, nessuna pressione.", "Penultimo tentativo. Cambia angolo: spostati sul beneficio principale, una riga, bassa pressione.", "Primo contatto a freddo. Apertura, motivo del contatto, una singola domanda. Tono diretto e umano, niente vendita aggressiva.", "Promemoria leggero in risposta alla prima mail. Aggiunge UN esempio concreto/caso reale. Breve.", "Ultimo contatto (break-up). Chiude con gentilezza, lascia la porta aperta, nessuna insistenza.", "Ultimo messaggio. Dici con garbo che non vuoi insistere e lasci la porta aperta (se in futuro diventa un tema, può scrivere a questo indirizzo). Nessuna richiesta di chiamata. Due o tre frasi."];
+  if((state.cadence||[]).every(st=>KNOWN_ANG.includes(norm(st.angolo)))){ state.cadence=JSON.parse(JSON.stringify(STEPS_DEFAULT)); save(LS.cadence,state.cadence); }
   T.promptVersion=PROMPT_VERSION;
   save(LS.templates,T);
 }
