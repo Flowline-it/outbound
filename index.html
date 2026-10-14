@@ -929,26 +929,63 @@ async function sendEmailGmail(c, step, subject, body){
 }
 
 /* ---- reply detection ---- */
+// mittenti automatici da non considerare risposte (errori di consegna, sistemi)
+const AUTO_SENDER=/mailer-daemon|postmaster|no-?reply|noreply|bounce/i;
+function _hdr(m,name){const h=(m.payload?.headers||[]).find(x=>x.name.toLowerCase()===name.toLowerCase());return h?h.value:'';}
+function _isAutoReply(m){
+  const subj=_hdr(m,'Subject'), auto=_hdr(m,'Auto-Submitted');
+  return (auto && auto.toLowerCase()!=='no') || /^(fuori sede|risposta automatica|automatic reply|auto(matic)?[- ]?reply|out of (the )?office|abwesenheit|absence)/i.test(subj.trim());
+}
+function _replyInfo(m,via){
+  return {date:new Date(+m.internalDate||Date.now()).toISOString(), from:_hdr(m,'From'), subject:_hdr(m,'Subject'),
+          snippet:(m.snippet||'').replace(/&#39;/g,"'").replace(/&quot;/g,'"').replace(/&amp;/g,'&').slice(0,280),
+          threadId:m.threadId||'', msgId:m.id||'', via, auto:_isAutoReply(m)};
+}
+// cerca una risposta: 1) nel thread dell'invio  2) in tutta la casella, per mittente (copre risposte inoltrate da Hostinger e finite fuori thread o nello spam)
+async function findReply(c){
+  const META='format=metadata&metadataHeaders=From&metadataHeaders=Subject&metadataHeaders=Auto-Submitted';
+  if(c.threadId && !String(c.threadId).startsWith('sim_')){
+    try{
+      const th=await gfetch('https://gmail.googleapis.com/gmail/v1/users/me/threads/'+c.threadId+'?'+META);
+      const m=(th.messages||[]).find(m=>{const l=m.labelIds||[];return !l.includes('SENT')&&!l.includes('DRAFT')&&!AUTO_SENDER.test(_hdr(m,'From'));});
+      if(m) return _replyInfo(m,'thread');
+    }catch(e){console.warn('thread check',c.azienda,e.message)}
+  }
+  const em=(c.email||'').trim();
+  if(!em) return null;
+  const first=(c.history||[]).find(h=>!h.skipped&&h.date);
+  const since=first?first.date.replace(/-/g,'/'):null;
+  const q='from:'+em+(since?' after:'+since:'');
+  const lst=await gfetch('https://gmail.googleapis.com/gmail/v1/users/me/messages?includeSpamTrash=true&maxResults=5&q='+encodeURIComponent(q));
+  for(const it of (lst.messages||[])){
+    const m=await gfetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/'+it.id+'?'+META);
+    const l=m.labelIds||[];
+    if(l.includes('SENT')||l.includes('DRAFT')||l.includes('TRASH'))continue;
+    return _replyInfo(m, l.includes('SPAM')?'spam':'casella');
+  }
+  return null;
+}
 async function checkReplies(opts={}){
   const silent=opts.silent;
   if(!googleReady()){if(!silent)toast('Connetti Google per controllare le risposte','warn');return 0}
   if(state.config.testMode){if(!silent)toast('Disattiva la modalità test per leggere le risposte reali','warn');return 0}
-  const active=state.contacts.filter(c=>c.threadId && !String(c.threadId).startsWith('sim_') && !c.haRisposto && (c.step||0)>0);
-  if(!active.length){if(!silent)toast('Nessun thread attivo da controllare','warn');return 0}
-  let found=0;
+  const active=state.contacts.filter(c=>!c.haRisposto && (c.step||0)>0 && (c.history||[]).some(h=>!h.skipped));
+  if(!active.length){if(!silent)toast('Nessuna email inviata da controllare','warn');return 0}
+  let found=0, auto=0, spam=0, errs=0;
   for(const c of active){
     try{
-      // format=minimal: ogni messaggio riporta labelIds. Un messaggio nostro ha 'SENT'.
-      // Qualsiasi messaggio del thread SENZA 'SENT' (e non bozza) = risposta del destinatario.
-      const th=await gfetch('https://gmail.googleapis.com/gmail/v1/users/me/threads/'+c.threadId+'?format=minimal');
-      const msgs=th.messages||[];
-      const replied=msgs.some(m=>{const l=m.labelIds||[];return !l.includes('SENT') && !l.includes('DRAFT');});
-      if(replied){c.haRisposto=true;found++;}
-    }catch(e){console.warn('thread check',c.azienda,e.message)}
+      const r=await findReply(c);
+      if(!r)continue;
+      c.reply=r;
+      if(r.auto){auto++;continue;}          // risposta automatica: la mostro ma non fermo la sequenza
+      c.haRisposto=true; c.replySeen=false; found++;
+      if(r.via==='spam')spam++;
+    }catch(e){errs++;console.warn('reply check',c.azienda,e.message)}
   }
-  if(found){persist();render();}
-  if(!silent) toast(found?`${found} nuove risposte rilevate — follow-up fermati`:'Nessuna nuova risposta','ok');
-  else if(found) toast(`${found} nuove risposte rilevate`,'ok');
+  if(found||auto){persist();render();}
+  const extra=(spam?` (${spam} nello spam di Gmail)`:'')+(auto?` · ${auto} risposte automatiche ignorate`:'');
+  if(!silent) toast(found?`${found} nuove risposte${extra} — follow-up fermati`:(errs?`Controllo non riuscito per ${errs} contatti`:'Nessuna nuova risposta'+(auto?extra:'')),found?'ok':(errs?'warn':'ok'));
+  else if(found) toast(`${found} nuove risposte${extra}`,'ok');
   return found;
 }
 let _replyTimer=null;
@@ -1115,6 +1152,7 @@ function contactFromRow(r){
   const d=r.data||{};
   c.drafts=d.drafts||{}; c.history=d.history||[];
   c.disiscrizione=d.disiscrizione||state.templates.disiscrizione; c.fermato=!!d.fermato; c.n=d.n||'';
+  c.reply=d.reply||null; c.replySeen=d.replySeen!==false;
   return c;
 }
 // mappa contatto app -> RIGA (colonne Supabase)
@@ -1127,7 +1165,7 @@ function contactToSupaRow(c){
     scheduled_date:nn(c.scheduledDate), step:c.step||0, stato:statusOf(c).label,
     anchor_date:nn(c.anchorDate), data_ultimo_invio:nn(c.dataUltimoInvio),
     ha_risposto:!!c.haRisposto, thread_id:nn(c.threadId), message_id:nn(c.messageId),
-    data:{drafts:c.drafts||{}, history:c.history||[], disiscrizione:c.disiscrizione, fermato:!!c.fermato, n:c.n||''},
+    data:{drafts:c.drafts||{}, history:c.history||[], disiscrizione:c.disiscrizione, fermato:!!c.fermato, n:c.n||'', reply:c.reply||null, replySeen:c.replySeen!==false},
     updated_at:new Date().toISOString()
   };
 }
@@ -1513,6 +1551,7 @@ const NAV=[
   {id:'coda',label:'Coda invio',icon:'M22 2 11 13 M22 2l-7 20-4-9-9-4 20-7z'},
   {id:'contatti',label:'Contatti',icon:'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2 M9 7a4 4 0 1 0 0 8 4 4 0 0 0 0-8z M23 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75'},
   {id:'calendario',label:'Calendario',icon:'M3 4h18v18H3z M16 2v4 M8 2v4 M3 10h18'},
+  {id:'risposte',label:'Risposte',icon:'M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z'},
 ];
 function renderNav(){
   const todayN=state.contacts.filter(dueToday).length;
@@ -1521,6 +1560,8 @@ function renderNav(){
   document.getElementById('nav').innerHTML=NAV.map(n=>{
     let badge='';
     if(n.id==='coda'&&(todayN||late)) badge=`<span class="badge${late?' late':''}">${todayN||late}</span>`;
+    const newRep=state.contacts.filter(c=>c.haRisposto&&c.replySeen===false).length;
+    if(n.id==='risposte'&&newRep) badge=`<span class="badge" style="background:#16a34a">${newRep}</span>`;
     if(n.id==='pianifica'&&backlog) badge=`<span class="badge" style="background:#7c3aed">${backlog}</span>`;
     return `<button class="${state.view===n.id?'active':''}" onclick="go('${n.id}')">
       <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${n.icon}"/></svg>
@@ -1578,7 +1619,7 @@ function renderConn(){
 function go(v){state.view=v;state.search='';state.filter='tutti';closeRail();render()}
 function render(){
   renderNav();renderConn();renderSpend();
-  const titles={dashboard:'Dashboard',pianifica:'Pianificazione',coda:'Coda invio',contatti:'Contatti',calendario:'Calendario'};
+  const titles={dashboard:'Dashboard',pianifica:'Pianificazione',coda:'Coda invio',contatti:'Contatti',calendario:'Calendario',risposte:'Risposte ricevute'};
   document.getElementById('viewTitle').textContent=titles[state.view]||'Dashboard';
   const ta=document.getElementById('topActions');
   ta.innerHTML=`
@@ -1586,7 +1627,7 @@ function render(){
         <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6 M1 20v-6h6 M3.51 9a9 9 0 0 1 14.85-3.36L23 10 M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>Aggiorna</button>`;
   if(state.contacts.length){
     ta.innerHTML+=`
-      <button class="btn sm ghost" onclick="checkReplies()" title="Controlla risposte nei thread">
+      <button class="btn sm ghost" onclick="checkReplies()" title="Controlla ora se sono arrivate risposte">
         <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Risposte</button>
       <button class="btn sm primary" onclick="pickFile()">
         <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14 M5 12h14"/></svg>Importa</button>`;
@@ -1597,8 +1638,50 @@ function render(){
   else if(state.view==='pianifica')C.innerHTML=viewPianifica();
   else if(state.view==='contatti')C.innerHTML=viewContatti();
   else if(state.view==='calendario')C.innerHTML=viewCalendario();
+  else if(state.view==='risposte')C.innerHTML=viewRisposte();
   if(state.view==='coda')bindCodaInputs();
   if(state.view==='pianifica')bindPianifica();
+}
+
+
+/* ---------- RISPOSTE ---------- */
+function gmailLink(r){
+  const u=encodeURIComponent(state.google.email||'');
+  return r&&r.threadId?`https://mail.google.com/mail/?authuser=${u}#all/${r.threadId}`:`https://mail.google.com/mail/?authuser=${u}`;
+}
+function viewRisposte(){
+  // aprendo la vista, le risposte nuove diventano "viste"
+  let changed=false;state.contacts.forEach(c=>{if(c.haRisposto&&c.replySeen===false){c.replySeen=true;changed=true;}});
+  if(changed){persist();setTimeout(renderNav,0);}
+  const real=state.contacts.filter(c=>c.haRisposto).sort((a,b)=>String(b.reply?.date||'').localeCompare(String(a.reply?.date||'')));
+  const autos=state.contacts.filter(c=>!c.haRisposto&&c.reply&&c.reply.auto);
+  const fmt=d=>{if(!d)return '—';const x=new Date(d);return x.toLocaleDateString('it-IT',{day:'2-digit',month:'short'})+' '+x.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});};
+  const card=(c,isAuto)=>{const r=c.reply||{};return `<div class="card" style="padding:14px 16px;margin-bottom:10px">
+      <div style="display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;justify-content:space-between">
+        <div><b>${esc(c.azienda||c.email)}</b> <span class="email-cell">${esc(c.email)}</span>
+          ${r.via==='spam'?'<span class="chip late" style="margin-left:6px"><span class="d"></span>era nello spam</span>':''}
+          ${isAuto?'<span class="chip da" style="margin-left:6px"><span class="d"></span>risposta automatica</span>':''}</div>
+        <span class="email-cell">${fmt(r.date)}</span>
+      </div>
+      ${r.subject?`<div class="email-cell" style="margin-top:4px">${esc(r.subject)}</div>`:''}
+      <div style="margin-top:8px;white-space:pre-wrap">${r.snippet?esc(r.snippet)+'…':'<span class="email-cell">Risposta segnata a mano o rilevata prima di questa versione: aprila in Gmail.</span>'}</div>
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+        <a class="btn sm" href="${gmailLink(r)}" target="_blank" rel="noopener">Apri in Gmail</a>
+        <button class="btn sm ghost" onclick="openContact('${c.id}')">Dettagli contatto</button>
+        ${isAuto?`<button class="btn sm ghost" onclick="markReply('${c.id}',true)">È una risposta vera</button>`
+                :`<button class="btn sm ghost" onclick="markReply('${c.id}',false)" title="Per esempio una risposta automatica: riprende la sequenza">Non è una risposta</button>`}
+      </div></div>`;};
+  return `
+    <div class="helptip" style="margin-bottom:12px">Le risposte vengono cercate in Gmail ogni 3 minuti: nel thread dell'invio e, se non c'è, in tutta la casella (spam compreso) per indirizzo del mittente. Chi risponde esce dalla sequenza e non riceve altri follow-up. Le risposte automatiche (fuori sede) vengono mostrate ma non fermano la sequenza.</div>
+    <div class="section-h"><h3>Risposte</h3><span class="count">${real.length}</span><div class="line"></div></div>
+    ${real.length?real.map(c=>card(c,false)).join(''):`<div class="empty" style="padding:30px"><h4>Ancora nessuna risposta</h4><p>Appena qualcuno risponde compare qui. Puoi controllare subito con il pulsante <b>Risposte</b> in alto.</p></div>`}
+    ${autos.length?`<div class="section-h" style="margin-top:18px"><h3>Risposte automatiche</h3><span class="count">${autos.length}</span><div class="line"></div></div>${autos.map(c=>card(c,true)).join('')}`:''}`;
+}
+function markReply(id,yes){
+  const c=state.contacts.find(x=>x.id===id);if(!c)return;
+  c.haRisposto=!!yes; if(c.reply)c.reply.auto=!yes; c.replySeen=true;
+  if(!yes&&!c.reply)c.reply={auto:true,date:new Date().toISOString(),snippet:'',via:'manuale'};
+  persist();render();toast(yes?'Segnata come risposta: follow-up fermati':'Sequenza ripresa per '+(c.azienda||c.email),'ok');
 }
 
 /* ---------- DASHBOARD ---------- */
@@ -2201,7 +2284,7 @@ function editC(id,f,v){
   if(supaReady())setSyncState('saving');
 }
 function toggleReplied(id){const c=state.contacts.find(x=>x.id===id);if(c){c.haRisposto=!c.haRisposto;persist();openContact(id);render()}}
-function resetSeq(id){const c=state.contacts.find(x=>x.id===id);if(c){c.step=0;c.anchorDate=null;c.dataUltimoInvio=null;c.haRisposto=false;c.history=[];c.drafts={};c.threadId=null;c.messageId=null;persist();openContact(id);render();toast('Sequenza azzerata','warn')}}
+function resetSeq(id){const c=state.contacts.find(x=>x.id===id);if(c){c.step=0;c.anchorDate=null;c.dataUltimoInvio=null;c.haRisposto=false;c.reply=null;c.history=[];c.drafts={};c.threadId=null;c.messageId=null;persist();openContact(id);render();toast('Sequenza azzerata','warn')}}
 async function deleteContact(id){
   const c=state.contacts.find(x=>x.id===id);if(!c)return;
   if(!confirm(`Eliminare "${c.azienda||c.email}"?\n\nVerrà rimosso anche dal database Supabase, per tutto il team.`))return;
