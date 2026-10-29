@@ -115,6 +115,7 @@ body[data-view="pianifica"] .hero,body[data-view="risposte"] .hero{--hb:var(--li
 body[data-view="coda"] .hero{--hb:#292929;--hi:#FFFFFF}
 body[data-view="contatti"] .hero{--hb:var(--cobalt);--hi:#FFFFFF}
 body[data-view="calendario"] .hero{--hb:var(--peach);--hi:var(--on-peach)}
+body[data-view="newsletter"] .hero{--hb:var(--peach);--hi:var(--on-peach)}
 [data-theme="dark"] body[data-view="coda"] .hero{--hb:#1E1E1E}
 .hero-in{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
 .hero h2{font-size:66px;line-height:.98;font-weight:800;font-stretch:112%;letter-spacing:-.045em;max-width:15ch;text-wrap:balance}
@@ -507,6 +508,25 @@ input[type=checkbox]{width:18px;height:18px;cursor:pointer;accent-color:var(--in
 }
 
 .t-white{background:var(--surface);color:var(--text)}
+
+/* ===== newsletter ===== */
+.nl-login{max-width:520px;margin:0 auto}
+.nl-stats{margin-bottom:8px}
+.nl-ed{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,440px);gap:24px;align-items:start}
+.nl-ed-main{display:flex;flex-direction:column;gap:18px;min-width:0}
+.nl-pre{font-size:15px!important;font-weight:500!important}
+.nl-ed textarea.body{min-height:360px}
+.nl-fmt{margin-top:8px}
+.nl-prev-wrap{position:sticky;top:100px}
+.nl-prev{display:block;width:100%;height:min(72vh,720px);border:0;border-radius:var(--r-lg);background:#F3F3F1}
+.nl-send{display:flex;flex-direction:column;gap:14px;padding:20px 22px;border-radius:var(--r-lg);background:var(--surface)}
+.nl-send-info{display:flex;flex-wrap:wrap;gap:6px 18px}
+.nl-send-btns{display:flex;flex-wrap:wrap;gap:8px}
+.nl-site{padding-top:12px;border-top:1px solid var(--border)}
+.nl-bar-wrap{height:12px;border-radius:var(--pill);background:rgba(41,41,41,.12);overflow:hidden}
+.nl-bar{height:100%;background:var(--ink);border-radius:var(--pill);transition:width .4s var(--ease)}
+[data-theme="dark"] .nl-bar{background:var(--text)}
+@media(max-width:1100px){.nl-ed{grid-template-columns:1fr}.nl-prev-wrap{position:static}}
 .wk-bw{flex:1;width:100%;display:flex;align-items:flex-end;justify-content:center;min-height:0}
 </style>
 </head>
@@ -566,6 +586,7 @@ input[type=checkbox]{width:18px;height:18px;cursor:pointer;accent-color:var(--in
 <div id="modalRoot"></div>
 <div class="toasts" id="toasts"></div>
 <input type="file" id="fileInput" accept=".csv,.xlsx,.xls" style="display:none">
+<input type="file" id="nlFile" accept=".csv,text/csv" style="display:none" onchange="nlHandleCsv(this.files[0]);this.value=''">
 
 <script>
 /* ============================================================
@@ -1751,6 +1772,7 @@ const NAV=[
   {id:'contatti',label:'Contatti',icon:'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2 M9 7a4 4 0 1 0 0 8 4 4 0 0 0 0-8z M23 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75'},
   {id:'calendario',label:'Calendario',icon:'M3 4h18v18H3z M16 2v4 M8 2v4 M3 10h18'},
   {id:'risposte',label:'Risposte',icon:'M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z'},
+  {id:'newsletter',label:'Newsletter',icon:'M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z M22 6l-10 7L2 6'},
 ];
 function renderNav(){
   const todayN=state.contacts.filter(dueToday).length;
@@ -1762,6 +1784,7 @@ function renderNav(){
     const newRep=state.contacts.filter(c=>c.haRisposto&&c.replySeen===false).length;
     if(n.id==='risposte'&&newRep) badge=`<span class="badge ok">${newRep}</span>`;
     if(n.id==='pianifica'&&backlog) badge=`<span class="badge plain">${backlog}</span>`;
+    if(n.id==='newsletter'&&nl.sending) badge=`<span class="badge">invio</span>`;
     return `<button class="${state.view===n.id?'active':''}" onclick="go('${n.id}')">
       <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${n.icon}"/></svg>
       <span>${n.label}</span>${badge}</button>`;
@@ -1821,6 +1844,7 @@ function heroCopy(){
   const due=state.contacts.filter(dueToday).length, late=state.contacts.filter(isLate).length;
   const rep=state.contacts.filter(c=>c.haRisposto).length, newRep=state.contacts.filter(c=>c.haRisposto&&c.replySeen===false).length;
   const backlog=state.contacts.filter(isUnplanned).length;
+  if(state.view==='newsletter') return nlHeroCopy();
   if(!n) return {t:'Benvenuto in Outbound.',l:'Importa una lista di contatti in CSV o Excel: le colonne vengono riconosciute in automatico.'};
   switch(state.view){
     case 'coda': return {t:due?`${due} email da rivedere e inviare.`:'Niente da inviare oggi.',l:late?`Più ${late} in ritardo dai giorni scorsi: puoi recuperarle qui sotto.`:'Rivedi ogni bozza, poi invia una alla volta o tutte insieme.'};
@@ -1840,7 +1864,7 @@ function render(){
   document.getElementById('viewTitle').textContent=hc.t;
   const vl=document.getElementById('viewLede');if(vl)vl.textContent=hc.l;
   const vd=document.getElementById('viewDate');if(vd)vd.textContent=today().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
-  document.title='FlowLine Outbound — '+({dashboard:'Dashboard',pianifica:'Pianificazione',coda:'Coda invio',contatti:'Contatti',calendario:'Calendario',risposte:'Risposte'}[state.view]||'Dashboard');
+  document.title='FlowLine Outbound — '+({dashboard:'Dashboard',pianifica:'Pianificazione',coda:'Coda invio',contatti:'Contatti',calendario:'Calendario',risposte:'Risposte',newsletter:'Newsletter'}[state.view]||'Dashboard');
   const ta=document.getElementById('topActions');
   const I={
     refresh:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6 M1 20v-6h6 M3.51 9a9 9 0 0 1 14.85-3.36L23 10 M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>',
@@ -1862,7 +1886,8 @@ function render(){
     if(dueN) primary=`<button class="btn primary" id="btnSendAll" onclick="sendAllToday()">${I.send}Invia tutte${state.config.testMode?' (test)':''}</button>
       <button class="btn" onclick="generateAllDrafts()">${I.spark}Genera mancanti</button>`;
   } else { primary=`<button class="btn primary" onclick="pickFile()">${I.plus}Importa contatti</button>`; importPrimary=true; }
-  ta.innerHTML=primary
+  if(state.view==='newsletter'){ ta.innerHTML=nlTopActions(); }
+  else ta.innerHTML=primary
     +(has&&!importPrimary?`<button class="btn" onclick="pickFile()">${I.plus}<span class="lbl">Importa</span></button>`:'')
     +(has?`<button class="btn" onclick="checkReplies()" title="Controlla ora se sono arrivate risposte">${I.reply}<span class="lbl">Controlla risposte</span></button>`:'')
     +`<button class="btn" id="btnRefresh" onclick="refreshAll()" title="Aggiorna dati dal database e dal foglio">${I.refresh}<span class="lbl">Aggiorna</span></button>`;
@@ -1873,6 +1898,7 @@ function render(){
   else if(state.view==='contatti')C.innerHTML=viewContatti();
   else if(state.view==='calendario')C.innerHTML=viewCalendario();
   else if(state.view==='risposte')C.innerHTML=viewRisposte();
+  else if(state.view==='newsletter'){ if(!nl.inited) nlInit(); C.innerHTML=viewNewsletter(); }
   if(state.view==='coda')bindCodaInputs();
   if(state.view==='pianifica')bindPianifica();
 }
@@ -2836,6 +2862,553 @@ document.addEventListener('keydown',e=>{
   if(e.key==='c')go('coda');
   if(e.key==='d')go('dashboard');
 });
+
+/* =======================================================
+   NEWSLETTER — iscritti dal sito flowline.it, newsletter scritte qui e inviate con Gmail
+   Database: tabelle newsletter_* nel progetto Supabase "Lead Flowline" (stesso di Outbound),
+   leggibili SOLO dopo il login di un indirizzo presente in newsletter_editors.
+   ======================================================= */
+const NL = {
+  url: APP_DEFAULTS.supabaseUrl,
+  key: APP_DEFAULTS.supabaseKey,
+  siteDefault: 'https://flowline.it',
+  logo: 'https://flowline-it.github.io/sitoweb/brand/flowline-logo-dark-400.png',
+  legal: 'Flowline · Callforus Agenzia del Digitale di Giuseppe Romano · Via Antonio Pacinotti 13, 93012 Gela (CL) · P.IVA IT02110530850',
+  pauseMs: 1500,                  // pausa tra un invio e l'altro: Gmail non ama le raffiche
+  emailRe: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/,
+};
+if(state.config.nlSite==null) state.config.nlSite=NL.siteDefault;
+let nlSupa=null;
+const nl={inited:false, ready:false, session:null, editor:null, tab:'campagne', subs:[], camps:[], loaded:false, loading:false,
+  q:'', filter:'attivi', edit:null, sends:null, sending:null, stop:false, prog:null, saveT:null, prevT:null, saving:false};
+
+function nlSite(){return String(state.config.nlSite||NL.siteDefault).trim().replace(/\/+$/,'')}
+function nlUnsubUrl(token){return nlSite()+'/newsletter/disiscrizione/?t='+encodeURIComponent(token)}
+function nlFmt(ts,withTime){if(!ts)return '—';const d=new Date(ts);return d.toLocaleDateString('it-IT',{day:'2-digit',month:'short',year:'numeric'})+(withTime?' '+d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}):'')}
+function nlSleep(ms){return new Promise(r=>setTimeout(r,ms))}
+function nlActive(){return nl.subs.filter(s=>!s.unsubscribed_at)}
+
+/* ---- connessione e accesso ---- */
+async function nlInit(){
+  if(nl.inited)return; nl.inited=true;
+  if(typeof window.supabase==='undefined'){nl.inited=false;setTimeout(nlInit,400);return}
+  nlSupa=window.supabase.createClient(NL.url,NL.key,{auth:{persistSession:true,autoRefreshToken:true,storageKey:'flo_nl_auth'}});
+  nlSupa.auth.onAuthStateChange((ev,session)=>{
+    if(!nl.ready)return;                       // la sessione iniziale la gestisce getSession qui sotto
+    const was=nl.session&&nl.session.user&&nl.session.user.id;
+    nl.session=session;
+    if(ev==='SIGNED_OUT'){nl.editor=null;nl.loaded=false;nl.subs=[];nl.camps=[];nl.edit=null;if(state.view==='newsletter')render();}
+    else if(ev==='SIGNED_IN' && session && was!==session.user.id){nl.editor=null;if(state.view==='newsletter')render();setTimeout(nlAfterLogin,0);}
+  });
+  const {data}=await nlSupa.auth.getSession();
+  nl.session=data.session; nl.ready=true;
+  if(nl.session) await nlAfterLogin(); else if(state.view==='newsletter') render();
+}
+async function nlAfterLogin(){
+  const {data,error}=await nlSupa.rpc('newsletter_is_editor');
+  nl.editor=!error&&data===true;
+  if(nl.editor) await nlLoad(); else if(state.view==='newsletter') render();
+}
+async function nlLogin(ev){
+  ev&&ev.preventDefault();
+  const email=(document.getElementById('nl-em')?.value||'').trim().toLowerCase();
+  const pw=document.getElementById('nl-pw')?.value||'';
+  const out=document.getElementById('nl-login-msg');
+  if(!email||!pw){if(out)out.textContent='Scrivi email e password.';return}
+  const btn=document.getElementById('nl-login-btn');if(btn){btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Accesso…';}
+  const {error}=await nlSupa.auth.signInWithPassword({email,password:pw});
+  if(error){
+    if(btn){btn.disabled=false;btn.textContent='Accedi';}
+    if(out)out.textContent=/invalid login/i.test(error.message)?'Email o password non corretti.':(/not confirmed/i.test(error.message)?'Utente non ancora confermato in Supabase.':'Accesso non riuscito: '+error.message);
+  }
+}
+async function nlLogout(){await nlSupa.auth.signOut();toast('Uscito dalla newsletter','ok')}
+
+/* ---- dati ---- */
+async function nlLoad(opts={}){
+  if(!nlSupa||!nl.editor)return;
+  nl.loading=true; if(state.view==='newsletter'&&!opts.silent) render();
+  try{
+    const subs=[]; let from=0;
+    for(;;){ // a pagine da 1000 (limite di Supabase per richiesta)
+      const {data,error}=await nlSupa.from('newsletter_subscribers').select('id,email,source,created_at,consent_at,unsubscribed_at').order('created_at',{ascending:false}).range(from,from+999);
+      if(error)throw error; subs.push(...data); if(data.length<1000)break; from+=1000;
+    }
+    const {data:camps,error:e2}=await nlSupa.from('newsletter_campaigns').select('*').order('created_at',{ascending:false});
+    if(e2)throw e2;
+    nl.subs=subs; nl.camps=camps; nl.loaded=true;
+    if(nl.edit&&nl.edit.id){const c=camps.find(x=>x.id===nl.edit.id); if(c&&c.status!=='draft'){nl.edit=c;await nlLoadSends(c.id);}}
+  }catch(e){toast('Newsletter: '+e.message,'err')}
+  nl.loading=false;
+  if(state.view==='newsletter' && !opts.keepView) render();
+}
+async function nlLoadSends(id){
+  const {data,error}=await nlSupa.from('newsletter_sends').select('id,email,status,sent_at,error').eq('campaign_id',id).order('id').range(0,4999);
+  nl.sends=error?[]:data;
+}
+
+/* ---- testo della newsletter: formattazione semplice ---- */
+// riga vuota = paragrafo · **grassetto** · [testo](https://link) · "- " = elenco · "## " = titoletto
+function nlInline(s){
+  return esc(s)
+    .replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')
+    .replace(/\[([^\]]+)\]\(((?:https?:\/\/|mailto:)[^)\s"']+)\)/g,(m,t,u)=>`<a href="${u.replace(/"/g,'%22')}" style="color:#A85400;text-decoration:underline">${t}</a>`);
+}
+function nlBodyHtml(text){
+  const P='margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.6;color:#1E1E1E';
+  return String(text||'').replace(/\r/g,'').split(/\n\s*\n/).map(b=>b.replace(/^\n+|\n+$/g,'')).filter(Boolean).map(b=>{
+    const lines=b.split('\n');
+    if(lines.length===1&&/^##\s+/.test(b)) return `<h2 style="margin:24px 0 10px;font-family:Arial,Helvetica,sans-serif;font-size:20px;line-height:1.3;color:#1E1E1E">${nlInline(b.replace(/^##\s+/,''))}</h2>`;
+    if(lines.every(l=>/^\s*-\s+/.test(l))) return `<ul style="margin:0 0 16px;padding-left:22px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.6;color:#1E1E1E">${lines.map(l=>`<li style="margin:0 0 6px">${nlInline(l.replace(/^\s*-\s+/,''))}</li>`).join('')}</ul>`;
+    return `<p style="${P}">${lines.map(nlInline).join('<br>')}</p>`;
+  }).join('\n');
+}
+function nlBodyText(text){
+  return String(text||'').replace(/\r/g,'')
+    .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g,'$1 ($2)')
+    .replace(/\*\*([^*]+)\*\*/g,'$1')
+    .replace(/^##\s+/gm,'').replace(/^\s*-\s+/gm,'• ').trim();
+}
+function nlEmailHtml(c,unsubUrl){
+  return `<!doctype html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(c.subject||'')}</title></head>
+<body style="margin:0;padding:0;background:#F3F3F1">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0">${esc(c.preheader||'')}</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F3F3F1"><tr><td align="center" style="padding:24px 12px">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;background:#FFFFFF;border-radius:16px">
+<tr><td style="padding:28px 32px 6px"><img src="${escAttr(NL.logo)}" alt="Flowline" width="140" style="display:block;border:0;height:auto;max-width:140px"></td></tr>
+<tr><td style="padding:14px 32px 18px">
+${nlBodyHtml(c.body)||'<p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:16px;color:#9A9A92">Il testo della newsletter comparirà qui.</p>'}
+</td></tr></table>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px"><tr><td style="padding:18px 32px 8px;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.55;color:#6E6E67;text-align:center">
+Ricevi questa email perché ti sei iscritto alla newsletter di Flowline.<br><a href="${escAttr(unsubUrl)}" style="color:#6E6E67;text-decoration:underline">Disiscriviti con un clic</a><br><br>${esc(NL.legal)}
+</td></tr></table>
+</td></tr></table></body></html>`;
+}
+function nlEmailText(c,unsubUrl){
+  return nlBodyText(c.body)+'\n\n— \nRicevi questa email perché ti sei iscritto alla newsletter di Flowline.\nPer disiscriverti: '+unsubUrl+'\n'+NL.legal;
+}
+// MIME con parti in base64 (righe da 76): niente righe troppo lunghe per i server di posta
+function nlB64Lines(s){return utf8b64(s).match(/.{1,76}/g).join('\r\n')}
+function nlBuildRaw({to,from,subject,html,text,listUnsub}){
+  const b='flonl'+Math.random().toString(36).slice(2,12);
+  const headers=['From: '+from,'To: '+to,'Subject: '+encSubject(subject),'MIME-Version: 1.0','Content-Type: multipart/alternative; boundary="'+b+'"'];
+  if(listUnsub) headers.push('List-Unsubscribe: '+listUnsub);
+  const parts=['--'+b,'Content-Type: text/plain; charset="UTF-8"','Content-Transfer-Encoding: base64','',nlB64Lines(text),
+    '--'+b,'Content-Type: text/html; charset="UTF-8"','Content-Transfer-Encoding: base64','',nlB64Lines(html),'--'+b+'--',''].join('\r\n');
+  return b64url(utf8b64(headers.join('\r\n')+'\r\n\r\n'+parts));
+}
+function nlFromEmail(){return (state.fromAddr||state.google.email||'').trim()}
+async function nlSendOne(to,c,token){
+  const unsub=nlUnsubUrl(token);
+  const fromEmail=nlFromEmail();
+  const raw=nlBuildRaw({to, from:fromHeader(), subject:c.subject, html:nlEmailHtml(c,unsub), text:nlEmailText(c,unsub),
+    listUnsub:`<mailto:${fromEmail}?subject=Disiscrizione%20newsletter>, <${unsub}>`});
+  return gfetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/send',{method:'POST',body:JSON.stringify({raw})});
+}
+
+/* ---- editor ---- */
+function nlNew(){nl.edit={id:null,subject:'',preheader:'',body:'',status:'draft'};nl.sends=null;render();setTimeout(()=>document.getElementById('nl-subj')?.focus(),50)}
+async function nlOpen(id){
+  const c=nl.camps.find(x=>x.id===id); if(!c)return;
+  nl.edit={...c}; nl.sends=null;
+  if(c.status!=='draft') await nlLoadSends(id);
+  render(); window.scrollTo(0,0);
+}
+function nlClose(){ if(nl.saveT){clearTimeout(nl.saveT);nlSave(true);} nl.edit=null;nl.sends=null;render(); }
+function nlField(k,v){
+  if(!nl.edit||nl.edit.status!=='draft')return;
+  nl.edit[k]=v;
+  clearTimeout(nl.prevT); nl.prevT=setTimeout(nlPreview,250);
+  clearTimeout(nl.saveT); nl.saveT=setTimeout(()=>nlSave(true),1200);
+  const st=document.getElementById('nl-save-st'); if(st)st.textContent='Modifiche da salvare…';
+  if(k==='subject'){const cnt=document.getElementById('nl-subj-cnt');if(cnt)cnt.textContent=v.length;}
+}
+function nlPreview(){
+  const f=document.getElementById('nl-prev'); if(!f||!nl.edit)return;
+  f.srcdoc=nlEmailHtml(nl.edit,nlUnsubUrl('anteprima'));
+}
+async function nlSave(quiet){
+  clearTimeout(nl.saveT); nl.saveT=null;
+  const e=nl.edit; if(!e||e.status!=='draft'||nl.saving)return true;
+  if(!e.id && !e.subject.trim() && !e.body.trim()) return true; // niente da salvare
+  nl.saving=true;
+  const st=document.getElementById('nl-save-st'); if(st)st.textContent='Salvataggio…';
+  const row={subject:e.subject,preheader:e.preheader,body:e.body,updated_at:new Date().toISOString()};
+  let res;
+  if(e.id) res=await nlSupa.from('newsletter_campaigns').update(row).eq('id',e.id).select().single();
+  else res=await nlSupa.from('newsletter_campaigns').insert({...row,created_by:nl.session?.user?.email||null}).select().single();
+  nl.saving=false;
+  if(res.error){ if(st)st.textContent='Salvataggio non riuscito'; toast('Salvataggio bozza: '+res.error.message,'err'); return false; }
+  e.id=res.data.id;
+  const i=nl.camps.findIndex(x=>x.id===e.id); if(i>=0)nl.camps[i]=res.data; else nl.camps.unshift(res.data);
+  const st2=document.getElementById('nl-save-st'); if(st2)st2.textContent='Bozza salvata alle '+new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+  if(!quiet)toast('Bozza salvata','ok');
+  return true;
+}
+async function nlDuplicate(id){
+  const c=nl.camps.find(x=>x.id===id); if(!c)return;
+  nl.edit={id:null,subject:c.subject,preheader:c.preheader,body:c.body,status:'draft'}; nl.sends=null;
+  await nlSave(true); render(); toast('Copia creata come nuova bozza','ok');
+}
+async function nlDeleteDraft(id){
+  if(!confirm('Eliminare questa bozza?'))return;
+  const {error}=await nlSupa.from('newsletter_campaigns').delete().eq('id',id).eq('status','draft');
+  if(error){toast('Eliminazione: '+error.message,'err');return}
+  nl.camps=nl.camps.filter(x=>x.id!==id); if(nl.edit&&nl.edit.id===id)nl.edit=null; render(); toast('Bozza eliminata','ok');
+}
+function nlCheckReady(c,forAll){
+  if(!c.subject.trim()){toast('Scrivi l\'oggetto','warn');document.getElementById('nl-subj')?.focus();return false}
+  if(!c.body.trim()){toast('Scrivi il testo della newsletter','warn');document.getElementById('nl-body')?.focus();return false}
+  if(!googleReady()){toast('Connetti Google: la newsletter parte dalla casella Gmail','warn');connectGoogle();return false}
+  if(forAll&&state.config.testMode){toast('Sei in modalità test: disattivala nelle Impostazioni per inviare davvero','warn');return false}
+  return true;
+}
+async function nlSendTest(){
+  const c=nl.edit; if(!c||!nlCheckReady(c,false))return;
+  const to=nlFromEmail(); if(!to){toast('Nessuna casella Gmail collegata','warn');return}
+  const btn=document.getElementById('nl-test-btn'); const old=btn?btn.innerHTML:'';
+  if(btn){btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Invio…';}
+  try{
+    await nlSave(true);
+    await nlSendOne(to,{...c,subject:'[Prova] '+c.subject},'prova');
+    toast('Prova inviata a '+to,'ok');
+  }catch(e){toast('Prova non inviata: '+e.message,'err')}
+  if(btn){btn.disabled=false;btn.innerHTML=old;}
+}
+function nlAskSend(){
+  const c=nl.edit; if(!c||!nlCheckReady(c,true))return;
+  const n=nlActive().length;
+  if(!n){toast('Non ci sono iscritti attivi','warn');return}
+  modal(`<div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-h"><h3>Inviare a ${n} ${n===1?'iscritto':'iscritti'}?</h3><div class="x" role="button" tabindex="0" aria-label="Chiudi" onclick="closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div>
+    <div class="modal-b">
+      <div class="form-row"><label>Oggetto</label><div>${esc(c.subject)}</div></div>
+      <div class="form-row"><label>Mittente</label><div>${esc(fromHeader())}</div><span class="hint">Si cambia in Impostazioni → "Invia le email da".</span></div>
+      <div class="helptip">Le email partono una alla volta dalla casella Gmail collegata, ognuna con il suo link per disiscriversi. <b>Tieni aperta questa pagina finché l'invio non finisce</b>: se la chiudi, riprendi da dove si era fermato. Google limita gli invii giornalieri di ogni casella (circa 2.000 al giorno con Google Workspace): oltre il limite l'invio si ferma e lo riprendi il giorno dopo.</div>
+    </div>
+    <div class="modal-f"><button class="btn" onclick="closeModal()">Annulla</button><button class="btn primary" onclick="closeModal();nlRun()">Invia ora</button></div>
+  </div>`);
+}
+async function nlRun(){
+  const c=nl.edit; if(!c)return;
+  if(nl.sending){toast('Un invio è già in corso','warn');return}
+  if(c.status==='draft' && !(await nlSave(true)))return;
+  if(!nlCheckReady(c,true))return;
+  nl.sending=c.id; nl.stop=false;
+  try{
+    if(c.status!=='sent'){
+      const {data:total,error}=await nlSupa.rpc('newsletter_prepare',{p_campaign:c.id});
+      if(error)throw error;
+      c.status='sending'; c.total=total;
+    }
+    await nlLoadSends(c.id);
+    nl.prog={sent:nl.sends.filter(s=>s.status==='sent').length, failed:nl.sends.filter(s=>s.status==='failed').length, total:nl.sends.length};
+    render();
+    let stopReason='';
+    for(;;){
+      if(nl.stop){stopReason='Invio messo in pausa: riprendi quando vuoi.';break}
+      const {data:rows,error}=await nlSupa.rpc('newsletter_claim',{p_campaign:c.id,p_limit:1});
+      if(error)throw error;
+      if(!rows||!rows.length)break;
+      const r=rows[0];
+      if(!r.token){ await nlSupa.rpc('newsletter_mark',{p_send:r.send_id,p_status:'skipped',p_error:'disiscritto prima dell\'invio'}); continue; }
+      try{
+        const sent=await nlSendOne(r.email,c,r.token);
+        await nlSupa.rpc('newsletter_mark',{p_send:r.send_id,p_status:'sent',p_gmail:sent&&sent.id||null});
+        nl.prog.sent++;
+      }catch(e){
+        const m=String(e.message||e);
+        if(/quota|rate ?limit|limit ?exceeded|429|sessione google scaduta|riconnetti/i.test(m)){
+          await nlSupa.rpc('newsletter_mark',{p_send:r.send_id,p_status:'pending'}); // torna in coda, nessuna email persa
+          stopReason=/sessione|riconnetti/i.test(m)?'Sessione Google scaduta: riconnetti e premi "Riprendi l\'invio".':'Gmail ha raggiunto il limite di invii: riprendi più tardi (di solito il giorno dopo).';
+          break;
+        }
+        await nlSupa.rpc('newsletter_mark',{p_send:r.send_id,p_status:'failed',p_error:m.slice(0,280)});
+        nl.prog.failed++;
+      }
+      nlProgressPaint();
+      await nlSleep(NL.pauseMs);
+    }
+    if(stopReason) toast(stopReason,'warn'); else toast(nl.prog.failed?`Newsletter inviata · ${nl.prog.failed} non ${nl.prog.failed===1?'riuscita':'riuscite'}`:'Newsletter inviata',nl.prog.failed?'warn':'ok');
+  }catch(e){toast('Invio interrotto: '+e.message,'err')}
+  nl.sending=null; nl.stop=false;
+  await nlLoad({keepView:true});
+  const fresh=nl.camps.find(x=>x.id===c.id);
+  if(fresh && nl.edit && nl.edit.id===c.id){nl.edit={...fresh};await nlLoadSends(c.id);}   // solo se sei ancora sulla sua pagina
+  if(state.view==='newsletter') render(); else renderNav();
+}
+function nlStopSend(){nl.stop=true;toast('Fermo dopo l\'email in corso…','warn')}
+function nlProgressPaint(){
+  const p=nl.prog; if(!p)return;
+  const done=p.sent+p.failed, pct=p.total?Math.round(done/p.total*100):0;
+  const bar=document.getElementById('nl-bar'); if(bar)bar.style.width=pct+'%';
+  const t=document.getElementById('nl-prog-t'); if(t)t.textContent=`${p.sent} inviate · ${p.failed} non riuscite · ${p.total} in tutto`;
+}
+async function nlRequeue(which){
+  const c=nl.edit; if(!c)return;
+  const {data,error}=await nlSupa.rpc('newsletter_requeue',{p_campaign:c.id,p_which:which});
+  if(error){toast(error.message,'err');return}
+  toast(data?`${data} ${data===1?'destinatario rimesso':'destinatari rimessi'} in coda`:'Niente da rimettere in coda','ok');
+  await nlLoad({keepView:true}); const fresh=nl.camps.find(x=>x.id===c.id); if(fresh){nl.edit={...fresh};await nlLoadSends(c.id);} render();
+}
+window.addEventListener('beforeunload',e=>{ if(nl.sending){e.preventDefault();e.returnValue='';} });
+
+/* ---- iscritti ---- */
+function nlSetTab(t){nl.tab=t;nl.edit=null;render()}
+function nlSetFilter(f){nl.filter=f;render()}
+function nlSearch(v){nl.q=v;clearTimeout(window._nlq);window._nlq=setTimeout(()=>{render();const i=document.getElementById('nl-q');if(i){i.focus();i.setSelectionRange(v.length,v.length)}},220)}
+async function nlToggleSub(id,on){
+  const {error}=await nlSupa.from('newsletter_subscribers').update({unsubscribed_at:on?null:new Date().toISOString()}).eq('id',id);
+  if(error){toast(error.message,'err');return}
+  const s=nl.subs.find(x=>x.id===id); if(s)s.unsubscribed_at=on?null:new Date().toISOString();
+  render(); toast(on?'Iscrizione riattivata':'Disiscritto','ok');
+}
+async function nlDeleteSub(id){
+  const s=nl.subs.find(x=>x.id===id); if(!s)return;
+  if(!confirm(`Eliminare ${s.email} e la sua cronologia di invii? Usalo per le richieste di cancellazione dei dati. Per smettere solo di inviargli la newsletter usa "Disiscrivi".`))return;
+  let r=await nlSupa.from('newsletter_sends').delete().eq('subscriber_id',id);
+  if(!r.error) r=await nlSupa.from('newsletter_subscribers').delete().eq('id',id);
+  if(r.error){toast(r.error.message,'err');return}
+  nl.subs=nl.subs.filter(x=>x.id!==id); render(); toast('Indirizzo eliminato','ok');
+}
+function nlAddModal(){
+  modal(`<div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-h"><h3>Aggiungi un iscritto</h3><div class="x" role="button" tabindex="0" aria-label="Chiudi" onclick="closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div>
+    <div class="modal-b">
+      <div class="form-row"><label for="nl-add-em">Email</label><input id="nl-add-em" type="email" autocomplete="off" placeholder="nome@azienda.it"></div>
+      <label style="display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.45"><input type="checkbox" id="nl-add-ok" style="margin-top:2px"> <span>Questa persona ha dato il consenso a ricevere la newsletter di Flowline (per esempio per iscritto o via email).</span></label>
+    </div>
+    <div class="modal-f"><button class="btn" onclick="closeModal()">Annulla</button><button class="btn primary" onclick="nlAddSave()">Aggiungi</button></div>
+  </div>`);
+  setTimeout(()=>document.getElementById('nl-add-em')?.focus(),50);
+}
+async function nlAddSave(){
+  const em=(document.getElementById('nl-add-em')?.value||'').trim().toLowerCase();
+  if(!NL.emailRe.test(em)){toast('Email non valida','warn');return}
+  if(!document.getElementById('nl-add-ok')?.checked){toast('Senza consenso non si può aggiungere','warn');return}
+  if(nl.subs.some(s=>s.email===em)){toast('Indirizzo già presente','warn');return}
+  const now=new Date().toISOString();
+  const {data,error}=await nlSupa.from('newsletter_subscribers').insert({email:em,source:'manuale',consent:true,consent_at:now}).select('id,email,source,created_at,consent_at,unsubscribed_at').single();
+  if(error){toast(error.message,'err');return}
+  nl.subs.unshift(data); closeModal(); render(); toast('Iscritto aggiunto','ok');
+}
+function nlPickCsv(){document.getElementById('nlFile').click()}
+function nlParseCsv(text){
+  const lines=text.replace(/^﻿/,'').split(/\r?\n/).filter(l=>l.trim());
+  if(!lines.length)return [];
+  const sep=(lines[0].match(/;/g)||[]).length>(lines[0].match(/,/g)||[]).length?';':',';
+  const split=l=>{const out=[];let cur='',q=false;for(let i=0;i<l.length;i++){const ch=l[i];if(q){if(ch==='"'&&l[i+1]==='"'){cur+='"';i++}else if(ch==='"')q=false;else cur+=ch}else if(ch==='"')q=true;else if(ch===sep){out.push(cur);cur=''}else cur+=ch}out.push(cur);return out.map(x=>x.trim())};
+  const head=split(lines[0]).map(h=>h.toLowerCase());
+  let ie=head.findIndex(h=>/e-?mail/.test(h)); const hasHead=ie>=0; if(!hasHead)ie=0;
+  const isrc=head.findIndex(h=>/fonte|source/.test(h)), idt=head.findIndex(h=>/iscritt|created|data/.test(h));
+  return (hasHead?lines.slice(1):lines).map(l=>{const c=split(l);return {email:(c[ie]||'').toLowerCase(),source:isrc>=0?c[isrc]:'',date:idt>=0?c[idt]:''}});
+}
+let _nlImport=null;
+function nlHandleCsv(file){
+  if(!file)return;
+  const rd=new FileReader();
+  rd.onload=()=>{
+    const rows=nlParseCsv(String(rd.result||''));
+    const seen=new Set(nl.subs.map(s=>s.email)), batch=new Set();
+    const ok=[]; let bad=0, dup=0;
+    rows.forEach(r=>{
+      if(!NL.emailRe.test(r.email)){bad++;return}
+      if(seen.has(r.email)||batch.has(r.email)){dup++;return}
+      batch.add(r.email);
+      const d=r.date&&!isNaN(Date.parse(r.date))?new Date(r.date).toISOString():new Date().toISOString();
+      const src=(r.source||'').toLowerCase().replace(/[^a-z0-9_-]/g,'').slice(0,60)||'importazione';
+      ok.push({email:r.email,source:src,consent:true,consent_at:d,created_at:d});
+    });
+    _nlImport=ok;
+    modal(`<div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-h"><h3>Importa iscritti</h3><div class="x" role="button" tabindex="0" aria-label="Chiudi" onclick="closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div>
+      <div class="modal-b">
+        <table class="spend-table">
+          <tr><td>Indirizzi nuovi da importare</td><td>${ok.length}</td></tr>
+          <tr><td>Già presenti (saltati)</td><td>${dup}</td></tr>
+          <tr><td>Non validi (saltati)</td><td>${bad}</td></tr>
+        </table>
+        <label style="display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.45"><input type="checkbox" id="nl-imp-ok" style="margin-top:2px"> <span>Tutti questi indirizzi hanno dato il consenso a ricevere la newsletter (per esempio: gli iscritti esportati dal Journal).</span></label>
+        <div class="helptip">Colonne riconosciute: email (obbligatoria), fonte, data di iscrizione. È lo stesso formato del CSV esportato da flowline.it/journal/admin.</div>
+      </div>
+      <div class="modal-f"><button class="btn" onclick="closeModal()">Annulla</button><button class="btn primary" ${ok.length?'':'disabled'} onclick="nlImportGo()">Importa ${ok.length}</button></div>
+    </div>`);
+  };
+  rd.readAsText(file);
+}
+async function nlImportGo(){
+  if(!document.getElementById('nl-imp-ok')?.checked){toast('Conferma il consenso per importare','warn');return}
+  const rows=_nlImport||[]; let done=0;
+  for(let i=0;i<rows.length;i+=500){
+    const {error}=await nlSupa.from('newsletter_subscribers').upsert(rows.slice(i,i+500),{onConflict:'email',ignoreDuplicates:true});
+    if(error){toast('Importazione: '+error.message,'err');break}
+    done+=Math.min(500,rows.length-i);
+  }
+  closeModal(); _nlImport=null; await nlLoad(); if(done)toast(done+' iscritti importati','ok');
+}
+function nlExportCsv(){
+  const cell=v=>{const s=String(v??'');return /[",;\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s};
+  const rows=nlActive();
+  const text=['email,fonte,iscritto_il,consenso_il',...rows.map(s=>[s.email,s.source,s.created_at,s.consent_at].map(cell).join(','))].join('\r\n');
+  const url=URL.createObjectURL(new Blob(['﻿'+text],{type:'text/csv;charset=utf-8'}));
+  const a=Object.assign(document.createElement('a'),{href:url,download:'newsletter-iscritti-'+isoD(today())+'.csv'});
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+/* ---- viste ---- */
+const NL_I={
+  mail:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="m22 6-10 7L2 6"/></svg>',
+  back:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>',
+  send:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13 M22 2l-7 20-4-9-9-4 20-7z"/></svg>',
+  plus:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14 M5 12h14"/></svg>',
+};
+function nlHeroCopy(){
+  if(!nl.session) return {t:'Newsletter.',l:'Accedi per vedere gli iscritti arrivati dal sito e scrivere la newsletter di Flowline.'};
+  if(nl.editor===false) return {t:'Accesso non abilitato.',l:'Questo account non è nella redazione della newsletter.'};
+  if(!nl.loaded) return {t:'Newsletter.',l:'Carico iscritti e newsletter…'};
+  const n=nlActive().length, sent=nl.camps.filter(c=>c.status==='sent').length;
+  if(nl.edit) return nl.edit.status==='draft'?{t:nl.edit.id?'Modifica la newsletter.':'Nuova newsletter.',l:'Scrivi a sinistra, controlla a destra come arriverà nella casella, prova a mandarla a te e poi a tutti.'}
+    :{t:nl.edit.status==='sending'?'Invio in corso.':'Newsletter inviata.',l:nl.edit.subject||''};
+  return {t:`${n} ${n===1?'iscritto':'iscritti'} alla newsletter.`,l:`${sent} ${sent===1?'newsletter inviata':'newsletter inviate'} finora. Le iscrizioni arrivano da sole dal modulo del Journal su flowline.it.`};
+}
+function nlTopActions(){
+  const refresh='<button class="btn" id="btnRefresh" onclick="nlLoad()" title="Ricarica iscritti e newsletter"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6 M1 20v-6h6 M3.51 9a9 9 0 0 1 14.85-3.36L23 10 M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg><span class="lbl">Aggiorna</span></button>';
+  if(!nl.session||!nl.editor)return '';
+  if(nl.edit) return `<button class="btn" onclick="nlClose()">${NL_I.back}Tutte le newsletter</button>`;
+  return `<button class="btn primary" onclick="nlSetTab('campagne');nlNew()">${NL_I.plus}Nuova newsletter</button>`+refresh;
+}
+function viewNewsletter(){
+  if(!nl.ready) return `<div class="empty"><span class="spinner"></span></div>`;
+  if(!nl.session) return nlLoginView();
+  if(nl.editor===null) return `<div class="empty"><span class="spinner"></span><p style="margin-top:14px">Verifico l'accesso…</p></div>`;
+  if(nl.editor===false) return `<div class="empty">${NL_I.mail}<h4>Questo account non è in redazione</h4>
+    <p>${esc(nl.session.user?.email||'')} ha fatto l'accesso, ma non è tra gli indirizzi abilitati a vedere gli iscritti. Chiedi a chi gestisce il database di aggiungerlo alla tabella <code>newsletter_editors</code>.</p>
+    <button class="btn" onclick="nlLogout()">Esci</button></div>`;
+  if(!nl.loaded) return `<div class="empty"><span class="spinner"></span><p style="margin-top:14px">Carico iscritti e newsletter…</p></div>`;
+  if(nl.edit) return nlEditorView();
+  const tabs=`<div class="filters"><div class="seg">
+      <button class="fbtn ${nl.tab==='campagne'?'on':''}" onclick="nlSetTab('campagne')">Newsletter</button>
+      <button class="fbtn ${nl.tab==='iscritti'?'on':''}" onclick="nlSetTab('iscritti')">Iscritti · ${nlActive().length}</button>
+    </div><span style="flex:1"></span>
+    <span class="email-cell">Accesso: ${esc(nl.session.user?.email||'')}</span><button class="btn sm ghost" onclick="nlLogout()">Esci</button></div>`;
+  return tabs+(nl.tab==='iscritti'?nlSubsView():nlCampsView());
+}
+function nlLoginView(){
+  return `<div class="tile nl-login">
+    <div class="tile-h"><h3>Accedi alla newsletter</h3></div>
+    <p class="helptip" style="margin-bottom:18px">Gli iscritti sono dati personali: li vede solo chi è in redazione. Usa l'email e la password create in Supabase (progetto Lead Flowline → Authentication → Users).</p>
+    <form onsubmit="nlLogin(event)" style="display:flex;flex-direction:column;gap:14px">
+      <div class="form-row"><label for="nl-em">Email</label><input id="nl-em" type="email" autocomplete="username" value="info@flowline.it"></div>
+      <div class="form-row"><label for="nl-pw">Password</label><input id="nl-pw" type="password" autocomplete="current-password"></div>
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><button class="btn primary" id="nl-login-btn" type="submit">Accedi</button><span id="nl-login-msg" class="email-cell" role="status" aria-live="polite"></span></div>
+    </form>
+  </div>`;
+}
+function nlStatusChip(c){
+  if(c.status==='draft')return '<span class="chip da"><span class="d"></span>Bozza</span>';
+  if(c.status==='sending')return `<span class="chip today"><span class="d"></span>In invio · ${c.sent_count}/${c.total}</span>`;
+  return `<span class="chip reply"><span class="d"></span>Inviata ${esc(nlFmt(c.sent_at))}</span>`;
+}
+function nlCampsView(){
+  const n=nlActive().length, sent=nl.camps.filter(c=>c.status==='sent');
+  const last=sent.map(c=>c.sent_at).filter(Boolean).sort().pop();
+  const stats=`<div class="stat-grid nl-stats">
+    <div class="stat-t t-ink"><div class="k">Iscritti attivi</div><div class="row"><div class="v">${n}</div><button class="btn sm" onclick="nlSetTab('iscritti')">Vedi</button></div></div>
+    <div class="stat-t t-peach"><div class="k">Newsletter inviate</div><div class="row"><div class="v">${sent.length}</div><div class="m">${last?'ultima il '+esc(nlFmt(last)):'ancora nessuna'}</div></div></div>
+  </div>`;
+  if(!nl.camps.length) return stats+`<div class="empty" style="margin-top:16px">${NL_I.mail}<h4>Nessuna newsletter ancora</h4><p>Scrivi la prima: la provi mandandola a te, poi la invii a tutti gli iscritti dalla tua casella Gmail.</p><button class="btn primary" onclick="nlNew()">${NL_I.plus}Nuova newsletter</button></div>`;
+  return stats+`<div class="section-h"><h3>Newsletter</h3><span class="count">${nl.camps.length}</span><div class="line"></div></div>
+  <div class="table-wrap"><table><thead><tr><th>Oggetto</th><th>Stato</th><th>Destinatari</th><th>Modificata</th><th></th></tr></thead><tbody>
+  ${nl.camps.map(c=>`<tr style="cursor:pointer" onclick="nlOpen('${c.id}')">
+    <td class="az">${esc(c.subject||'(senza oggetto)')}</td><td>${nlStatusChip(c)}</td>
+    <td class="tnum">${c.status==='draft'?'—':c.sent_count+(c.failed_count?` <span class="email-cell">(${c.failed_count} non riuscite)</span>`:'')}</td>
+    <td class="email-cell">${esc(nlFmt(c.updated_at,true))}</td>
+    <td style="text-align:right;white-space:nowrap" onclick="event.stopPropagation()">
+      ${c.status==='draft'?`<button class="btn sm ghost danger" onclick="nlDeleteDraft('${c.id}')">Elimina</button>`:`<button class="btn sm ghost" onclick="nlDuplicate('${c.id}')">Duplica</button>`}
+    </td></tr>`).join('')}
+  </tbody></table></div>`;
+}
+function nlSubsView(){
+  const q=nl.q.toLowerCase();
+  const rows=nl.subs.filter(s=>(nl.filter==='tutti'||(nl.filter==='attivi'?!s.unsubscribed_at:!!s.unsubscribed_at))&&(!q||s.email.includes(q)));
+  const nA=nlActive().length, nU=nl.subs.length-nA;
+  return `<div class="filters">
+    <div class="search"><svg class="ico" style="width:17px;height:17px;color:var(--faint)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="nl-q" placeholder="Cerca un indirizzo…" value="${escAttr(nl.q)}" oninput="nlSearch(this.value)" aria-label="Cerca iscritti"></div>
+    <div class="seg">
+      <button class="fbtn ${nl.filter==='attivi'?'on':''}" onclick="nlSetFilter('attivi')">Attivi · ${nA}</button>
+      <button class="fbtn ${nl.filter==='disiscritti'?'on':''}" onclick="nlSetFilter('disiscritti')">Disiscritti · ${nU}</button>
+      <button class="fbtn ${nl.filter==='tutti'?'on':''}" onclick="nlSetFilter('tutti')">Tutti</button>
+    </div></div>
+  <div class="filters"><button class="btn sm" onclick="nlAddModal()">${NL_I.plus}Aggiungi</button><button class="btn sm" onclick="nlPickCsv()">Importa CSV</button><button class="btn sm" onclick="nlExportCsv()" ${nA?'':'disabled'}>Esporta CSV</button></div>
+  ${rows.length?`<div class="table-wrap"><table><thead><tr><th>Email</th><th>Da dove</th><th>Iscritto il</th><th>Stato</th><th></th></tr></thead><tbody>
+    ${rows.slice(0,500).map(s=>`<tr>
+      <td class="az"><a href="mailto:${escAttr(s.email)}" style="color:inherit;text-decoration:none">${esc(s.email)}</a></td>
+      <td class="email-cell">${esc(s.source||'—')}</td>
+      <td class="email-cell tnum">${esc(nlFmt(s.created_at))}</td>
+      <td>${s.unsubscribed_at?`<span class="chip done"><span class="d"></span>Disiscritto ${esc(nlFmt(s.unsubscribed_at))}</span>`:'<span class="chip reply"><span class="d"></span>Attivo</span>'}</td>
+      <td style="text-align:right;white-space:nowrap">${s.unsubscribed_at?`<button class="btn sm ghost" onclick="nlToggleSub('${s.id}',true)">Riattiva</button>`:`<button class="btn sm ghost" onclick="nlToggleSub('${s.id}',false)">Disiscrivi</button>`}<button class="btn sm ghost danger" onclick="nlDeleteSub('${s.id}')">Elimina</button></td>
+    </tr>`).join('')}</tbody></table></div>${rows.length>500?`<p class="helptip" style="margin-top:10px">Mostro i primi 500 di ${rows.length}: usa la ricerca per trovare un indirizzo.</p>`:''}`
+  :`<div class="empty">${NL_I.mail}<h4>${nl.subs.length?'Nessun indirizzo trovato':'Ancora nessun iscritto'}</h4><p>${nl.subs.length?'Prova un\'altra ricerca o un altro filtro.':'Le iscrizioni arrivano dal modulo in fondo alle pagine del Journal. Gli iscritti raccolti prima li importi dal CSV esportato in flowline.it/journal/admin.'}</p></div>`}`;
+}
+function nlEditorView(){
+  const c=nl.edit, draft=c.status==='draft', n=nlActive().length;
+  const prev=`<div class="nl-prev-wrap"><div class="field-lbl">Anteprima<span class="cnt">come arriva nella casella</span></div><iframe id="nl-prev" class="nl-prev" title="Anteprima della newsletter" sandbox></iframe></div>`;
+  if(!draft){
+    const s=nl.sends||[]; const stuck=s.filter(x=>x.status==='sending').length, failed=s.filter(x=>x.status==='failed'), pend=s.filter(x=>x.status==='pending').length;
+    const p=nl.sending===c.id?nl.prog:null;
+    const done=c.sent_count+c.failed_count, pct=c.total?Math.round((p?(p.sent+p.failed):done)/c.total*100):0;
+    setTimeout(nlPreview,0);
+    return `<div class="nl-ed">
+      <div class="nl-ed-main">
+        <div class="tile ${c.status==='sent'?'t-white':'t-peach'}">
+          <div class="tile-h"><h3>${c.status==='sent'?'Inviata':'Invio in corso'}</h3><span class="spacer"></span>${nlStatusChip(c)}</div>
+          <div class="nl-bar-wrap"><div class="nl-bar" id="nl-bar" style="width:${pct}%"></div></div>
+          <p class="helptip" id="nl-prog-t" style="margin-top:10px">${p?`${p.sent} inviate · ${p.failed} non riuscite · ${p.total} in tutto`:`${c.sent_count} inviate · ${c.failed_count} non riuscite · ${c.total} in tutto`}${c.sent_at?' · conclusa il '+esc(nlFmt(c.sent_at,true)):''}</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">
+            ${nl.sending===c.id?`<button class="btn dark" onclick="nlStopSend()">Metti in pausa</button><span class="helptip" style="align-self:center">Tieni aperta questa pagina finché l'invio non finisce.</span>`
+              :(pend?`<button class="btn primary" onclick="nlRun()">${NL_I.send}Riprendi l'invio (${pend})</button>`:'')}
+            ${!nl.sending&&failed.length?`<button class="btn" onclick="nlRequeue('failed')">Riprova le ${failed.length} non riuscite</button>`:''}
+            <button class="btn" onclick="nlDuplicate('${c.id}')">Duplica come nuova bozza</button>
+          </div>
+          ${!nl.sending&&stuck?`<div class="alert" style="margin:16px 0 0"><span><b>${stuck} ${stuck===1?'email è rimasta':'email sono rimaste'} a metà</b> (pagina chiusa durante l'invio): ${stuck===1?'potrebbe essere partita':'potrebbero essere partite'}. Controlla tra le "Inviate" di Gmail, poi rimettile in coda solo se mancano. <button class="btn sm" onclick="nlRequeue('sending')">Rimetti in coda</button></span></div>`:''}
+        </div>
+        <div class="form-row" style="margin-top:18px"><label>Oggetto</label><div>${esc(c.subject)}</div></div>
+        ${failed.length?`<div class="section-h" style="margin-top:26px"><h3 style="font-size:20px">Non riuscite</h3><span class="count">${failed.length}</span><div class="line"></div></div>
+          <div class="table-wrap"><table><tbody>${failed.slice(0,200).map(f=>`<tr><td class="az">${esc(f.email)}</td><td class="email-cell">${esc(f.error||'')}</td></tr>`).join('')}</tbody></table></div>`:''}
+      </div>
+      ${prev}
+    </div>`;
+  }
+  setTimeout(nlPreview,0);
+  return `<div class="nl-ed">
+    <div class="nl-ed-main">
+      <div><div class="field-lbl"><label for="nl-subj">Oggetto</label><span class="cnt"><span id="nl-subj-cnt">${c.subject.length}</span> caratteri</span></div>
+        <input class="subj" id="nl-subj" value="${escAttr(c.subject)}" placeholder="Per esempio: Tre automazioni che abbiamo visto funzionare a ottobre" oninput="nlField('subject',this.value)"></div>
+      <div><div class="field-lbl"><label for="nl-pre">Testo di anteprima</label><span class="cnt">facoltativo</span></div>
+        <input class="subj nl-pre" id="nl-pre" value="${escAttr(c.preheader)}" placeholder="La riga che si vede accanto all'oggetto nella casella" oninput="nlField('preheader',this.value)"></div>
+      <div><div class="field-lbl"><label for="nl-body">Testo</label></div>
+        <textarea class="body" id="nl-body" placeholder="Buongiorno,&#10;&#10;scrivi qui la newsletter." oninput="nlField('body',this.value)">${esc(c.body)}</textarea>
+        <p class="helptip nl-fmt">Riga vuota = nuovo paragrafo · <b>**grassetto**</b> · <b>[testo](https://indirizzo)</b> per un link · righe che iniziano con <b>- </b> = elenco · <b>## </b> = titoletto. Il link per disiscriversi e i dati aziendali si aggiungono da soli in fondo.</p></div>
+      <div class="nl-send">
+        <div class="nl-send-info">
+          <span class="email-cell" id="nl-save-st">${c.id?'Bozza salvata':'Bozza non ancora salvata'}</span>
+          <span class="email-cell">Mittente: <b>${esc(googleReady()?fromHeader():'Google non connesso')}</b></span>
+        </div>
+        <div class="nl-send-btns">
+          <button class="btn" onclick="nlSave()">Salva bozza</button>
+          <button class="btn" id="nl-test-btn" onclick="nlSendTest()">Invia una prova a me</button>
+          <button class="btn primary" onclick="nlAskSend()" ${state.config.testMode?'title="Disattiva la modalità test nelle Impostazioni per inviare"':''}>${NL_I.send}Invia a ${n} ${n===1?'iscritto':'iscritti'}</button>
+        </div>
+        ${state.config.testMode?'<p class="helptip">Sei in <b>modalità test</b>: la prova a te parte davvero, l\'invio a tutti è bloccato finché non la disattivi nelle Impostazioni.</p>':''}
+        <div class="form-row nl-site"><label for="nl-site">Sito per il link di disiscrizione</label>
+          <input id="nl-site" value="${escAttr(nlSite())}" onchange="state.config.nlSite=this.value.trim()||NL.siteDefault;persist();nlPreview();toast('Indirizzo aggiornato','ok')">
+          <span class="hint">Ogni email porta a ${esc(nlSite())}/newsletter/disiscrizione/. Lascia https://flowline.it quando il sito nuovo è online lì.</span></div>
+      </div>
+      ${c.id?`<button class="btn sm ghost danger" style="align-self:flex-start" onclick="nlDeleteDraft('${c.id}')">Elimina bozza</button>`:''}
+    </div>
+    ${prev}
+  </div>`;
+}
 
 /* ---- boot ---- */
 (function boot(){
