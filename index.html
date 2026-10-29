@@ -523,6 +523,10 @@ input[type=checkbox]{width:18px;height:18px;cursor:pointer;accent-color:var(--in
 .nl-send-info{display:flex;flex-wrap:wrap;gap:6px 18px}
 .nl-send-btns{display:flex;flex-wrap:wrap;gap:8px}
 .nl-site{padding-top:12px;border-top:1px solid var(--border)}
+.nl-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.nl-kpis .stat-t{min-height:130px}
+.nl-kpis .stat-t .v{font-size:44px}
+@media(max-width:700px){.nl-kpis{grid-template-columns:1fr}}
 .nl-bar-wrap{height:12px;border-radius:var(--pill);background:rgba(41,41,41,.12);overflow:hidden}
 .nl-bar{height:100%;background:var(--ink);border-radius:var(--pill);transition:width .4s var(--ease)}
 [data-theme="dark"] .nl-bar{background:var(--text)}
@@ -2879,11 +2883,16 @@ const NL = {
 };
 if(state.config.nlSite==null) state.config.nlSite=NL.siteDefault;
 let nlSupa=null;
-const nl={inited:false, ready:false, session:null, editor:null, tab:'campagne', subs:[], camps:[], loaded:false, loading:false,
+const nl={stats:{}, links:null, inited:false, ready:false, session:null, editor:null, tab:'campagne', subs:[], camps:[], loaded:false, loading:false,
   q:'', filter:'attivi', edit:null, sends:null, sending:null, stop:false, prog:null, saveT:null, prevT:null, saving:false};
 
 function nlSite(){return String(state.config.nlSite||NL.siteDefault).trim().replace(/\/+$/,'')}
-function nlUnsubUrl(token){return nlSite()+'/newsletter/disiscrizione/?t='+encodeURIComponent(token)}
+function nlUnsubUrl(token,campaignId){return nlSite()+'/newsletter/disiscrizione/?t='+encodeURIComponent(token)+(campaignId?'&c='+encodeURIComponent(campaignId):'')}
+// statistiche anonime: funzione nl-track su Supabase. Ogni email ha un codice casuale mai salvato con il destinatario.
+const NL_TRACK=NL.url+'/functions/v1/nl-track';
+function nlNonce(){const a=new Uint8Array(10);crypto.getRandomValues(a);return [...a].map(x=>x.toString(16).padStart(2,'0')).join('')}
+function nlTrackQ(trk){return 'c='+encodeURIComponent(trk.c)+'&n='+trk.n+'&t='+trk.t}
+function nlPct(n,base){return base?Math.round(n/base*100)+'%':'—'}
 function nlFmt(ts,withTime){if(!ts)return '—';const d=new Date(ts);return d.toLocaleDateString('it-IT',{day:'2-digit',month:'short',year:'numeric'})+(withTime?' '+d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}):'')}
 function nlSleep(ms){return new Promise(r=>setTimeout(r,ms))}
 function nlActive(){return nl.subs.filter(s=>!s.unsubscribed_at)}
@@ -2937,6 +2946,7 @@ async function nlLoad(opts={}){
     const {data:camps,error:e2}=await nlSupa.from('newsletter_campaigns').select('*').order('created_at',{ascending:false});
     if(e2)throw e2;
     nl.subs=subs; nl.camps=camps; nl.loaded=true;
+    await nlLoadStats();
     if(nl.edit&&nl.edit.id){const c=camps.find(x=>x.id===nl.edit.id); if(c&&c.status!=='draft'){nl.edit=c;await nlLoadSends(c.id);}}
   }catch(e){toast('Newsletter: '+e.message,'err')}
   nl.loading=false;
@@ -2945,22 +2955,41 @@ async function nlLoad(opts={}){
 async function nlLoadSends(id){
   const {data,error}=await nlSupa.from('newsletter_sends').select('id,email,status,sent_at,error').eq('campaign_id',id).order('id').range(0,4999);
   nl.sends=error?[]:data;
+  const lk=await nlSupa.rpc('newsletter_link_stats',{p_campaign:id});
+  nl.links=lk.error?[]:lk.data;
+  await nlLoadStats(id);
+}
+// statistiche anonime (aperture stimate, clic, disiscrizioni): tutte le newsletter o una sola
+async function nlLoadStats(id){
+  const {data,error}=await nlSupa.rpc('newsletter_stats',id?{p_campaign:id}:{});
+  if(error)return;
+  if(!id) nl.stats={};
+  (data||[]).forEach(r=>{nl.stats[r.campaign_id]=r});
+}
+async function nlRefreshStats(){
+  if(!nl.edit||!nl.edit.id)return;
+  const btn=document.getElementById('nl-stats-btn'); if(btn){btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Aggiorno…';}
+  await nlLoadSends(nl.edit.id); render(); toast('Statistiche aggiornate','ok');
 }
 
 /* ---- testo della newsletter: formattazione semplice ---- */
 // riga vuota = paragrafo · **grassetto** · [testo](https://link) · "- " = elenco · "## " = titoletto
-function nlInline(s){
+function nlInline(s,trk){
   return esc(s)
     .replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')
-    .replace(/\[([^\]]+)\]\(((?:https?:\/\/|mailto:)[^)\s"']+)\)/g,(m,t,u)=>`<a href="${u.replace(/"/g,'%22')}" style="color:#A85400;text-decoration:underline">${t}</a>`);
+    .replace(/\[([^\]]+)\]\(((?:https?:\/\/|mailto:)[^)\s"']+)\)/g,(m,t,u)=>{
+      const raw=u.replace(/&amp;/g,'&');                        // l'indirizzo esatto scritto nel testo
+      const href=trk&&/^https?:/i.test(raw)?NL_TRACK+'/c?'+nlTrackQ(trk)+'&u='+encodeURIComponent(raw):raw;
+      return `<a href="${escAttr(href)}" style="color:#A85400;text-decoration:underline">${t}</a>`;
+    });
 }
-function nlBodyHtml(text){
+function nlBodyHtml(text,trk){
   const P='margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.6;color:#1E1E1E';
   return String(text||'').replace(/\r/g,'').split(/\n\s*\n/).map(b=>b.replace(/^\n+|\n+$/g,'')).filter(Boolean).map(b=>{
     const lines=b.split('\n');
-    if(lines.length===1&&/^##\s+/.test(b)) return `<h2 style="margin:24px 0 10px;font-family:Arial,Helvetica,sans-serif;font-size:20px;line-height:1.3;color:#1E1E1E">${nlInline(b.replace(/^##\s+/,''))}</h2>`;
-    if(lines.every(l=>/^\s*-\s+/.test(l))) return `<ul style="margin:0 0 16px;padding-left:22px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.6;color:#1E1E1E">${lines.map(l=>`<li style="margin:0 0 6px">${nlInline(l.replace(/^\s*-\s+/,''))}</li>`).join('')}</ul>`;
-    return `<p style="${P}">${lines.map(nlInline).join('<br>')}</p>`;
+    if(lines.length===1&&/^##\s+/.test(b)) return `<h2 style="margin:24px 0 10px;font-family:Arial,Helvetica,sans-serif;font-size:20px;line-height:1.3;color:#1E1E1E">${nlInline(b.replace(/^##\s+/,''),trk)}</h2>`;
+    if(lines.every(l=>/^\s*-\s+/.test(l))) return `<ul style="margin:0 0 16px;padding-left:22px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.6;color:#1E1E1E">${lines.map(l=>`<li style="margin:0 0 6px">${nlInline(l.replace(/^\s*-\s+/,''),trk)}</li>`).join('')}</ul>`;
+    return `<p style="${P}">${lines.map(l=>nlInline(l,trk)).join('<br>')}</p>`;
   }).join('\n');
 }
 function nlBodyText(text){
@@ -2969,7 +2998,7 @@ function nlBodyText(text){
     .replace(/\*\*([^*]+)\*\*/g,'$1')
     .replace(/^##\s+/gm,'').replace(/^\s*-\s+/gm,'• ').trim();
 }
-function nlEmailHtml(c,unsubUrl){
+function nlEmailHtml(c,unsubUrl,trk){
   return `<!doctype html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(c.subject||'')}</title></head>
 <body style="margin:0;padding:0;background:#F3F3F1">
 <div style="display:none;max-height:0;overflow:hidden;opacity:0">${esc(c.preheader||'')}</div>
@@ -2977,11 +3006,11 @@ function nlEmailHtml(c,unsubUrl){
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;background:#FFFFFF;border-radius:16px">
 <tr><td style="padding:28px 32px 6px"><img src="${escAttr(NL.logo)}" alt="Flowline" width="140" style="display:block;border:0;height:auto;max-width:140px"></td></tr>
 <tr><td style="padding:14px 32px 18px">
-${nlBodyHtml(c.body)||'<p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:16px;color:#9A9A92">Il testo della newsletter comparirà qui.</p>'}
+${nlBodyHtml(c.body,trk)||'<p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:16px;color:#9A9A92">Il testo della newsletter comparirà qui.</p>'}
 </td></tr></table>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px"><tr><td style="padding:18px 32px 8px;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.55;color:#6E6E67;text-align:center">
 Ricevi questa email perché ti sei iscritto alla newsletter di Flowline.<br><a href="${escAttr(unsubUrl)}" style="color:#6E6E67;text-decoration:underline">Disiscriviti con un clic</a><br><br>${esc(NL.legal)}
-</td></tr></table>
+</td></tr></table>${trk?`<img src="${escAttr(NL_TRACK+'/o?'+nlTrackQ(trk))}" width="1" height="1" alt="" style="display:block;border:0;width:1px;height:1px;opacity:0">`:''}
 </td></tr></table></body></html>`;
 }
 function nlEmailText(c,unsubUrl){
@@ -2998,10 +3027,12 @@ function nlBuildRaw({to,from,subject,html,text,listUnsub}){
   return b64url(utf8b64(headers.join('\r\n')+'\r\n\r\n'+parts));
 }
 function nlFromEmail(){return (state.fromAddr||state.google.email||'').trim()}
-async function nlSendOne(to,c,token){
-  const unsub=nlUnsubUrl(token);
+// track=true solo negli invii veri: le prove a sé e l'anteprima non entrano nelle statistiche
+async function nlSendOne(to,c,token,track){
+  const trk=track&&c.id?{c:c.id,n:nlNonce(),t:Math.floor(Date.now()/1000)}:null;
+  const unsub=nlUnsubUrl(token,track?c.id:null);
   const fromEmail=nlFromEmail();
-  const raw=nlBuildRaw({to, from:fromHeader(), subject:c.subject, html:nlEmailHtml(c,unsub), text:nlEmailText(c,unsub),
+  const raw=nlBuildRaw({to, from:fromHeader(), subject:c.subject, html:nlEmailHtml(c,unsub,trk), text:nlEmailText(c,unsub),
     listUnsub:`<mailto:${fromEmail}?subject=Disiscrizione%20newsletter>, <${unsub}>`});
   return gfetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/send',{method:'POST',body:JSON.stringify({raw})});
 }
@@ -3010,7 +3041,7 @@ async function nlSendOne(to,c,token){
 function nlNew(){nl.edit={id:null,subject:'',preheader:'',body:'',status:'draft'};nl.sends=null;render();setTimeout(()=>document.getElementById('nl-subj')?.focus(),50)}
 async function nlOpen(id){
   const c=nl.camps.find(x=>x.id===id); if(!c)return;
-  nl.edit={...c}; nl.sends=null;
+  nl.edit={...c}; nl.sends=null; nl.links=null;
   if(c.status!=='draft') await nlLoadSends(id);
   render(); window.scrollTo(0,0);
 }
@@ -3113,7 +3144,7 @@ async function nlRun(){
       const r=rows[0];
       if(!r.token){ await nlSupa.rpc('newsletter_mark',{p_send:r.send_id,p_status:'skipped',p_error:'disiscritto prima dell\'invio'}); continue; }
       try{
-        const sent=await nlSendOne(r.email,c,r.token);
+        const sent=await nlSendOne(r.email,c,r.token,true);
         await nlSupa.rpc('newsletter_mark',{p_send:r.send_id,p_status:'sent',p_gmail:sent&&sent.id||null});
         nl.prog.sent++;
       }catch(e){
@@ -3309,6 +3340,21 @@ function nlStatusChip(c){
   if(c.status==='sending')return `<span class="chip today"><span class="d"></span>In invio · ${c.sent_count}/${c.total}</span>`;
   return `<span class="chip reply"><span class="d"></span>Inviata ${esc(nlFmt(c.sent_at))}</span>`;
 }
+function nlStatsBlock(c){
+  const st=nl.stats[c.id]||{opens_unique:0,opens_total:0,clicks_unique:0,clicks_total:0,unsubscribes:0,bots:0};
+  const base=c.sent_count, links=nl.links||[];
+  return `<div class="section-h" style="margin-top:26px"><h3 style="font-size:20px">Statistiche</h3><div class="line"></div>
+      <button class="btn sm" id="nl-stats-btn" onclick="nlRefreshStats()">Aggiorna</button></div>
+    <div class="nl-kpis">
+      <div class="stat-t t-white"><div class="k">Aperture stimate</div><div class="row"><div class="v">${nlPct(st.opens_unique,base)}</div><div class="m">${st.opens_unique} di ${base} persone</div></div></div>
+      <div class="stat-t t-white"><div class="k">Hanno cliccato</div><div class="row"><div class="v">${nlPct(st.clicks_unique,base)}</div><div class="m">${st.clicks_unique} persone · ${st.clicks_total} clic</div></div></div>
+      <div class="stat-t t-white"><div class="k">Disiscrizioni</div><div class="row"><div class="v">${st.unsubscribes}</div><div class="m">da questa newsletter</div></div></div>
+    </div>
+    ${links.length?`<div class="table-wrap" style="margin-top:12px"><table><thead><tr><th>Link cliccati</th><th>Persone</th><th>Clic</th></tr></thead><tbody>
+      ${links.map(l=>`<tr><td class="az" style="word-break:break-all">${esc(l.url)}</td><td class="tnum">${l.clicks_unique}</td><td class="tnum">${l.clicks_total}</td></tr>`).join('')}</tbody></table></div>`
+      :'<p class="helptip" style="margin-top:12px">Ancora nessun clic sui link.</p>'}
+    <p class="helptip" style="margin-top:10px">Numeri anonimi: si sa quante persone hanno aperto o cliccato, non chi. Le aperture sono una stima (Apple Mail le gonfia, chi blocca le immagini non viene contato); chi clicca conta sempre come apertura.${st.bots?` Esclusi ${st.bots} ${st.bots===1?'accesso automatico':'accessi automatici'} di filtri antispam.`:''}</p>`;
+}
 function nlCampsView(){
   const n=nlActive().length, sent=nl.camps.filter(c=>c.status==='sent');
   const last=sent.map(c=>c.sent_at).filter(Boolean).sort().pop();
@@ -3318,10 +3364,12 @@ function nlCampsView(){
   </div>`;
   if(!nl.camps.length) return stats+`<div class="empty" style="margin-top:16px">${NL_I.mail}<h4>Nessuna newsletter ancora</h4><p>Scrivi la prima: la provi mandandola a te, poi la invii a tutti gli iscritti dalla tua casella Gmail.</p><button class="btn primary" onclick="nlNew()">${NL_I.plus}Nuova newsletter</button></div>`;
   return stats+`<div class="section-h"><h3>Newsletter</h3><span class="count">${nl.camps.length}</span><div class="line"></div></div>
-  <div class="table-wrap"><table><thead><tr><th>Oggetto</th><th>Stato</th><th>Destinatari</th><th>Modificata</th><th></th></tr></thead><tbody>
+  <div class="table-wrap"><table><thead><tr><th>Oggetto</th><th>Stato</th><th>Inviate</th><th>Aperture</th><th>Clic</th><th>Modificata</th><th></th></tr></thead><tbody>
   ${nl.camps.map(c=>`<tr style="cursor:pointer" onclick="nlOpen('${c.id}')">
     <td class="az">${esc(c.subject||'(senza oggetto)')}</td><td>${nlStatusChip(c)}</td>
     <td class="tnum">${c.status==='draft'?'—':c.sent_count+(c.failed_count?` <span class="email-cell">(${c.failed_count} non riuscite)</span>`:'')}</td>
+    ${(()=>{const st=nl.stats[c.id]; if(c.status==='draft')return '<td class="email-cell">—</td><td class="email-cell">—</td>';
+      return `<td class="tnum">${nlPct(st?st.opens_unique:0,c.sent_count)}</td><td class="tnum">${nlPct(st?st.clicks_unique:0,c.sent_count)}</td>`;})()}
     <td class="email-cell">${esc(nlFmt(c.updated_at,true))}</td>
     <td style="text-align:right;white-space:nowrap" onclick="event.stopPropagation()">
       ${c.status==='draft'?`<button class="btn sm ghost danger" onclick="nlDeleteDraft('${c.id}')">Elimina</button>`:`<button class="btn sm ghost" onclick="nlDuplicate('${c.id}')">Duplica</button>`}
@@ -3372,6 +3420,7 @@ function nlEditorView(){
           </div>
           ${!nl.sending&&stuck?`<div class="alert" style="margin:16px 0 0"><span><b>${stuck} ${stuck===1?'email è rimasta':'email sono rimaste'} a metà</b> (pagina chiusa durante l'invio): ${stuck===1?'potrebbe essere partita':'potrebbero essere partite'}. Controlla tra le "Inviate" di Gmail, poi rimettile in coda solo se mancano. <button class="btn sm" onclick="nlRequeue('sending')">Rimetti in coda</button></span></div>`:''}
         </div>
+        ${nlStatsBlock(c)}
         <div class="form-row" style="margin-top:18px"><label>Oggetto</label><div>${esc(c.subject)}</div></div>
         ${failed.length?`<div class="section-h" style="margin-top:26px"><h3 style="font-size:20px">Non riuscite</h3><span class="count">${failed.length}</span><div class="line"></div></div>
           <div class="table-wrap"><table><tbody>${failed.slice(0,200).map(f=>`<tr><td class="az">${esc(f.email)}</td><td class="email-cell">${esc(f.error||'')}</td></tr>`).join('')}</tbody></table></div>`:''}
