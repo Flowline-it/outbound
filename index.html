@@ -23,7 +23,7 @@
   --cobalt:#2B5BD8; --on-cobalt:#FFFFFF; --cobalt-2:#4672E2;
   --peach:#FFE1B8; --on-peach:#292929;
   --accent:#A85400; --accent-soft:#FFEBCF; --accent-2:#2B5BD8;
-  --ok:#1E7D45; --ok-soft:#DDF2E4; --warn:#8F6200; --warn-soft:#FBF1D9;
+  --ok:#18703E; --ok-soft:#DDF2E4; --warn:#8F6200; --warn-soft:#FBF1D9;
   --late:#C62F26; --late-soft:#FCE4E1; --wait:#2B5BD8; --wait-soft:#E3EAFB;
   --s1:#292929; --s2:#2B5BD8; --s3:#B565B5; --s4:#C62F26; --s5:#1E7D45;
   --r-xl:32px; --r-lg:24px; --r-md:16px; --r-sm:10px; --pill:999px;
@@ -531,6 +531,39 @@ input[type=checkbox]{width:18px;height:18px;cursor:pointer;accent-color:var(--in
 .nl-bar{height:100%;background:var(--ink);border-radius:var(--pill);transition:width .4s var(--ease)}
 [data-theme="dark"] .nl-bar{background:var(--text)}
 @media(max-width:1100px){.nl-ed{grid-template-columns:1fr}.nl-prev-wrap{position:static}}
+/* ===== ricerca lead ===== */
+body[data-view="lead"] .hero{--hb:var(--lilac);--hi:var(--on-lilac)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.ld-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 28px}
+.ld-form .full{grid-column:1/-1}
+.ld-opt{font-weight:500;color:var(--faint)}
+.ld-chips{display:flex;flex-wrap:wrap;gap:8px}
+.ld-chip{min-height:38px;padding:6px 15px;border-radius:var(--pill);font-size:13.5px;font-weight:650;line-height:1.2;background:var(--surface-2);color:var(--text);box-shadow:inset 0 0 0 1.5px var(--border);transition:background .15s var(--ease),color .15s var(--ease),box-shadow .15s var(--ease)}
+.ld-chip:hover{box-shadow:inset 0 0 0 1.5px var(--border-strong)}
+.ld-chip[aria-pressed="true"]{background:var(--ink);color:#fff;box-shadow:none}
+[data-theme="dark"] .ld-chip[aria-pressed="true"]{background:var(--text);color:var(--bg)}
+.ld-chip:focus-visible,.ld-link:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.ld-link{font:inherit;font-weight:650;color:var(--accent);text-decoration:underline;text-underline-offset:2px;min-height:24px}
+.ld-add{display:flex;gap:10px;align-items:center;margin-top:12px;max-width:640px}
+.ld-add .btn{flex:0 0 auto}
+.ld-opts{display:flex;flex-wrap:wrap;gap:12px 26px}
+.ld-opts label{display:flex;align-items:center;gap:10px;font-size:14.5px;font-weight:600;cursor:pointer;min-height:32px}
+.ld-sum{display:flex;align-items:center;gap:16px 24px;flex-wrap:wrap;padding-top:20px;border-top:1px solid var(--border)}
+.ld-sum p{flex:1;min-width:260px;font-size:14.5px;line-height:1.55;color:var(--muted)}
+.ld-sum p b{color:var(--text);font-weight:800}
+.ld-sum .btn{height:52px;padding:0 26px;font-size:15.5px}
+.ld-num{font-variant-numeric:tabular-nums}
+.ld-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-top:3px;max-width:56ch;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ld-site{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;font-weight:600;color:var(--accent);text-decoration:none;margin-top:2px}
+.ld-site:hover{text-decoration:underline}
+.ld-tag{display:inline-block;margin-left:4px;padding:1px 7px;border-radius:var(--pill);font-size:11px;font-weight:700;background:var(--warn-soft);color:var(--warn);cursor:help}
+.ld-which{flex:0 1 360px;min-width:220px}
+.ld-which select{height:50px;border-radius:var(--pill);background:var(--surface);padding:0 18px}
+.ld-table td.az{min-width:220px}
+.ld-selbar{position:sticky;bottom:16px;z-index:5;display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px;padding:12px 14px 12px 22px;border-radius:var(--r-lg);background:var(--surface);box-shadow:var(--shadow-lg)}
+.ld-selbar[hidden]{display:none}
+.ld-selbar .spacer{flex:1}
+@media(max-width:800px){.ld-form{grid-template-columns:1fr}.ld-sum .btn{width:100%}}
 .wk-bw{flex:1;width:100%;display:flex;align-items:flex-end;justify-content:center;min-height:0}
 </style>
 </head>
@@ -1774,6 +1807,7 @@ const NAV=[
   {id:'pianifica',label:'Pianificazione',icon:'M3 4h18v18H3z M16 2v4 M8 2v4 M3 10h18 M8 14h2 M14 14h2 M8 18h2'},
   {id:'coda',label:'Coda invio',icon:'M22 2 11 13 M22 2l-7 20-4-9-9-4 20-7z'},
   {id:'contatti',label:'Contatti',icon:'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2 M9 7a4 4 0 1 0 0 8 4 4 0 0 0 0-8z M23 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75'},
+  {id:'lead',label:'Ricerca lead',icon:'M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14z M21 21l-4.35-4.35'},
   {id:'calendario',label:'Calendario',icon:'M3 4h18v18H3z M16 2v4 M8 2v4 M3 10h18'},
   {id:'risposte',label:'Risposte',icon:'M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z'},
   {id:'newsletter',label:'Newsletter',icon:'M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z M22 6l-10 7L2 6'},
@@ -1789,6 +1823,7 @@ function renderNav(){
     if(n.id==='risposte'&&newRep) badge=`<span class="badge ok">${newRep}</span>`;
     if(n.id==='pianifica'&&backlog) badge=`<span class="badge plain">${backlog}</span>`;
     if(n.id==='newsletter'&&nl.sending) badge=`<span class="badge">invio</span>`;
+    if(n.id==='lead'&&ldBusy()) badge=`<span class="badge">in corso</span>`;
     return `<button class="${state.view===n.id?'active':''}" onclick="go('${n.id}')">
       <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${n.icon}"/></svg>
       <span>${n.label}</span>${badge}</button>`;
@@ -1849,6 +1884,7 @@ function heroCopy(){
   const rep=state.contacts.filter(c=>c.haRisposto).length, newRep=state.contacts.filter(c=>c.haRisposto&&c.replySeen===false).length;
   const backlog=state.contacts.filter(isUnplanned).length;
   if(state.view==='newsletter') return nlHeroCopy();
+  if(state.view==='lead') return ldHeroCopy();
   if(!n) return {t:'Benvenuto in Outbound.',l:'Importa una lista di contatti in CSV o Excel: le colonne vengono riconosciute in automatico.'};
   switch(state.view){
     case 'coda': return {t:due?`${due} email da rivedere e inviare.`:'Niente da inviare oggi.',l:late?`Più ${late} in ritardo dai giorni scorsi: puoi recuperarle qui sotto.`:'Rivedi ogni bozza, poi invia una alla volta o tutte insieme.'};
@@ -1868,7 +1904,7 @@ function render(){
   document.getElementById('viewTitle').textContent=hc.t;
   const vl=document.getElementById('viewLede');if(vl)vl.textContent=hc.l;
   const vd=document.getElementById('viewDate');if(vd)vd.textContent=today().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
-  document.title='FlowLine Outbound — '+({dashboard:'Dashboard',pianifica:'Pianificazione',coda:'Coda invio',contatti:'Contatti',calendario:'Calendario',risposte:'Risposte',newsletter:'Newsletter'}[state.view]||'Dashboard');
+  document.title='FlowLine Outbound — '+({dashboard:'Dashboard',pianifica:'Pianificazione',coda:'Coda invio',contatti:'Contatti',calendario:'Calendario',risposte:'Risposte',newsletter:'Newsletter',lead:'Ricerca lead'}[state.view]||'Dashboard');
   const ta=document.getElementById('topActions');
   const I={
     refresh:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6 M1 20v-6h6 M3.51 9a9 9 0 0 1 14.85-3.36L23 10 M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>',
@@ -1891,6 +1927,7 @@ function render(){
       <button class="btn" onclick="generateAllDrafts()">${I.spark}Genera mancanti</button>`;
   } else { primary=`<button class="btn primary" onclick="pickFile()">${I.plus}Importa contatti</button>`; importPrimary=true; }
   if(state.view==='newsletter'){ ta.innerHTML=nlTopActions(); }
+  else if(state.view==='lead'){ ta.innerHTML=ldTopActions(); }
   else ta.innerHTML=primary
     +(has&&!importPrimary?`<button class="btn" onclick="pickFile()">${I.plus}<span class="lbl">Importa</span></button>`:'')
     +(has?`<button class="btn" onclick="checkReplies()" title="Controlla ora se sono arrivate risposte">${I.reply}<span class="lbl">Controlla risposte</span></button>`:'')
@@ -1903,6 +1940,7 @@ function render(){
   else if(state.view==='calendario')C.innerHTML=viewCalendario();
   else if(state.view==='risposte')C.innerHTML=viewRisposte();
   else if(state.view==='newsletter'){ if(!nl.inited) nlInit(); C.innerHTML=viewNewsletter(); }
+  else if(state.view==='lead'){ if(!nl.inited) nlInit(); C.innerHTML=viewLead(); }
   if(state.view==='coda')bindCodaInputs();
   if(state.view==='pianifica')bindPianifica();
 }
@@ -2897,7 +2935,8 @@ function nlFmt(ts,withTime){if(!ts)return '—';const d=new Date(ts);return d.to
 function nlSleep(ms){return new Promise(r=>setTimeout(r,ms))}
 function nlActive(){return nl.subs.filter(s=>!s.unsubscribed_at)}
 
-/* ---- connessione e accesso ---- */
+/* ---- connessione e accesso (condiviso con Ricerca lead) ---- */
+function nlAuthView(){return state.view==='newsletter'||state.view==='lead'}
 async function nlInit(){
   if(nl.inited)return; nl.inited=true;
   if(typeof window.supabase==='undefined'){nl.inited=false;setTimeout(nlInit,400);return}
@@ -2906,17 +2945,17 @@ async function nlInit(){
     if(!nl.ready)return;                       // la sessione iniziale la gestisce getSession qui sotto
     const was=nl.session&&nl.session.user&&nl.session.user.id;
     nl.session=session;
-    if(ev==='SIGNED_OUT'){nl.editor=null;nl.loaded=false;nl.subs=[];nl.camps=[];nl.edit=null;if(state.view==='newsletter')render();}
-    else if(ev==='SIGNED_IN' && session && was!==session.user.id){nl.editor=null;if(state.view==='newsletter')render();setTimeout(nlAfterLogin,0);}
+    if(ev==='SIGNED_OUT'){nl.editor=null;nl.loaded=false;nl.subs=[];nl.camps=[];nl.edit=null;ld.loaded=false;ld.searches=[];ld.leads=[];ld.sel.clear();clearTimeout(ld.pollT);if(nlAuthView())render();}
+    else if(ev==='SIGNED_IN' && session && was!==session.user.id){nl.editor=null;if(nlAuthView())render();setTimeout(nlAfterLogin,0);}
   });
   const {data}=await nlSupa.auth.getSession();
   nl.session=data.session; nl.ready=true;
-  if(nl.session) await nlAfterLogin(); else if(state.view==='newsletter') render();
+  if(nl.session) await nlAfterLogin(); else if(nlAuthView()) render();
 }
 async function nlAfterLogin(){
   const {data,error}=await nlSupa.rpc('newsletter_is_editor');
   nl.editor=!error&&data===true;
-  if(nl.editor) await nlLoad(); else if(state.view==='newsletter') render();
+  if(nl.editor){ ldLoad({silent:state.view!=='lead'}); await nlLoad(); } else if(nlAuthView()) render();
 }
 async function nlLogin(ev){
   ev&&ev.preventDefault();
@@ -2931,7 +2970,7 @@ async function nlLogin(ev){
     if(out)out.textContent=/invalid login/i.test(error.message)?'Email o password non corretti.':(/not confirmed/i.test(error.message)?'Utente non ancora confermato in Supabase.':'Accesso non riuscito: '+error.message);
   }
 }
-async function nlLogout(){await nlSupa.auth.signOut();toast('Uscito dalla newsletter','ok')}
+async function nlLogout(){await nlSupa.auth.signOut();toast('Uscito','ok')}
 
 /* ---- dati ---- */
 async function nlLoad(opts={}){
@@ -3324,10 +3363,11 @@ function viewNewsletter(){
     <span class="email-cell">Accesso: ${esc(nl.session.user?.email||'')}</span><button class="btn sm ghost" onclick="nlLogout()">Esci</button></div>`;
   return tabs+(nl.tab==='iscritti'?nlSubsView():nlCampsView());
 }
-function nlLoginView(){
+function nlLoginView(mode){
+  const lead=mode==='lead';
   return `<div class="tile nl-login">
-    <div class="tile-h"><h3>Accedi alla newsletter</h3></div>
-    <p class="helptip" style="margin-bottom:18px">Gli iscritti sono dati personali: li vede solo chi è in redazione. Usa l'email e la password create in Supabase (progetto Lead Flowline → Authentication → Users).</p>
+    <div class="tile-h"><h3>${lead?'Accedi per cercare i lead':'Accedi alla newsletter'}</h3></div>
+    <p class="helptip" style="margin-bottom:18px">${lead?'Le ricerche partono dal database e costano credito Apify: le può lanciare solo chi ha accesso. È lo stesso accesso della newsletter, creato in Supabase (progetto Lead Flowline → Authentication → Users).':'Gli iscritti sono dati personali: li vede solo chi è in redazione. Usa l\'email e la password create in Supabase (progetto Lead Flowline → Authentication → Users).'}</p>
     <form onsubmit="nlLogin(event)" style="display:flex;flex-direction:column;gap:14px">
       <div class="form-row"><label for="nl-em">Email</label><input id="nl-em" type="email" autocomplete="username" value="info@flowline.it"></div>
       <div class="form-row"><label for="nl-pw">Password</label><input id="nl-pw" type="password" autocomplete="current-password"></div>
@@ -3457,6 +3497,333 @@ function nlEditorView(){
     </div>
     ${prev}
   </div>`;
+}
+
+/* =======================================================
+   RICERCA LEAD — lancia il flusso n8n "Ricerca lead da Outbound" (Apify Google Maps)
+   Ogni ricerca è una riga in lead_searches: il database chiama n8n, n8n salva i lead in leads.
+   Stesso accesso della newsletter (Supabase Auth, redazione in newsletter_editors).
+   ======================================================= */
+const LD_REGIONI={
+  'Abruzzo':["L'Aquila",'Chieti','Pescara','Teramo'],
+  'Basilicata':['Potenza','Matera'],
+  'Calabria':['Catanzaro','Cosenza','Crotone','Reggio Calabria','Vibo Valentia'],
+  'Campania':['Napoli','Avellino','Benevento','Caserta','Salerno'],
+  'Emilia-Romagna':['Bologna','Ferrara','Forlì','Cesena','Modena','Parma','Piacenza','Ravenna','Reggio Emilia','Rimini'],
+  'Friuli-Venezia Giulia':['Trieste','Udine','Pordenone','Gorizia'],
+  'Lazio':['Roma','Frosinone','Latina','Rieti','Viterbo'],
+  'Liguria':['Genova','Imperia','La Spezia','Savona'],
+  'Lombardia':['Milano','Bergamo','Brescia','Como','Cremona','Lecco','Lodi','Mantova','Monza','Pavia','Sondrio','Varese'],
+  'Marche':['Ancona','Ascoli Piceno','Fermo','Macerata','Pesaro'],
+  'Molise':['Campobasso','Isernia'],
+  'Piemonte':['Torino','Alessandria','Asti','Biella','Cuneo','Novara','Verbania','Vercelli'],
+  'Puglia':['Bari','Barletta','Brindisi','Foggia','Lecce','Taranto'],
+  'Sardegna':['Cagliari','Sassari','Olbia','Nuoro','Oristano','Carbonia'],
+  'Sicilia':['Palermo','Catania','Messina','Siracusa','Ragusa','Trapani','Agrigento','Caltanissetta','Gela','Enna'],
+  'Toscana':['Firenze','Prato','Pisa','Livorno','Lucca','Pistoia','Arezzo','Siena','Grosseto','Massa'],
+  'Trentino-Alto Adige':['Trento','Bolzano'],
+  'Umbria':['Perugia','Terni'],
+  "Valle d'Aosta":['Aosta'],
+  'Veneto':['Venezia','Padova','Verona','Vicenza','Treviso','Rovigo','Belluno'],
+};
+const LD_CATEGORIE=['aziende manifatturiere','metalmeccanica','carpenteria metallica','lavorazioni meccaniche conto terzi','industria alimentare','produzione mobili','materie plastiche','industria tessile','logistica e trasporti','impianti elettrici','impianti termoidraulici','imprese edili','commercio all\'ingrosso','studi commercialisti','studi legali','agenzie immobiliari','studi dentistici','hotel','ristoranti','concessionarie auto','officine meccaniche','cantine vinicole'];
+const LD_MAX_QUERIES=40;
+const ld={loaded:false,loading:false,searches:[],leads:[],sel:new Set(),view:'tutte',q:'',soloEmail:false,nascondiImportati:true,starting:false,pollT:null,err:''};
+function ldForm(){
+  if(!state.config.leadForm||typeof state.config.leadForm!=='object') state.config.leadForm={};
+  const f=state.config.leadForm;
+  if(!f.regione) f.regione='Lombardia';
+  if(!Array.isArray(f.luoghi)) f.luoghi=[];
+  if(typeof f.altri!=='string') f.altri='';
+  if(!Array.isArray(f.categorie)) f.categorie=['metalmeccanica'];
+  if(!f.per_ricerca) f.per_ricerca=20;
+  if(!f.max_lead) f.max_lead=50;
+  ['solo_sito','escludi_chiuse','arricchisci'].forEach(k=>{if(typeof f[k]!=='boolean')f[k]=true});
+  if(typeof f.solo_email!=='boolean') f.solo_email=false;
+  return f;
+}
+function ldSaveForm(){save(LS.config,state.config)}
+function ldAltri(f){return String(f.altri||'').split(/[,;\n]+/).map(s=>s.trim()).filter(Boolean).slice(0,20)}
+function ldLuoghi(f){
+  // le province scelte dalla lista portano con sé la regione (evita "Latina" o "Fermo" presi per altro); le città scritte a mano restano come sono
+  return [...f.luoghi.map(c=>c+', '+f.regione),...ldAltri(f)];
+}
+function ldQueryCount(f){return f.categorie.length*Math.max(1,ldLuoghi(f).length)}
+function ldBusy(){return ld.searches.some(s=>s.status==='queued'||s.status==='running')}
+function ldFmtAgo(ts){if(!ts)return '';const m=Math.max(0,Math.round((Date.now()-new Date(ts).getTime())/60000));return m<1?'meno di un minuto':m===1?'1 minuto':m<60?m+' minuti':Math.floor(m/60)+' h '+(m%60)+' min'}
+function ldStuck(s){return (s.status==='running'||s.status==='queued') && Date.now()-new Date(s.started_at||s.created_at).getTime()>75*60000}
+
+/* ---- dati ---- */
+async function ldLoad(opts={}){
+  if(!nlSupa||!nl.editor||ld.loading)return;
+  ld.loading=true; if(state.view==='lead'&&!opts.silent) render();
+  try{
+    const [s,l]=await Promise.all([
+      nlSupa.from('lead_searches').select('*').order('created_at',{ascending:false}).limit(50),
+      nlSupa.from('leads').select('id,azienda,email,sede,ruolo,settore,descrizione,sito_web,telefono,fonte,email_fonte,search_id,importato_il,created_at,data').order('created_at',{ascending:false,nullsFirst:false}).limit(3000),
+    ]);
+    if(s.error)throw s.error; if(l.error)throw l.error;
+    ld.searches=s.data||[]; ld.leads=l.data||[]; ld.loaded=true; ld.err='';
+    const live=new Set(ld.leads.map(x=>x.id)); [...ld.sel].forEach(id=>{if(!live.has(id))ld.sel.delete(id)});
+  }catch(e){ld.err=e.message||String(e); if(!opts.silent)toast('Lettura ricerche non riuscita: '+ld.err,'err')}
+  ld.loading=false;
+  ldSchedulePoll();
+  if(state.view==='lead') render();
+}
+function ldSchedulePoll(){
+  clearTimeout(ld.pollT); ld.pollT=null;
+  if(!ldBusy())return;
+  ld.pollT=setTimeout(ldPoll,8000);
+}
+async function ldPoll(){
+  if(!nlSupa||!nl.editor)return;
+  const before=new Map(ld.searches.map(s=>[s.id,s.status]));
+  const {data,error}=await nlSupa.from('lead_searches').select('*').order('created_at',{ascending:false}).limit(50);
+  if(!error&&data){
+    ld.searches=data;
+    const finished=data.filter(s=>(before.get(s.id)==='queued'||before.get(s.id)==='running')&&(s.status==='done'||s.status==='error'));
+    if(finished.length){
+      finished.forEach(s=>s.status==='done'
+        ?toast(`Ricerca finita: ${s.inserted||0} ${s.inserted===1?'lead nuovo':'lead nuovi'} su ${s.found||0} attività trovate`,'ok')
+        :toast('Ricerca non riuscita: '+(s.error||'errore sconosciuto'),'err'));
+      const done=finished.find(s=>s.status==='done'); if(done){ld.view=done.id;ld.sel.clear();}
+      await ldLoad({silent:true}); return;
+    }
+    if(state.view==='lead') ldPaintSearches();
+  }
+  ldSchedulePoll();
+}
+
+/* ---- modulo ---- */
+function ldSet(k,v){const f=ldForm();f[k]=v;ldSaveForm();render()}
+function ldSetQuiet(k,v){const f=ldForm();f[k]=v;ldSaveForm();ldPaintSummary()}
+function ldRegion(v){const f=ldForm();f.regione=v;f.luoghi=[];ldSaveForm();render()}
+function ldToggleLuogo(c){const f=ldForm();const i=f.luoghi.indexOf(c);if(i>=0)f.luoghi.splice(i,1);else f.luoghi.push(c);ldSaveForm();render()}
+function ldAllLuoghi(on){const f=ldForm();f.luoghi=on?[...(LD_REGIONI[f.regione]||[])]:[];ldSaveForm();render()}
+function ldToggleCat(c){const f=ldForm();const i=f.categorie.indexOf(c);if(i>=0)f.categorie.splice(i,1);else{if(f.categorie.length>=10){toast('Massimo 10 categorie per ricerca','warn');return}f.categorie.push(c)}ldSaveForm();render()}
+function ldAddCat(ev){
+  ev&&ev.preventDefault();
+  const inp=document.getElementById('ld-cat-new');const v=(inp?.value||'').replace(/\s+/g,' ').trim().toLowerCase().slice(0,60);
+  if(!v)return; const f=ldForm();
+  if(f.categorie.includes(v)){inp.value='';return}
+  if(f.categorie.length>=10){toast('Massimo 10 categorie per ricerca','warn');return}
+  f.categorie.push(v);ldSaveForm();render();
+  setTimeout(()=>document.getElementById('ld-cat-new')?.focus(),30);
+}
+function ldPaintSummary(){
+  const el=document.getElementById('ld-sum');if(el)el.innerHTML=ldSummaryHtml();
+  const b=document.getElementById('ld-go');if(b)b.disabled=!ldCanStart().ok;
+}
+function ldCanStart(){
+  const f=ldForm(), n=ldQueryCount(f);
+  if(ldBusy())return {ok:false,why:'C\'è già una ricerca in corso: aspetta che finisca.'};
+  if(!f.categorie.length)return {ok:false,why:'Scegli almeno una categoria.'};
+  if(n>LD_MAX_QUERIES)return {ok:false,why:`Troppe combinazioni: ${f.categorie.length} categorie × ${ldLuoghi(f).length} luoghi = ${n} ricerche. Il massimo è ${LD_MAX_QUERIES}.`};
+  const m=+f.max_lead; if(!(m>=1&&m<=300))return {ok:false,why:'I lead da salvare vanno da 1 a 300.'};
+  return {ok:true};
+}
+function ldSummaryHtml(){
+  const f=ldForm(), luoghi=ldLuoghi(f), n=ldQueryCount(f), tot=n*(+f.per_ricerca||0), chk=ldCanStart();
+  const dove=luoghi.length?(luoghi.length===1?esc(luoghi[0].replace(/, [^,]+$/,'')):luoghi.length+' luoghi'):'tutta la '+esc(f.regione);
+  return `<b class="ld-num">${n}</b> ${n===1?'ricerca':'ricerche'} su Google Maps (${f.categorie.length} ${f.categorie.length===1?'categoria':'categorie'} in ${dove}), fino a <b class="ld-num">${tot}</b> attività da controllare. Salvo al massimo <b class="ld-num">${+f.max_lead||0}</b> lead nuovi, già senza doppioni.`
+    +(chk.ok?'':`<br><span style="color:var(--late);font-weight:650">${esc(chk.why)}</span>`);
+}
+async function ldStart(){
+  const chk=ldCanStart(); if(!chk.ok){toast(chk.why,'warn');return}
+  const f=ldForm();
+  const params={regione:f.regione,luoghi:ldLuoghi(f),categorie:[...f.categorie],per_ricerca:+f.per_ricerca,max_lead:Math.round(+f.max_lead),
+    solo_sito:!!f.solo_sito,solo_email:!!f.solo_email,escludi_chiuse:!!f.escludi_chiuse,arricchisci:!!f.arricchisci};
+  ld.starting=true; ldPaintSummary(); const b=document.getElementById('ld-go'); if(b){b.disabled=true;b.innerHTML='<span class="spinner"></span> Avvio…';}
+  const {data,error}=await nlSupa.from('lead_searches').insert({params}).select().single();
+  ld.starting=false;
+  if(error){toast('Ricerca non avviata: '+(error.message||error),'err');render();return}
+  ld.searches.unshift(data); toast('Ricerca avviata: ci vuole qualche minuto, puoi lasciare aperta questa pagina o tornare dopo','ok');
+  render(); ldSchedulePoll();
+}
+function ldRepeat(id){
+  const s=ld.searches.find(x=>x.id===id); if(!s)return; const p=s.params||{}, f=ldForm();
+  if(p.regione&&LD_REGIONI[p.regione]) f.regione=p.regione;
+  const prov=LD_REGIONI[f.regione]||[], suf=', '+f.regione;
+  f.luoghi=[]; const altri=[];
+  (p.luoghi||[]).forEach(l=>{const base=l.endsWith(suf)?l.slice(0,-suf.length):null; if(base&&prov.includes(base))f.luoghi.push(base); else altri.push(l)});
+  f.altri=altri.join(', '); f.categorie=[...(p.categorie||[])];
+  ['per_ricerca','max_lead'].forEach(k=>{if(p[k])f[k]=p[k]});
+  ['solo_sito','solo_email','escludi_chiuse','arricchisci'].forEach(k=>{if(typeof p[k]==='boolean')f[k]=p[k]});
+  ldSaveForm(); render(); window.scrollTo({top:0,behavior:'smooth'}); toast('Parametri copiati nel modulo: controlla e avvia','ok');
+}
+
+/* ---- risultati ---- */
+function ldContactEmails(){return new Set(state.contacts.map(c=>(c.email||'').trim().toLowerCase()).filter(Boolean))}
+function ldLeadState(l,have){
+  const e=(l.email||'').trim().toLowerCase();
+  if(l.importato_il||(e&&have.has(e)))return 'in';
+  if(!e)return 'noemail';
+  return 'new';
+}
+function ldRows(){
+  const have=ldContactEmails(), q=ld.q.trim().toLowerCase();
+  return ld.leads.filter(l=>{
+    if(ld.view==='precedenti'){if(l.search_id)return false}
+    else if(ld.view!=='tutte'&&l.search_id!==ld.view)return false;
+    const st=ldLeadState(l,have);
+    if(ld.nascondiImportati&&st==='in')return false;
+    if(ld.soloEmail&&!l.email)return false;
+    if(q&&![l.azienda,l.email,l.sede,l.settore,l.ruolo].some(x=>String(x||'').toLowerCase().includes(q)))return false;
+    return true;
+  });
+}
+function ldSetView(v){ld.view=v;ld.sel.clear();render()}
+function ldToggleOpt(k){ld[k]=!ld[k];ld.sel.clear();render()}
+function ldSearch(v){ld.q=v;clearTimeout(window._ldq);window._ldq=setTimeout(()=>{render();const i=document.getElementById('ld-q');if(i){i.focus();i.setSelectionRange(v.length,v.length)}},220)}
+function ldSel(id,on){if(on)ld.sel.add(id);else ld.sel.delete(id);ldPaintSel()}
+function ldSelAll(on){const have=ldContactEmails();ldRows().slice(0,500).forEach(l=>{if(ldLeadState(l,have)==='new'){if(on)ld.sel.add(l.id);else ld.sel.delete(l.id)}});render()}
+function ldPaintSel(){
+  const n=ld.sel.size, el=document.getElementById('ld-selbar');
+  if(el){el.hidden=!n;const b=document.getElementById('ld-sel-n');if(b)b.textContent=n;const t=document.getElementById('ld-sel-t');if(t)t.textContent=n===1?'lead scelto':'lead scelti';}
+}
+async function ldImport(){
+  const have=ldContactEmails();
+  const pick=ld.leads.filter(l=>ld.sel.has(l.id));
+  const ok=[]; let skip=0;
+  for(const l of pick){const e=(l.email||'').trim().toLowerCase(); if(!e||have.has(e)||l.importato_il){skip++;continue} have.add(e); ok.push(l)}
+  if(!ok.length){toast('Tra quelli scelti non c\'è nessun lead nuovo con email','warn');return}
+  ok.forEach(l=>state.contacts.push(mkContact({azienda:l.azienda||'',sede:l.sede||'',email:l.email,ruolo:l.ruolo||'',settore:l.settore||'',descrizione:l.descrizione||'',sitoWeb:l.sito_web||''})));
+  persist();
+  const now=new Date().toISOString();
+  ok.forEach(l=>l.importato_il=now); ld.sel.clear(); render();
+  const {error}=await nlSupa.from('leads').update({importato_il:now}).in('id',ok.map(l=>l.id));
+  if(error) console.warn('importato_il',error.message);
+  toast(`${ok.length} ${ok.length===1?'lead aggiunto':'lead aggiunti'} ai contatti${skip?` · ${skip} saltati (senza email o già presenti)`:''}. Li trovi in Pianificazione.`,'ok');
+}
+
+/* ---- viste ---- */
+const LD_I={
+  search:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>',
+  plus:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14 M5 12h14"/></svg>',
+  ext:'<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>',
+};
+function ldHeroCopy(){
+  if(!nl.session) return {t:'Ricerca lead.',l:'Accedi per cercare nuove aziende su Google Maps per regione e categoria: i risultati arrivano nel database, senza doppioni.'};
+  if(nl.editor===false) return {t:'Accesso non abilitato.',l:'Questo account non può lanciare ricerche.'};
+  if(!ld.loaded) return {t:'Ricerca lead.',l:'Carico ricerche e lead…'};
+  const run=ld.searches.find(s=>s.status==='queued'||s.status==='running');
+  if(run) return {t:'Ricerca in corso.',l:`Partita da ${ldFmtAgo(run.started_at||run.created_at)}. Di solito servono 3–15 minuti, di più con l'AI attiva: i lead compaiono qui sotto appena finisce.`};
+  const have=ldContactEmails(), nuovi=ld.leads.filter(l=>ldLeadState(l,have)==='new').length;
+  return {t:nuovi?`${nuovi} ${nuovi===1?'lead pronto':'lead pronti'} da aggiungere.`:'Trova nuovi lead.',l:'Scegli dove e in che settori cercare: n8n interroga Google Maps con Apify, scarta i doppioni e salva i risultati nel database.'};
+}
+function ldTopActions(){
+  if(!nl.session||!nl.editor)return '';
+  return `<button class="btn" onclick="ldLoad()" title="Ricarica ricerche e lead"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6 M1 20v-6h6 M3.51 9a9 9 0 0 1 14.85-3.36L23 10 M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg><span class="lbl">Aggiorna</span></button>`;
+}
+function viewLead(){
+  if(!nl.ready) return `<div class="empty"><span class="spinner"></span></div>`;
+  if(!nl.session) return nlLoginView('lead');
+  if(nl.editor===null) return `<div class="empty"><span class="spinner"></span><p style="margin-top:14px">Verifico l'accesso…</p></div>`;
+  if(nl.editor===false) return `<div class="empty">${LD_I.search}<h4>Questo account non è abilitato</h4><p>${esc(nl.session.user?.email||'')} ha fatto l'accesso, ma non è tra gli indirizzi abilitati. Chiedi a chi gestisce il database di aggiungerlo alla tabella <code>newsletter_editors</code>.</p><button class="btn" onclick="nlLogout()">Esci</button></div>`;
+  if(!ld.loaded){ if(!ld.loading) setTimeout(()=>ldLoad(),0); return ld.err?`<div class="empty">${LD_I.search}<h4>Non riesco a leggere le ricerche</h4><p>${esc(ld.err)}</p><button class="btn" onclick="ldLoad()">Riprova</button></div>`:`<div class="empty"><span class="spinner"></span><p style="margin-top:14px">Carico ricerche e lead…</p></div>`; }
+  return ldFormView()+ldSearchesView()+ldResultsView();
+}
+function ldFormView(){
+  const f=ldForm(), prov=LD_REGIONI[f.regione]||[], chk=ldCanStart();
+  const cats=[...new Set([...LD_CATEGORIE,...f.categorie])];
+  return `<div class="tile ld-tile">
+    <div class="tile-h"><h3>Nuova ricerca</h3><span class="spacer"></span><span class="email-cell">Accesso: ${esc(nl.session.user?.email||'')}</span><button class="btn sm ghost" onclick="nlLogout()">Esci</button></div>
+    <div class="ld-form">
+      <div class="form-row"><label for="ld-reg">Regione</label>
+        <select id="ld-reg" onchange="ldRegion(this.value)">${Object.keys(LD_REGIONI).map(r=>`<option${r===f.regione?' selected':''}>${esc(r)}</option>`).join('')}</select>
+        <span class="hint">Senza province scelte cerco in tutta la regione: meno preciso, Google Maps dà al massimo qualche centinaio di risultati per ricerca.</span></div>
+      <div class="form-row"><label for="ld-altri">Altre città o zone <span class="ld-opt">facoltativo</span></label>
+        <input id="ld-altri" value="${escAttr(f.altri)}" placeholder="Per esempio: Lumezzane, Franciacorta" oninput="ldSetQuiet('altri',this.value)">
+        <span class="hint">Separate da virgola. Valgono anche fuori dalla regione scelta.</span></div>
+      <div class="full">
+        <div class="field-lbl"><span id="ld-prov-l">Province e città di ${esc(f.regione)}</span><span class="cnt">${f.luoghi.length?f.luoghi.length+' scelte · ':''}<button class="ld-link" onclick="ldAllLuoghi(${f.luoghi.length?'false':'true'})">${f.luoghi.length?'Togli tutte':'Scegli tutte'}</button></span></div>
+        <div class="ld-chips" role="group" aria-labelledby="ld-prov-l">${prov.map(c=>`<button type="button" class="ld-chip" aria-pressed="${f.luoghi.includes(c)}" onclick="ldToggleLuogo('${escAttr(c).replace(/&#39;/g,"\\'")}')">${esc(c)}</button>`).join('')}</div>
+      </div>
+      <div class="full">
+        <div class="field-lbl"><span id="ld-cat-l">Categorie</span><span class="cnt">${f.categorie.length} di 10</span></div>
+        <div class="ld-chips" role="group" aria-labelledby="ld-cat-l">${cats.map(c=>`<button type="button" class="ld-chip" aria-pressed="${f.categorie.includes(c)}" onclick="ldToggleCat('${escAttr(c).replace(/&#39;/g,"\\'")}')">${esc(c)}</button>`).join('')}</div>
+        <form class="ld-add" onsubmit="ldAddCat(event)"><div class="form-row" style="flex:1"><label for="ld-cat-new" class="sr-only">Nuova categoria</label><input id="ld-cat-new" placeholder="Un'altra categoria, come la scriveresti su Google Maps (es. tornerie)"></div><button class="btn" type="submit">${LD_I.plus}Aggiungi</button></form>
+      </div>
+      <div class="form-row"><label for="ld-per">Risultati per ricerca</label>
+        <select id="ld-per" onchange="ldSetQuiet('per_ricerca',+this.value)">${[10,20,40,60,100].map(n=>`<option value="${n}"${+f.per_ricerca===n?' selected':''}>${n} attività</option>`).join('')}</select>
+        <span class="hint">Quante attività leggere da Google Maps per ogni combinazione categoria + luogo. Più sono, più costa la ricerca su Apify.</span></div>
+      <div class="form-row"><label for="ld-max">Lead nuovi da salvare, al massimo</label>
+        <input id="ld-max" type="number" min="1" max="300" step="1" value="${escAttr(f.max_lead)}" oninput="ldSetQuiet('max_lead',+this.value)">
+        <span class="hint">Da 1 a 300. Le aziende già nei lead o nei contatti non contano.</span></div>
+      <div class="full ld-opts" role="group" aria-label="Filtri">
+        <label><input type="checkbox" ${f.solo_sito?'checked':''} onchange="ldSetQuiet('solo_sito',this.checked)"> Solo aziende con sito web</label>
+        <label><input type="checkbox" ${f.solo_email?'checked':''} onchange="ldSetQuiet('solo_email',this.checked)"> Solo se l'email è già stata trovata</label>
+        <label><input type="checkbox" ${f.escludi_chiuse?'checked':''} onchange="ldSetQuiet('escludi_chiuse',this.checked)"> Escludi attività chiuse</label>
+        <label><input type="checkbox" ${f.arricchisci?'checked':''} onchange="ldSetQuiet('arricchisci',this.checked)"> Descrizione e referente con AI</label>
+      </div>
+      <div class="full ld-sum">
+        <p id="ld-sum" aria-live="polite">${ldSummaryHtml()}</p>
+        <button class="btn primary" id="ld-go" onclick="ldStart()" ${chk.ok&&!ld.starting?'':'disabled'}>${LD_I.search}Avvia ricerca</button>
+      </div>
+    </div>
+  </div>`;
+}
+function ldStatusChip(s){
+  if(ldStuck(s)) return '<span class="chip late"><span class="d"></span>Bloccata</span>';
+  if(s.status==='queued') return '<span class="chip wait"><span class="d"></span>In partenza</span>';
+  if(s.status==='running') return `<span class="chip today"><span class="d"></span>In corso · ${esc(ldFmtAgo(s.started_at||s.created_at))}</span>`;
+  if(s.status==='error') return '<span class="chip late"><span class="d"></span>Non riuscita</span>';
+  return '<span class="chip reply"><span class="d"></span>Finita</span>';
+}
+function ldSearchLabel(s){
+  const p=s.params||{}, cats=(p.categorie||[]).join(', '), luoghi=(p.luoghi||[]).map(l=>l.replace(/, [^,]+$/,''));
+  return `${cats||'—'} · ${luoghi.length?(luoghi.length>3?luoghi.slice(0,3).join(', ')+' e altri '+(luoghi.length-3):luoghi.join(', ')):(p.regione||'')}`;
+}
+function ldSearchRows(){
+  return ld.searches.slice(0,12).map(s=>{
+    const fin=s.status==='done';
+    return `<tr>
+      <td class="az"><div>${esc(ldSearchLabel(s))}</div><div class="ld-sub">${esc(nlFmt(s.created_at,true))}${s.params?.arricchisci?' · con AI':''}${s.error?' · '+esc(s.error):''}</div></td>
+      <td>${ldStatusChip(s)}</td>
+      <td class="tnum">${fin?s.found??0:'—'}</td><td class="tnum">${fin?`<b>${s.inserted??0}</b>`:'—'}</td><td class="tnum">${fin?s.duplicates??0:'—'}</td><td class="tnum">${fin?s.skipped??0:'—'}</td>
+      <td style="text-align:right;white-space:nowrap">${fin&&s.inserted?`<button class="btn sm" onclick="ldSetView('${s.id}');document.getElementById('ld-res')?.scrollIntoView({behavior:'smooth'})">Vedi lead</button>`:''}<button class="btn sm ghost" onclick="ldRepeat('${s.id}')">Ripeti</button></td>
+    </tr>`;}).join('');
+}
+function ldPaintSearches(){const tb=document.getElementById('ld-s-body');if(tb)tb.innerHTML=ldSearchRows();const hc=heroCopy();const t=document.getElementById('viewTitle');if(t)t.textContent=hc.t;const v=document.getElementById('viewLede');if(v)v.textContent=hc.l}
+function ldSearchesView(){
+  if(!ld.searches.length) return '';
+  return `<div class="section-h"><h3>Ricerche</h3><span class="count">${ld.searches.length}</span><div class="line"></div></div>
+  <div class="table-wrap"><table><thead><tr><th>Cosa e dove</th><th>Stato</th><th>Trovate</th><th>Nuove</th><th>Doppioni</th><th>Scartate</th><th></th></tr></thead><tbody id="ld-s-body">${ldSearchRows()}</tbody></table></div>
+  <p class="helptip" style="margin-top:10px"><b>Trovate</b>: attività lette da Google Maps · <b>Nuove</b>: lead salvati · <b>Doppioni</b>: già nei lead o nei contatti · <b>Scartate</b>: escluse dai filtri (senza sito, senza email, chiuse). Quelle oltre il massimo scelto non vengono salvate.</p>`;
+}
+function ldResultsView(){
+  const have=ldContactEmails(), rows=ldRows(), shown=rows.slice(0,500);
+  const selectable=shown.filter(l=>ldLeadState(l,have)==='new');
+  const allSel=selectable.length&&selectable.every(l=>ld.sel.has(l.id));
+  const opts=[`<option value="tutte"${ld.view==='tutte'?' selected':''}>Tutte le ricerche</option>`]
+    .concat(ld.searches.filter(s=>s.status==='done'&&s.inserted).map(s=>`<option value="${s.id}"${ld.view===s.id?' selected':''}>${esc(nlFmt(s.created_at,true))} · ${esc(ldSearchLabel(s).slice(0,70))}</option>`))
+    .concat(ld.leads.some(l=>!l.search_id)?[`<option value="precedenti"${ld.view==='precedenti'?' selected':''}>Lead del flusso giornaliero</option>`]:[]);
+  const stChip=st=>st==='in'?'<span class="chip done"><span class="d"></span>Nei contatti</span>':st==='noemail'?'<span class="chip da"><span class="d"></span>Senza email</span>':'<span class="chip seq"><span class="d"></span>Nuovo</span>';
+  const site=u=>{if(!u)return '';try{const h=new URL(u).hostname.replace(/^www\./,'');return `<a class="ld-site" href="${escAttr(u)}" target="_blank" rel="noopener noreferrer">${esc(h)} ${LD_I.ext}</a>`}catch(e){return ''}};
+  return `<div class="section-h" id="ld-res"><h3>Lead trovati</h3><span class="count">${rows.length}</span><div class="line"></div></div>
+  <div class="filters">
+    <div class="search">${LD_I.search.replace('class="ico"','class="ico" style="width:17px;height:17px;color:var(--faint)"')}<input id="ld-q" placeholder="Cerca azienda, email, città, settore…" value="${escAttr(ld.q)}" oninput="ldSearch(this.value)" aria-label="Cerca tra i lead"></div>
+    <div class="form-row ld-which"><label for="ld-which" class="sr-only">Ricerca</label><select id="ld-which" onchange="ldSetView(this.value)">${opts.join('')}</select></div>
+  </div>
+  <div class="filters ld-opts">
+    <label><input type="checkbox" ${ld.nascondiImportati?'checked':''} onchange="ldToggleOpt('nascondiImportati')"> Nascondi quelli già nei contatti</label>
+    <label><input type="checkbox" ${ld.soloEmail?'checked':''} onchange="ldToggleOpt('soloEmail')"> Solo con email</label>
+  </div>
+  ${shown.length?`<div class="table-wrap"><table class="ld-table"><thead><tr>
+      <th style="width:34px"><input type="checkbox" aria-label="Scegli tutti i lead nuovi" ${allSel?'checked':''} ${selectable.length?'':'disabled'} onclick="ldSelAll(this.checked)"></th>
+      <th>Azienda</th><th>Settore</th><th>Sede</th><th>Email</th><th>Telefono</th><th>Stato</th></tr></thead><tbody>
+    ${shown.map(l=>{const st=ldLeadState(l,have);return `<tr>
+      <td><input type="checkbox" aria-label="Scegli ${escAttr(l.azienda||'lead')}" ${ld.sel.has(l.id)?'checked':''} ${st==='new'?'':'disabled'} onclick="ldSel('${l.id}',this.checked)"></td>
+      <td class="az"><div>${esc(l.azienda||'—')}</div>${site(l.sito_web)}${l.ruolo?`<div class="ld-sub">${esc(l.ruolo)}</div>`:''}${l.descrizione?`<div class="ld-sub" title="${escAttr(l.descrizione)}">${esc(l.descrizione)}</div>`:''}</td>
+      <td class="email-cell">${esc(l.settore||'—')}</td>
+      <td class="email-cell">${esc(l.sede||'—')}</td>
+      <td class="email-cell">${l.email?`${esc(l.email)}${l.email_fonte==='dedotta-ai'?' <span class="ld-tag" title="Indirizzo ricostruito dall\'AI dal nome del referente: il dominio riceve posta, la casella non è verificata">dedotta</span>':''}`:'—'}</td>
+      <td class="email-cell tnum" style="white-space:nowrap">${l.telefono?`<a href="tel:${escAttr(l.telefono.replace(/\s+/g,''))}" style="color:inherit">${esc(l.telefono)}</a>`:'—'}</td>
+      <td>${stChip(st)}</td></tr>`}).join('')}
+  </tbody></table></div>${rows.length>500?`<p class="helptip" style="margin-top:10px">Mostro i primi 500 di ${rows.length}: usa la ricerca o scegli una ricerca specifica.</p>`:''}
+  <div class="ld-selbar" id="ld-selbar" ${ld.sel.size?'':'hidden'}><span class="plan-sel-info"><b id="ld-sel-n">${ld.sel.size}</b> <span id="ld-sel-t">${ld.sel.size===1?'lead scelto':'lead scelti'}</span></span><span class="spacer"></span><button class="btn sm ghost" onclick="ld.sel.clear();render()">Annulla</button><button class="btn primary" onclick="ldImport()">${LD_I.plus}Aggiungi ai contatti</button></div>`
+  :`<div class="empty">${LD_I.search}<h4>${ld.leads.length?'Nessun lead con questi filtri':'Ancora nessun lead'}</h4><p>${ld.leads.length?'Prova a togliere un filtro o a cambiare ricerca.':'Avvia la prima ricerca qui sopra: i risultati compaiono qui appena n8n ha finito.'}</p></div>`}
+  <p class="helptip" style="margin-top:12px">Aggiungendo un lead ai contatti entra in Outbound come “da pianificare”, con descrizione e sito per scrivere l'email. I lead senza email restano qui: puoi chiamarli o cercare l'indirizzo sul sito.</p>`;
 }
 
 /* ---- boot ---- */
