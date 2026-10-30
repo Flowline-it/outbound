@@ -554,6 +554,7 @@ body[data-view="lead"] .hero{--hb:var(--lilac);--hi:var(--on-lilac)}
 .ld-sum .btn{height:52px;padding:0 26px;font-size:15.5px}
 .ld-num{font-variant-numeric:tabular-nums}
 .ld-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-top:3px;max-width:56ch;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ld-err{color:var(--late)}
 .ld-site{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;font-weight:600;color:var(--accent);text-decoration:none;margin-top:2px}
 .ld-site:hover{text-decoration:underline}
 .ld-tag{display:inline-block;margin-left:4px;padding:1px 7px;border-radius:var(--pill);font-size:11px;font-weight:700;background:var(--warn-soft);color:var(--warn);cursor:help}
@@ -3527,7 +3528,7 @@ const LD_REGIONI={
   'Veneto':['Venezia','Padova','Verona','Vicenza','Treviso','Rovigo','Belluno'],
 };
 const LD_CATEGORIE=['aziende manifatturiere','metalmeccanica','carpenteria metallica','lavorazioni meccaniche conto terzi','industria alimentare','produzione mobili','materie plastiche','industria tessile','logistica e trasporti','impianti elettrici','impianti termoidraulici','imprese edili','commercio all\'ingrosso','studi commercialisti','studi legali','agenzie immobiliari','studi dentistici','hotel','ristoranti','concessionarie auto','officine meccaniche','cantine vinicole'];
-const LD_MAX_QUERIES=40;
+const LD_PREZZO=0.006;   // dollari per azienda letta: Google Maps $0,004 + ricerca email sul sito $0,002 (Apify, ottobre 2026)
 const ld={loaded:false,loading:false,searches:[],leads:[],sel:new Set(),view:'tutte',q:'',soloEmail:false,nascondiImportati:true,starting:false,pollT:null,err:''};
 function ldForm(){
   if(!state.config.leadForm||typeof state.config.leadForm!=='object') state.config.leadForm={};
@@ -3536,19 +3537,21 @@ function ldForm(){
   if(!Array.isArray(f.luoghi)) f.luoghi=[];
   if(typeof f.altri!=='string') f.altri='';
   if(!Array.isArray(f.categorie)) f.categorie=['metalmeccanica'];
-  if(!f.per_ricerca) f.per_ricerca=20;
-  if(!f.max_lead) f.max_lead=50;
+  if(!f.target) f.target=50;
+  if(typeof f.budget_auto!=='boolean') f.budget_auto=true;
+  if(!f.budget) f.budget=ldSuggestBudget(f);
   ['solo_sito','escludi_chiuse','arricchisci'].forEach(k=>{if(typeof f[k]!=='boolean')f[k]=true});
   if(typeof f.solo_email!=='boolean') f.solo_email=false;
   return f;
 }
 function ldSaveForm(){save(LS.config,state.config)}
 function ldAltri(f){return String(f.altri||'').split(/[,;\n]+/).map(s=>s.trim()).filter(Boolean).slice(0,20)}
-function ldLuoghi(f){
-  // le province scelte dalla lista portano con sé la regione (evita "Latina" o "Fermo" presi per altro); le città scritte a mano restano come sono
-  return [...f.luoghi.map(c=>c+', '+f.regione),...ldAltri(f)];
-}
-function ldQueryCount(f){return f.categorie.length*Math.max(1,ldLuoghi(f).length)}
+function ldResa(f){return f.solo_email?0.55:(f.solo_sito?0.8:0.9)}   // stessa stima del flusso n8n
+function ldCostEstimate(f){const az=Math.ceil((+f.target||0)/ldResa(f));return {aziende:az,usd:az*LD_PREZZO}}
+function ldSuggestBudget(f){const c=ldCostEstimate(f).usd;return Math.min(5,Math.max(0.3,Math.ceil(c*1.5*10)/10))}
+function ldZones(f){const n=f.luoghi.length+ldAltri(f).length;return Math.max(1,n)}
+function ldEur(usd){const r=+state.config.eurRate||EUR_DEFAULT;return '€'+(usd*r).toFixed(2).replace('.',',')}
+function ldUsd(v){return '$'+(+v||0).toFixed(2).replace('.',',')}
 function ldBusy(){return ld.searches.some(s=>s.status==='queued'||s.status==='running')}
 function ldFmtAgo(ts){if(!ts)return '';const m=Math.max(0,Math.round((Date.now()-new Date(ts).getTime())/60000));return m<1?'meno di un minuto':m===1?'1 minuto':m<60?m+' minuti':Math.floor(m/60)+' h '+(m%60)+' min'}
 function ldStuck(s){return (s.status==='running'||s.status==='queued') && Date.now()-new Date(s.started_at||s.created_at).getTime()>75*60000}
@@ -3577,18 +3580,19 @@ function ldSchedulePoll(){
 }
 async function ldPoll(){
   if(!nlSupa||!nl.editor)return;
-  const before=new Map(ld.searches.map(s=>[s.id,s.status]));
+  const before=new Map(ld.searches.map(s=>[s.id,s.status])), beforeIns=new Map(ld.searches.map(s=>[s.id,s.inserted||0]));
   const {data,error}=await nlSupa.from('lead_searches').select('*').order('created_at',{ascending:false}).limit(50);
   if(!error&&data){
     ld.searches=data;
     const finished=data.filter(s=>(before.get(s.id)==='queued'||before.get(s.id)==='running')&&(s.status==='done'||s.status==='error'));
     if(finished.length){
       finished.forEach(s=>s.status==='done'
-        ?toast(`Ricerca finita: ${s.inserted||0} ${s.inserted===1?'lead nuovo':'lead nuovi'} su ${s.found||0} attività trovate`,'ok')
+        ?toast(`Ricerca finita: ${s.inserted||0} ${s.inserted===1?'lead nuovo':'lead nuovi'}, spesa ${ldUsd(s.spent_usd)}`,'ok')
         :toast('Ricerca non riuscita: '+(s.error||'errore sconosciuto'),'err'));
-      const done=finished.find(s=>s.status==='done'); if(done){ld.view=done.id;ld.sel.clear();}
+      const done=finished.find(s=>s.inserted); if(done){ld.view=done.id;ld.sel.clear();}
       await ldLoad({silent:true}); return;
     }
+    if(data.some(s=>s.status==='running'&&(s.inserted||0)>(beforeIns.get(s.id)||0))){await ldLoad({silent:true});return}
     if(state.view==='lead') ldPaintSearches();
   }
   ldSchedulePoll();
@@ -3596,7 +3600,8 @@ async function ldPoll(){
 
 /* ---- modulo ---- */
 function ldSet(k,v){const f=ldForm();f[k]=v;ldSaveForm();render()}
-function ldSetQuiet(k,v){const f=ldForm();f[k]=v;ldSaveForm();ldPaintSummary()}
+function ldSetQuiet(k,v){const f=ldForm();f[k]=v;if(k==='budget')f.budget_auto=false;if(f.budget_auto&&k!=='budget'){f.budget=ldSuggestBudget(f);const b=document.getElementById('ld-bud');if(b)b.value=f.budget}ldSaveForm();ldPaintSummary()}
+function ldBudgetAuto(){const f=ldForm();f.budget_auto=true;f.budget=ldSuggestBudget(f);ldSaveForm();render()}
 function ldRegion(v){const f=ldForm();f.regione=v;f.luoghi=[];ldSaveForm();render()}
 function ldToggleLuogo(c){const f=ldForm();const i=f.luoghi.indexOf(c);if(i>=0)f.luoghi.splice(i,1);else f.luoghi.push(c);ldSaveForm();render()}
 function ldAllLuoghi(on){const f=ldForm();f.luoghi=on?[...(LD_REGIONI[f.regione]||[])]:[];ldSaveForm();render()}
@@ -3615,23 +3620,26 @@ function ldPaintSummary(){
   const b=document.getElementById('ld-go');if(b)b.disabled=!ldCanStart().ok;
 }
 function ldCanStart(){
-  const f=ldForm(), n=ldQueryCount(f);
+  const f=ldForm();
   if(ldBusy())return {ok:false,why:'C\'è già una ricerca in corso: aspetta che finisca.'};
   if(!f.categorie.length)return {ok:false,why:'Scegli almeno una categoria.'};
-  if(n>LD_MAX_QUERIES)return {ok:false,why:`Troppe combinazioni: ${f.categorie.length} categorie × ${ldLuoghi(f).length} luoghi = ${n} ricerche. Il massimo è ${LD_MAX_QUERIES}.`};
-  const m=+f.max_lead; if(!(m>=1&&m<=300))return {ok:false,why:'I lead da salvare vanno da 1 a 300.'};
+  if(ldAltri(f).length>10)return {ok:false,why:'Al massimo 10 città o zone scritte a mano.'};
+  const t=+f.target; if(!(t>=5&&t<=200))return {ok:false,why:'I lead da trovare vanno da 5 a 200.'};
+  const b=+f.budget; if(!(b>=0.1&&b<=5))return {ok:false,why:'Il tetto di spesa va da 0,10 a 5 dollari.'};
+  if(b<ldCostEstimate(f).usd*0.8)return {ok:true,warn:`Con questo tetto probabilmente non arrivi a ${t} lead: ne servirebbero circa ${ldUsd(ldCostEstimate(f).usd)}.`};
   return {ok:true};
 }
 function ldSummaryHtml(){
-  const f=ldForm(), luoghi=ldLuoghi(f), n=ldQueryCount(f), tot=n*(+f.per_ricerca||0), chk=ldCanStart();
-  const dove=luoghi.length?(luoghi.length===1?esc(luoghi[0].replace(/, [^,]+$/,'')):luoghi.length+' luoghi'):'tutta la '+esc(f.regione);
-  return `<b class="ld-num">${n}</b> ${n===1?'ricerca':'ricerche'} su Google Maps (${f.categorie.length} ${f.categorie.length===1?'categoria':'categorie'} in ${dove}), fino a <b class="ld-num">${tot}</b> attività da controllare. Salvo al massimo <b class="ld-num">${+f.max_lead||0}</b> lead nuovi, già senza doppioni.`
-    +(chk.ok?'':`<br><span style="color:var(--late);font-weight:650">${esc(chk.why)}</span>`);
+  const f=ldForm(), c=ldCostEstimate(f), z=ldZones(f), chk=ldCanStart();
+  const nomi=[...f.luoghi,...ldAltri(f)];
+  const dove=nomi.length===1?'a '+esc(nomi[0]):nomi.length?`in ${z} zone, in ordine casuale,`:'in tutta la '+esc(f.regione);
+  return `Cerco ${dove} e mi fermo appena ho <b class="ld-num">${+f.target||0}</b> lead nuovi. Servono circa <b class="ld-num">${c.aziende}</b> aziende da leggere: spesa prevista <b class="ld-num">${ldUsd(c.usd)}</b> (${ldEur(c.usd)}), mai oltre <b class="ld-num">${ldUsd(f.budget)}</b>.`
+    +(chk.ok?(chk.warn?`<br><span style="color:var(--warn);font-weight:650">${esc(chk.warn)}</span>`:''):`<br><span style="color:var(--late);font-weight:650">${esc(chk.why)}</span>`);
 }
 async function ldStart(){
   const chk=ldCanStart(); if(!chk.ok){toast(chk.why,'warn');return}
   const f=ldForm();
-  const params={regione:f.regione,luoghi:ldLuoghi(f),categorie:[...f.categorie],per_ricerca:+f.per_ricerca,max_lead:Math.round(+f.max_lead),
+  const params={regione:f.regione,province:[...f.luoghi],altri:ldAltri(f),categorie:[...f.categorie],target:Math.round(+f.target),budget_usd:Math.round(+f.budget*100)/100,
     solo_sito:!!f.solo_sito,solo_email:!!f.solo_email,escludi_chiuse:!!f.escludi_chiuse,arricchisci:!!f.arricchisci};
   ld.starting=true; ldPaintSummary(); const b=document.getElementById('ld-go'); if(b){b.disabled=true;b.innerHTML='<span class="spinner"></span> Avvio…';}
   const {data,error}=await nlSupa.from('lead_searches').insert({params}).select().single();
@@ -3645,9 +3653,11 @@ function ldRepeat(id){
   if(p.regione&&LD_REGIONI[p.regione]) f.regione=p.regione;
   const prov=LD_REGIONI[f.regione]||[], suf=', '+f.regione;
   f.luoghi=[]; const altri=[];
-  (p.luoghi||[]).forEach(l=>{const base=l.endsWith(suf)?l.slice(0,-suf.length):null; if(base&&prov.includes(base))f.luoghi.push(base); else altri.push(l)});
+  if(Array.isArray(p.province)){f.luoghi=p.province.filter(x=>prov.includes(x));altri.push(...(p.altri||[]))}
+  else (p.luoghi||[]).forEach(l=>{const base=l.endsWith(suf)?l.slice(0,-suf.length):null; if(base&&prov.includes(base))f.luoghi.push(base); else altri.push(l)});
   f.altri=altri.join(', '); f.categorie=[...(p.categorie||[])];
-  ['per_ricerca','max_lead'].forEach(k=>{if(p[k])f[k]=p[k]});
+  if(p.target)f.target=p.target; else if(p.max_lead)f.target=Math.min(200,Math.max(5,p.max_lead));
+  if(p.budget_usd){f.budget=p.budget_usd;f.budget_auto=false}else{f.budget_auto=true;f.budget=ldSuggestBudget(f)}
   ['solo_sito','solo_email','escludi_chiuse','arricchisci'].forEach(k=>{if(typeof p[k]==='boolean')f[k]=p[k]});
   ldSaveForm(); render(); window.scrollTo({top:0,behavior:'smooth'}); toast('Parametri copiati nel modulo: controlla e avvia','ok');
 }
@@ -3707,9 +3717,10 @@ function ldHeroCopy(){
   if(nl.editor===false) return {t:'Accesso non abilitato.',l:'Questo account non può lanciare ricerche.'};
   if(!ld.loaded) return {t:'Ricerca lead.',l:'Carico ricerche e lead…'};
   const run=ld.searches.find(s=>s.status==='queued'||s.status==='running');
-  if(run) return {t:'Ricerca in corso.',l:`Partita da ${ldFmtAgo(run.started_at||run.created_at)}. Di solito servono 3–15 minuti, di più con l'AI attiva: i lead compaiono qui sotto appena finisce.`};
+  if(run){const z=(run.plan&&run.plan.zones||[]).length, tg=run.params?.target;
+    return {t:'Ricerca in corso.',l:`Partita da ${ldFmtAgo(run.started_at||run.created_at)}${z?` · zona ${Math.min(z,(run.zone_done||0)+1)} di ${z}`:''}${tg?` · ${run.inserted||0} lead su ${tg}`:''} · spesa ${ldUsd(run.spent_usd)}. I lead compaiono qui sotto zona per zona; con l'AI attiva servono qualche minuto in più alla fine.`};}
   const have=ldContactEmails(), nuovi=ld.leads.filter(l=>ldLeadState(l,have)==='new').length;
-  return {t:nuovi?`${nuovi} ${nuovi===1?'lead pronto':'lead pronti'} da aggiungere.`:'Trova nuovi lead.',l:'Scegli dove e in che settori cercare: n8n interroga Google Maps con Apify, scarta i doppioni e salva i risultati nel database.'};
+  return {t:nuovi?`${nuovi} ${nuovi===1?'lead pronto':'lead pronti'} da aggiungere.`:'Trova nuovi lead.',l:'Scegli dove, in che settori e quanti lead ti servono: la ricerca si ferma appena li trova e non supera mai il tetto di spesa.'};
 }
 function ldTopActions(){
   if(!nl.session||!nl.editor)return '';
@@ -3744,12 +3755,12 @@ function ldFormView(){
         <div class="ld-chips" role="group" aria-labelledby="ld-cat-l">${cats.map(c=>`<button type="button" class="ld-chip" aria-pressed="${f.categorie.includes(c)}" onclick="ldToggleCat('${escAttr(c).replace(/&#39;/g,"\\'")}')">${esc(c)}</button>`).join('')}</div>
         <form class="ld-add" onsubmit="ldAddCat(event)"><div class="form-row" style="flex:1"><label for="ld-cat-new" class="sr-only">Nuova categoria</label><input id="ld-cat-new" placeholder="Un'altra categoria, come la scriveresti su Google Maps (es. tornerie)"></div><button class="btn" type="submit">${LD_I.plus}Aggiungi</button></form>
       </div>
-      <div class="form-row"><label for="ld-per">Risultati per ricerca</label>
-        <select id="ld-per" onchange="ldSetQuiet('per_ricerca',+this.value)">${[10,20,40,60,100].map(n=>`<option value="${n}"${+f.per_ricerca===n?' selected':''}>${n} attività</option>`).join('')}</select>
-        <span class="hint">Quante attività leggere da Google Maps per ogni combinazione categoria + luogo. Più sono, più costa la ricerca su Apify.</span></div>
-      <div class="form-row"><label for="ld-max">Lead nuovi da salvare, al massimo</label>
-        <input id="ld-max" type="number" min="1" max="300" step="1" value="${escAttr(f.max_lead)}" oninput="ldSetQuiet('max_lead',+this.value)">
-        <span class="hint">Da 1 a 300. Le aziende già nei lead o nei contatti non contano.</span></div>
+      <div class="form-row"><label for="ld-tgt">Lead nuovi da trovare</label>
+        <input id="ld-tgt" type="number" min="5" max="200" step="5" value="${escAttr(f.target)}" oninput="ldSetQuiet('target',+this.value)">
+        <span class="hint">Da 5 a 200. Le aziende già nei lead o nei contatti non contano: la ricerca va avanti zona per zona finché non li trova.</span></div>
+      <div class="form-row"><label for="ld-bud">Tetto di spesa su Apify, in dollari</label>
+        <input id="ld-bud" type="number" min="0.1" max="5" step="0.1" value="${escAttr(f.budget)}" oninput="ldSetQuiet('budget',+this.value)">
+        <span class="hint">${f.budget_auto?'Calcolato da solo sui lead da trovare.':`Impostato a mano. <button type="button" class="ld-link" onclick="ldBudgetAuto()">Torna al valore consigliato</button>.`} Apify si ferma da solo a questa cifra: non si può spendere di più.</span></div>
       <div class="full ld-opts" role="group" aria-label="Filtri">
         <label><input type="checkbox" ${f.solo_sito?'checked':''} onchange="ldSetQuiet('solo_sito',this.checked)"> Solo aziende con sito web</label>
         <label><input type="checkbox" ${f.solo_email?'checked':''} onchange="ldSetQuiet('solo_email',this.checked)"> Solo se l'email è già stata trovata</label>
@@ -3766,37 +3777,38 @@ function ldFormView(){
 function ldStatusChip(s){
   if(ldStuck(s)) return '<span class="chip late"><span class="d"></span>Bloccata</span>';
   if(s.status==='queued') return '<span class="chip wait"><span class="d"></span>In partenza</span>';
-  if(s.status==='running') return `<span class="chip today"><span class="d"></span>In corso · ${esc(ldFmtAgo(s.started_at||s.created_at))}</span>`;
+  if(s.status==='running'){const z=(s.plan&&s.plan.zones||[]).length;return `<span class="chip today"><span class="d"></span>In corso${z?` · zona ${Math.min(z,(s.zone_done||0)+1)} di ${z}`:''}</span>`;}
   if(s.status==='error') return '<span class="chip late"><span class="d"></span>Non riuscita</span>';
   return '<span class="chip reply"><span class="d"></span>Finita</span>';
 }
 function ldSearchLabel(s){
-  const p=s.params||{}, cats=(p.categorie||[]).join(', '), luoghi=(p.luoghi||[]).map(l=>l.replace(/, [^,]+$/,''));
+  const p=s.params||{}, cats=(p.categorie||[]).join(', '), luoghi=Array.isArray(p.province)?[...p.province,...(p.altri||[])]:(p.luoghi||[]).map(l=>l.replace(/, [^,]+$/,''));
   return `${cats||'—'} · ${luoghi.length?(luoghi.length>3?luoghi.slice(0,3).join(', ')+' e altri '+(luoghi.length-3):luoghi.join(', ')):(p.regione||'')}`;
 }
 function ldSearchRows(){
   return ld.searches.slice(0,12).map(s=>{
-    const fin=s.status==='done';
+    const has=s.status!=='queued', p=s.params||{};
+    const obiettivo=p.target?`${p.target} lead · tetto ${ldUsd(p.budget_usd)}`:(p.max_lead?`max ${p.max_lead} lead`:'');
     return `<tr>
-      <td class="az"><div>${esc(ldSearchLabel(s))}</div><div class="ld-sub">${esc(nlFmt(s.created_at,true))}${s.params?.arricchisci?' · con AI':''}${s.error?' · '+esc(s.error):''}</div></td>
+      <td class="az"><div>${esc(ldSearchLabel(s))}</div><div class="ld-sub">${esc(nlFmt(s.created_at,true))}${obiettivo?' · '+esc(obiettivo):''}${p.arricchisci?' · con AI':''}</div>${s.note||s.error?`<div class="ld-sub${s.error?' ld-err':''}">${esc((s.error?s.error+(s.note?' · '+s.note:''):s.note).replace(/\$(\d+)\.(\d+)/g,'$$$1,$2'))}</div>`:''}</td>
       <td>${ldStatusChip(s)}</td>
-      <td class="tnum">${fin?s.found??0:'—'}</td><td class="tnum">${fin?`<b>${s.inserted??0}</b>`:'—'}</td><td class="tnum">${fin?s.duplicates??0:'—'}</td><td class="tnum">${fin?s.skipped??0:'—'}</td>
-      <td style="text-align:right;white-space:nowrap">${fin&&s.inserted?`<button class="btn sm" onclick="ldSetView('${s.id}');document.getElementById('ld-res')?.scrollIntoView({behavior:'smooth'})">Vedi lead</button>`:''}<button class="btn sm ghost" onclick="ldRepeat('${s.id}')">Ripeti</button></td>
+      <td class="tnum">${has?s.found??0:'—'}</td><td class="tnum">${has?`<b>${s.inserted??0}</b>`:'—'}</td><td class="tnum">${has?s.duplicates??0:'—'}</td><td class="tnum" style="white-space:nowrap">${has?ldUsd(s.spent_usd):'—'}</td>
+      <td style="text-align:right;white-space:nowrap">${s.inserted?`<button class="btn sm" onclick="ldSetView('${s.id}');document.getElementById('ld-res')?.scrollIntoView({behavior:'smooth'})">Vedi lead</button>`:''}<button class="btn sm ghost" onclick="ldRepeat('${s.id}')">Ripeti</button></td>
     </tr>`;}).join('');
 }
 function ldPaintSearches(){const tb=document.getElementById('ld-s-body');if(tb)tb.innerHTML=ldSearchRows();const hc=heroCopy();const t=document.getElementById('viewTitle');if(t)t.textContent=hc.t;const v=document.getElementById('viewLede');if(v)v.textContent=hc.l}
 function ldSearchesView(){
   if(!ld.searches.length) return '';
   return `<div class="section-h"><h3>Ricerche</h3><span class="count">${ld.searches.length}</span><div class="line"></div></div>
-  <div class="table-wrap"><table><thead><tr><th>Cosa e dove</th><th>Stato</th><th>Trovate</th><th>Nuove</th><th>Doppioni</th><th>Scartate</th><th></th></tr></thead><tbody id="ld-s-body">${ldSearchRows()}</tbody></table></div>
-  <p class="helptip" style="margin-top:10px"><b>Trovate</b>: attività lette da Google Maps · <b>Nuove</b>: lead salvati · <b>Doppioni</b>: già nei lead o nei contatti · <b>Scartate</b>: escluse dai filtri (senza sito, senza email, chiuse). Quelle oltre il massimo scelto non vengono salvate.</p>`;
+  <div class="table-wrap"><table><thead><tr><th>Cosa e dove</th><th>Stato</th><th>Lette</th><th>Nuove</th><th>Doppioni</th><th>Spesa</th><th></th></tr></thead><tbody id="ld-s-body">${ldSearchRows()}</tbody></table></div>
+  <p class="helptip" style="margin-top:10px"><b>Lette</b>: aziende lette da Google Maps (si pagano tutte, circa $0,006 l'una) · <b>Nuove</b>: lead salvati · <b>Doppioni</b>: già nei lead o nei contatti · <b>Spesa</b>: costo reale su Apify. Se una run viene fermata o scade, quello che ha trovato viene salvato lo stesso.</p>`;
 }
 function ldResultsView(){
   const have=ldContactEmails(), rows=ldRows(), shown=rows.slice(0,500);
   const selectable=shown.filter(l=>ldLeadState(l,have)==='new');
   const allSel=selectable.length&&selectable.every(l=>ld.sel.has(l.id));
   const opts=[`<option value="tutte"${ld.view==='tutte'?' selected':''}>Tutte le ricerche</option>`]
-    .concat(ld.searches.filter(s=>s.status==='done'&&s.inserted).map(s=>`<option value="${s.id}"${ld.view===s.id?' selected':''}>${esc(nlFmt(s.created_at,true))} · ${esc(ldSearchLabel(s).slice(0,70))}</option>`))
+    .concat(ld.searches.filter(s=>s.inserted).map(s=>`<option value="${s.id}"${ld.view===s.id?' selected':''}>${esc(nlFmt(s.created_at,true))} · ${esc(ldSearchLabel(s).slice(0,70))}</option>`))
     .concat(ld.leads.some(l=>!l.search_id)?[`<option value="precedenti"${ld.view==='precedenti'?' selected':''}>Lead del flusso giornaliero</option>`]:[]);
   const stChip=st=>st==='in'?'<span class="chip done"><span class="d"></span>Nei contatti</span>':st==='noemail'?'<span class="chip da"><span class="d"></span>Senza email</span>':'<span class="chip seq"><span class="d"></span>Nuovo</span>';
   const site=u=>{if(!u)return '';try{const h=new URL(u).hostname.replace(/^www\./,'');return `<a class="ld-site" href="${escAttr(u)}" target="_blank" rel="noopener noreferrer">${esc(h)} ${LD_I.ext}</a>`}catch(e){return ''}};
