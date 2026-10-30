@@ -551,6 +551,9 @@ input[type=checkbox]{width:18px;height:18px;cursor:pointer;accent-color:var(--in
 .nl-bar{height:100%;background:var(--ink);border-radius:var(--pill);transition:width .4s var(--ease)}
 [data-theme="dark"] .nl-bar{background:var(--text)}
 @media(max-width:1100px){.nl-ed{grid-template-columns:1fr}.nl-prev-wrap{position:static}}
+/* ===== anteprima email ===== */
+.pv-frame{display:block;width:100%;height:min(50vh,460px);border:1px solid var(--border);border-radius:var(--r-md);background:#fff}
+.link-btn{font:inherit;font-weight:650;color:var(--accent);text-decoration:underline;text-underline-offset:2px;background:none;border:0;padding:0;cursor:pointer}
 /* ===== eliminazione in blocco ===== */
 .btn.del{background:var(--late);border-color:transparent;color:#fff;font-weight:700}
 .btn.del:hover{background:color-mix(in srgb,var(--late) 85%,#000)}
@@ -869,7 +872,9 @@ if(state.config.autoSyncSec==null) state.config.autoSyncSec=60;
 if(state.config.googleApiKey==null) state.config.googleApiKey='';
 if(state.config.supabaseUrl==null) state.config.supabaseUrl='';
 if(state.config.supabaseKey==null) state.config.supabaseKey='';
-if(state.config.formatoHtml==null) state.config.formatoHtml=false;
+if(state.config.formatoHtml==null) state.config.formatoHtml=true;
+// v2 del formato: si passa all'HTML "come Gmail" (il solo testo viene spezzato a ~76 caratteri e la firma nascosta nei follow-up)
+if(!state.config.formatoV2){state.config.formatoHtml=true;state.config.formatoV2=true;try{localStorage.setItem(LS.config,JSON.stringify(state.config))}catch(e){}}
 if(!state.templates.promptSistema) state.templates.promptSistema=PROMPT_SISTEMA_DEFAULT;
 // aggiorna il prompt al nuovo modello se il browser ha ancora quello predefinito vecchio (le versioni personalizzate restano intatte)
 if((state.templates.promptVersion||1)<PROMPT_VERSION){
@@ -1164,29 +1169,48 @@ function buildRawHtml({to,from,subject,text,html,inReplyTo,references}){
     'Content-Type: multipart/alternative; boundary="'+b+'"',
   ];
   if(inReplyTo){headers.push('In-Reply-To: '+inReplyTo);headers.push('References: '+(references||inReplyTo));}
+  const b64=x=>utf8b64(x).match(/.{1,76}/g).join('\r\n');
   const parts=[
     '--'+b,
-    'Content-Type: text/plain; charset="UTF-8"','',
-    text,
+    'Content-Type: text/plain; charset="UTF-8"','Content-Transfer-Encoding: base64','',
+    b64(text),
     '--'+b,
-    'Content-Type: text/html; charset="UTF-8"','',
-    html,
+    'Content-Type: text/html; charset="UTF-8"','Content-Transfer-Encoding: base64','',
+    b64(html),
     '--'+b+'--',''
   ].join('\r\n');
   const msg=headers.join('\r\n')+'\r\n\r\n'+parts;
   return b64url(utf8b64(msg));
 }
 function textToHtml(t){return esc(t).replace(/\r?\n/g,'<br>');}
+// testo → HTML come lo scrive Gmail: un <div> per riga, <div><br></div> per le righe vuote, nessun font imposto
+function textToGmailHtml(t){return String(t||'').replace(/\r\n?/g,'\n').replace(/\s+$/,'').split('\n').map(l=>l.trim()?`<div>${esc(l)}</div>`:'<div><br></div>').join('');}
+// segno invisibile e diverso per ogni email: senza, Gmail nasconde firma e disiscrizione nei follow-up ("•••") perché identiche alla prima email
+function hiddenMark(){const a=new Uint8Array(6);crypto.getRandomValues(a);return `<div style="display:none;max-height:0;overflow:hidden;font-size:1px;line-height:1px;color:transparent;opacity:0">${[...a].map(x=>x.toString(36)).join('')}</div>`}
+// composizione unica, usata sia per l'invio sia per l'anteprima
+function composeEmail(c,body){
+  const unsub=(c.disiscrizione||state.templates.disiscrizione||'').trim();
+  const sigText=(state.templates.firmaTesto||'').trim();
+  const sigHtml=buildSigHtml().trim()||textToGmailHtml(sigText);
+  const text=String(body||'').trim()+(sigText?('\n\n'+sigText):'')+(unsub?('\n\n'+unsub):'');
+  const html='<div dir="ltr">'
+    +textToGmailHtml(body)+hiddenMark()
+    +(sigHtml?('<div><br></div>'+sigHtml+hiddenMark()):'')
+    +(unsub?(`<div><br></div><div style="color:#888888;font-size:12px">${esc(unsub)}</div>`):'')
+    +hiddenMark()+'</div>';
+  return {text,html};
+}
 function buildSigHtml(){
   const url=(state.templates.logoUrl||'').trim();
   const logo = url?`<img src="${escAttr(url)}" alt="logo" width="60" style="display:block;border:0">`:'';
-  return (state.templates.firmaHtml||'').replace(/{logo_block}/g,logo).replace(/{logo_url}/g,url);
+  let h=state.templates.firmaHtml||'';
+  // senza logo tolgo la sua cella: altrimenti resta una riga grigia verticale vuota prima della firma
+  if(!url) h=h.replace(/<td[^>]*>\s*{logo_block}\s*<\/td>\s*/g,'').replace(/padding-left:14px;/g,'');
+  return h.replace(/{logo_block}/g,logo).replace(/{logo_url}/g,url);
 }
 
 async function sendEmailGmail(c, step, subject, body){
-  const unsub=(c.disiscrizione||state.templates.disiscrizione);
-  const sigText=state.templates.firmaTesto||'';
-  const textBody = body + (sigText?('\n\n'+sigText):'') + '\n\n— \n' + unsub;
+  const mail=composeEmail(c,body);
   if(state.config.testMode){
     await new Promise(r=>setTimeout(r,500));
     return {threadId:c.threadId||('sim_'+c.id), messageId:c.messageId||('<sim-'+c.id+'-'+step+'@flowline>'), simulated:true};
@@ -1194,14 +1218,9 @@ async function sendEmailGmail(c, step, subject, body){
   const inReplyTo = step>0?c.messageId:null;
   let raw;
   if(state.config.formatoHtml){
-    const sigHtml=buildSigHtml();
-    const htmlBody=`<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#222;line-height:1.55">`
-      + textToHtml(body)
-      + (sigHtml?('<br><br>'+sigHtml):'')
-      + `<br><br><span style="color:#9a9a9a;font-size:12px">${esc(unsub)}</span></div>`;
-    raw=buildRawHtml({to:c.email, from:fromHeader(), subject, text:textBody, html:htmlBody, inReplyTo, references:inReplyTo});
+    raw=buildRawHtml({to:c.email, from:fromHeader(), subject, text:mail.text, html:mail.html, inReplyTo, references:inReplyTo});
   } else {
-    raw=buildRaw({to:c.email, from:fromHeader(), subject, body:textBody, inReplyTo, references:inReplyTo});
+    raw=buildRaw({to:c.email, from:fromHeader(), subject, body:mail.text, inReplyTo, references:inReplyTo});
   }
   const payload={raw};
   if(step>0 && c.threadId) payload.threadId=c.threadId;
@@ -2361,7 +2380,7 @@ function codaCard(c,idx,cap){
       </div>
       <div class="preview-note">
         <svg style="width:13px;height:13px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z M19 10v2a7 7 0 0 1-14 0v-2 M12 19v3"/></svg>
-        In calce vengono aggiunte automaticamente ${state.config.formatoHtml?'la <b>firma</b> e':''} la riga di disiscrizione${state.config.formatoHtml?' · invio in <b>HTML</b>':' · invio in testo'}.
+        In calce vengono aggiunte automaticamente la <b>firma</b> e la riga di disiscrizione, in ogni email della sequenza. <button type="button" class="link-btn" onclick="previewEmail('${c.id}',${step})">Vedi anteprima</button>
       </div>
     </div>
     <div class="qc-foot">
@@ -2376,6 +2395,20 @@ function codaCard(c,idx,cap){
     </div>
     </div>
   </div>`;
+}
+function previewEmail(id,step){
+  const c=state.contacts.find(x=>x.id===id);if(!c)return;
+  const d=getDraft(c,step), mail=composeEmail(c,d.corpo||'');
+  const doc=`<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0;padding:22px 24px;font-family:Arial,Helvetica,sans-serif;font-size:small;color:#222;background:#fff}</style></head><body>${mail.html}</body></html>`;
+  modal(`<div class="modal" onclick="event.stopPropagation()" style="max-width:760px" role="dialog" aria-modal="true" aria-labelledby="pv-t">
+    <div class="modal-h"><h3 id="pv-t">Anteprima email</h3><div class="x" role="button" tabindex="0" aria-label="Chiudi" onclick="closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div>
+    <div class="modal-b">
+      <div class="email-cell" style="margin-bottom:8px"><b>A:</b> ${esc(c.email||'')} · <b>Oggetto:</b> ${esc(d.oggetto||'')}${step>0?' · risposta nello stesso thread':''}</div>
+      <iframe class="pv-frame" title="Anteprima email" sandbox srcdoc="${escAttr(doc)}"></iframe>
+      <p class="helptip" style="margin-top:10px">${state.config.formatoHtml?'Così la vede chi la riceve con Gmail: testo normale, a capo dove lo decide lo schermo, firma sempre visibile anche nei follow-up.':'Formato solo testo attivo: Gmail spezzerà le righe e nei follow-up nasconderà la firma. Si cambia nelle Impostazioni.'}</p>
+    </div>
+    <div class="modal-f"><button class="btn primary" onclick="closeModal()">Chiudi</button></div>
+  </div>`);
 }
 function bindCodaInputs(){
   document.querySelectorAll('#content [data-f]').forEach(el=>{
@@ -2929,13 +2962,13 @@ function openCadence(){
 
       <div class="section-h" style="margin:6px 0 0"><h3 style="font-size:14px">Firma & formato email</h3><div class="line"></div></div>
       <label class="toggle ${state.config.formatoHtml?'on':''}" id="tp-html" onclick="this.classList.toggle('on')"><span class="sw"></span>
-        <span><b>Invia in formato HTML</b><br><span class="hint">Necessario per la firma con logo e link colorati. Se spento, le email partono in solo testo (spesso meglio per la consegna a freddo).</span></span></label>
+        <span><b>Formato come Gmail (consigliato)</b><br><span class="hint">L'email parte come se l'avessi scritta in Gmail: testo normale che va a capo da solo, firma sempre visibile anche nei follow-up. Se lo spegni, parte in solo testo: Gmail spezza le righe a circa 76 caratteri e nei follow-up nasconde la firma.</span></span></label>
       <div class="form-row"><label>URL del logo <span class="hint">(immagine pubblica, es. caricata sul tuo repo GitHub Pages)</span></label>
         <input id="tp-logo" value="${escAttr(tp.logoUrl||'')}" placeholder="https://callforusit-aam.github.io/.../logo.png"></div>
       <div class="form-row"><label>Firma — versione HTML <span class="hint">(usa <span class="kbd">{logo_block}</span> dove vuoi il logo)</span></label>
         <textarea id="tp-sightml" style="min-height:130px;font-family:'JetBrains Mono',monospace;font-size:12px">${esc(tp.firmaHtml||'')}</textarea>
         <button class="btn sm ghost" style="align-self:flex-start" onclick="previewSig()">Anteprima firma</button></div>
-      <div class="form-row"><label>Firma — versione testo <span class="hint">(usata in modalità solo testo e come fallback)</span></label>
+      <div class="form-row"><label>Firma — versione testo <span class="hint">(usata se la versione HTML è vuota e nella parte di solo testo dell'email)</span></label>
         <textarea id="tp-sigtesto" style="min-height:80px">${esc(tp.firmaTesto||'')}</textarea></div>
 
       <div class="section-h" style="margin:6px 0 0"><h3 style="font-size:14px">Prompt di generazione AI</h3><div class="line"></div></div>
