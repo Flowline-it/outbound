@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FlowLine Outbound — Gestione campagne</title>
+<title>FlowLine Suite</title>
 <meta name="theme-color" content="#F3F3F1">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%2260%2080%201800%201800%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22flg%22%20x1%3D%2282%22%20y1%3D%220%22%20x2%3D%221483%22%20y2%3D%220%22%20gradientUnits%3D%22userSpaceOnUse%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23FF9900%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23FDC060%22%2F%3E%3C%2FlinearGradient%3E%3Cmask%20id%3D%22flm%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%221932%22%20height%3D%221932%22%20fill%3D%22%23fff%22%2F%3E%3Crect%20x%3D%220%22%20y%3D%22730%22%20width%3D%22520%22%20height%3D%22568%22%20fill%3D%22%23000%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Cpath%20mask%3D%22url%28%23flm%29%22%20fill%3D%22%233A3D42%22%20fill-rule%3D%22evenodd%22%20d%3D%22M958%2083a877%20877%200%201%200%200.1%200zM958%20320a640%20640%200%201%201-0.1%200z%22%2F%3E%3Ccircle%20cx%3D%22968%22%20cy%3D%22965%22%20r%3D%22515%22%20fill%3D%22url%28%23flg%29%22%2F%3E%3Crect%20x%3D%2282%22%20y%3D%22898%22%20width%3D%22400%22%20height%3D%22205%22%20fill%3D%22url%28%23flg%29%22%2F%3E%3C%2Fsvg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -78,8 +78,23 @@ svg{flex-shrink:0}
 .brand .logo svg{width:40px;height:40px;display:block}
 .brand h1{font-size:18px;font-weight:800;font-stretch:110%;letter-spacing:-.03em;line-height:1}
 .brand .sub{display:none}
-.nav{display:flex;align-items:center;gap:2px;flex:1;min-width:0}
-.nav button{display:flex;align-items:center;gap:8px;height:42px;padding:0 15px;border-radius:var(--pill);
+.brand .suite{font-weight:500;color:var(--muted);letter-spacing:-.02em}
+.nav-spacer{flex:1}
+/* livello 1: aree della suite */
+.sec-switch{display:flex;gap:4px;padding:4px;border-radius:var(--pill);background:var(--surface-2)}
+.sec-switch button{display:flex;align-items:center;gap:8px;height:40px;padding:0 18px;border-radius:var(--pill);font-size:14.5px;font-weight:650;color:var(--muted);white-space:nowrap;transition:background .18s var(--ease),color .18s var(--ease)}
+.sec-switch button:hover{color:var(--text)}
+.sec-switch button[aria-pressed="true"]{background:var(--ink);color:#fff}
+[data-theme="dark"] .sec-switch button[aria-pressed="true"]{background:var(--text);color:var(--bg)}
+.sec-switch .ico{width:17px;height:17px}
+.sec-switch .dotb{width:8px;height:8px;border-radius:50%;background:var(--brand)}
+.sec-switch .dotb.late{background:var(--late)}
+/* livello 2: pagine dell'area */
+.subnav-wrap{max-width:1320px;margin:8px auto 0;display:flex}
+.nav{display:flex;align-items:center;gap:2px;min-width:0;padding:5px;border-radius:var(--pill);background:var(--surface);box-shadow:var(--shadow);overflow-x:auto;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav .nav-area{display:none;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);padding:0 12px 0 14px;white-space:nowrap}
+.nav button{display:flex;align-items:center;gap:8px;height:38px;padding:0 15px;border-radius:var(--pill);
   font-size:14.5px;font-weight:600;color:var(--muted);white-space:nowrap;transition:background .18s var(--ease),color .18s var(--ease)}
 .nav button:hover{background:var(--surface-2);color:var(--text)}
 .nav button.active{background:var(--ink);color:#fff}
@@ -110,7 +125,7 @@ svg{flex-shrink:0}
 
 /* ===== hero band ===== */
 .main{min-width:0}
-.hero{--hb:var(--brand);--hi:var(--on-brand);background:var(--hb);color:var(--hi);margin-top:-80px;padding:136px 40px 52px;transition:background .3s var(--ease)}
+.hero{--hb:var(--brand);--hi:var(--on-brand);background:var(--hb);color:var(--hi);margin-top:-136px;padding:186px 40px 52px;transition:background .3s var(--ease)}
 body[data-view="pianifica"] .hero,body[data-view="risposte"] .hero{--hb:var(--lilac);--hi:var(--on-lilac)}
 body[data-view="coda"] .hero{--hb:#292929;--hi:#FFFFFF}
 body[data-view="contatti"] .hero{--hb:var(--cobalt);--hi:#FFFFFF}
@@ -468,13 +483,18 @@ input[type=checkbox]{width:18px;height:18px;cursor:pointer;accent-color:var(--in
 @media(max-width:900px){
   .topnav{margin:10px 10px 0;top:10px}
   .topnav-in{min-height:58px;padding:8px 8px 8px 10px;border-radius:29px;flex-wrap:wrap;position:relative}
-  .nav,.nav-tools{display:none}
+  .sec-switch,.subnav-wrap,.nav-tools,.nav-spacer{display:none}
   .menu-btn{display:flex}
   .topnav.open .topnav-in{height:auto;border-radius:26px;padding:10px 10px 14px 12px}
-  .topnav.open .nav{display:flex;flex-direction:column;align-items:stretch;flex-basis:100%;order:3;margin-top:8px}
+  .topnav.open .sec-switch{display:flex;flex-basis:100%;order:3;margin-top:8px}
+  .topnav.open .sec-switch button{flex:1;justify-content:center}
+  .topnav.open .subnav-wrap{display:block}
+  .topnav.open .nav{flex-direction:column;align-items:stretch;border-radius:26px;padding:8px;overflow:visible}
   .topnav.open .nav button{height:46px}
+  .topnav.open .nav .nav-area{display:block;padding:8px 12px 4px}
   .topnav.open .nav-tools{display:flex;flex-basis:100%;order:4;margin-top:6px}
   .hero{margin-top:-68px;padding:96px 18px 34px}
+  .hero .crumb{font-size:13px}
   .hero h2{font-size:40px;letter-spacing:-.04em}
   .hero .lede{font-size:16px}
   .content{padding:20px 14px 72px}
@@ -581,13 +601,13 @@ body[data-view="lead"] .hero{--hb:var(--lilac);--hi:var(--on-lilac)}
   <header class="topnav" id="rail">
     <div class="topnav-in">
       <div class="brand">
-        <div class="logo" role="img" aria-label="Logo FlowLine">
+        <div class="logo" role="img" aria-label="Logo FlowLine Suite">
           <svg viewBox="60 80 1800 1800" aria-hidden="true"><defs><linearGradient id="flg" x1="82" y1="0" x2="1483" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FF9900"/><stop offset="1" stop-color="#FDC060"/></linearGradient><mask id="flm"><rect x="0" y="0" width="1932" height="1932" fill="#fff"/><rect x="0" y="730" width="520" height="568" fill="#000"/></mask></defs><path mask="url(#flm)" fill="var(--logo-ring)" fill-rule="evenodd" d="M958 83a877 877 0 1 0 0.1 0zM958 320a640 640 0 1 1-0.1 0z"/><circle cx="968" cy="965" r="515" fill="url(#flg)"/><rect x="82" y="898" width="400" height="205" fill="url(#flg)"/></svg>
         </div>
-        <h1>FlowLine</h1>
-        <div class="sub" id="brandSub">Outbound Manager</div>
+        <h1>FlowLine <span class="suite">Suite</span></h1>
       </div>
-      <nav class="nav" id="nav" aria-label="Sezioni"></nav>
+      <div class="sec-switch" id="secSwitch" role="group" aria-label="Area"></div>
+      <span class="nav-spacer"></span>
       <div class="nav-tools">
         <button class="spend-pill" id="spendPill" onclick="openSpend()" title="Spesa API stimata — clicca per dettagli">
           <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 1v22 M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
@@ -601,16 +621,18 @@ body[data-view="lead"] .hero{--hb:var(--lilac);--hi:var(--on-lilac)}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         </button>
       </div>
-      <button class="menu-btn" onclick="document.getElementById('rail').classList.contains('open')?closeRail():openRail()" aria-label="Menu">
+      <button class="menu-btn" id="menuBtn" onclick="document.getElementById('rail').classList.contains('open')?closeRail():openRail()" aria-label="Apri il menu" aria-expanded="false" aria-controls="nav">
         <svg style="width:19px;height:19px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       </button>
     </div>
+    <div class="subnav-wrap"><nav class="nav" id="nav" aria-label="Pagine"></nav></div>
   </header>
   <div class="scrim" id="scrim" onclick="closeRail()"></div>
 
   <main class="main">
     <section class="hero">
       <div class="hero-in">
+        <p class="crumb" id="viewCrumb">Outbound</p>
         <h2 id="viewTitle">Dashboard</h2>
         <p class="lede" id="viewLede"></p>
         <div class="hero-row" id="topActions"></div>
@@ -1281,7 +1303,7 @@ async function ensureSheet(){
   if(!googleReady()) throw new Error('Google non connesso');
   if(state.config.sheetId) return state.config.sheetId;
   const r=await gfetch('https://sheets.googleapis.com/v4/spreadsheets',{method:'POST',body:JSON.stringify({
-    properties:{title:'FlowLine Outbound — contatti & stato'},
+    properties:{title:'FlowLine Suite — contatti Outbound'},
     sheets:[{properties:{title:'Contatti'}}]
   })});
   state.config.sheetId=r.spreadsheetId;state.config.sheetTab='Contatti';persist();renderConn();
@@ -1812,32 +1834,62 @@ function handleFile(file){
 /* =======================================================
    RENDER
    ======================================================= */
-const NAV=[
-  {id:'dashboard',label:'Dashboard',icon:'M3 3v18h18 M7 14l3-3 3 3 5-6'},
-  {id:'pianifica',label:'Pianificazione',icon:'M3 4h18v18H3z M16 2v4 M8 2v4 M3 10h18 M8 14h2 M14 14h2 M8 18h2'},
-  {id:'coda',label:'Coda invio',icon:'M22 2 11 13 M22 2l-7 20-4-9-9-4 20-7z'},
-  {id:'contatti',label:'Contatti',icon:'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2 M9 7a4 4 0 1 0 0 8 4 4 0 0 0 0-8z M23 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75'},
-  {id:'lead',label:'Ricerca lead',icon:'M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14z M21 21l-4.35-4.35'},
-  {id:'calendario',label:'Calendario',icon:'M3 4h18v18H3z M16 2v4 M8 2v4 M3 10h18'},
-  {id:'risposte',label:'Risposte',icon:'M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z'},
+// FlowLine Suite: due aree, ciascuna con le sue pagine
+const SECTIONS=[
+  {id:'outbound',label:'Outbound',icon:'M22 2 11 13 M22 2l-7 20-4-9-9-4 20-7z'},
   {id:'newsletter',label:'Newsletter',icon:'M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z M22 6l-10 7L2 6'},
 ];
+const NL_PAGES=[{tab:'campagne',label:'Campagne'},{tab:'iscritti',label:'Iscritti'}];
+function sectionOf(v){return v==='newsletter'?'newsletter':'outbound'}
+function goSection(sec){
+  if(sec===sectionOf(state.view)){closeRail();return}
+  if(sec==='newsletter') go('newsletter'); else go(state.lastOutbound&&state.lastOutbound!=='newsletter'?state.lastOutbound:'dashboard');
+}
+function goNl(tab){nl.tab=tab;nl.edit=null;if(state.view!=='newsletter')go('newsletter');else{closeRail();render();window.scrollTo(0,0)}}
+const NAV=[
+  {id:'dashboard',label:'Dashboard',icon:'M3 3v18h18 M7 14l3-3 3 3 5-6'},
+  {id:'lead',label:'Ricerca lead',icon:'M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14z M21 21l-4.35-4.35'},
+  {id:'contatti',label:'Contatti',icon:'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2 M9 7a4 4 0 1 0 0 8 4 4 0 0 0 0-8z M23 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75'},
+  {id:'pianifica',label:'Pianificazione',icon:'M3 4h18v18H3z M16 2v4 M8 2v4 M3 10h18 M8 14h2 M14 14h2 M8 18h2'},
+  {id:'coda',label:'Coda invio',icon:'M22 2 11 13 M22 2l-7 20-4-9-9-4 20-7z'},
+  {id:'calendario',label:'Calendario',icon:'M3 4h18v18H3z M16 2v4 M8 2v4 M3 10h18'},
+  {id:'risposte',label:'Risposte',icon:'M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z'},
+];
 function renderNav(){
+  const sec=sectionOf(state.view);
   const todayN=state.contacts.filter(dueToday).length;
   const late=state.contacts.filter(isLate).length;
   const backlog=state.contacts.filter(isUnplanned).length;
-  document.getElementById('nav').innerHTML=NAV.map(n=>{
-    let badge='';
-    if(n.id==='coda'&&(todayN||late)) badge=`<span class="badge${late?' late':''}">${todayN||late}</span>`;
-    const newRep=state.contacts.filter(c=>c.haRisposto&&c.replySeen===false).length;
-    if(n.id==='risposte'&&newRep) badge=`<span class="badge ok">${newRep}</span>`;
-    if(n.id==='pianifica'&&backlog) badge=`<span class="badge plain">${backlog}</span>`;
-    if(n.id==='newsletter'&&nl.sending) badge=`<span class="badge">invio</span>`;
-    if(n.id==='lead'&&ldBusy()) badge=`<span class="badge">in corso</span>`;
-    return `<button class="${state.view===n.id?'active':''}" onclick="go('${n.id}')">
-      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${n.icon}"/></svg>
-      <span>${n.label}</span>${badge}</button>`;
+  const newRep=state.contacts.filter(c=>c.haRisposto&&c.replySeen===false).length;
+  const ico=d=>`<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`;
+  // livello 1: aree, con un pallino se nell'altra area c'è qualcosa che aspetta
+  const alertOut=late||todayN||newRep||ldBusy(), alertNl=!!nl.sending;
+  document.getElementById('secSwitch').innerHTML=SECTIONS.map(x=>{
+    const on=x.id===sec, dot=!on&&(x.id==='outbound'?alertOut:alertNl)?`<span class="dotb${x.id==='outbound'&&late?' late':''}" aria-label="ci sono attività in sospeso"></span>`:'';
+    return `<button type="button" aria-pressed="${on}" onclick="goSection('${x.id}')">${ico(x.icon)}<span>${x.label}</span>${dot}</button>`;
   }).join('');
+  // livello 2: pagine dell'area attiva
+  const nav=document.getElementById('nav');
+  nav.setAttribute('aria-label','Pagine di '+(sec==='newsletter'?'Newsletter':'Outbound'));
+  let items;
+  if(sec==='newsletter'){
+    items=NL_PAGES.map(pg=>{
+      const on=nl.tab===pg.tab;
+      const badge=pg.tab==='iscritti'&&nl.loaded?`<span class="badge plain">${nlActive().length}</span>`:(pg.tab==='campagne'&&nl.sending?'<span class="badge">invio</span>':'');
+      return `<button class="${on?'active':''}" ${on?'aria-current="page"':''} onclick="goNl('${pg.tab}')"><span>${pg.label}</span>${badge}</button>`;
+    });
+  } else {
+    items=NAV.map(n=>{
+      let badge='';
+      if(n.id==='coda'&&(todayN||late)) badge=`<span class="badge${late?' late':''}">${todayN||late}</span>`;
+      if(n.id==='risposte'&&newRep) badge=`<span class="badge ok">${newRep}</span>`;
+      if(n.id==='pianifica'&&backlog) badge=`<span class="badge plain">${backlog}</span>`;
+      if(n.id==='lead'&&ldBusy()) badge=`<span class="badge">in corso</span>`;
+      const on=state.view===n.id;
+      return `<button class="${on?'active':''}" ${on?'aria-current="page"':''} onclick="go('${n.id}')">${ico(n.icon)}<span>${n.label}</span>${badge}</button>`;
+    });
+  }
+  nav.innerHTML=`<span class="nav-area" aria-hidden="true">${sec==='newsletter'?'Newsletter':'Outbound'}</span>`+items.join('');
 }
 function renderSpend(){
   const eur=costEUR(state.usage);
@@ -1887,7 +1939,7 @@ function renderConn(){
   if(stxt){stxt.textContent=supaReady()?'Database online':(supaConfigured()?'Database in connessione…':'Database locale');}
   document.getElementById('testBanner').style.display=state.config.testMode?'flex':'none';
 }
-function go(v){state.view=v;state.search='';state.filter='tutti';closeRail();render();window.scrollTo(0,0)}
+function go(v){if(v!=='newsletter')state.lastOutbound=v;state.view=v;state.search='';state.filter='tutti';closeRail();render();window.scrollTo(0,0)}
 function heroCopy(){
   const n=state.contacts.length, pl=(k,s,p)=>k===1?s:p;
   const due=state.contacts.filter(dueToday).length, late=state.contacts.filter(isLate).length;
@@ -1914,7 +1966,10 @@ function render(){
   document.getElementById('viewTitle').textContent=hc.t;
   const vl=document.getElementById('viewLede');if(vl)vl.textContent=hc.l;
   const vd=document.getElementById('viewDate');if(vd)vd.textContent=today().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
-  document.title='FlowLine Outbound — '+({dashboard:'Dashboard',pianifica:'Pianificazione',coda:'Coda invio',contatti:'Contatti',calendario:'Calendario',risposte:'Risposte',newsletter:'Newsletter',lead:'Ricerca lead'}[state.view]||'Dashboard');
+  const pageName=state.view==='newsletter'?(nl.tab==='iscritti'?'Iscritti':'Campagne'):({dashboard:'Dashboard',pianifica:'Pianificazione',coda:'Coda invio',contatti:'Contatti',calendario:'Calendario',risposte:'Risposte',lead:'Ricerca lead'}[state.view]||'Dashboard');
+  const secName=sectionOf(state.view)==='newsletter'?'Newsletter':'Outbound';
+  document.title=pageName+' · '+secName+' — FlowLine Suite';
+  const cr=document.getElementById('viewCrumb');if(cr)cr.textContent=secName+(pageName!==secName?' · '+pageName:'');
   const ta=document.getElementById('topActions');
   const I={
     refresh:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6 M1 20v-6h6 M3.51 9a9 9 0 0 1 14.85-3.36L23 10 M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>',
@@ -2974,8 +3029,8 @@ function toast(msg,type=''){
   setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(20px)';setTimeout(()=>el.remove(),200)},3200);
 }
 function toggleTheme(){const cur=document.documentElement.getAttribute('data-theme');const nx=cur==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',nx);save(LS.theme,nx)}
-function openRail(){document.getElementById('rail').classList.add('open');document.getElementById('scrim').classList.add('show')}
-function closeRail(){document.getElementById('rail').classList.remove('open');document.getElementById('scrim').classList.remove('show')}
+function openRail(){document.getElementById('rail').classList.add('open');document.getElementById('scrim').classList.add('show');document.getElementById('menuBtn')?.setAttribute('aria-expanded','true')}
+function closeRail(){document.getElementById('rail').classList.remove('open');document.getElementById('scrim').classList.remove('show');document.getElementById('menuBtn')?.setAttribute('aria-expanded','false')}
 
 /* search debounce binding (delegated) */
 document.addEventListener('input',e=>{
@@ -3309,7 +3364,7 @@ async function nlRequeue(which){
 window.addEventListener('beforeunload',e=>{ if(nl.sending){e.preventDefault();e.returnValue='';} });
 
 /* ---- iscritti ---- */
-function nlSetTab(t){nl.tab=t;nl.edit=null;render()}
+function nlSetTab(t){goNl(t)}
 function nlSetFilter(f){nl.filter=f;render()}
 function nlSearch(v){nl.q=v;clearTimeout(window._nlq);window._nlq=setTimeout(()=>{render();const i=document.getElementById('nl-q');if(i){i.focus();i.setSelectionRange(v.length,v.length)}},220)}
 async function nlToggleSub(id,on){
@@ -3441,10 +3496,7 @@ function viewNewsletter(){
     <button class="btn" onclick="nlLogout()">Esci</button></div>`;
   if(!nl.loaded) return `<div class="empty"><span class="spinner"></span><p style="margin-top:14px">Carico iscritti e newsletter…</p></div>`;
   if(nl.edit) return nlEditorView();
-  const tabs=`<div class="filters"><div class="seg">
-      <button class="fbtn ${nl.tab==='campagne'?'on':''}" onclick="nlSetTab('campagne')">Newsletter</button>
-      <button class="fbtn ${nl.tab==='iscritti'?'on':''}" onclick="nlSetTab('iscritti')">Iscritti · ${nlActive().length}</button>
-    </div><span style="flex:1"></span>
+  const tabs=`<div class="filters"><span style="flex:1"></span>
     <span class="email-cell">Accesso: ${esc(nl.session.user?.email||'')}</span><button class="btn sm ghost" onclick="nlLogout()">Esci</button></div>`;
   return tabs+(nl.tab==='iscritti'?nlSubsView():nlCampsView());
 }
