@@ -873,6 +873,8 @@ if(state.config.googleApiKey==null) state.config.googleApiKey='';
 if(state.config.supabaseUrl==null) state.config.supabaseUrl='';
 if(state.config.supabaseKey==null) state.config.supabaseKey='';
 if(state.config.formatoHtml==null) state.config.formatoHtml=true;
+if(state.config.obTrackOpen==null) state.config.obTrackOpen=true;     // statistiche anonime outbound: aperture
+if(state.config.obTrackClick==null) state.config.obTrackClick=true;   // statistiche anonime outbound: clic
 // v2 del formato: si passa all'HTML "come Gmail" (il solo testo viene spezzato a ~76 caratteri e la firma nascosta nei follow-up)
 if(!state.config.formatoV2){state.config.formatoHtml=true;state.config.formatoV2=true;try{localStorage.setItem(LS.config,JSON.stringify(state.config))}catch(e){}}
 if(!state.templates.promptSistema) state.templates.promptSistema=PROMPT_SISTEMA_DEFAULT;
@@ -1184,20 +1186,35 @@ function buildRawHtml({to,from,subject,text,html,inReplyTo,references}){
 }
 function textToHtml(t){return esc(t).replace(/\r?\n/g,'<br>');}
 // testo → HTML come lo scrive Gmail: un <div> per riga, <div><br></div> per le righe vuote, nessun font imposto
-function textToGmailHtml(t){return String(t||'').replace(/\r\n?/g,'\n').replace(/\s+$/,'').split('\n').map(l=>l.trim()?`<div>${esc(l)}</div>`:'<div><br></div>').join('');}
+function textToGmailHtml(t,link){
+  const URL_RE=/(https?:\/\/[^\s<>"']+[^\s<>"'.,;:!?)])/g;
+  const line=l=>link?l.split(URL_RE).map((x,i)=>i%2?`<a href="${escAttr(link(x))}">${esc(x)}</a>`:esc(x)).join(''):esc(l);
+  return String(t||'').replace(/\r\n?/g,'\n').replace(/\s+$/,'').split('\n').map(l=>l.trim()?`<div>${line(l)}</div>`:'<div><br></div>').join('');
+}
+// statistiche anonime outbound (funzione ob-track): codice casuale per email, mai salvato con il contatto
+const OB_TRACK=APP_DEFAULTS.supabaseUrl+'/functions/v1/ob-track';
+function obNonce(){const a=new Uint8Array(10);crypto.getRandomValues(a);return [...a].map(x=>x.toString(16).padStart(2,'0')).join('')}
+function obQ(trk){return 's='+trk.step+'&n='+trk.n+'&t='+trk.t}
+function obLink(trk,url){return trk&&state.config.obTrackClick?OB_TRACK+'/c?'+obQ(trk)+'&u='+encodeURIComponent(url):url}
+function obTrackHrefs(html,trk){
+  if(!trk||!state.config.obTrackClick)return html;
+  return html.replace(/href="(https?:\/\/[^"]+)"/gi,(m,u)=>'href="'+escAttr(obLink(trk,u.replace(/&amp;/g,'&')))+'"');
+}
 // segno invisibile e diverso per ogni email: senza, Gmail nasconde firma e disiscrizione nei follow-up ("•••") perché identiche alla prima email
 function hiddenMark(){const a=new Uint8Array(6);crypto.getRandomValues(a);return `<div style="display:none;max-height:0;overflow:hidden;font-size:1px;line-height:1px;color:transparent;opacity:0">${[...a].map(x=>x.toString(36)).join('')}</div>`}
 // composizione unica, usata sia per l'invio sia per l'anteprima
-function composeEmail(c,body){
+function composeEmail(c,body,trk){
   const unsub=(c.disiscrizione||state.templates.disiscrizione||'').trim();
   const sigText=(state.templates.firmaTesto||'').trim();
-  const sigHtml=buildSigHtml().trim()||textToGmailHtml(sigText);
+  const lk=trk&&state.config.obTrackClick?(u=>obLink(trk,u)):null;
+  const sigHtml=obTrackHrefs(buildSigHtml().trim(),trk)||textToGmailHtml(sigText,lk);
   const text=String(body||'').trim()+(sigText?('\n\n'+sigText):'')+(unsub?('\n\n'+unsub):'');
+  const pixel=trk&&state.config.obTrackOpen?`<img src="${escAttr(OB_TRACK+'/o?'+obQ(trk))}" width="1" height="1" alt="" style="display:block;width:1px;height:1px;border:0">`:'';
   const html='<div dir="ltr">'
-    +textToGmailHtml(body)+hiddenMark()
+    +textToGmailHtml(body,lk)+hiddenMark()
     +(sigHtml?('<div><br></div>'+sigHtml+hiddenMark()):'')
     +(unsub?(`<div><br></div><div style="color:#888888;font-size:12px">${esc(unsub)}</div>`):'')
-    +hiddenMark()+'</div>';
+    +hiddenMark()+pixel+'</div>';
   return {text,html};
 }
 function buildSigHtml(){
@@ -1210,7 +1227,9 @@ function buildSigHtml(){
 }
 
 async function sendEmailGmail(c, step, subject, body){
-  const mail=composeEmail(c,body);
+  const track=!state.config.testMode&&state.config.formatoHtml&&(state.config.obTrackOpen||state.config.obTrackClick);
+  const trk=track?{step,n:obNonce(),t:Math.floor(Date.now()/1000)}:null;
+  const mail=composeEmail(c,body,trk);
   if(state.config.testMode){
     await new Promise(r=>setTimeout(r,500));
     return {threadId:c.threadId||('sim_'+c.id), messageId:c.messageId||('<sim-'+c.id+'-'+step+'@flowline>'), simulated:true};
@@ -1225,6 +1244,8 @@ async function sendEmailGmail(c, step, subject, body){
   const payload={raw};
   if(step>0 && c.threadId) payload.threadId=c.threadId;
   const sent=await gfetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/send',{method:'POST',body:JSON.stringify(payload)});
+  // statistiche anonime: si registra solo step e codice casuale, nessun dato del contatto
+  if(trk&&supaReady()) supa.rpc('outbound_track_sent',{p_step:step,p_nonce:trk.n}).then(({error})=>{if(error)console.warn('outbound_track_sent',error.message)});
   // fetch message to read Message-ID header + threadId
   let messageId=c.messageId, threadId=sent.threadId;
   try{
@@ -1873,6 +1894,7 @@ const NAV=[
   {id:'coda',label:'Coda invio',icon:'M22 2 11 13 M22 2l-7 20-4-9-9-4 20-7z'},
   {id:'calendario',label:'Calendario',icon:'M3 4h18v18H3z M16 2v4 M8 2v4 M3 10h18'},
   {id:'risposte',label:'Risposte',icon:'M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z'},
+  {id:'stats',label:'Statistiche',icon:'M3 3v18h18 M7 16v-5 M12 16V8 M17 16v-8'},
 ];
 function renderNav(){
   const sec=sectionOf(state.view);
@@ -1966,6 +1988,7 @@ function heroCopy(){
   const backlog=state.contacts.filter(isUnplanned).length;
   if(state.view==='newsletter') return nlHeroCopy();
   if(state.view==='lead') return ldHeroCopy();
+  if(state.view==='stats') return obHeroCopy();
   if(!n) return {t:'Benvenuto in Outbound.',l:'Importa una lista di contatti in CSV o Excel: le colonne vengono riconosciute in automatico.'};
   switch(state.view){
     case 'coda': return {t:due?`${due} email da rivedere e inviare.`:'Niente da inviare oggi.',l:late?`Più ${late} in ritardo dai giorni scorsi: puoi recuperarle qui sotto.`:'Rivedi ogni bozza, poi invia una alla volta o tutte insieme.'};
@@ -1985,7 +2008,7 @@ function render(){
   document.getElementById('viewTitle').textContent=hc.t;
   const vl=document.getElementById('viewLede');if(vl)vl.textContent=hc.l;
   const vd=document.getElementById('viewDate');if(vd)vd.textContent=today().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
-  const pageName=state.view==='newsletter'?(nl.tab==='iscritti'?'Iscritti':'Campagne'):({dashboard:'Dashboard',pianifica:'Pianificazione',coda:'Coda invio',contatti:'Contatti',calendario:'Calendario',risposte:'Risposte',lead:'Ricerca lead'}[state.view]||'Dashboard');
+  const pageName=state.view==='newsletter'?(nl.tab==='iscritti'?'Iscritti':'Campagne'):({dashboard:'Dashboard',pianifica:'Pianificazione',coda:'Coda invio',contatti:'Contatti',calendario:'Calendario',risposte:'Risposte',lead:'Ricerca lead',stats:'Statistiche'}[state.view]||'Dashboard');
   const secName=sectionOf(state.view)==='newsletter'?'Newsletter':'Outbound';
   document.title=pageName+' · '+secName+' — FlowLine Suite';
   const cr=document.getElementById('viewCrumb');if(cr)cr.textContent=secName+(pageName!==secName?' · '+pageName:'');
@@ -2012,6 +2035,7 @@ function render(){
   } else { primary=`<button class="btn primary" onclick="pickFile()">${I.plus}Importa contatti</button>`; importPrimary=true; }
   if(state.view==='newsletter'){ ta.innerHTML=nlTopActions(); }
   else if(state.view==='lead'){ ta.innerHTML=ldTopActions(); }
+  else if(state.view==='stats'){ ta.innerHTML=`<button class="btn" onclick="obLoad(true)"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6 M1 20v-6h6 M3.51 9a9 9 0 0 1 14.85-3.36L23 10 M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg><span class="lbl">Aggiorna</span></button>`; }
   else ta.innerHTML=primary
     +(has&&!importPrimary?`<button class="btn" onclick="pickFile()">${I.plus}<span class="lbl">Importa</span></button>`:'')
     +(has?`<button class="btn" onclick="checkReplies()" title="Controlla ora se sono arrivate risposte">${I.reply}<span class="lbl">Controlla risposte</span></button>`:'')
@@ -2025,6 +2049,7 @@ function render(){
   else if(state.view==='risposte')C.innerHTML=viewRisposte();
   else if(state.view==='newsletter'){ if(!nl.inited) nlInit(); C.innerHTML=viewNewsletter(); }
   else if(state.view==='lead'){ if(!nl.inited) nlInit(); C.innerHTML=viewLead(); }
+  else if(state.view==='stats'){ C.innerHTML=viewStats(); }
   if(state.view==='coda')bindCodaInputs();
   if(state.view==='pianifica')bindPianifica();
 }
@@ -2963,6 +2988,10 @@ function openCadence(){
       <div class="section-h" style="margin:6px 0 0"><h3 style="font-size:14px">Firma & formato email</h3><div class="line"></div></div>
       <label class="toggle ${state.config.formatoHtml?'on':''}" id="tp-html" onclick="this.classList.toggle('on')"><span class="sw"></span>
         <span><b>Formato come Gmail (consigliato)</b><br><span class="hint">L'email parte come se l'avessi scritta in Gmail: testo normale che va a capo da solo, firma sempre visibile anche nei follow-up. Se lo spegni, parte in solo testo: Gmail spezza le righe a circa 76 caratteri e nei follow-up nasconde la firma.</span></span></label>
+      <label class="toggle ${state.config.obTrackOpen?'on':''}" id="tp-obopen" onclick="this.classList.toggle('on')"><span class="sw"></span>
+        <span><b>Conta le aperture (in forma anonima)</b><br><span class="hint">Aggiunge un'immagine invisibile di 1 pixel. Si sa quante email vengono aperte, non chi le apre. Su alcune caselle aziendali un'immagine di tracciamento può pesare un po' sulla consegna: se noti più email nello spam, spegnila.</span></span></label>
+      <label class="toggle ${state.config.obTrackClick?'on':''}" id="tp-obclick" onclick="this.classList.toggle('on')"><span class="sw"></span>
+        <span><b>Conta i clic sui link (in forma anonima)</b><br><span class="hint">I link della firma e del testo passano da un indirizzo di conteggio e poi aprono la pagina giusta. Solo verso i domini ammessi (flowline.it, LinkedIn, Instagram, Calendly…).</span></span></label>
       <div class="form-row"><label>URL del logo <span class="hint">(immagine pubblica, es. caricata sul tuo repo GitHub Pages)</span></label>
         <input id="tp-logo" value="${escAttr(tp.logoUrl||'')}" placeholder="https://callforusit-aam.github.io/.../logo.png"></div>
       <div class="form-row"><label>Firma — versione HTML <span class="hint">(usa <span class="kbd">{logo_block}</span> dove vuoi il logo)</span></label>
@@ -3020,6 +3049,8 @@ function saveCadence(){
   state.templates.azienda=document.getElementById('tp-az').value;
   state.templates.disiscrizione=document.getElementById('tp-dis').value;
   state.config.formatoHtml=document.getElementById('tp-html').classList.contains('on');
+  state.config.obTrackOpen=document.getElementById('tp-obopen').classList.contains('on');
+  state.config.obTrackClick=document.getElementById('tp-obclick').classList.contains('on');
   state.templates.logoUrl=document.getElementById('tp-logo').value.trim();
   state.templates.firmaHtml=document.getElementById('tp-sightml').value;
   state.templates.firmaTesto=document.getElementById('tp-sigtesto').value;
@@ -4006,6 +4037,64 @@ function ldResultsView(){
   <div class="ld-selbar" id="ld-selbar" ${ld.sel.size?'':'hidden'}><span class="plan-sel-info"><b id="ld-sel-n">${ld.sel.size}</b> <span id="ld-sel-t">${ld.sel.size===1?'lead scelto':'lead scelti'}</span></span><span class="spacer"></span><button class="btn sm ghost" onclick="ld.sel.clear();render()">Annulla</button><button class="btn primary" onclick="ldImport()">${LD_I.plus}Aggiungi ai contatti</button></div>`
   :`<div class="empty">${LD_I.search}<h4>${ld.leads.length?'Nessun lead con questi filtri':'Ancora nessun lead'}</h4><p>${ld.leads.length?'Prova a togliere un filtro o a cambiare ricerca.':'Avvia la prima ricerca qui sopra: i risultati compaiono qui appena n8n ha finito.'}</p></div>`}
   <p class="helptip" style="margin-top:12px">Aggiungendo un lead ai contatti entra in Outbound come “da pianificare”, con descrizione e sito per scrivere l'email. I lead senza email restano qui: puoi chiamarli o cercare l'indirizzo sul sito.</p>`;
+}
+
+/* =======================================================
+   STATISTICHE OUTBOUND — anonime, come per la newsletter (funzione ob-track)
+   ======================================================= */
+const ob={loaded:false,loading:false,err:'',period:'30',rows:[],links:[],at:0};
+async function obLoad(force){
+  if(!supaReady()){ob.err='Database non collegato';render();return}
+  if(ob.loading||(!force&&ob.loaded&&Date.now()-ob.at<60000))return;
+  ob.loading=true; if(state.view==='stats')render();
+  const since=ob.period==='all'?null:new Date(Date.now()-(+ob.period)*864e5).toISOString();
+  const [a,b]=await Promise.all([supa.rpc('outbound_stats',{p_since:since}),supa.rpc('outbound_link_stats',{p_since:since})]);
+  ob.loading=false;
+  if(a.error||b.error){ob.err=(a.error||b.error).message;}
+  else {ob.err='';ob.rows=a.data||[];ob.links=b.data||[];ob.loaded=true;ob.at=Date.now();}
+  if(state.view==='stats')render();
+}
+function obSetPeriod(p){ob.period=p;ob.loaded=false;obLoad(true)}
+function obPct(n,base){return base?Math.round(n/base*100)+'%':'—'}
+function obTot(){return ob.rows.reduce((t,r)=>({sent:t.sent+ +r.sent,opens:t.opens+ +r.opens_unique,clicks:t.clicks+ +r.clicks_unique,bots:t.bots+ +r.bots}),{sent:0,opens:0,clicks:0,bots:0})}
+// risposte: dai contatti (non sono dati anonimi, ma restano dentro Outbound come già oggi)
+function obReplies(){
+  const since=ob.period==='all'?null:new Date(Date.now()-(+ob.period)*864e5);
+  const inRange=c=>!since||(c.reply&&c.reply.date&&new Date(c.reply.date)>=since);
+  const real=state.contacts.filter(c=>c.haRisposto&&!(c.reply&&c.reply.auto)&&inRange(c));
+  const byStep={};real.forEach(c=>{const sent=(c.history||[]).filter(h=>!h.skipped);const st=sent.length?Math.max(...sent.map(h=>h.step)):0;byStep[st]=(byStep[st]||0)+1});
+  return {n:real.length,byStep};
+}
+function obHeroCopy(){
+  if(!ob.loaded) return {t:'Statistiche.',l:'Quante email della sequenza vengono aperte e cliccate, in forma anonima come per la newsletter.'};
+  const t=obTot();
+  if(!t.sent) return {t:'Ancora nessun dato.',l:'I numeri partono dai prossimi invii reali: ogni email della sequenza viene contata in forma anonima.'};
+  return {t:`${obPct(t.opens,t.sent)} delle email aperte.`,l:`${t.sent} email contate ${ob.period==='all'?'da quando sono attive le statistiche':'negli ultimi '+ob.period+' giorni'} · ${obPct(t.clicks,t.sent)} con almeno un clic.`};
+}
+function viewStats(){
+  if(!ob.loaded&&!ob.loading&&!ob.err) setTimeout(()=>obLoad(),0);
+  const seg=`<div class="filters"><div class="seg" role="group" aria-label="Periodo">
+    ${[['7','Ultimi 7 giorni'],['30','Ultimi 30 giorni'],['90','Ultimi 90 giorni'],['all','Da sempre']].map(([k,l])=>`<button class="fbtn ${ob.period===k?'on':''}" aria-pressed="${ob.period===k}" onclick="obSetPeriod('${k}')">${l}</button>`).join('')}
+  </div></div>`;
+  if(ob.err) return seg+`<div class="empty"><h4>Statistiche non disponibili</h4><p>${esc(ob.err)}</p><button class="btn" onclick="obLoad(true)">Riprova</button></div>`;
+  if(!ob.loaded) return seg+`<div class="empty"><span class="spinner"></span><p style="margin-top:14px">Carico le statistiche…</p></div>`;
+  const t=obTot(), rep=obReplies();
+  const off=!state.config.formatoHtml?'il formato "come Gmail" è spento':(!state.config.obTrackOpen&&!state.config.obTrackClick?'aperture e clic sono spenti':'');
+  const warn=off?`<div class="alert"><span><b>Statistiche in pausa:</b> ${off} nelle Impostazioni, quindi le nuove email non vengono contate.</span></div>`:'';
+  if(!t.sent) return seg+warn+`<div class="empty"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18 M7 16v-5 M12 16V8 M17 16v-8"/></svg><h4>Ancora nessun dato</h4><p>I numeri partono dai prossimi invii reali (non in modalità test). Ogni email della sequenza riceve un codice casuale: si contano le aperture e i clic, non chi li fa.</p></div>`;
+  const rows=ob.rows.map(r=>{const st=state.cadence[r.step]?.nome||('Step '+(r.step+1));
+    return `<tr><td class="az">${esc(st)}</td><td class="tnum">${r.sent}</td><td class="tnum">${obPct(r.opens_unique,r.sent)} <span class="email-cell">(${r.opens_unique})</span></td><td class="tnum">${obPct(r.clicks_unique,r.sent)} <span class="email-cell">(${r.clicks_unique})</span></td><td class="tnum">${rep.byStep[r.step]||0}</td></tr>`}).join('');
+  return seg+warn+`
+  <div class="nl-kpis">
+    <div class="stat-t t-white"><div class="k">Email contate</div><div class="row"><div class="v">${t.sent}</div><div class="m">tutti gli step</div></div></div>
+    <div class="stat-t t-white"><div class="k">Aperture stimate</div><div class="row"><div class="v">${obPct(t.opens,t.sent)}</div><div class="m">${t.opens} email aperte</div></div></div>
+    <div class="stat-t t-white"><div class="k">Con almeno un clic</div><div class="row"><div class="v">${obPct(t.clicks,t.sent)}</div><div class="m">${t.clicks} email</div></div></div>
+  </div>
+  <div class="section-h"><h3>Per step della sequenza</h3><div class="line"></div></div>
+  <div class="table-wrap"><table><thead><tr><th>Step</th><th>Inviate</th><th>Aperte</th><th>Con clic</th><th>Risposte</th></tr></thead><tbody>${rows}</tbody></table></div>
+  ${ob.links.length?`<div class="section-h"><h3>Link cliccati</h3><span class="count">${ob.links.length}</span><div class="line"></div></div>
+  <div class="table-wrap"><table><thead><tr><th>Link</th><th>Email</th><th>Clic</th></tr></thead><tbody>${ob.links.map(l=>`<tr><td class="az" style="word-break:break-all">${esc(l.url)}</td><td class="tnum">${l.clicks_unique}</td><td class="tnum">${l.clicks_total}</td></tr>`).join('')}</tbody></table></div>`:''}
+  <p class="helptip" style="margin-top:14px">Numeri anonimi, come per la newsletter: ogni email ha un codice casuale che non viene salvato con il contatto, quindi si sa quante email sono state aperte o cliccate, non da chi. Le aperture sono una stima: Apple Mail le gonfia, chi blocca le immagini non viene contato, e contano anche le volte che riapri tu un'email dalla cartella "Inviati" di Gmail. Le risposte invece vengono dai contatti e sono esatte.${t.bots?` Esclusi ${t.bots} accessi automatici di filtri antispam.`:''}</p>`;
 }
 
 /* ---- boot ---- */
