@@ -531,6 +531,14 @@ input[type=checkbox]{width:18px;height:18px;cursor:pointer;accent-color:var(--in
 .nl-bar{height:100%;background:var(--ink);border-radius:var(--pill);transition:width .4s var(--ease)}
 [data-theme="dark"] .nl-bar{background:var(--text)}
 @media(max-width:1100px){.nl-ed{grid-template-columns:1fr}.nl-prev-wrap{position:static}}
+/* ===== eliminazione in blocco ===== */
+.btn.del{background:var(--late);border-color:transparent;color:#fff;font-weight:700}
+.btn.del:hover{background:color-mix(in srgb,var(--late) 85%,#000)}
+[data-theme="dark"] .btn.del{color:#1E0B09}
+.no-mail{display:inline-block;padding:1px 8px;border-radius:var(--pill);font-size:12px;font-weight:650;background:var(--late-soft);color:var(--late)}
+.del-list{list-style:none;display:flex;flex-direction:column;gap:6px;margin:0 0 14px;max-height:240px;overflow:auto}
+.del-list li{font-size:14px;display:flex;gap:8px;flex-wrap:wrap;align-items:baseline}
+.ct-tools{gap:6px;margin-top:-6px}
 /* ===== ricerca lead ===== */
 body[data-view="lead"] .hero{--hb:var(--lilac);--hi:var(--on-lilac)}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
@@ -1310,6 +1318,7 @@ async function pullFromSheet(opts={}){
     const email=g('email');
     if(!email||!email.includes('@')) continue;
     const key=email.toLowerCase();
+    if(_deletedEmails.has(key)) continue;       // eliminato da noi: il foglio non lo rimette in lista
     const existing=byEmail.get(key);
     if(existing){
       // aggiorna i campi di ricerca dal foglio (senza toccare lo stato)
@@ -2130,7 +2139,10 @@ function viewPianifica(){
         <div class="plan-sel-info"><b id="plan-count">0</b> selezionati su ${backlog.length}
           <button class="btn sm ghost" onclick="planSelAll(true)">Tutti</button>
           <button class="btn sm ghost" onclick="planSelAll(false)">Nessuno</button>
+          ${backlog.some(c=>!c.email)?`<button class="btn sm ghost" onclick="planSelNoEmail()">Senza email (${backlog.filter(c=>!c.email).length})</button>`:''}
         </div>
+        <span style="flex:1"></span>
+        <button class="btn sm del" onclick="askDeleteMany([..._planSel])">Elimina selezionati</button>
       </div>
       <div class="plan-bar-row">
         <div class="plan-group">
@@ -2162,7 +2174,7 @@ function viewPianifica(){
         ${backlog.map(c=>`<tr onclick="if(event.target.tagName!=='INPUT'){const cb=this.querySelector('input');cb.checked=!cb.checked;togglePlanSel('${c.id}',cb.checked)}">
           <td><input type="checkbox" data-pid="${c.id}" ${_planSel.has(c.id)?'checked':''} onclick="togglePlanSel('${c.id}',this.checked)"></td>
           <td class="az">${esc(c.azienda)}</td>
-          <td class="email-cell">${esc(c.email)}</td>
+          <td class="email-cell">${c.email?esc(c.email):'<span class="no-mail">senza email</span>'}</td>
           <td class="email-cell">${esc(c.sede||'—')}</td>
         </tr>`).join('')}
         </tbody>
@@ -2197,6 +2209,7 @@ function planSelAll(on){
   _planSel=new Set(on?backlog.map(c=>c.id):[]);
   render();
 }
+function planSelNoEmail(){state.contacts.filter(isUnplanned).forEach(c=>{if(!c.email)_planSel.add(c.id)});render()}
 function planSelected(dateISO){
   if(!dateISO){toast('Scegli una data','warn');return}
   if(!_planSel.size){toast('Seleziona prima dei contatti','warn');return}
@@ -2402,9 +2415,11 @@ function skipStep(id){
 }
 
 /* ---------- CONTATTI ---------- */
+let _ctSel=new Set();
 function viewContatti(){
   if(!state.contacts.length) return emptyState();
-  const filters=[['tutti','Tutti'],['da','Da inviare'],['today','Oggi'],['late','In ritardo'],['wait','In attesa'],['reply','Risposte'],['done','Conclusi']];
+  const nPlan=state.contacts.filter(c=>statusKey(c)==='plan').length;
+  const filters=[['tutti','Tutti'],['plan',`Da pianificare · ${nPlan}`],['da','Da inviare'],['today','Oggi'],['late','In ritardo'],['wait','In attesa'],['reply','Risposte'],['done','Conclusi']];
   let rows=state.contacts.slice();
   if(state.search){const q=state.search.toLowerCase();rows=rows.filter(c=>(c.azienda+' '+c.email+' '+c.sede).toLowerCase().includes(q))}
   if(state.filter!=='tutti')rows=rows.filter(c=>statusKey(c)===state.filter);
@@ -2416,15 +2431,21 @@ function viewContatti(){
     </div>
     <div class="seg" role="group" aria-label="Filtra per stato">${filters.map(([k,l])=>`<button class="fbtn ${state.filter===k?'on':''}" aria-pressed="${state.filter===k}" onclick="setFilter('${k}')">${l}</button>`).join('')}</div>
   </div>
+  ${(()=>{const vis=new Set(rows.map(c=>c.id));[..._ctSel].forEach(id=>{if(!vis.has(id))_ctSel.delete(id)});
+    const noMail=rows.filter(c=>!c.email).length, allSel=rows.length&&rows.every(c=>_ctSel.has(c.id));
+    return `<div class="filters ct-tools"><span class="email-cell">Seleziona:</span>
+      <button class="btn sm ghost" onclick="ctSelAll(${allSel?'false':'true'})">${allSel?'Nessuno':'Tutti quelli mostrati ('+rows.length+')'}</button>
+      ${noMail?`<button class="btn sm ghost" onclick="ctSelNoEmail()">Senza email (${noMail})</button>`:''}</div>`;})()}
   <div class="table-wrap">
     <table>
-      <thead><tr><th>Azienda</th><th>Email</th><th>Stato</th><th>Step</th><th>Prossima azione</th><th></th></tr></thead>
+      <thead><tr><th style="width:34px"><input type="checkbox" aria-label="Seleziona tutti i contatti mostrati" ${rows.length&&rows.every(c=>_ctSel.has(c.id))?'checked':''} onclick="ctSelAll(this.checked)"></th><th>Azienda</th><th>Email</th><th>Stato</th><th>Step</th><th>Prossima azione</th><th></th></tr></thead>
       <tbody>
       ${rows.length?rows.map(c=>{
         const st=statusOf(c);const na=nextAction(c);
         return `<tr>
+          <td><input type="checkbox" aria-label="Seleziona ${escAttr(c.azienda||c.email||'contatto')}" ${_ctSel.has(c.id)?'checked':''} onclick="ctSel('${c.id}',this.checked)"></td>
           <td class="az">${esc(c.azienda)}<div class="email-cell" style="font-weight:400">${esc(c.sede||'')}</div></td>
-          <td class="email-cell">${esc(c.email)}</td>
+          <td class="email-cell">${c.email?esc(c.email):'<span class="no-mail">senza email</span>'}</td>
           <td>${chip(st)}</td>
           <td><span class="tnum" style="color:var(--muted)">${(c.step||0)}/${state.cadence.length}</span></td>
           <td>${na?`<span class="step-pill">${esc(na.label)}</span> <span class="email-cell">${fmtD(na.dueDate)}</span>`:'<span class="email-cell">—</span>'}</td>
@@ -2432,12 +2453,23 @@ function viewContatti(){
             <button class="btn sm ghost" onclick="openContact('${c.id}')">Dettagli</button>
           </td>
         </tr>`;
-      }).join(''):`<tr><td colspan="6" class="email-cell" style="text-align:center;padding:30px">Nessun contatto con questo filtro</td></tr>`}
+      }).join(''):`<tr><td colspan="7" class="email-cell" style="text-align:center;padding:30px">Nessun contatto con questo filtro</td></tr>`}
       </tbody>
     </table>
-  </div>`;
+  </div>
+  <div class="ld-selbar" id="ct-selbar" ${_ctSel.size?'':'hidden'}><span class="plan-sel-info"><b id="ct-sel-n">${_ctSel.size}</b> <span id="ct-sel-t">${_ctSel.size===1?'contatto selezionato':'contatti selezionati'}</span></span><span class="spacer"></span><button class="btn sm ghost" onclick="_ctSel.clear();render()">Annulla</button><button class="btn del" onclick="askDeleteMany([..._ctSel])">Elimina selezionati</button></div>`;
 }
-function setFilter(f){state.filter=f;render();const s=document.getElementById('searchInput');}
+function ctCurrentRows(){
+  let rows=state.contacts.slice();
+  if(state.search){const q=state.search.toLowerCase();rows=rows.filter(c=>(c.azienda+' '+c.email+' '+c.sede).toLowerCase().includes(q))}
+  if(state.filter!=='tutti')rows=rows.filter(c=>statusKey(c)===state.filter);
+  return rows;
+}
+function ctPaintSel(){const n=_ctSel.size,b=document.getElementById('ct-selbar');if(b){b.hidden=!n;document.getElementById('ct-sel-n').textContent=n;document.getElementById('ct-sel-t').textContent=n===1?'contatto selezionato':'contatti selezionati';}}
+function ctSel(id,on){if(on)_ctSel.add(id);else _ctSel.delete(id);ctPaintSel()}
+function ctSelAll(on){_ctSel=new Set(on?ctCurrentRows().map(c=>c.id):[]);render()}
+function ctSelNoEmail(){ctCurrentRows().forEach(c=>{if(!c.email)_ctSel.add(c.id)});render()}
+function setFilter(f){state.filter=f;_ctSel.clear();render();const s=document.getElementById('searchInput');}
 function statusKey(c){return statusOf(c).key}
 
 /* ---------- CALENDARIO ---------- */
@@ -2631,6 +2663,57 @@ function editC(id,f,v){
 }
 function toggleReplied(id){const c=state.contacts.find(x=>x.id===id);if(c){c.haRisposto=!c.haRisposto;persist();openContact(id);render()}}
 function resetSeq(id){const c=state.contacts.find(x=>x.id===id);if(c){c.step=0;c.anchorDate=null;c.dataUltimoInvio=null;c.haRisposto=false;c.reply=null;c.history=[];c.drafts={};c.threadId=null;c.messageId=null;persist();openContact(id);render();toast('Sequenza azzerata','warn')}}
+/* ---------- eliminazione in blocco ---------- */
+// email eliminate: il foglio Google sincronizzato non deve rimetterle in lista
+let _deletedEmails=new Set(load('flo_deleted_emails',[]));
+function rememberDeletedEmail(e){e=String(e||'').trim().toLowerCase();if(e){_deletedEmails.add(e);save('flo_deleted_emails',[..._deletedEmails]);}}
+async function supaDeleteMany(ids){
+  if(!supaReady())return {ok:true,local:true};
+  setSyncState('saving');
+  try{
+    for(let i=0;i<ids.length;i+=100){
+      const chunk=ids.slice(i,i+100);
+      const {error}=await supa.from('contacts').delete().in('id',chunk);
+      if(error)throw error;
+      chunk.forEach(id=>{_lastPushed.delete(id);rememberDeleted(id)});
+    }
+    setSyncState('ok');return {ok:true};
+  }catch(e){setSyncState('err','Eliminazione fallita');return {ok:false,err:e.message};}
+}
+function askDeleteMany(ids){
+  const set=new Set(ids), list=state.contacts.filter(c=>set.has(c.id));
+  if(!list.length){toast('Seleziona prima dei contatti','warn');return}
+  const n=list.length, att=list.filter(c=>(c.step||0)>0||c.haRisposto).length, noMail=list.filter(c=>!c.email).length;
+  const shown=list.slice(0,8).map(c=>`<li><b>${esc(c.azienda||'(senza nome)')}</b> <span class="email-cell">${esc(c.email||'senza email')}</span></li>`).join('');
+  modal(`<div class="modal" onclick="event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="del-t">
+    <div class="modal-h"><h3 id="del-t">Eliminare ${n} ${n===1?'contatto':'contatti'}?</h3><div class="x" role="button" tabindex="0" aria-label="Chiudi" onclick="closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div>
+    <div class="modal-b">
+      <ul class="del-list">${shown}${n>8?`<li class="email-cell">e altri ${n-8}</li>`:''}</ul>
+      ${noMail?`<p class="helptip">${noMail} ${noMail===1?'è senza email':'sono senza email'}.</p>`:''}
+      ${att?`<div class="alert" style="margin:0"><span><b>${att} ${att===1?'è già in sequenza o ha risposto':'sono già in sequenza o hanno risposto'}.</b> Eliminandoli perdi anche lo storico delle email inviate.</span></div>`:''}
+      <p class="helptip">Vengono tolti anche dal database, per tutto il team, e non tornano dal foglio Google collegato. Non si può annullare.</p>
+    </div>
+    <div class="modal-f"><button class="btn" onclick="closeModal()">Annulla</button><button class="btn del" id="del-go" onclick="deleteMany(${escAttr(JSON.stringify(list.map(c=>c.id)))})">Elimina ${n}</button></div>
+  </div>`);
+  setTimeout(()=>document.getElementById('del-go')?.focus(),50);
+}
+async function deleteMany(ids){
+  const set=new Set(ids), backup=state.contacts.filter(c=>set.has(c.id));
+  closeModal(); if(!backup.length)return;
+  state.contacts=state.contacts.filter(c=>!set.has(c.id));
+  save(LS.contacts,state.contacts);
+  ids.forEach(id=>{_ctSel.delete(id);_planSel.delete(id)});
+  render();
+  const res=await supaDeleteMany(backup.map(c=>c.id));
+  if(!res.ok){
+    state.contacts.push(...backup);save(LS.contacts,state.contacts);render();
+    toast('Eliminazione non riuscita sul database: '+res.err+'. Nessun contatto è stato tolto.','err');
+    return;
+  }
+  backup.forEach(c=>rememberDeletedEmail(c.email));
+  toast(`${backup.length} ${backup.length===1?'contatto eliminato':'contatti eliminati'}`,'ok');
+}
+
 async function deleteContact(id){
   const c=state.contacts.find(x=>x.id===id);if(!c)return;
   if(!confirm(`Eliminare "${c.azienda||c.email}"?\n\nVerrà rimosso anche dal database Supabase, per tutto il team.`))return;
@@ -2644,6 +2727,7 @@ async function deleteContact(id){
     state.contacts.push(backup);save(LS.contacts,state.contacts);render();
     toast('Eliminazione fallita sul database: '+res.err,'err');
   } else {
+    rememberDeletedEmail(backup.email);
     toast('Contatto eliminato','ok');
   }
 }
@@ -3666,7 +3750,8 @@ function ldRepeat(id){
 function ldContactEmails(){return new Set(state.contacts.map(c=>(c.email||'').trim().toLowerCase()).filter(Boolean))}
 function ldLeadState(l,have){
   const e=(l.email||'').trim().toLowerCase();
-  if(l.importato_il||(e&&have.has(e)))return 'in';
+  if(e&&have.has(e))return 'in';
+  if(l.importato_il)return 'gone';
   if(!e)return 'noemail';
   return 'new';
 }
@@ -3676,7 +3761,7 @@ function ldRows(){
     if(ld.view==='precedenti'){if(l.search_id)return false}
     else if(ld.view!=='tutte'&&l.search_id!==ld.view)return false;
     const st=ldLeadState(l,have);
-    if(ld.nascondiImportati&&st==='in')return false;
+    if(ld.nascondiImportati&&(st==='in'||st==='gone'))return false;
     if(ld.soloEmail&&!l.email)return false;
     if(q&&![l.azienda,l.email,l.sede,l.settore,l.ruolo].some(x=>String(x||'').toLowerCase().includes(q)))return false;
     return true;
@@ -3810,7 +3895,7 @@ function ldResultsView(){
   const opts=[`<option value="tutte"${ld.view==='tutte'?' selected':''}>Tutte le ricerche</option>`]
     .concat(ld.searches.filter(s=>s.inserted).map(s=>`<option value="${s.id}"${ld.view===s.id?' selected':''}>${esc(nlFmt(s.created_at,true))} · ${esc(ldSearchLabel(s).slice(0,70))}</option>`))
     .concat(ld.leads.some(l=>!l.search_id)?[`<option value="precedenti"${ld.view==='precedenti'?' selected':''}>Lead del flusso giornaliero</option>`]:[]);
-  const stChip=st=>st==='in'?'<span class="chip done"><span class="d"></span>Nei contatti</span>':st==='noemail'?'<span class="chip da"><span class="d"></span>Senza email</span>':'<span class="chip seq"><span class="d"></span>Nuovo</span>';
+  const stChip=st=>st==='in'?'<span class="chip done"><span class="d"></span>Nei contatti</span>':st==='gone'?'<span class="chip stop"><span class="d"></span>Eliminato dai contatti</span>':st==='noemail'?'<span class="chip da"><span class="d"></span>Senza email</span>':'<span class="chip seq"><span class="d"></span>Nuovo</span>';
   const site=u=>{if(!u)return '';try{const h=new URL(u).hostname.replace(/^www\./,'');return `<a class="ld-site" href="${escAttr(u)}" target="_blank" rel="noopener noreferrer">${esc(h)} ${LD_I.ext}</a>`}catch(e){return ''}};
   return `<div class="section-h" id="ld-res"><h3>Lead trovati</h3><span class="count">${rows.length}</span><div class="line"></div></div>
   <div class="filters">
