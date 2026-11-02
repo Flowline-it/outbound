@@ -12,7 +12,10 @@ Strumenti interni di Flowline in un'unica pagina (`index.html`), pubblicata con 
 
 **Newsletter**: iscritti dal sito flowline.it, scrittura e invio da Gmail, statistiche anonime di aperture e clic.
 
+**Richieste**: chi compila "Prenota la consulenza gratuita" su flowline.it. Elenco con ricerca e filtri, scheda con email e telefono, stato (Nuova, Contattata, In trattativa, Cliente, Archiviata), note interne, importazione ed esportazione CSV, eliminazione per le richieste di cancellazione dei dati.
+
 ## Dati
 
-Database Supabase "Lead Flowline": `contacts`, `leads`, `lead_searches`, tabelle `newsletter_*`.
+Database Supabase "Lead Flowline": `contacts`, `leads`, `lead_searches`, tabelle `newsletter_*`, `richieste_sito`.
+Il form del sito scrive in `richieste_sito` solo con la funzione `richiesta_sito_invia`; Newsletter, Ricerca lead e Richieste si leggono dopo il login di un indirizzo presente in `newsletter_editors`.
 Le migrazioni e la funzione `nl-track` sono in `supabase/`.

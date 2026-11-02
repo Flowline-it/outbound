@@ -131,6 +131,7 @@ body[data-view="coda"] .hero{--hb:#292929;--hi:#FFFFFF}
 body[data-view="contatti"] .hero{--hb:var(--cobalt);--hi:#FFFFFF}
 body[data-view="calendario"] .hero{--hb:var(--peach);--hi:var(--on-peach)}
 body[data-view="newsletter"] .hero{--hb:var(--peach);--hi:var(--on-peach)}
+body[data-view="richieste"] .hero{--hb:var(--cobalt);--hi:#FFFFFF}
 [data-theme="dark"] body[data-view="coda"] .hero{--hb:#1E1E1E}
 .hero-in{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
 .hero h2{font-size:66px;line-height:.98;font-weight:800;font-stretch:112%;letter-spacing:-.045em;max-width:15ch;text-wrap:balance}
@@ -487,7 +488,7 @@ input[type=checkbox]{width:18px;height:18px;cursor:pointer;accent-color:var(--in
   .menu-btn{display:flex}
   .topnav.open .topnav-in{height:auto;border-radius:26px;padding:10px 10px 14px 12px}
   .topnav.open .sec-switch{display:flex;flex-basis:100%;order:3;margin-top:8px}
-  .topnav.open .sec-switch button{flex:1;justify-content:center}
+  .topnav.open .sec-switch button{flex:1;justify-content:center;padding:0 8px;gap:6px;font-size:14px}
   .topnav.open .subnav-wrap{display:block}
   .topnav.open .nav{flex-direction:column;align-items:stretch;border-radius:26px;padding:8px;overflow:visible}
   .topnav.open .nav button{height:46px}
@@ -547,6 +548,41 @@ input[type=checkbox]{width:18px;height:18px;cursor:pointer;accent-color:var(--in
 .nl-kpis .stat-t{min-height:130px}
 .nl-kpis .stat-t .v{font-size:44px}
 @media(max-width:700px){.nl-kpis{grid-template-columns:1fr}}
+/* Richieste dal sito */
+.rq-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:22px}
+.rq-stat{text-align:left;width:100%;font:inherit;cursor:pointer;transition:transform .18s var(--ease),filter .18s var(--ease)}
+.rq-stat:hover{filter:brightness(.97)}
+.rq-stat:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+.rq-table tbody tr{cursor:pointer}
+.rq-table tbody tr:focus-visible{outline:2px solid var(--focus);outline-offset:-2px}
+.rq-table tr.rq-new td:first-child{box-shadow:inset 4px 0 0 var(--brand)}
+.rq-table .az{font-weight:700}
+.rq-table td.rq-desc{max-width:420px;min-width:220px;font-size:14px;line-height:1.45;color:var(--text)}
+.rq-clamp{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+.rq-note-p{margin-top:6px;font-size:12.5px;color:var(--muted);font-style:italic}
+.rq-modal{max-width:620px}
+.rq-modal .modal-h{align-items:flex-start}
+.rq-actions{display:flex;flex-wrap:wrap;gap:8px}
+.rq-actions .btn{text-decoration:none;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.rq-msg{background:var(--surface-2);border-radius:16px;padding:16px 18px}
+.rq-msg p{font-size:15px;line-height:1.6;margin-top:6px;overflow-wrap:anywhere}
+.rq-extra td:last-child{text-align:right}
+@media(max-width:1100px){.rq-stats{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){
+  .rq-table thead{display:none}
+  .rq-table,.rq-table tbody,.rq-table tr,.rq-table td{display:block}
+  .rq-table tr{display:grid;grid-template-columns:1fr auto;gap:4px 12px;padding:14px 8px;border-bottom:1px solid var(--border)}
+  .rq-table tr:last-child{border-bottom:0}
+  .rq-table td{padding:0;border:0;min-width:0;max-width:none}
+  .rq-table td:nth-child(1){grid-column:1;grid-row:1}
+  .rq-table td:nth-child(5){grid-column:2;grid-row:1/3;align-self:start}
+  .rq-table td:nth-child(2){grid-column:1}
+  .rq-table td:nth-child(3),.rq-table td.rq-desc{grid-column:1/-1}
+  .rq-table td.rq-desc{margin-top:6px}
+  .rq-table tr.rq-new td:first-child{box-shadow:none}
+  .rq-table tr.rq-new{box-shadow:inset 4px 0 0 var(--brand);padding-left:16px}
+}
+@media(max-width:560px){.rq-stats{grid-template-columns:1fr 1fr;gap:10px}.rq-stats .stat-t{min-height:120px;padding:16px}.rq-stats .stat-t .v{font-size:40px}}
 .nl-bar-wrap{height:12px;border-radius:var(--pill);background:rgba(41,41,41,.12);overflow:hidden}
 .nl-bar{height:100%;background:var(--ink);border-radius:var(--pill);transition:width .4s var(--ease)}
 [data-theme="dark"] .nl-bar{background:var(--text)}
@@ -658,6 +694,7 @@ body[data-view="lead"] .hero{--hb:var(--lilac);--hi:var(--on-lilac)}
 <div class="toasts" id="toasts"></div>
 <input type="file" id="fileInput" accept=".csv,.xlsx,.xls" style="display:none">
 <input type="file" id="nlFile" accept=".csv,text/csv" style="display:none" onchange="nlHandleCsv(this.files[0]);this.value=''">
+<input type="file" id="rqFile" accept=".csv,text/csv" style="display:none" onchange="rqHandleCsv(this.files[0]);this.value=''">
 
 <script>
 /* ============================================================
@@ -1878,12 +1915,14 @@ function handleFile(file){
 const SECTIONS=[
   {id:'outbound',label:'Outbound',icon:'M22 2 11 13 M22 2l-7 20-4-9-9-4 20-7z'},
   {id:'newsletter',label:'Newsletter',icon:'M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z M22 6l-10 7L2 6'},
+  {id:'richieste',label:'Richieste',icon:'M22 12h-6l-2 3h-4l-2-3H2 M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z'},
 ];
+const SEC_NAME={outbound:'Outbound',newsletter:'Newsletter',richieste:'Richieste'};
 const NL_PAGES=[{tab:'campagne',label:'Campagne'},{tab:'iscritti',label:'Iscritti'}];
-function sectionOf(v){return v==='newsletter'?'newsletter':'outbound'}
+function sectionOf(v){return v==='newsletter'||v==='richieste'?v:'outbound'}
 function goSection(sec){
   if(sec===sectionOf(state.view)){closeRail();return}
-  if(sec==='newsletter') go('newsletter'); else go(state.lastOutbound&&state.lastOutbound!=='newsletter'?state.lastOutbound:'dashboard');
+  if(sec==='newsletter'||sec==='richieste') go(sec); else go(state.lastOutbound&&sectionOf(state.lastOutbound)==='outbound'?state.lastOutbound:'dashboard');
 }
 function goNl(tab){nl.tab=tab;nl.edit=null;if(state.view!=='newsletter')go('newsletter');else{closeRail();render();window.scrollTo(0,0)}}
 const NAV=[
@@ -1904,16 +1943,20 @@ function renderNav(){
   const newRep=state.contacts.filter(c=>c.haRisposto&&c.replySeen===false).length;
   const ico=d=>`<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`;
   // livello 1: aree, con un pallino se nell'altra area c'è qualcosa che aspetta
-  const alertOut=late||todayN||newRep||ldBusy(), alertNl=!!nl.sending;
+  const alertOut=late||todayN||newRep||ldBusy(), alertNl=!!nl.sending, alertRq=rq.loaded&&rqNew()>0;
   document.getElementById('secSwitch').innerHTML=SECTIONS.map(x=>{
-    const on=x.id===sec, dot=!on&&(x.id==='outbound'?alertOut:alertNl)?`<span class="dotb${x.id==='outbound'&&late?' late':''}" aria-label="ci sono attività in sospeso"></span>`:'';
+    const on=x.id===sec, al=x.id==='outbound'?alertOut:(x.id==='newsletter'?alertNl:alertRq);
+    const dot=!on&&al?`<span class="dotb${x.id==='outbound'&&late?' late':''}" aria-label="${x.id==='richieste'?'ci sono richieste nuove':'ci sono attività in sospeso'}"></span>`:'';
     return `<button type="button" aria-pressed="${on}" onclick="goSection('${x.id}')">${ico(x.icon)}<span>${x.label}</span>${dot}</button>`;
   }).join('');
   // livello 2: pagine dell'area attiva
   const nav=document.getElementById('nav');
-  nav.setAttribute('aria-label','Pagine di '+(sec==='newsletter'?'Newsletter':'Outbound'));
+  nav.setAttribute('aria-label','Pagine di '+SEC_NAME[sec]);
   let items;
-  if(sec==='newsletter'){
+  if(sec==='richieste'){
+    const n=rq.loaded?rqNew():0;
+    items=[`<button class="active" aria-current="page" onclick="go('richieste')"><span>Richieste dal sito</span>${n?`<span class="badge">${n}</span>`:''}</button>`];
+  } else if(sec==='newsletter'){
     items=NL_PAGES.map(pg=>{
       const on=nl.tab===pg.tab;
       const badge=pg.tab==='iscritti'&&nl.loaded?`<span class="badge plain">${nlActive().length}</span>`:(pg.tab==='campagne'&&nl.sending?'<span class="badge">invio</span>':'');
@@ -1930,7 +1973,7 @@ function renderNav(){
       return `<button class="${on?'active':''}" ${on?'aria-current="page"':''} onclick="go('${n.id}')">${ico(n.icon)}<span>${n.label}</span>${badge}</button>`;
     });
   }
-  nav.innerHTML=`<span class="nav-area" aria-hidden="true">${sec==='newsletter'?'Newsletter':'Outbound'}</span>`+items.join('');
+  nav.innerHTML=`<span class="nav-area" aria-hidden="true">${SEC_NAME[sec]}</span>`+items.join('');
 }
 function renderSpend(){
   const eur=costEUR(state.usage);
@@ -1980,13 +2023,14 @@ function renderConn(){
   if(stxt){stxt.textContent=supaReady()?'Database online':(supaConfigured()?'Database in connessione…':'Database locale');}
   document.getElementById('testBanner').style.display=state.config.testMode?'flex':'none';
 }
-function go(v){if(v!=='newsletter')state.lastOutbound=v;state.view=v;state.search='';state.filter='tutti';closeRail();render();window.scrollTo(0,0)}
+function go(v){if(sectionOf(v)==='outbound')state.lastOutbound=v;state.view=v;state.search='';state.filter='tutti';closeRail();render();window.scrollTo(0,0)}
 function heroCopy(){
   const n=state.contacts.length, pl=(k,s,p)=>k===1?s:p;
   const due=state.contacts.filter(dueToday).length, late=state.contacts.filter(isLate).length;
   const rep=state.contacts.filter(c=>c.haRisposto).length, newRep=state.contacts.filter(c=>c.haRisposto&&c.replySeen===false).length;
   const backlog=state.contacts.filter(isUnplanned).length;
   if(state.view==='newsletter') return nlHeroCopy();
+  if(state.view==='richieste') return rqHeroCopy();
   if(state.view==='lead') return ldHeroCopy();
   if(state.view==='stats') return obHeroCopy();
   if(!n) return {t:'Benvenuto in Outbound.',l:'Importa una lista di contatti in CSV o Excel: le colonne vengono riconosciute in automatico.'};
@@ -2008,9 +2052,9 @@ function render(){
   document.getElementById('viewTitle').textContent=hc.t;
   const vl=document.getElementById('viewLede');if(vl)vl.textContent=hc.l;
   const vd=document.getElementById('viewDate');if(vd)vd.textContent=today().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
-  const pageName=state.view==='newsletter'?(nl.tab==='iscritti'?'Iscritti':'Campagne'):({dashboard:'Dashboard',pianifica:'Pianificazione',coda:'Coda invio',contatti:'Contatti',calendario:'Calendario',risposte:'Risposte',lead:'Ricerca lead',stats:'Statistiche'}[state.view]||'Dashboard');
-  const secName=sectionOf(state.view)==='newsletter'?'Newsletter':'Outbound';
-  document.title=pageName+' · '+secName+' — FlowLine Suite';
+  const pageName=state.view==='richieste'?'Richieste':state.view==='newsletter'?(nl.tab==='iscritti'?'Iscritti':'Campagne'):({dashboard:'Dashboard',pianifica:'Pianificazione',coda:'Coda invio',contatti:'Contatti',calendario:'Calendario',risposte:'Risposte',lead:'Ricerca lead',stats:'Statistiche'}[state.view]||'Dashboard');
+  const secName=SEC_NAME[sectionOf(state.view)];
+  document.title=(pageName!==secName?pageName+' · ':'')+secName+' — FlowLine Suite';
   const cr=document.getElementById('viewCrumb');if(cr)cr.textContent=secName+(pageName!==secName?' · '+pageName:'');
   const ta=document.getElementById('topActions');
   const I={
@@ -2034,6 +2078,7 @@ function render(){
       <button class="btn" onclick="generateAllDrafts()">${I.spark}Genera mancanti</button>`;
   } else { primary=`<button class="btn primary" onclick="pickFile()">${I.plus}Importa contatti</button>`; importPrimary=true; }
   if(state.view==='newsletter'){ ta.innerHTML=nlTopActions(); }
+  else if(state.view==='richieste'){ ta.innerHTML=rqTopActions(); }
   else if(state.view==='lead'){ ta.innerHTML=ldTopActions(); }
   else if(state.view==='stats'){ ta.innerHTML=`<button class="btn" onclick="obLoad(true)"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6 M1 20v-6h6 M3.51 9a9 9 0 0 1 14.85-3.36L23 10 M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg><span class="lbl">Aggiorna</span></button>`; }
   else ta.innerHTML=primary
@@ -2049,6 +2094,7 @@ function render(){
   else if(state.view==='risposte')C.innerHTML=viewRisposte();
   else if(state.view==='newsletter'){ if(!nl.inited) nlInit(); C.innerHTML=viewNewsletter(); }
   else if(state.view==='lead'){ if(!nl.inited) nlInit(); C.innerHTML=viewLead(); }
+  else if(state.view==='richieste'){ if(!nl.inited) nlInit(); C.innerHTML=viewRichieste(); }
   else if(state.view==='stats'){ C.innerHTML=viewStats(); }
   if(state.view==='coda')bindCodaInputs();
   if(state.view==='pianifica')bindPianifica();
@@ -3140,7 +3186,7 @@ function nlSleep(ms){return new Promise(r=>setTimeout(r,ms))}
 function nlActive(){return nl.subs.filter(s=>!s.unsubscribed_at)}
 
 /* ---- connessione e accesso (condiviso con Ricerca lead) ---- */
-function nlAuthView(){return state.view==='newsletter'||state.view==='lead'}
+function nlAuthView(){return state.view==='newsletter'||state.view==='lead'||state.view==='richieste'}
 async function nlInit(){
   if(nl.inited)return; nl.inited=true;
   if(typeof window.supabase==='undefined'){nl.inited=false;setTimeout(nlInit,400);return}
@@ -3149,7 +3195,7 @@ async function nlInit(){
     if(!nl.ready)return;                       // la sessione iniziale la gestisce getSession qui sotto
     const was=nl.session&&nl.session.user&&nl.session.user.id;
     nl.session=session;
-    if(ev==='SIGNED_OUT'){nl.editor=null;nl.loaded=false;nl.subs=[];nl.camps=[];nl.edit=null;ld.loaded=false;ld.searches=[];ld.leads=[];ld.sel.clear();clearTimeout(ld.pollT);if(nlAuthView())render();}
+    if(ev==='SIGNED_OUT'){nl.editor=null;nl.loaded=false;nl.subs=[];nl.camps=[];nl.edit=null;ld.loaded=false;ld.searches=[];ld.leads=[];ld.sel.clear();clearTimeout(ld.pollT);rq.loaded=false;rq.rows=[];clearTimeout(rq.pollT);if(nlAuthView())render();}
     else if(ev==='SIGNED_IN' && session && was!==session.user.id){nl.editor=null;if(nlAuthView())render();setTimeout(nlAfterLogin,0);}
   });
   const {data}=await nlSupa.auth.getSession();
@@ -3159,7 +3205,7 @@ async function nlInit(){
 async function nlAfterLogin(){
   const {data,error}=await nlSupa.rpc('newsletter_is_editor');
   nl.editor=!error&&data===true;
-  if(nl.editor){ ldLoad({silent:state.view!=='lead'}); await nlLoad(); } else if(nlAuthView()) render();
+  if(nl.editor){ ldLoad({silent:state.view!=='lead'}); rqLoad({silent:state.view!=='richieste'}); await nlLoad(); } else if(nlAuthView()) render();
 }
 async function nlLogin(ev){
   ev&&ev.preventDefault();
@@ -3565,10 +3611,10 @@ function viewNewsletter(){
   return tabs+(nl.tab==='iscritti'?nlSubsView():nlCampsView());
 }
 function nlLoginView(mode){
-  const lead=mode==='lead';
+  const lead=mode==='lead', req=mode==='richieste';
   return `<div class="tile nl-login">
-    <div class="tile-h"><h3>${lead?'Accedi per cercare i lead':'Accedi alla newsletter'}</h3></div>
-    <p class="helptip" style="margin-bottom:18px">${lead?'Le ricerche partono dal database e costano credito Apify: le può lanciare solo chi ha accesso. È lo stesso accesso della newsletter, creato in Supabase (progetto Lead Flowline → Authentication → Users).':'Gli iscritti sono dati personali: li vede solo chi è in redazione. Usa l\'email e la password create in Supabase (progetto Lead Flowline → Authentication → Users).'}</p>
+    <div class="tile-h"><h3>${lead?'Accedi per cercare i lead':req?'Accedi alle richieste':'Accedi alla newsletter'}</h3></div>
+    <p class="helptip" style="margin-bottom:18px">${req?'Nomi, email e telefoni di chi chiede la consulenza sono dati personali: li vede solo chi è in redazione. È lo stesso accesso della newsletter (progetto Lead Flowline → Authentication → Users).':lead?'Le ricerche partono dal database e costano credito Apify: le può lanciare solo chi ha accesso. È lo stesso accesso della newsletter, creato in Supabase (progetto Lead Flowline → Authentication → Users).':'Gli iscritti sono dati personali: li vede solo chi è in redazione. Usa l\'email e la password create in Supabase (progetto Lead Flowline → Authentication → Users).'}</p>
     <form onsubmit="nlLogin(event)" style="display:flex;flex-direction:column;gap:14px">
       <div class="form-row"><label for="nl-em">Email</label><input id="nl-em" type="email" autocomplete="username" value="info@flowline.it"></div>
       <div class="form-row"><label for="nl-pw">Password</label><input id="nl-pw" type="password" autocomplete="current-password"></div>
@@ -3698,6 +3744,276 @@ function nlEditorView(){
     </div>
     ${prev}
   </div>`;
+}
+
+/* =======================================================
+   RICHIESTE — chi lascia i propri dati nel form "Prenota la consulenza gratuita" di flowline.it
+   Database: tabella richieste_sito nel progetto Supabase "Lead Flowline" (stesso di Outbound).
+   Il sito scrive solo con la funzione richiesta_sito_invia; qui si legge dopo il login della
+   redazione (stesso accesso di Newsletter e Ricerca lead, indirizzi in newsletter_editors).
+   ======================================================= */
+const RQ_STATI=[
+  {id:'nuova',label:'Nuova',chip:'today'},
+  {id:'contattata',label:'Contattata',chip:'seq'},
+  {id:'in_trattativa',label:'In trattativa',chip:'plan'},
+  {id:'cliente',label:'Cliente',chip:'reply'},
+  {id:'archiviata',label:'Archiviata',chip:'done'},
+];
+const RQ_FILTRI=[
+  {id:'aperte',label:'Da seguire',test:r=>r.stato!=='archiviata'&&r.stato!=='cliente'},
+  {id:'nuova',label:'Nuove',test:r=>r.stato==='nuova'},
+  {id:'cliente',label:'Clienti',test:r=>r.stato==='cliente'},
+  {id:'archiviata',label:'Archiviate',test:r=>r.stato==='archiviata'},
+  {id:'tutte',label:'Tutte',test:()=>true},
+];
+const RQ_COLS='id,created_at,nome_cognome,email,nome_azienda,telefono,descrizione_progetto,come_hai_sentito,ruolo_azienda,servizio_interessato,stato,note,origine,updated_at';
+const rq={rows:[],loaded:false,loading:false,q:'',filter:'aperte',open:null,pollT:null};
+const RQ_I={
+  inbox:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>',
+  refresh:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6 M1 20v-6h6 M3.51 9a9 9 0 0 1 14.85-3.36L23 10 M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>',
+  mail:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="m22 6-10 7L2 6"/></svg>',
+  phone:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+};
+function rqStato(id){return RQ_STATI.find(s=>s.id===id)||RQ_STATI[0]}
+function rqChip(r){const s=rqStato(r.stato);return `<span class="chip ${s.chip}"><span class="d"></span>${s.label}</span>`}
+function rqNew(){return rq.rows.filter(r=>r.stato==='nuova').length}
+function rqEmpty(v){const s=String(v??'').trim();return !s||/^(non indicat[oa]|altro)$/i.test(s)}
+function rqVal(v){return rqEmpty(v)?'':String(v).trim()}
+function rqAgo(ts){
+  const d=new Date(ts), days=Math.floor((Date.now()-d.getTime())/864e5);
+  if(days<1)return 'oggi '+d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+  if(days<2)return 'ieri';
+  if(days<7)return days+' giorni fa';
+  return nlFmt(ts);
+}
+function rqTel(t){return String(t||'').replace(/[^0-9+]/g,'')}
+
+async function rqLoad(opts={}){
+  if(!nlSupa||!nl.editor)return;
+  rq.loading=true; if(state.view==='richieste'&&!opts.silent) render();
+  try{
+    const rows=[]; let from=0;
+    for(;;){
+      const {data,error}=await nlSupa.from('richieste_sito').select(RQ_COLS).order('created_at',{ascending:false}).range(from,from+999);
+      if(error)throw error; rows.push(...data); if(data.length<1000)break; from+=1000;
+    }
+    rq.rows=rows; rq.loaded=true;
+  }catch(e){toast('Richieste: '+e.message,'err')}
+  rq.loading=false;
+  if(state.view==='richieste') render(); else renderNav();
+  clearTimeout(rq.pollT); rq.pollT=setTimeout(()=>rqLoad({silent:true}),120000);   // nuove richieste ogni 2 minuti
+}
+async function rqRefresh(){
+  const b=document.getElementById('btnRefresh'); if(b){b.disabled=true;b.innerHTML='<span class="spinner"></span> Aggiorno…';}
+  await rqLoad({silent:true}); toast('Richieste aggiornate','ok');
+}
+function rqSetFilter(f){rq.filter=f;render()}
+function rqSearch(v){rq.q=v;clearTimeout(window._rqq);window._rqq=setTimeout(()=>{render();const i=document.getElementById('rq-q');if(i){i.focus();i.setSelectionRange(v.length,v.length)}},220)}
+async function rqUpdate(id,patch,msg){
+  const {data,error}=await nlSupa.from('richieste_sito').update(patch).eq('id',id).select(RQ_COLS).single();
+  if(error){toast(error.message,'err');return false}
+  const i=rq.rows.findIndex(x=>x.id===id); if(i>=0)rq.rows[i]=data;
+  if(msg)toast(msg,'ok');
+  return true;
+}
+async function rqSetStato(id,stato){
+  if(await rqUpdate(id,{stato},'Stato: '+rqStato(stato).label)){
+    if(rq.open===id) rqOpen(id); render();
+  }
+}
+async function rqSaveNote(id){
+  const v=document.getElementById('rq-note')?.value??'';
+  const r=rq.rows.find(x=>x.id===id); if(!r||(r.note||'')===v)return;
+  if(await rqUpdate(id,{note:v.trim()||null},'Nota salvata')){
+    const st=document.getElementById('rq-note-st'); if(st)st.textContent='Salvata '+new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+  }
+}
+async function rqDelete(id){
+  const r=rq.rows.find(x=>x.id===id); if(!r)return;
+  if(!confirm(`Eliminare per sempre la richiesta di ${r.nome_cognome} (${r.email})? Usalo per le richieste di cancellazione dei dati. Per toglierla solo dall'elenco usa "Archiviata".`))return;
+  const {error}=await nlSupa.from('richieste_sito').delete().eq('id',id);
+  if(error){toast(error.message,'err');return}
+  rq.rows=rq.rows.filter(x=>x.id!==id); rq.open=null; closeModal(); render(); toast('Richiesta eliminata','ok');
+}
+function rqMailto(r){
+  const nome=(r.nome_cognome||'').trim().split(/\s+/)[0]||'';
+  const subj='La tua richiesta di consulenza gratuita · Flowline';
+  const body=`Ciao ${nome},\n\ngrazie per averci scritto dal sito di Flowline.\n\n`;
+  return 'mailto:'+encodeURIComponent(r.email)+'?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body);
+}
+function rqOpen(id){
+  const r=rq.rows.find(x=>x.id===id); if(!r)return;
+  rq.open=id;
+  const tel=rqVal(r.telefono), desc=rqVal(r.descrizione_progetto);
+  const extra=[['Come ci ha conosciuto',rqVal(r.come_hai_sentito)],['Ruolo in azienda',rqVal(r.ruolo_azienda)],['Servizio di interesse',rqVal(r.servizio_interessato)]].filter(x=>x[1]);
+  modal(`<div class="modal rq-modal" role="dialog" aria-modal="true" aria-labelledby="rq-h" onclick="event.stopPropagation()">
+    <div class="modal-h"><div><h3 id="rq-h">${esc(r.nome_cognome)}</h3><div class="email-cell">${esc(rqVal(r.nome_azienda)||'Azienda non indicata')} · ${esc(nlFmt(r.created_at,true))}${r.origine==='journal'?' · importata dal Journal':''}</div></div>
+      <div class="x" role="button" tabindex="0" aria-label="Chiudi" onclick="rq.open=null;closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div>
+    <div class="modal-b">
+      <div class="rq-actions">
+        <a class="btn primary" href="${escAttr(rqMailto(r))}" onclick="rqAfterContact(${r.id})">${RQ_I.mail}Scrivi a ${esc(r.email)}</a>
+        ${tel?`<a class="btn" href="tel:${escAttr(rqTel(tel))}" onclick="rqAfterContact(${r.id})">${RQ_I.phone}${esc(tel)}</a>`:''}
+      </div>
+      <div class="rq-msg">
+        <div class="field-lbl">Cosa vorrebbe semplificare</div>
+        <p>${desc?esc(desc).replace(/\n/g,'<br>'):'<span class="email-cell">Non l\'ha scritto.</span>'}</p>
+      </div>
+      ${extra.length?`<table class="spend-table rq-extra">${extra.map(x=>`<tr><td>${x[0]}</td><td>${esc(x[1])}</td></tr>`).join('')}</table>`:''}
+      <div class="form-row"><label for="rq-stato">Stato</label>
+        <select id="rq-stato" onchange="rqSetStato(${r.id},this.value)">${RQ_STATI.map(s=>`<option value="${s.id}" ${s.id===r.stato?'selected':''}>${s.label}</option>`).join('')}</select></div>
+      <div class="form-row"><label for="rq-note">Note interne</label>
+        <textarea id="rq-note" placeholder="Per esempio: chiamato il 4/11, richiamare dopo la fiera" onblur="rqSaveNote(${r.id})">${esc(r.note||'')}</textarea>
+        <span class="hint" id="rq-note-st">Si salvano quando esci dal campo. Le vede solo la redazione.</span></div>
+    </div>
+    <div class="modal-f" style="justify-content:space-between">
+      <button class="btn sm ghost danger" onclick="rqDelete(${r.id})">Elimina dati</button>
+      <button class="btn" onclick="rqSaveNote(${r.id});rq.open=null;closeModal()">Chiudi</button>
+    </div>
+  </div>`);
+}
+// dopo "Scrivi" o "Chiama": una richiesta ancora nuova passa a Contattata
+function rqAfterContact(id){
+  const r=rq.rows.find(x=>x.id===id);
+  if(r&&r.stato==='nuova') setTimeout(()=>rqSetStato(id,'contattata'),400);
+}
+
+/* ---- importa ed esporta ---- */
+function rqPickCsv(){document.getElementById('rqFile').click()}
+let _rqImport=null;
+function rqHandleCsv(file){
+  if(!file)return;
+  const rd=new FileReader();
+  rd.onload=()=>{
+    const text=String(rd.result||'').replace(/^﻿/,'');
+    const recs=rqParseCsv(text);
+    if(!recs.length){toast('Il file è vuoto','warn');return}
+    const head=recs[0].map(h=>h.trim().toLowerCase());
+    const col=(...names)=>{for(const n of names){const i=head.indexOf(n);if(i>=0)return i}return head.findIndex(h=>names.some(n=>h.includes(n)))};
+    const C={nome:col('nome_cognome','nome','name'),email:col('email','e-mail'),az:col('nome_azienda','azienda','company'),tel:col('telefono','phone','tel'),
+      desc:col('descrizione_progetto','descrizione','messaggio','message'),fonte:col('come_hai_sentito','fonte'),ruolo:col('ruolo_azienda','ruolo'),
+      serv:col('servizio_interessato','servizio'),dt:col('created_at','data','date')};
+    if(C.email<0){toast('Nel CSV manca la colonna email','err');return}
+    const have=new Set(rq.rows.map(r=>r.email.toLowerCase()+'|'+String(r.created_at).slice(0,16)));
+    const ok=[]; let bad=0,dup=0;
+    recs.slice(1).forEach(c=>{
+      const g=i=>i>=0?String(c[i]??'').trim():'';
+      const email=g(C.email).toLowerCase();
+      if(!NL.emailRe.test(email)){bad++;return}
+      const dt=g(C.dt)&&!isNaN(Date.parse(g(C.dt)))?new Date(g(C.dt)).toISOString():new Date().toISOString();
+      if(have.has(email+'|'+dt.slice(0,16))){dup++;return}
+      have.add(email+'|'+dt.slice(0,16));
+      const opt=v=>rqEmpty(v)?null:v;
+      ok.push({created_at:dt,nome_cognome:g(C.nome)||email,email,nome_azienda:opt(g(C.az)),telefono:opt(g(C.tel)),descrizione_progetto:opt(g(C.desc)),
+        come_hai_sentito:opt(g(C.fonte)),ruolo_azienda:opt(g(C.ruolo)),servizio_interessato:opt(g(C.serv)),stato:'contattata',origine:'journal'});
+    });
+    _rqImport=ok;
+    modal(`<div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-h"><h3>Importa richieste</h3><div class="x" role="button" tabindex="0" aria-label="Chiudi" onclick="closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div>
+      <div class="modal-b">
+        <table class="spend-table">
+          <tr><td>Richieste da importare</td><td>${ok.length}</td></tr>
+          <tr><td>Già presenti (saltate)</td><td>${dup}</td></tr>
+          <tr><td>Senza email valida (saltate)</td><td>${bad}</td></tr>
+        </table>
+        <div class="form-row"><label for="rq-imp-st">Stato da dare alle richieste importate</label>
+          <select id="rq-imp-st">${RQ_STATI.map(s=>`<option value="${s.id}" ${s.id==='contattata'?'selected':''}>${s.label}</option>`).join('')}</select>
+          <span class="hint">Le richieste vecchie di solito le avete già gestite: per questo la proposta è "Contattata". Poi le cambi una per una.</span></div>
+        <div class="helptip">Pensato per il CSV della tabella <code>consultations</code> esportato dal progetto Supabase FLOWLINE JOURNAL (Table Editor → Export → CSV). La data di arrivo resta quella originale.</div>
+      </div>
+      <div class="modal-f"><button class="btn" onclick="closeModal()">Annulla</button><button class="btn primary" ${ok.length?'':'disabled'} onclick="rqImportGo()">Importa ${ok.length}</button></div>
+    </div>`);
+  };
+  rd.readAsText(file);
+}
+// CSV con campi tra virgolette che possono contenere a capo (le descrizioni)
+function rqParseCsv(text){
+  const first=text.split(/\r?\n/,1)[0]||'';
+  const sep=(first.match(/;/g)||[]).length>(first.match(/,/g)||[]).length?';':',';
+  const out=[]; let row=[], cur='', q=false;
+  for(let i=0;i<text.length;i++){
+    const ch=text[i];
+    if(q){ if(ch==='"'&&text[i+1]==='"'){cur+='"';i++} else if(ch==='"')q=false; else cur+=ch; continue; }
+    if(ch==='"')q=true;
+    else if(ch===sep){row.push(cur);cur=''}
+    else if(ch==='\n'||ch==='\r'){ if(ch==='\r'&&text[i+1]==='\n')i++; row.push(cur);cur=''; if(row.some(x=>x.trim()))out.push(row); row=[]; }
+    else cur+=ch;
+  }
+  row.push(cur); if(row.some(x=>x.trim()))out.push(row);
+  return out;
+}
+async function rqImportGo(){
+  const st=document.getElementById('rq-imp-st')?.value||'contattata';
+  const rows=(_rqImport||[]).map(r=>({...r,stato:st})); let done=0;
+  for(let i=0;i<rows.length;i+=500){
+    const {error}=await nlSupa.from('richieste_sito').insert(rows.slice(i,i+500));
+    if(error){toast('Importazione: '+error.message,'err');break}
+    done+=Math.min(500,rows.length-i);
+  }
+  closeModal(); _rqImport=null; await rqLoad(); if(done)toast(done+(done===1?' richiesta importata':' richieste importate'),'ok');
+}
+function rqExportCsv(){
+  const cell=v=>{const s=String(v??'');return /[",;\n\r]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s};
+  const rows=rqShown();
+  const head=['arrivata_il','nome_cognome','email','telefono','azienda','richiesta','come_ci_ha_conosciuto','stato','note'];
+  const text=[head.join(','),...rows.map(r=>[r.created_at,r.nome_cognome,r.email,rqVal(r.telefono),rqVal(r.nome_azienda),rqVal(r.descrizione_progetto),rqVal(r.come_hai_sentito),rqStato(r.stato).label,r.note||''].map(cell).join(','))].join('\r\n');
+  const url=URL.createObjectURL(new Blob(['﻿'+text],{type:'text/csv;charset=utf-8'}));
+  const a=Object.assign(document.createElement('a'),{href:url,download:'richieste-sito-'+isoD(today())+'.csv'});
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+/* ---- vista ---- */
+function rqShown(){
+  const f=RQ_FILTRI.find(x=>x.id===rq.filter)||RQ_FILTRI[0], q=rq.q.trim().toLowerCase();
+  return rq.rows.filter(r=>f.test(r)&&(!q||[r.nome_cognome,r.email,r.nome_azienda,r.telefono,r.descrizione_progetto,r.note].some(v=>String(v||'').toLowerCase().includes(q))));
+}
+function rqHeroCopy(){
+  if(!nl.session) return {t:'Richieste dal sito.',l:'Accedi per vedere chi ha chiesto la consulenza gratuita su flowline.it.'};
+  if(nl.editor===false) return {t:'Accesso non abilitato.',l:'Questo account non è nella redazione.'};
+  if(!rq.loaded) return {t:'Richieste dal sito.',l:'Carico le richieste…'};
+  const n=rqNew(), open=rq.rows.filter(RQ_FILTRI[0].test).length;
+  return {t:n?`${n} ${n===1?'richiesta nuova':'richieste nuove'} da gestire.`:'Nessuna richiesta nuova.',
+    l:`Chi compila "Prenota la consulenza gratuita" su flowline.it arriva qui. ${open} ${open===1?'richiesta da seguire':'richieste da seguire'} in tutto.`};
+}
+function rqTopActions(){
+  if(!nl.session||!nl.editor)return '';
+  return `<button class="btn" id="btnRefresh" onclick="rqRefresh()" title="Controlla se sono arrivate richieste nuove">${RQ_I.refresh}<span class="lbl">Aggiorna</span></button>`;
+}
+function viewRichieste(){
+  if(!nl.ready) return `<div class="empty"><span class="spinner"></span></div>`;
+  if(!nl.session) return nlLoginView('richieste');
+  if(nl.editor===null) return `<div class="empty"><span class="spinner"></span><p style="margin-top:14px">Verifico l'accesso…</p></div>`;
+  if(nl.editor===false) return `<div class="empty">${RQ_I.inbox}<h4>Questo account non è in redazione</h4>
+    <p>${esc(nl.session.user?.email||'')} ha fatto l'accesso, ma non è tra gli indirizzi abilitati. Chiedi a chi gestisce il database di aggiungerlo alla tabella <code>newsletter_editors</code>.</p>
+    <button class="btn" onclick="nlLogout()">Esci</button></div>`;
+  if(!rq.loaded) return `<div class="empty"><span class="spinner"></span><p style="margin-top:14px">Carico le richieste…</p></div>`;
+  const n=rqNew(), work=rq.rows.filter(r=>r.stato==='contattata'||r.stato==='in_trattativa').length, cli=rq.rows.filter(r=>r.stato==='cliente').length;
+  const d30=Date.now()-30*864e5, last30=rq.rows.filter(r=>new Date(r.created_at).getTime()>=d30).length;
+  const stats=`<div class="rq-stats">
+    <button class="stat-t t-orange rq-stat" onclick="rqSetFilter('nuova')"><div class="k">Nuove</div><div class="row"><div class="v">${n}</div><div class="m">da ricontattare</div></div></button>
+    <button class="stat-t t-lilac rq-stat" onclick="rqSetFilter('aperte')"><div class="k">In corso</div><div class="row"><div class="v">${work}</div><div class="m">contattate o in trattativa</div></div></button>
+    <button class="stat-t t-ink rq-stat" onclick="rqSetFilter('cliente')"><div class="k">Diventate clienti</div><div class="row"><div class="v">${cli}</div><div class="m">su ${rq.rows.length} in tutto</div></div></button>
+    <div class="stat-t t-peach"><div class="k">Ultimi 30 giorni</div><div class="row"><div class="v">${last30}</div><div class="m">${last30===1?'richiesta arrivata':'richieste arrivate'}</div></div></div>
+  </div>`;
+  const rows=rqShown();
+  const cnt=id=>rq.rows.filter((RQ_FILTRI.find(x=>x.id===id)||RQ_FILTRI[4]).test).length;
+  const bar=`<div class="filters">
+    <div class="search"><svg class="ico" style="width:17px;height:17px;color:var(--faint)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="rq-q" placeholder="Cerca nome, azienda, email, testo…" value="${escAttr(rq.q)}" oninput="rqSearch(this.value)" aria-label="Cerca nelle richieste"></div>
+    <div class="seg">${RQ_FILTRI.map(f=>`<button class="fbtn ${rq.filter===f.id?'on':''}" onclick="rqSetFilter('${f.id}')">${f.label} · ${cnt(f.id)}</button>`).join('')}</div>
+  </div>
+  <div class="filters"><span class="email-cell">Accesso: ${esc(nl.session.user?.email||'')}</span><button class="btn sm ghost" onclick="nlLogout()">Esci</button><span style="flex:1"></span>
+    <button class="btn sm" onclick="rqPickCsv()">Importa CSV</button><button class="btn sm" onclick="rqExportCsv()" ${rows.length?'':'disabled'}>Esporta CSV</button></div>`;
+  if(!rq.rows.length) return stats+bar+`<div class="empty">${RQ_I.inbox}<h4>Ancora nessuna richiesta qui</h4><p>Le nuove arrivano da sole dal form di flowline.it. Quelle raccolte prima stanno nel progetto Supabase FLOWLINE JOURNAL: esporta la tabella <code>consultations</code> in CSV e caricala con "Importa CSV".</p><button class="btn primary" onclick="rqPickCsv()">Importa CSV</button></div>`;
+  if(!rows.length) return stats+bar+`<div class="empty">${RQ_I.inbox}<h4>Nessuna richiesta qui</h4><p>Prova un'altra ricerca o un altro filtro.</p></div>`;
+  return stats+bar+`<div class="table-wrap"><table class="rq-table"><thead><tr><th>Arrivata</th><th>Chi</th><th>Contatti</th><th>Cosa vorrebbe</th><th>Stato</th></tr></thead><tbody>
+    ${rows.slice(0,500).map(r=>{const desc=rqVal(r.descrizione_progetto), tel=rqVal(r.telefono);
+      return `<tr class="${r.stato==='nuova'?'rq-new':''}" tabindex="0" onclick="rqOpen(${r.id})" onkeydown="if(event.key==='Enter')rqOpen(${r.id})">
+      <td class="email-cell tnum" style="white-space:nowrap">${esc(rqAgo(r.created_at))}</td>
+      <td><div class="az">${esc(r.nome_cognome)}</div><div class="email-cell">${esc(rqVal(r.nome_azienda)||'—')}</div></td>
+      <td><div class="email-cell" style="color:var(--text)">${esc(r.email)}</div><div class="email-cell">${esc(tel||'—')}</div></td>
+      <td class="rq-desc">${desc?`<div class="rq-clamp">${esc(desc)}</div>`:'<span class="email-cell">—</span>'}${r.note?`<div class="rq-note-p">Nota: ${esc(r.note)}</div>`:''}</td>
+      <td>${rqChip(r)}</td></tr>`}).join('')}
+  </tbody></table></div>${rows.length>500?`<p class="helptip" style="margin-top:10px">Mostro le prime 500 di ${rows.length}: usa la ricerca.</p>`:''}
+  <p class="helptip" style="margin-top:12px">Clicca una richiesta per scrivere, chiamare, cambiare stato o aggiungere una nota. Quando scrivi o chiami una richiesta nuova, passa da sola a "Contattata".</p>`;
 }
 
 /* =======================================================
