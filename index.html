@@ -4394,13 +4394,12 @@ function ctTable(list,withHead=true){
 function ctPanoramica(){
   const main=ctMain(), k=ct.month, [y,mm]=k.split('-'), ms=ctSums(ctByMonth(k));
   const pend=ctPending(), pendAmt=pend.reduce((s,m)=>s+(m.tipo==='in'?m.importo:m.tipo==='out'?-m.importo:0),0);
-  const soci=ct.conti.filter(c=>!ctIsMain(c)).reduce((s,c)=>s+ctBalance(c.id),0);
-  const rows=ct.conti.map((c,i)=>{const b=ctBalance(c.id),o=ctOpenAmt(c.id);
+  const rows=ct.conti.filter(ctIsMain).map((c,i)=>{const b=ctBalance(c.id),o=ctOpenAmt(c.id);
     return `<tr tabindex="0" onclick="ctFilterConto(${c.id})" onkeydown="if(event.key==='Enter')ctFilterConto(${c.id})"><td class="b-n">${String(i+1).padStart(2,'0')}</td><td class="b-dest">${esc(c.nome)}</td>
       <td class="b-city">${ctIsMain(c)?'Conto aziendale':'Conto socio'}${o?` · ${o>0?'+':''}${ctEur(o)} in sospeso`:''}</td><td class="b-st"><span class="flap ${b<0?'late':ctIsMain(c)?'reply':'plan'} tnum">${ctEur(b)}</span></td></tr>`}).join('');
-  const board=`<section class="board" aria-label="Saldi dei conti"><div class="board-h"><span class="bt">Saldi <span class="lit">oggi</span></span><span class="bsub">${esc(today().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'}))}</span><span class="spacer"></span><span class="clock" id="boardClock">${clockNow()}</span></div>
+  const board=`<section class="board" aria-label="Saldo del conto aziendale"><div class="board-h"><span class="bt">Conto aziendale <span class="lit">oggi</span></span><span class="bsub">${esc(today().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'}))}</span><span class="spacer"></span><span class="clock" id="boardClock">${clockNow()}</span></div>
     <table><thead><tr><th>N.</th><th>Conto</th><th>Tipo</th><th>Saldo</th></tr></thead><tbody>${rows}</tbody></table>
-    <div class="board-foot"><span>Totale conti soci <b style="color:#fff">${ctEur(soci)}</b></span><span class="spacer"></span><span>${state.config.ctInclude?'compresi i non completati':'solo movimenti completati'}</span></div></section>`;
+    <div class="board-foot"><span>Entrate e uscite del mese nei riquadri qui sotto</span><span class="spacer"></span><span>${state.config.ctInclude?'compresi i non completati':'solo movimenti completati'}</span></div></section>`;
   const stats=`<div class="rq-stats">
     <div class="stat-t t-orange"><div class="k">Saldo ${esc(main.nome)}</div><div class="row"><div class="v ct-v">${ctEur(ctBalance(main.id))}</div></div></div>
     <div class="stat-t t-lilac"><div class="k">Entrate di ${CT_MESI[+mm-1].toLowerCase()}</div><div class="row"><div class="v ct-v">${ctEur(ms.i)}</div></div></div>
@@ -4447,14 +4446,17 @@ function ctMovimenti(){
 function ctConti(){
   return `<div class="filters"><label class="ct-chk"><input type="checkbox" ${state.config.ctInclude?'checked':''} onchange="ctToggleOpen(this.checked)"> Conta nel saldo anche i movimenti non completati (in corso e in sospeso)</label><span style="flex:1"></span>
     <button class="btn sm" onclick="ctOpenConto()">${CT_I.plus}Nuovo conto</button></div>
-  <div class="ct-accs">${ct.conti.map((c,i)=>{
+  <div class="ct-accs">${ct.conti.filter(ctIsMain).map(c=>{
     const b=ctBalance(c.id), ent=ct.mov.filter(m=>ctCounts(m)&&m.a_conto===c.id).reduce((s,m)=>s+m.importo,0), usc=ct.mov.filter(m=>ctCounts(m)&&m.da_conto===c.id).reduce((s,m)=>s+m.importo,0);
-    const n=ct.mov.filter(m=>m.a_conto===c.id||m.da_conto===c.id).length, cls=ctIsMain(c)?'t-orange':(i%2?'t-lilac':'t-white');
-    return `<div class="tile ${cls}"><div class="tile-h"><h3>${esc(c.nome)}</h3></div><div class="sub" style="font-size:13.5px;opacity:.75">${ctIsMain(c)?'Conto aziendale':'Conto socio'} · ${n} movimenti</div>
+    const n=ct.mov.filter(m=>m.a_conto===c.id||m.da_conto===c.id).length;
+    return `<div class="tile t-orange"><div class="tile-h"><h3>${esc(c.nome)}</h3></div><div class="sub" style="font-size:13.5px;opacity:.75">${n} movimenti</div>
       <div class="v ct-v" style="font-size:44px;font-weight:800;font-stretch:112%;letter-spacing:-.045em;margin:16px 0 4px;line-height:1">${ctEur(b)}</div><div style="font-size:13px;opacity:.75;margin-bottom:14px">saldo calcolato</div>
       <table class="spend-table" style="color:inherit"><tr><td>Saldo iniziale</td><td>${ctEur(c.apertura)}</td></tr><tr><td>Totale in ingresso</td><td>+${ctEur(ent)}</td></tr><tr><td>Totale in uscita</td><td>−${ctEur(usc)}</td></tr></table>
       <div class="rq-actions" style="margin-top:14px"><button class="btn sm" onclick="ctFilterConto(${c.id})">Movimenti</button><button class="btn sm" onclick="ctOpenAlign(${c.id})">Allinea al saldo reale</button><button class="btn sm ghost" onclick="ctOpenConto(${c.id})">Modifica</button></div></div>`}).join('')}</div>
-  <p class="helptip" style="margin-top:16px;max-width:680px">Il saldo è il saldo iniziale più tutto ciò che entra, meno tutto ciò che esce dal conto. Se non coincide con quello della banca, usa «Allinea al saldo reale»: scrivi il saldo di oggi e la suite corregge il saldo iniziale.</p>`;
+  ${ct.conti.some(c=>!ctIsMain(c))?`<div class="section-h"><h3>Soci</h3><div class="line"></div></div>
+  <div class="table-wrap"><table><thead><tr><th>Nome</th><th>Movimenti</th><th></th></tr></thead><tbody>${ct.conti.filter(c=>!ctIsMain(c)).map(c=>`<tr><td class="az">${esc(c.nome)}</td><td class="tnum">${ct.mov.filter(m=>m.a_conto===c.id||m.da_conto===c.id).length}</td><td style="text-align:right"><button class="btn sm ghost" onclick="ctFilterConto(${c.id})">Movimenti</button><button class="btn sm ghost" onclick="ctOpenConto(${c.id})">Modifica</button></td></tr>`).join('')}</tbody></table></div>
+  <p class="helptip" style="margin-top:10px">I soci servono solo come destinatari di quote e rimborsi, o per chi versa sul conto: della loro situazione la suite non tiene il saldo.</p>`:''}
+  <p class="helptip" style="margin-top:16px;max-width:680px">Il saldo del conto aziendale è il saldo iniziale più tutto ciò che entra, meno tutto ciò che esce. Se non coincide con quello della banca, usa «Allinea al saldo reale»: scrivi il saldo di oggi e la suite corregge il saldo iniziale.</p>`;
 }
 function ctReport(){
   const anni=[...new Set(ct.mov.map(m=>m.data&&m.data.slice(0,4)).filter(Boolean))].sort().reverse();

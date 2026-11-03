@@ -15,7 +15,7 @@ Strumenti interni di Flowline in un'unica pagina (`index.html`), pubblicata con 
 **Richieste**: chi compila "Prenota la consulenza gratuita" su flowline.it. Elenco con ricerca e filtri, scheda con email e telefono, stato (Nuova, Contattata, In trattativa, Cliente, Archiviata), note interne, importazione ed esportazione CSV, eliminazione per le richieste di cancellazione dei dati.
 
 **Contabilità**: conti e movimenti dell'azienda, al posto della sezione Contabilità di Notion.
-- Panoramica: saldo di ogni conto (aziendale e soci) calcolato in tempo reale, entrate e uscite del mese, ultimi sei mesi, movimenti da completare
+- Panoramica: saldo del conto aziendale calcolato in tempo reale, entrate e uscite del mese, ultimi sei mesi, movimenti da completare
 - Movimenti: elenco con ricerca e filtri (conto, tipo, categoria, mese, stato), aggiunta e modifica, esportazione CSV
 - Conti: saldo iniziale e «Allinea al saldo reale» per far coincidere il saldo con quello della banca
 - Report: entrate e uscite per anno, mese e categoria
