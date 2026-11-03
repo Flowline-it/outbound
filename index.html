@@ -4069,9 +4069,9 @@ function viewRichieste(){
 const CT_TABS=[{tab:'panoramica',label:'Panoramica'},{tab:'movimenti',label:'Movimenti'},{tab:'conti',label:'Conti'},{tab:'report',label:'Report'}];
 const CT_MESI=['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
 const CT_MS=['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
-const CT_STATI=[{id:'completato',label:'Completato',chip:'done'},{id:'in_corso',label:'In corso',chip:'wait'},{id:'in_sospeso',label:'In sospeso',chip:'seq'}];
+const CT_STATI=[{id:'completato',label:'Completato',chip:'done'},{id:'in_corso',label:'In corso',chip:'wait'},{id:'in_sospeso',label:'In sospeso',chip:'seq'},{id:'da_verificare',label:'Da verificare',chip:'today'}];
 const CT_TIPI=[{id:'in',label:'Entrata',chip:'reply'},{id:'out',label:'Uscita',chip:'late'},{id:'move',label:'Trasferimento',chip:'da'}];
-const CT_COLS='id,data,descrizione,importo,tipo,da_conto,a_conto,categoria,stato,riferimento,note,created_at';
+const CT_COLS='id,data,descrizione,importo,tipo,da_conto,a_conto,categoria,stato,riferimento,note,origine,created_at';
 const CT_I={
   plus:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14 M5 12h14"/></svg>',
   refresh:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6 M1 20v-6h6 M3.51 9a9 9 0 0 1 14.85-3.36L23 10 M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>',
@@ -4317,6 +4317,21 @@ async function ctAlign(ev,id,cur){
   if(error){toast(error.message,'err');return}
   c.apertura=ap; closeModal(); render(); toast('Saldo iniziale aggiornato a '+ctEur(ap),'ok');
 }
+async function ctConfirm(id){
+  const {data,error}=await nlSupa.from('movimenti').update({stato:'completato'}).eq('id',id).select(CT_COLS).single();
+  if(error){toast(error.message,'err');return}
+  const i=ct.mov.findIndex(x=>x.id===id); if(i>=0)ct.mov[i]={...data,importo:+data.importo};
+  render(); toast('Movimento confermato','ok');
+}
+async function ctConfirmAll(){
+  const ids=ct.mov.filter(m=>m.stato==='da_verificare').map(m=>m.id);
+  if(!ids.length)return;
+  if(!confirm(`Confermare tutti i ${ids.length} movimenti da verificare? Entreranno nel saldo del conto aziendale.`))return;
+  const {error}=await nlSupa.from('movimenti').update({stato:'completato'}).in('id',ids);
+  if(error){toast(error.message,'err');return}
+  ct.mov.forEach(m=>{if(ids.includes(m.id))m.stato='completato'});
+  render(); toast(ids.length+(ids.length===1?' movimento confermato':' movimenti confermati'),'ok');
+}
 function ctToggleOpen(v){state.config.ctInclude=!!v;save(LS.config,state.config);render()}
 
 /* ---- primo avvio: porta i dati da Notion ---- */
@@ -4412,8 +4427,9 @@ function ctPanoramica(){
     <div class="ct-months">${data.map(d=>`<div class="ct-m ${d.k===k?'now':''}"><div class="ct-bars"><span class="ct-b in" style="height:${Math.max(4,d.i/mx*100)}%" title="Entrate ${ctEur(d.i)}"></span><span class="ct-b out" style="height:${Math.max(4,d.o/mx*100)}%" title="Uscite ${ctEur(d.o)}"></span></div>
       <div class="ct-ml">${CT_MS[+d.k.slice(5)-1]} ${d.k.slice(2,4)}</div><div class="ct-mv in tnum">+${ctEur(d.i)}</div><div class="ct-mv out tnum">−${ctEur(d.o)}</div></div>`).join('')}</div>
     <p class="helptip" style="margin-top:12px"><span class="ct-dot in"></span> entrate &nbsp; <span class="ct-dot out"></span> uscite. I trasferimenti tra conti non contano.</p></div>`;
-  const pendBox=`<div class="tile t-peach"><div class="tile-h"><h3>Da completare</h3></div>
-    ${pend.length?pend.map(m=>`<div class="ct-pend" onclick="ctOpenMov(${m.id})"><div><b>${esc(m.descrizione)}</b><div class="email-cell" style="color:inherit;opacity:.75">${ctFdate(m.data)} · ${ctChipLabel(CT_STATI,m.stato)}</div></div><b class="tnum">${ctEur(m.importo)}</b></div>`).join('')+`<p class="helptip" style="margin-top:10px;color:inherit;opacity:.8">Se si completassero tutti, il saldo cambierebbe di ${pendAmt>=0?'+':''}${ctEur(pendAmt)}.</p>`
+  const daVer=pend.filter(m=>m.stato==='da_verificare').length;
+  const pendBox=`<div class="tile t-peach"><div class="tile-h"><h3>${daVer?'Da verificare':'Da completare'}</h3>${daVer>1?'<span class="spacer"></span><button class="btn sm" onclick="ctConfirmAll()">Conferma tutti</button>':''}</div>
+    ${pend.length?[...pend].sort((a,b)=>(b.stato==='da_verificare')-(a.stato==='da_verificare')).slice(0,8).map(m=>`<div class="ct-pend" onclick="ctOpenMov(${m.id})"><div><b>${esc(m.descrizione)}</b><div class="email-cell" style="color:inherit;opacity:.75">${ctFdate(m.data)} · ${esc(m.categoria||'senza categoria')} · ${ctChipLabel(CT_STATI,m.stato)}</div></div><div style="text-align:right"><b class="tnum">${m.tipo==='out'?'−':m.tipo==='in'?'+':''}${ctEur(m.importo)}</b>${m.stato==='da_verificare'?`<div><button class="btn sm" style="margin-top:6px" onclick="event.stopPropagation();ctConfirm(${m.id})">Conferma</button></div>`:''}</div></div>`).join('')+(pend.length>8?`<p class="helptip" style="color:inherit;opacity:.8">E altri ${pend.length-8}: li trovi in Movimenti, filtro stato.</p>`:'')+`<p class="helptip" style="margin-top:10px;color:inherit;opacity:.8">Se si completassero tutti, il saldo cambierebbe di ${pendAmt>=0?'+':''}${ctEur(pendAmt)}.</p>`
     :'<p>Tutto registrato: nessun movimento in sospeso.</p>'}</div>`;
   const last=ctSorted(ct.mov).slice(0,8);
   return `<div class="bento"><div class="span-7">${board}</div><div class="span-5" style="display:flex">${pendBox.replace('class="tile t-peach"','class="tile t-peach" style="flex:1"')}</div></div>

@@ -21,6 +21,7 @@ Strumenti interni di Flowline in un'unica pagina (`index.html`), pubblicata con 
 - Report: entrate e uscite per anno, mese e categoria
 - Il saldo non è salvato: saldo iniziale + ciò che entra - ciò che esce. Contano solo i movimenti completati (si può cambiare)
 - Al primo avvio, «Importa i dati di Notion» carica conti e movimenti di partenza
+- I movimenti arrivano anche da PayPal: il flusso n8n «PayPal → Contabilità FlowLine» li salva «Da verificare» (non contano nel saldo) e si confermano uno a uno o tutti insieme
 
 ## Dati
 
