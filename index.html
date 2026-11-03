@@ -651,17 +651,18 @@ body[data-view="contabilita"] .dot.on{background:#5FD08A}
 .ct-table tbody tr:focus-visible{outline:2px solid var(--focus);outline-offset:-2px}
 .ct-desc{max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ct-amt{text-align:right;font-weight:750;white-space:nowrap}
-.ct-amt.in{color:var(--ok)}.ct-amt.out{color:var(--late)}.ct-amt.move{color:var(--muted)}
+.ct-amt.in{color:var(--ok)}.ct-amt.out{color:var(--late)}.ct-amt.move{color:var(--muted)}.ct-amt.quota{color:var(--wait)}
+.ct-sub{font-size:12.5px;font-weight:600;opacity:.78;margin-top:6px;line-height:1.35}
 .ct-months{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
 .ct-m{border-radius:var(--r-md);padding:14px 10px 12px;text-align:center;background:var(--surface-2)}
 .ct-m.now{background:var(--accent-soft)}
 .ct-bars{display:flex;gap:6px;height:96px;align-items:flex-end;justify-content:center;margin-bottom:10px}
-.ct-b{width:20px;border-radius:8px 8px 3px 3px;display:block}
-.ct-b.in,.ct-dot.in{background:var(--ok)}.ct-b.out,.ct-dot.out{background:var(--late)}
+.ct-b{width:16px;border-radius:8px 8px 3px 3px;display:block}
+.ct-b.in,.ct-dot.in{background:var(--ok)}.ct-b.out,.ct-dot.out{background:var(--late)}.ct-b.quota,.ct-dot.quota{background:var(--wait)}
 .ct-dot{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:middle}
 .ct-ml{font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
 .ct-mv{font-size:12.5px;font-weight:650;margin-top:2px;white-space:nowrap}
-.ct-mv.in{color:var(--ok)}.ct-mv.out{color:var(--late)}
+.ct-mv.in{color:var(--ok)}.ct-mv.out{color:var(--late)}.ct-mv.quota{color:var(--wait)}
 .ct-pend{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid color-mix(in srgb,currentColor 16%,transparent);cursor:pointer}
 .ct-pend:last-of-type{border-bottom:0}
 .ct-hb{display:grid;grid-template-columns:minmax(90px,150px) 1fr auto;gap:12px;align-items:center;padding:8px 0;font-size:14px}
@@ -4069,9 +4070,9 @@ function viewRichieste(){
 const CT_TABS=[{tab:'panoramica',label:'Panoramica'},{tab:'movimenti',label:'Movimenti'},{tab:'conti',label:'Conti'},{tab:'report',label:'Report'}];
 const CT_MESI=['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
 const CT_MS=['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
-const CT_STATI=[{id:'completato',label:'Completato',chip:'done'},{id:'in_corso',label:'In corso',chip:'wait'},{id:'in_sospeso',label:'In sospeso',chip:'seq'}];
-const CT_TIPI=[{id:'in',label:'Entrata',chip:'reply'},{id:'out',label:'Uscita',chip:'late'},{id:'move',label:'Trasferimento',chip:'da'}];
-const CT_COLS='id,data,descrizione,importo,tipo,da_conto,a_conto,categoria,stato,riferimento,note,created_at';
+const CT_STATI=[{id:'completato',label:'Completato',chip:'done'},{id:'in_corso',label:'In corso',chip:'wait'},{id:'in_sospeso',label:'In sospeso',chip:'seq'},{id:'da_verificare',label:'Da verificare',chip:'today'}];
+const CT_TIPI=[{id:'in',label:'Entrata',chip:'reply'},{id:'out',label:'Uscita',chip:'late'},{id:'quota',label:'Quota ai soci',chip:'plan'},{id:'move',label:'Trasferimento',chip:'da'}];
+const CT_COLS='id,data,descrizione,importo,tipo,da_conto,a_conto,categoria,stato,riferimento,note,origine,created_at';
 const CT_I={
   plus:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14 M5 12h14"/></svg>',
   refresh:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6 M1 20v-6h6 M3.51 9a9 9 0 0 1 14.85-3.36L23 10 M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>',
@@ -4160,7 +4161,19 @@ function ctBalance(id){
   return Math.round(s*100)/100;
 }
 function ctOpenAmt(id){let s=0;for(const m of ct.mov){if(ctCounts(m))continue;if(m.a_conto===id)s+=+m.importo;if(m.da_conto===id)s-=+m.importo}return Math.round(s*100)/100}
-function ctSums(list){let i=0,o=0;for(const m of list){if(!ctCounts(m))continue;if(m.tipo==='in')i+=+m.importo;else if(m.tipo==='out')o+=+m.importo}return{i,o}}
+/* Le quote ai soci (soldi che dal conto aziendale vanno sul conto personale di un socio) sono una ripartizione, non un costo:
+   restano fuori da entrate e uscite e hanno una voce a parte. Nel database sono un trasferimento (tipo 'move') dal conto aziendale a un socio;
+   le vecchie righe 'uscita' con categoria Stipendio/Quota verso un socio vengono lette come quote. */
+const CT_QUOTA_RX=/^(stipendio|quota)/i;
+function ctKind(m){
+  if(m.tipo==='in')return 'in';
+  const da=ct.conti.find(c=>c.id===m.da_conto), a=ct.conti.find(c=>c.id===m.a_conto);
+  if(da&&a&&ctIsMain(da)&&!ctIsMain(a)&&(m.tipo==='move'||CT_QUOTA_RX.test(m.categoria||'')))return 'quota';
+  return m.tipo;
+}
+function ctSums(list){let i=0,o=0,q=0;for(const m of list){if(!ctCounts(m))continue;const k=ctKind(m);if(k==='in')i+=+m.importo;else if(k==='out')o+=+m.importo;else if(k==='quota')q+=+m.importo}return{i,o,q}}
+// effetto di un movimento sul conto aziendale (per l'anteprima dei movimenti da completare)
+function ctEffMain(m){const mc=ctMain();if(!mc)return 0;return (m.a_conto===mc.id?+m.importo:0)-(m.da_conto===mc.id?+m.importo:0)}
 const ctByMonth=k=>ct.mov.filter(m=>ctYM(m.data)===k);
 const ctSorted=l=>[...l].sort((a,b)=>String(b.data||'0000').localeCompare(String(a.data||'0000'))||b.id-a.id);
 const ctPending=()=>ct.mov.filter(m=>m.stato!=='completato');
@@ -4196,12 +4209,14 @@ function ctGoTab(t){ct.tab=t;ct.open=null;if(state.view!=='contabilita')go('cont
 function ctVal(id){const e=document.getElementById(id);return e?e.value:''}
 async function ctSaveMov(ev,id){
   ev&&ev.preventDefault();
-  const tipo=ct.mtipo, importo=Math.round(parseFloat(ctVal('ct-f-imp'))*100)/100;
+  const kind=ct.mtipo, tipo=kind==='quota'?'move':kind, importo=Math.round(parseFloat(ctVal('ct-f-imp'))*100)/100;
   if(!(importo>0)){toast('Inserisci un importo valido','warn');return}
   const rec={data:ctVal('ct-f-data')||null,descrizione:ctVal('ct-f-desc').trim(),importo,tipo,
     da_conto:tipo==='in'?null:(+ctVal('ct-f-da')||null),a_conto:+ctVal('ct-f-a')||null,
     categoria:ctVal('ct-f-cat').trim()||null,stato:ctVal('ct-f-stato'),riferimento:ctVal('ct-f-rif').trim()||null,note:ctVal('ct-f-note').trim()||null};
+  if(kind==='quota'&&!rec.categoria)rec.categoria='Quota soci';
   if(!rec.descrizione){toast('Scrivi una descrizione','warn');return}
+  if(kind==='quota'){const da=ct.conti.find(c=>c.id===rec.da_conto),a=ct.conti.find(c=>c.id===rec.a_conto);if(!da||!ctIsMain(da)){toast('Una quota parte dal conto aziendale','warn');return}if(!a||ctIsMain(a)){toast('Scegli il socio che riceve la quota','warn');return}}
   if(tipo==='in'&&!rec.a_conto){toast('Scegli il conto su cui arrivano i soldi','warn');return}
   if(tipo==='out'&&!rec.da_conto){toast('Scegli da quale conto esce il pagamento','warn');return}
   if(tipo==='move'&&(!rec.da_conto||!rec.a_conto||rec.da_conto===rec.a_conto)){toast('Un trasferimento richiede due conti diversi','warn');return}
@@ -4226,14 +4241,15 @@ function ctSetTipo(x){
   const da=document.getElementById('ct-f-da'), a=document.getElementById('ct-f-a'), main=ctMain();
   const L=(id,t)=>{const e=document.getElementById(id);if(e)e.textContent=t};
   if(x==='in'){L('ct-l-da','Da (esterno)');da.value='';da.disabled=true;L('ct-l-a','Incassato sul conto');a.disabled=false;if(!a.value&&main)a.value=main.id;L('ct-hint','Soldi che arrivano da fuori: clienti, rimborsi.')}
-  if(x==='out'){L('ct-l-da','Pagato dal conto');da.disabled=false;if(!da.value&&main)da.value=main.id;L('ct-l-a','Destinatario (socio, facoltativo)');a.disabled=false;L('ct-hint','Spesa o pagamento. Se scegli un socio come destinatario, il suo conto aumenta (quote, rimborsi).')}
+  if(x==='out'){L('ct-l-da','Pagato dal conto');da.disabled=false;if(!da.value&&main)da.value=main.id;L('ct-l-a','Destinatario (socio, facoltativo)');a.disabled=false;L('ct-hint','Spesa o pagamento: conta come uscita. Se i soldi sono la quota di un socio, scegli «Quota ai soci»: non è un costo.')}
+  if(x==='quota'){L('ct-l-da','Dal conto');da.disabled=false;if(main)da.value=main.id;L('ct-l-a','Socio che riceve la quota');a.disabled=false;const am=ct.conti.find(c=>c.id===+a.value);if(!am||ctIsMain(am))a.value='';L('ct-hint','Divisione degli utili: i soldi vanno sul conto personale del socio. Non è un costo e non conta nelle uscite, ha una voce a parte.')}
   if(x==='move'){L('ct-l-da','Da conto');da.disabled=false;L('ct-l-a','A conto');a.disabled=false;L('ct-hint','Spostamento tra conti, per esempio il versamento di un socio sul conto aziendale: non conta come entrata né come uscita.')}
 }
 function ctOpenMov(id){
   const m=id?ct.mov.find(x=>x.id===id):null;
   const main=ctMain();
   const t=m||{data:isoD(today()),descrizione:'',importo:'',tipo:'out',da_conto:main?main.id:null,a_conto:null,categoria:'',stato:'completato',riferimento:'',note:''};
-  ct.mtipo=t.tipo; ct.open=id||null;
+  ct.mtipo=m?ctKind(m):t.tipo; ct.open=id||null;
   const opts=(sel,ext)=>`<option value="">${ext}</option>`+ct.conti.map(c=>`<option value="${c.id}" ${sel===c.id?'selected':''}>${esc(c.nome)}</option>`).join('');
   const cats=[...new Set(ct.mov.map(x=>x.categoria).filter(Boolean))].sort();
   modal(`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="ct-h" onclick="event.stopPropagation()">
@@ -4241,7 +4257,7 @@ function ctOpenMov(id){
       <div class="x" role="button" tabindex="0" aria-label="Chiudi" onclick="closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div>
     <form onsubmit="ctSaveMov(event,${m?m.id:'null'})">
     <div class="modal-b">
-      <div class="form-row"><label>Tipo</label><div class="seg" id="ct-seg">${CT_TIPI.map(x=>`<button type="button" class="fbtn ${t.tipo===x.id?'on':''}" data-t="${x.id}" onclick="ctSetTipo('${x.id}')">${x.label}</button>`).join('')}</div>
+      <div class="form-row"><label>Tipo</label><div class="seg" id="ct-seg">${CT_TIPI.map(x=>`<button type="button" class="fbtn ${ct.mtipo===x.id?'on':''}" data-t="${x.id}" onclick="ctSetTipo('${x.id}')">${x.label}</button>`).join('')}</div>
         <span class="hint" id="ct-hint"></span></div>
       <div class="form-row"><label for="ct-f-desc">Descrizione</label><input id="ct-f-desc" required value="${escAttr(t.descrizione)}" placeholder="Per esempio: rata cliente, Google Workspace"></div>
       <div class="ct-two"><div class="form-row"><label for="ct-f-imp">Importo (€)</label><input id="ct-f-imp" type="number" step="0.01" min="0" required value="${escAttr(t.importo)}"></div>
@@ -4258,7 +4274,7 @@ function ctOpenMov(id){
       <div>${m?`<button type="button" class="btn sm ghost danger" onclick="ctDeleteMov(${m.id})">Elimina</button>`:''}</div>
       <div style="display:flex;gap:9px"><button type="button" class="btn" onclick="closeModal()">Annulla</button><button class="btn primary" id="ct-save" type="submit">Salva</button></div>
     </div></form></div>`);
-  ctSetTipo(t.tipo);
+  ctSetTipo(ct.mtipo);
   if(m){ // ctSetTipo non deve sovrascrivere i conti già scelti
     document.getElementById('ct-f-da').value=t.da_conto||''; document.getElementById('ct-f-a').value=t.a_conto||'';
     if(t.tipo==='in')document.getElementById('ct-f-da').value='';
@@ -4317,6 +4333,21 @@ async function ctAlign(ev,id,cur){
   if(error){toast(error.message,'err');return}
   c.apertura=ap; closeModal(); render(); toast('Saldo iniziale aggiornato a '+ctEur(ap),'ok');
 }
+async function ctConfirm(id){
+  const {data,error}=await nlSupa.from('movimenti').update({stato:'completato'}).eq('id',id).select(CT_COLS).single();
+  if(error){toast(error.message,'err');return}
+  const i=ct.mov.findIndex(x=>x.id===id); if(i>=0)ct.mov[i]={...data,importo:+data.importo};
+  render(); toast('Movimento confermato','ok');
+}
+async function ctConfirmAll(){
+  const ids=ct.mov.filter(m=>m.stato==='da_verificare').map(m=>m.id);
+  if(!ids.length)return;
+  if(!confirm(`Confermare tutti i ${ids.length} movimenti da verificare? Entreranno nel saldo del conto aziendale.`))return;
+  const {error}=await nlSupa.from('movimenti').update({stato:'completato'}).in('id',ids);
+  if(error){toast(error.message,'err');return}
+  ct.mov.forEach(m=>{if(ids.includes(m.id))m.stato='completato'});
+  render(); toast(ids.length+(ids.length===1?' movimento confermato':' movimenti confermati'),'ok');
+}
 function ctToggleOpen(v){state.config.ctInclude=!!v;save(LS.config,state.config);render()}
 
 /* ---- primo avvio: porta i dati da Notion ---- */
@@ -4327,7 +4358,7 @@ async function ctSeedNotion(){
   const {data:cs,error:e1}=await nlSupa.from('conti').insert(CT_SEED_CONTI.map((c,i)=>({nome:c[1],tipo:c[2],ordine:i+1}))).select('id,nome');
   if(e1){toast(e1.message,'err');if(b){b.disabled=false;b.textContent='Importa i dati di Notion'}return}
   const idOf={}; CT_SEED_CONTI.forEach(c=>{const row=cs.find(x=>x.nome===c[1]);if(row)idOf[c[0]]=row.id});
-  const rows=CT_SEED.map(r=>({data:r[0]||null,descrizione:r[1],importo:r[2],da_conto:r[3]?idOf[r[3]]:null,a_conto:r[4]?idOf[r[4]]:null,tipo:r[5],categoria:r[6]||null,stato:CT_SEED_STATO[r[7]]||'completato'}));
+  const rows=CT_SEED.map(r=>({data:r[0]||null,descrizione:r[1],importo:r[2],da_conto:r[3]?idOf[r[3]]:null,a_conto:r[4]?idOf[r[4]]:null,tipo:r[6]==='Stipendio'?'move':r[5],categoria:r[6]==='Stipendio'?'Quota soci':(r[6]||null),stato:CT_SEED_STATO[r[7]]||'completato'}));
   const {error:e2}=await nlSupa.from('movimenti').insert(rows);
   if(e2){toast(e2.message,'err');return}
   await ctLoad(); toast('Dati importati da Notion','ok');
@@ -4337,7 +4368,7 @@ async function ctSeedNotion(){
 function ctExportCsv(){
   const cell=v=>{const s=String(v??'');return /[",;\n\r]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s};
   const head=['data','descrizione','importo','tipo','categoria','da','a','stato','riferimento','note'];
-  const rows=ctShown().map(m=>[m.data||'',m.descrizione,String(m.importo).replace('.',','),ctChipLabel(CT_TIPI,m.tipo),m.categoria||'',ctName(m.da_conto),ctName(m.a_conto),ctChipLabel(CT_STATI,m.stato),m.riferimento||'',m.note||''].map(cell).join(';'));
+  const rows=ctShown().map(m=>[m.data||'',m.descrizione,String(m.importo).replace('.',','),ctChipLabel(CT_TIPI,ctKind(m)),m.categoria||'',ctName(m.da_conto),ctName(m.a_conto),ctChipLabel(CT_STATI,m.stato),m.riferimento||'',m.note||''].map(cell).join(';'));
   const url=URL.createObjectURL(new Blob(['﻿'+[head.join(';'),...rows].join('\r\n')],{type:'text/csv;charset=utf-8'}));
   const a=Object.assign(document.createElement('a'),{href:url,download:'movimenti-'+isoD(today())+'.csv'});
   document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
@@ -4387,33 +4418,34 @@ function ctTable(list,withHead=true){
   return `<div class="table-wrap"><table class="ct-table"><thead><tr><th>Data</th><th>Descrizione</th><th>Tipo</th><th>Categoria</th><th>Da → A</th><th>Stato</th><th style="text-align:right">Importo</th></tr></thead><tbody>
   ${list.map(m=>`<tr tabindex="0" onclick="ctOpenMov(${m.id})" onkeydown="if(event.key==='Enter')ctOpenMov(${m.id})">
     <td class="email-cell tnum" style="white-space:nowrap">${ctFdate(m.data)}</td><td class="az ct-desc" title="${escAttr(m.descrizione)}">${esc(m.descrizione)}</td>
-    <td>${ctChip(CT_TIPI,m.tipo)}</td><td>${esc(m.categoria||'—')}</td>
+    <td>${ctChip(CT_TIPI,ctKind(m))}</td><td>${esc(m.categoria||'—')}</td>
     <td class="email-cell" style="white-space:nowrap">${esc(ctName(m.da_conto))} → ${esc(ctName(m.a_conto))}</td><td>${ctChip(CT_STATI,m.stato)}</td>
-    <td class="tnum ct-amt ${m.tipo}">${m.tipo==='in'?'+':m.tipo==='out'?'−':''}${ctEur(m.importo)}</td></tr>`).join('')}</tbody></table></div>`;
+    <td class="tnum ct-amt ${ctKind(m)}">${ctKind(m)==='in'?'+':ctKind(m)==='out'?'−':''}${ctEur(m.importo)}</td></tr>`).join('')}</tbody></table></div>`;
 }
 function ctPanoramica(){
   const main=ctMain(), k=ct.month, [y,mm]=k.split('-'), ms=ctSums(ctByMonth(k));
-  const pend=ctPending(), pendAmt=pend.reduce((s,m)=>s+(m.tipo==='in'?m.importo:m.tipo==='out'?-m.importo:0),0);
+  const pend=ctPending(), pendAmt=Math.round(pend.reduce((s,m)=>s+ctEffMain(m),0)*100)/100;
   const rows=ct.conti.filter(ctIsMain).map((c,i)=>{const b=ctBalance(c.id),o=ctOpenAmt(c.id);
     return `<tr tabindex="0" onclick="ctFilterConto(${c.id})" onkeydown="if(event.key==='Enter')ctFilterConto(${c.id})"><td class="b-n">${String(i+1).padStart(2,'0')}</td><td class="b-dest">${esc(c.nome)}</td>
       <td class="b-city">${ctIsMain(c)?'Conto aziendale':'Conto socio'}${o?` · ${o>0?'+':''}${ctEur(o)} in sospeso`:''}</td><td class="b-st"><span class="flap ${b<0?'late':ctIsMain(c)?'reply':'plan'} tnum">${ctEur(b)}</span></td></tr>`}).join('');
   const board=`<section class="board" aria-label="Saldo del conto aziendale"><div class="board-h"><span class="bt">Conto aziendale <span class="lit">oggi</span></span><span class="bsub">${esc(today().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'}))}</span><span class="spacer"></span><span class="clock" id="boardClock">${clockNow()}</span></div>
     <table><thead><tr><th>N.</th><th>Conto</th><th>Tipo</th><th>Saldo</th></tr></thead><tbody>${rows}</tbody></table>
-    <div class="board-foot"><span>Entrate e uscite del mese nei riquadri qui sotto</span><span class="spacer"></span><span>${state.config.ctInclude?'compresi i non completati':'solo movimenti completati'}</span></div></section>`;
+    <div class="board-foot"><span>Entrate, uscite e quote ai soci del mese nei riquadri qui sotto</span><span class="spacer"></span><span>${state.config.ctInclude?'compresi i non completati':'solo movimenti completati'}</span></div></section>`;
   const stats=`<div class="rq-stats">
     <div class="stat-t t-orange"><div class="k">Saldo ${esc(main.nome)}</div><div class="row"><div class="v ct-v">${ctEur(ctBalance(main.id))}</div></div></div>
     <div class="stat-t t-lilac"><div class="k">Entrate di ${CT_MESI[+mm-1].toLowerCase()}</div><div class="row"><div class="v ct-v">${ctEur(ms.i)}</div></div></div>
-    <div class="stat-t t-ink"><div class="k">Uscite di ${CT_MESI[+mm-1].toLowerCase()}</div><div class="row"><div class="v ct-v">${ctEur(ms.o)}</div></div></div>
-    <div class="stat-t t-peach"><div class="k">Netto di ${CT_MESI[+mm-1].toLowerCase()}</div><div class="row"><div class="v ct-v">${ctEur(ms.i-ms.o)}</div></div></div></div>`;
+    <div class="stat-t t-ink"><div class="k">Uscite di ${CT_MESI[+mm-1].toLowerCase()}</div><div class="row"><div class="v ct-v">${ctEur(ms.o)}</div></div><div class="ct-sub">solo costi, senza le quote ai soci</div></div>
+    <div class="stat-t t-peach"><div class="k">Quote ai soci di ${CT_MESI[+mm-1].toLowerCase()}</div><div class="row"><div class="v ct-v">${ctEur(ms.q)}</div></div><div class="ct-sub">divisione degli utili, non un costo · netto del mese ${ctEur(ms.i-ms.o)}</div></div></div>`;
   const months=[];for(let i=5;i>=0;i--)months.push(ctShiftM(k,-i));
   const data=months.map(x=>({k:x,...ctSums(ctByMonth(x))})), mx=Math.max(1,...data.flatMap(d=>[d.i,d.o]));
   const chart=`<div class="tile"><div class="tile-h"><h3>Ultimi sei mesi</h3><span class="spacer"></span>
     <button class="btn sm" onclick="ctMonth(-1)" aria-label="Mese precedente">‹</button><span class="sub" style="min-width:130px;text-align:center">${CT_MESI[+mm-1]} ${y}</span><button class="btn sm" onclick="ctMonth(1)" aria-label="Mese successivo">›</button></div>
-    <div class="ct-months">${data.map(d=>`<div class="ct-m ${d.k===k?'now':''}"><div class="ct-bars"><span class="ct-b in" style="height:${Math.max(4,d.i/mx*100)}%" title="Entrate ${ctEur(d.i)}"></span><span class="ct-b out" style="height:${Math.max(4,d.o/mx*100)}%" title="Uscite ${ctEur(d.o)}"></span></div>
-      <div class="ct-ml">${CT_MS[+d.k.slice(5)-1]} ${d.k.slice(2,4)}</div><div class="ct-mv in tnum">+${ctEur(d.i)}</div><div class="ct-mv out tnum">−${ctEur(d.o)}</div></div>`).join('')}</div>
-    <p class="helptip" style="margin-top:12px"><span class="ct-dot in"></span> entrate &nbsp; <span class="ct-dot out"></span> uscite. I trasferimenti tra conti non contano.</p></div>`;
-  const pendBox=`<div class="tile t-peach"><div class="tile-h"><h3>Da completare</h3></div>
-    ${pend.length?pend.map(m=>`<div class="ct-pend" onclick="ctOpenMov(${m.id})"><div><b>${esc(m.descrizione)}</b><div class="email-cell" style="color:inherit;opacity:.75">${ctFdate(m.data)} · ${ctChipLabel(CT_STATI,m.stato)}</div></div><b class="tnum">${ctEur(m.importo)}</b></div>`).join('')+`<p class="helptip" style="margin-top:10px;color:inherit;opacity:.8">Se si completassero tutti, il saldo cambierebbe di ${pendAmt>=0?'+':''}${ctEur(pendAmt)}.</p>`
+    <div class="ct-months">${data.map(d=>`<div class="ct-m ${d.k===k?'now':''}"><div class="ct-bars"><span class="ct-b in" style="height:${Math.max(4,d.i/mx*100)}%" title="Entrate ${ctEur(d.i)}"></span><span class="ct-b out" style="height:${Math.max(4,d.o/mx*100)}%" title="Uscite ${ctEur(d.o)}"></span><span class="ct-b quota" style="height:${Math.max(4,d.q/mx*100)}%" title="Quote ai soci ${ctEur(d.q)}"></span></div>
+      <div class="ct-ml">${CT_MS[+d.k.slice(5)-1]} ${d.k.slice(2,4)}</div><div class="ct-mv in tnum">+${ctEur(d.i)}</div><div class="ct-mv out tnum">−${ctEur(d.o)}</div><div class="ct-mv quota tnum">quote ${ctEur(d.q)}</div></div>`).join('')}</div>
+    <p class="helptip" style="margin-top:12px"><span class="ct-dot in"></span> entrate &nbsp; <span class="ct-dot out"></span> uscite (costi) &nbsp; <span class="ct-dot quota"></span> quote ai soci. Le quote sono la divisione degli utili tra i soci: non sono un costo, per questo restano separate dalle uscite. Anche i trasferimenti tra conti non contano.</p></div>`;
+  const daVer=pend.filter(m=>m.stato==='da_verificare').length;
+  const pendBox=`<div class="tile t-peach"><div class="tile-h"><h3>${daVer?'Da verificare':'Da completare'}</h3>${daVer>1?'<span class="spacer"></span><button class="btn sm" onclick="ctConfirmAll()">Conferma tutti</button>':''}</div>
+    ${pend.length?[...pend].sort((a,b)=>(b.stato==='da_verificare')-(a.stato==='da_verificare')).slice(0,8).map(m=>`<div class="ct-pend" onclick="ctOpenMov(${m.id})"><div><b>${esc(m.descrizione)}</b><div class="email-cell" style="color:inherit;opacity:.75">${ctFdate(m.data)} · ${esc(m.categoria||'senza categoria')} · ${ctChipLabel(CT_STATI,m.stato)}</div></div><div style="text-align:right"><b class="tnum">${ctKind(m)==='out'?'−':ctKind(m)==='in'?'+':''}${ctEur(m.importo)}</b>${m.stato==='da_verificare'?`<div><button class="btn sm" style="margin-top:6px" onclick="event.stopPropagation();ctConfirm(${m.id})">Conferma</button></div>`:''}</div></div>`).join('')+(pend.length>8?`<p class="helptip" style="color:inherit;opacity:.8">E altri ${pend.length-8}: li trovi in Movimenti, filtro stato.</p>`:'')+`<p class="helptip" style="margin-top:10px;color:inherit;opacity:.8">Se si completassero tutti, il saldo cambierebbe di ${pendAmt>=0?'+':''}${ctEur(pendAmt)}.</p>`
     :'<p>Tutto registrato: nessun movimento in sospeso.</p>'}</div>`;
   const last=ctSorted(ct.mov).slice(0,8);
   return `<div class="bento"><div class="span-7">${board}</div><div class="span-5" style="display:flex">${pendBox.replace('class="tile t-peach"','class="tile t-peach" style="flex:1"')}</div></div>
@@ -4425,7 +4457,7 @@ function ctFilterConto(id){ct.conto=String(id);ct.q=ct.tipo=ct.cat=ct.stato=ct.m
 function ctShown(){
   const q=ct.q.trim().toLowerCase();
   return ctSorted(ct.mov).filter(m=>(!q||[m.descrizione,m.riferimento,m.note,m.categoria].some(v=>String(v||'').toLowerCase().includes(q)))&&
-    (!ct.conto||String(m.da_conto)===ct.conto||String(m.a_conto)===ct.conto)&&(!ct.tipo||m.tipo===ct.tipo)&&(!ct.cat||m.categoria===ct.cat)&&(!ct.stato||m.stato===ct.stato)&&(!ct.mese||ctYM(m.data)===ct.mese));
+    (!ct.conto||String(m.da_conto)===ct.conto||String(m.a_conto)===ct.conto)&&(!ct.tipo||ctKind(m)===ct.tipo)&&(!ct.cat||m.categoria===ct.cat)&&(!ct.stato||m.stato===ct.stato)&&(!ct.mese||ctYM(m.data)===ct.mese));
 }
 function ctSet(k,v){ct[k]=v;render()}
 function ctSearch(v){ct.q=v;clearTimeout(window._ctq);window._ctq=setTimeout(()=>{render();const i=document.getElementById('ct-q');if(i){i.focus();i.setSelectionRange(v.length,v.length)}},220)}
@@ -4437,49 +4469,56 @@ function ctMovimenti(){
   const sel=(id,cur,arr,all,lab=x=>x)=>`<select class="ct-sel" id="${id}" onchange="ctSet('${id.replace('ct-s-','')}',this.value)" aria-label="${all}"><option value="">${all}</option>${arr.map(x=>`<option value="${escAttr(x.v??x)}" ${String(x.v??x)===cur?'selected':''}>${esc(x.l??lab(x))}</option>`).join('')}</select>`;
   const any=ct.q||ct.conto||ct.tipo||ct.cat||ct.stato||ct.mese;
   return `<div class="filters"><div class="search"><svg class="ico" style="width:17px;height:17px;color:var(--faint)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="ct-q" placeholder="Cerca descrizione, riferimento, note…" value="${escAttr(ct.q)}" oninput="ctSearch(this.value)" aria-label="Cerca nei movimenti"></div>
-    <div class="seg">${[['','Tutti'],['in','Entrate'],['out','Uscite'],['move','Trasferimenti']].map(t=>`<button class="fbtn ${ct.tipo===t[0]?'on':''}" onclick="ctSet('tipo','${t[0]}')">${t[1]}</button>`).join('')}</div></div>
+    <div class="seg">${[['','Tutti'],['in','Entrate'],['out','Uscite'],['quota','Quote ai soci'],['move','Trasferimenti']].map(t=>`<button class="fbtn ${ct.tipo===t[0]?'on':''}" onclick="ctSet('tipo','${t[0]}')">${t[1]}</button>`).join('')}</div></div>
   <div class="filters">${sel('ct-s-conto',ct.conto,ct.conti.map(c=>({v:c.id,l:c.nome})),'Tutti i conti')}${sel('ct-s-cat',ct.cat,cats,'Tutte le categorie')}${sel('ct-s-mese',ct.mese,mesi,'Tutti i mesi',k=>CT_MESI[+k.slice(5)-1]+' '+k.slice(0,4))}${sel('ct-s-stato',ct.stato,CT_STATI.map(s=>({v:s.id,l:s.label})),'Ogni stato')}
     ${any?'<button class="btn sm ghost" onclick="ctClear()">Azzera filtri</button>':''}<span style="flex:1"></span><button class="btn sm" onclick="ctExportCsv()" ${list.length?'':'disabled'}>Esporta CSV</button></div>
   ${ctTable(list)}
-  <p class="helptip" style="margin-top:12px"><b style="color:var(--text)">${list.length}</b> movimenti · entrate <b style="color:var(--ok)">${ctEur(s.i)}</b> · uscite <b style="color:var(--late)">${ctEur(s.o)}</b> · netto <b style="color:var(--text)">${ctEur(s.i-s.o)}</b>. Clicca un movimento per modificarlo.</p>`;
+  <p class="helptip" style="margin-top:12px"><b style="color:var(--text)">${list.length}</b> movimenti · entrate <b style="color:var(--ok)">${ctEur(s.i)}</b> · uscite <b style="color:var(--late)">${ctEur(s.o)}</b> · netto <b style="color:var(--text)">${ctEur(s.i-s.o)}</b> · quote ai soci <b style="color:var(--wait)">${ctEur(s.q)}</b> (non sono uscite). Clicca un movimento per modificarlo.</p>`;
 }
 function ctConti(){
   return `<div class="filters"><label class="ct-chk"><input type="checkbox" ${state.config.ctInclude?'checked':''} onchange="ctToggleOpen(this.checked)"> Conta nel saldo anche i movimenti non completati (in corso e in sospeso)</label><span style="flex:1"></span>
     <button class="btn sm" onclick="ctOpenConto()">${CT_I.plus}Nuovo conto</button></div>
   <div class="ct-accs">${ct.conti.filter(ctIsMain).map(c=>{
-    const b=ctBalance(c.id), ent=ct.mov.filter(m=>ctCounts(m)&&m.a_conto===c.id).reduce((s,m)=>s+m.importo,0), usc=ct.mov.filter(m=>ctCounts(m)&&m.da_conto===c.id).reduce((s,m)=>s+m.importo,0);
+    const b=ctBalance(c.id), sm=(f)=>ct.mov.filter(m=>ctCounts(m)&&f(m)).reduce((s,m)=>s+m.importo,0);
+    const ent=sm(m=>m.a_conto===c.id&&ctKind(m)==='in'), ver=sm(m=>m.a_conto===c.id&&ctKind(m)!=='in'), usc=sm(m=>m.da_conto===c.id&&ctKind(m)!=='quota'), quo=sm(m=>m.da_conto===c.id&&ctKind(m)==='quota');
     const n=ct.mov.filter(m=>m.a_conto===c.id||m.da_conto===c.id).length;
     return `<div class="tile t-orange"><div class="tile-h"><h3>${esc(c.nome)}</h3></div><div class="sub" style="font-size:13.5px;opacity:.75">${n} movimenti</div>
       <div class="v ct-v" style="font-size:44px;font-weight:800;font-stretch:112%;letter-spacing:-.045em;margin:16px 0 4px;line-height:1">${ctEur(b)}</div><div style="font-size:13px;opacity:.75;margin-bottom:14px">saldo calcolato</div>
-      <table class="spend-table" style="color:inherit"><tr><td>Saldo iniziale</td><td>${ctEur(c.apertura)}</td></tr><tr><td>Totale in ingresso</td><td>+${ctEur(ent)}</td></tr><tr><td>Totale in uscita</td><td>−${ctEur(usc)}</td></tr></table>
+      <table class="spend-table" style="color:inherit"><tr><td>Saldo iniziale</td><td>${ctEur(c.apertura)}</td></tr><tr><td>Entrate</td><td>+${ctEur(ent)}</td></tr>${ver?`<tr><td>Versamenti dei soci</td><td>+${ctEur(ver)}</td></tr>`:''}<tr><td>Uscite (costi)</td><td>−${ctEur(usc)}</td></tr><tr><td>Quote ai soci</td><td>−${ctEur(quo)}</td></tr></table>
       <div class="rq-actions" style="margin-top:14px"><button class="btn sm" onclick="ctFilterConto(${c.id})">Movimenti</button><button class="btn sm" onclick="ctOpenAlign(${c.id})">Allinea al saldo reale</button><button class="btn sm ghost" onclick="ctOpenConto(${c.id})">Modifica</button></div></div>`}).join('')}</div>
   ${ct.conti.some(c=>!ctIsMain(c))?`<div class="section-h"><h3>Soci</h3><div class="line"></div></div>
-  <div class="table-wrap"><table><thead><tr><th>Nome</th><th>Movimenti</th><th></th></tr></thead><tbody>${ct.conti.filter(c=>!ctIsMain(c)).map(c=>`<tr><td class="az">${esc(c.nome)}</td><td class="tnum">${ct.mov.filter(m=>m.a_conto===c.id||m.da_conto===c.id).length}</td><td style="text-align:right"><button class="btn sm ghost" onclick="ctFilterConto(${c.id})">Movimenti</button><button class="btn sm ghost" onclick="ctOpenConto(${c.id})">Modifica</button></td></tr>`).join('')}</tbody></table></div>
-  <p class="helptip" style="margin-top:10px">I soci servono solo come destinatari di quote e rimborsi, o per chi versa sul conto: della loro situazione la suite non tiene il saldo.</p>`:''}
+  <div class="table-wrap"><table><thead><tr><th>Nome</th><th>Movimenti</th><th style="text-align:right">Quote ricevute</th><th></th></tr></thead><tbody>${ct.conti.filter(c=>!ctIsMain(c)).map(c=>`<tr><td class="az">${esc(c.nome)}</td><td class="tnum">${ct.mov.filter(m=>m.a_conto===c.id||m.da_conto===c.id).length}</td><td class="tnum" style="text-align:right">${ctEur(ct.mov.filter(m=>ctCounts(m)&&m.a_conto===c.id&&ctKind(m)==='quota').reduce((s,m)=>s+m.importo,0))}</td><td style="text-align:right"><button class="btn sm ghost" onclick="ctFilterConto(${c.id})">Movimenti</button><button class="btn sm ghost" onclick="ctOpenConto(${c.id})">Modifica</button></td></tr>`).join('')}</tbody></table></div>
+  <p class="helptip" style="margin-top:10px">Quello che arriva sul conto di un socio è la sua quota degli utili, non un costo dell'azienda: per questo compare come «Quota ai soci» e non nelle uscite. Della loro situazione personale la suite non tiene il saldo.</p>`:''}
   <p class="helptip" style="margin-top:16px;max-width:680px">Il saldo del conto aziendale è il saldo iniziale più tutto ciò che entra, meno tutto ciò che esce. Se non coincide con quello della banca, usa «Allinea al saldo reale»: scrivi il saldo di oggi e la suite corregge il saldo iniziale.</p>`;
 }
 function ctReport(){
   const anni=[...new Set(ct.mov.map(m=>m.data&&m.data.slice(0,4)).filter(Boolean))].sort().reverse();
   const y=anni.includes(ct.year)?ct.year:(anni[0]||String(new Date().getFullYear()));
   const list=ct.mov.filter(m=>ctCounts(m)&&m.data&&m.data.startsWith(y)), s=ctSums(list);
-  const cat=t=>{const o={};list.filter(m=>m.tipo===t).forEach(m=>{const k=m.categoria||'Senza categoria';o[k]=(o[k]||0)+m.importo});return Object.entries(o).sort((a,b)=>b[1]-a[1])};
+  const cat=t=>{const o={};list.filter(m=>ctKind(m)===t).forEach(m=>{const k=m.categoria||'Senza categoria';o[k]=(o[k]||0)+m.importo});return Object.entries(o).sort((a,b)=>b[1]-a[1])};
   const mesi=Array.from({length:12},(_,i)=>{const k=y+'-'+String(i+1).padStart(2,'0');return{k,...ctSums(list.filter(m=>ctYM(m.data)===k))}});
-  const mx=Math.max(1,...mesi.flatMap(m=>[m.i,m.o]));
+  const mx=Math.max(1,...mesi.flatMap(m=>[m.i,m.o,m.q]));
   const hb=(arr,tot,color)=>arr.length?arr.map(([k,v])=>`<div class="ct-hb"><span>${esc(k)}</span><div class="nl-bar-wrap" style="background:var(--surface-2)"><div class="nl-bar" style="width:${tot?v/tot*100:0}%;background:${color}"></div></div><b class="tnum">${ctEur(v)}</b></div>`).join(''):'<p class="helptip">Nessun dato.</p>';
-  const out={};list.filter(m=>m.tipo==='out').forEach(m=>{const k=m.descrizione.replace(/ - .*$/,'').replace(/^Quota .*/,'Quote soci').replace(/^Rata /,'').trim();out[k]=(out[k]||0)+m.importo});
+  const out={};list.filter(m=>ctKind(m)==='out').forEach(m=>{const k=m.descrizione.replace(/ - .*$/,'').replace(/^Rata /,'').trim();out[k]=(out[k]||0)+m.importo});
+  const perSocio={};list.filter(m=>ctKind(m)==='quota').forEach(m=>{const k=ctName(m.a_conto);perSocio[k]=(perSocio[k]||0)+m.importo});
+  const quoteSocio=Object.entries(perSocio).sort((a,b)=>b[1]-a[1]);
   const top=Object.entries(out).sort((a,b)=>b[1]-a[1]).slice(0,8);
   return `<div class="filters"><label for="ct-year" class="email-cell" style="color:var(--text);font-weight:650">Anno</label><select class="ct-sel" id="ct-year" onchange="ct.year=this.value;render()">${(anni.length?anni:[y]).map(a=>`<option ${a===y?'selected':''}>${a}</option>`).join('')}</select></div>
   <div class="nl-kpis"><div class="stat-t t-lilac"><div class="k">Entrate ${y}</div><div class="row"><div class="v ct-v">${ctEur(s.i)}</div></div></div>
-    <div class="stat-t t-ink"><div class="k">Uscite ${y}</div><div class="row"><div class="v ct-v">${ctEur(s.o)}</div></div></div>
-    <div class="stat-t t-orange"><div class="k">Risultato ${y}</div><div class="row"><div class="v ct-v">${ctEur(s.i-s.o)}</div></div></div></div>
+    <div class="stat-t t-ink"><div class="k">Uscite ${y}</div><div class="row"><div class="v ct-v">${ctEur(s.o)}</div></div><div class="ct-sub">solo costi, senza le quote ai soci</div></div>
+    <div class="stat-t t-orange"><div class="k">Utile ${y}</div><div class="row"><div class="v ct-v">${ctEur(s.i-s.o)}</div></div><div class="ct-sub">entrate meno uscite, prima delle quote</div></div></div>
+  <div class="nl-kpis" style="margin-top:12px"><div class="stat-t t-peach"><div class="k">Quote ai soci ${y}</div><div class="row"><div class="v ct-v">${ctEur(s.q)}</div></div><div class="ct-sub">divisione degli utili, non un costo</div></div>
+    <div class="stat-t t-lilac"><div class="k">Rimasto in azienda ${y}</div><div class="row"><div class="v ct-v">${ctEur(s.i-s.o-s.q)}</div></div><div class="ct-sub">utile meno quote ai soci</div></div></div>
   <div class="section-h"><h3>Mese per mese</h3><div class="line"></div></div>
-  <div class="table-wrap"><table><thead><tr><th>Mese</th><th></th><th style="text-align:right">Entrate</th><th style="text-align:right">Uscite</th><th style="text-align:right">Netto</th></tr></thead><tbody>
-  ${mesi.map(m=>`<tr><td class="az">${CT_MESI[+m.k.slice(5)-1]}</td><td style="width:32%"><div style="display:flex;flex-direction:column;gap:4px"><div style="height:6px;border-radius:99px;background:var(--ok);width:${m.i/mx*100}%"></div><div style="height:6px;border-radius:99px;background:var(--late);width:${m.o/mx*100}%"></div></div></td><td class="tnum" style="text-align:right;color:${m.i?'var(--ok)':'var(--faint)'}">${ctEur(m.i)}</td><td class="tnum" style="text-align:right;color:${m.o?'var(--late)':'var(--faint)'}">${ctEur(m.o)}</td><td class="tnum" style="text-align:right;font-weight:650">${ctEur(m.i-m.o)}</td></tr>`).join('')}</tbody></table></div>
+  <div class="table-wrap"><table><thead><tr><th>Mese</th><th></th><th style="text-align:right">Entrate</th><th style="text-align:right">Uscite</th><th style="text-align:right">Quote ai soci</th><th style="text-align:right">Utile</th></tr></thead><tbody>
+  ${mesi.map(m=>`<tr><td class="az">${CT_MESI[+m.k.slice(5)-1]}</td><td style="width:32%"><div style="display:flex;flex-direction:column;gap:4px"><div style="height:6px;border-radius:99px;background:var(--ok);width:${m.i/mx*100}%"></div><div style="height:6px;border-radius:99px;background:var(--late);width:${m.o/mx*100}%"></div><div style="height:6px;border-radius:99px;background:var(--wait);width:${m.q/mx*100}%"></div></div></td><td class="tnum" style="text-align:right;color:${m.i?'var(--ok)':'var(--faint)'}">${ctEur(m.i)}</td><td class="tnum" style="text-align:right;color:${m.o?'var(--late)':'var(--faint)'}">${ctEur(m.o)}</td><td class="tnum" style="text-align:right;color:${m.q?'var(--wait)':'var(--faint)'}">${ctEur(m.q)}</td><td class="tnum" style="text-align:right;font-weight:650">${ctEur(m.i-m.o)}</td></tr>`).join('')}</tbody></table></div>
   <div class="section-h"><h3>Per categoria</h3><div class="line"></div></div>
   <div class="ct-two2"><div class="tile"><div class="tile-h"><h3>Entrate</h3></div>${hb(cat('in'),s.i,'var(--ok)')}</div><div class="tile"><div class="tile-h"><h3>Uscite</h3></div>${hb(cat('out'),s.o,'var(--late)')}</div></div>
   <div class="section-h"><h3>Dove vanno le uscite</h3><div class="line"></div></div>
   <div class="tile">${hb(top,s.o,'var(--text)')}</div>
-  <p class="helptip" style="margin-top:12px">I trasferimenti tra conti, come i versamenti dei soci sul conto aziendale, non contano né come entrate né come uscite.</p>`;
+  <div class="section-h"><h3>Ripartizione quote ai soci</h3><div class="line"></div></div>
+  <div class="tile">${hb(quoteSocio,s.q,'var(--wait)')}</div>
+  <p class="helptip" style="margin-top:12px">Le quote ai soci sono la divisione degli utili: restano fuori dalle uscite e hanno una voce a parte. I versamenti dei soci sul conto aziendale non contano né come entrate né come uscite.</p>`;
 }
 
 /* =======================================================
