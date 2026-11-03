@@ -4160,6 +4160,7 @@ function ctBalance(id){
   for(const m of ct.mov){ if(!ctCounts(m))continue; if(m.a_conto===id)s+=+m.importo; if(m.da_conto===id)s-=+m.importo }
   return Math.round(s*100)/100;
 }
+function ctDaVerificare(id){if(state.config.ctInclude)return 0;let s=0;for(const m of ct.mov){if(m.stato!=='da_verificare')continue;if(m.a_conto===id)s+=+m.importo;if(m.da_conto===id)s-=+m.importo}return Math.round(s*100)/100}
 function ctOpenAmt(id){let s=0;for(const m of ct.mov){if(ctCounts(m))continue;if(m.a_conto===id)s+=+m.importo;if(m.da_conto===id)s-=+m.importo}return Math.round(s*100)/100}
 /* Le quote ai soci (soldi che dal conto aziendale vanno sul conto personale di un socio) sono una ripartizione, non un costo:
    restano fuori da entrate e uscite e hanno una voce a parte. Nel database sono un trasferimento (tipo 'move') dal conto aziendale a un socio;
@@ -4316,11 +4317,12 @@ async function ctDeleteConto(id){
   ct.conti=ct.conti.filter(x=>x.id!==id); closeModal(); render(); toast('Conto eliminato','ok');
 }
 function ctOpenAlign(id){
-  const c=ct.conti.find(x=>x.id===id); if(!c)return; const cur=ctBalance(id);
+  const c=ct.conti.find(x=>x.id===id); if(!c)return; const bal=ctBalance(id), dv=ctDaVerificare(id), cur=Math.round((bal+dv)*100)/100;
   modal(`<div class="modal" role="dialog" aria-modal="true" onclick="event.stopPropagation()">
     <div class="modal-h"><h3>Allinea «${esc(c.nome)}» al saldo reale</h3><div class="x" role="button" tabindex="0" aria-label="Chiudi" onclick="closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div>
     <form onsubmit="ctAlign(event,${id},${cur})"><div class="modal-b">
-      <p class="helptip">Saldo calcolato oggi: <b class="tnum" style="color:var(--text)">${ctEur(cur)}</b>. Scrivi il saldo che vedi in banca: la suite corregge il saldo iniziale in modo che i due numeri coincidano.</p>
+      <p class="helptip">Saldo calcolato oggi: <b class="tnum" style="color:var(--text)">${ctEur(bal)}</b>${dv?`, più <b class="tnum" style="color:var(--text)">${dv>0?'+':''}${ctEur(dv)}</b> dei movimenti «Da verificare», che il saldo reale include già: ${ctEur(cur)}`:''}. Scrivi il saldo che vedi in banca o su PayPal: la suite corregge il saldo iniziale in modo che i due numeri coincidano.</p>
+      ${dv?'<p class="helptip">I movimenti «Da verificare» arrivano da PayPal, quindi sono già dentro il saldo reale: confermarli dopo l\'allineamento non cambia più il saldo.</p>':''}
       <div class="form-row"><label for="ct-al">Saldo reale (€)</label><input id="ct-al" type="number" step="0.01" required></div>
     </div><div class="modal-f"><button type="button" class="btn" onclick="closeModal()">Annulla</button><button class="btn primary" type="submit">Allinea</button></div></form></div>`);
   setTimeout(()=>{const e=document.getElementById('ct-al');if(e)e.focus()},40);
