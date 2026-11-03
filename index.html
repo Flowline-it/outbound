@@ -633,6 +633,41 @@ body[data-view="lead"] .hero{--hb:var(--lilac);--hi:var(--on-lilac)}
 .ld-selbar .spacer{flex:1}
 @media(max-width:800px){.ld-form{grid-template-columns:1fr}.ld-sum .btn{width:100%}}
 .wk-bw{flex:1;width:100%;display:flex;align-items:flex-end;justify-content:center;min-height:0}
+
+/* ===== contabilità ===== */
+body[data-view="contabilita"] .hero{--hb:var(--ink);--hi:#FFFFFF}
+[data-theme="dark"] body[data-view="contabilita"] .hero{--hb:#1E1E1E}
+body[data-view="contabilita"] .hero .btn.primary{background:var(--brand);color:var(--on-brand)}
+body[data-view="contabilita"] .hero .btn.primary:hover{background:var(--brand-hover)}
+body[data-view="contabilita"] .dot.on{background:#5FD08A}
+.ct-v{font-size:40px!important;letter-spacing:-.045em;white-space:nowrap}
+.ct-two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.ct-two2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.ct-accs{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:16px}
+.ct-sel{height:44px;padding:0 38px 0 18px;border-radius:var(--pill);border:1.5px solid transparent;background:var(--surface);font-weight:600;font-size:14px;max-width:100%}
+.ct-sel:focus{outline:none;border-color:var(--focus)}
+.ct-chk{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;cursor:pointer}
+.ct-table tbody tr{cursor:pointer}
+.ct-table tbody tr:focus-visible{outline:2px solid var(--focus);outline-offset:-2px}
+.ct-desc{max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ct-amt{text-align:right;font-weight:750;white-space:nowrap}
+.ct-amt.in{color:var(--ok)}.ct-amt.out{color:var(--late)}.ct-amt.move{color:var(--muted)}
+.ct-months{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+.ct-m{border-radius:var(--r-md);padding:14px 10px 12px;text-align:center;background:var(--surface-2)}
+.ct-m.now{background:var(--accent-soft)}
+.ct-bars{display:flex;gap:6px;height:96px;align-items:flex-end;justify-content:center;margin-bottom:10px}
+.ct-b{width:20px;border-radius:8px 8px 3px 3px;display:block}
+.ct-b.in,.ct-dot.in{background:var(--ok)}.ct-b.out,.ct-dot.out{background:var(--late)}
+.ct-dot{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:middle}
+.ct-ml{font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.ct-mv{font-size:12.5px;font-weight:650;margin-top:2px;white-space:nowrap}
+.ct-mv.in{color:var(--ok)}.ct-mv.out{color:var(--late)}
+.ct-pend{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid color-mix(in srgb,currentColor 16%,transparent);cursor:pointer}
+.ct-pend:last-of-type{border-bottom:0}
+.ct-hb{display:grid;grid-template-columns:minmax(90px,150px) 1fr auto;gap:12px;align-items:center;padding:8px 0;font-size:14px}
+.board .b-st{width:auto}
+@media(max-width:1100px){.ct-two2{grid-template-columns:1fr}.bento .span-7,.bento .span-5{grid-column:span 12}}
+@media(max-width:700px){.ct-two{grid-template-columns:1fr}.ct-months{grid-template-columns:repeat(3,minmax(0,1fr))}.ct-v{font-size:30px!important}.ct-desc{max-width:180px}.ct-hb{grid-template-columns:1fr auto}.ct-hb .nl-bar-wrap{grid-column:1/-1;order:3}}
 </style>
 </head>
 <body>
@@ -1916,13 +1951,14 @@ const SECTIONS=[
   {id:'outbound',label:'Outbound',icon:'M22 2 11 13 M22 2l-7 20-4-9-9-4 20-7z'},
   {id:'newsletter',label:'Newsletter',icon:'M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z M22 6l-10 7L2 6'},
   {id:'richieste',label:'Richieste',icon:'M22 12h-6l-2 3h-4l-2-3H2 M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z'},
+  {id:'contabilita',label:'Contabilità',icon:'M20 7H5a2 2 0 0 1 0-4h13v4 M3 5v14a2 2 0 0 0 2 2h15V7 M16 14h.01'},
 ];
-const SEC_NAME={outbound:'Outbound',newsletter:'Newsletter',richieste:'Richieste'};
+const SEC_NAME={outbound:'Outbound',newsletter:'Newsletter',richieste:'Richieste',contabilita:'Contabilità'};
 const NL_PAGES=[{tab:'campagne',label:'Campagne'},{tab:'iscritti',label:'Iscritti'}];
-function sectionOf(v){return v==='newsletter'||v==='richieste'?v:'outbound'}
+function sectionOf(v){return v==='newsletter'||v==='richieste'||v==='contabilita'?v:'outbound'}
 function goSection(sec){
   if(sec===sectionOf(state.view)){closeRail();return}
-  if(sec==='newsletter'||sec==='richieste') go(sec); else go(state.lastOutbound&&sectionOf(state.lastOutbound)==='outbound'?state.lastOutbound:'dashboard');
+  if(sec==='newsletter'||sec==='richieste'||sec==='contabilita') go(sec); else go(state.lastOutbound&&sectionOf(state.lastOutbound)==='outbound'?state.lastOutbound:'dashboard');
 }
 function goNl(tab){nl.tab=tab;nl.edit=null;if(state.view!=='newsletter')go('newsletter');else{closeRail();render();window.scrollTo(0,0)}}
 const NAV=[
@@ -1943,10 +1979,10 @@ function renderNav(){
   const newRep=state.contacts.filter(c=>c.haRisposto&&c.replySeen===false).length;
   const ico=d=>`<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`;
   // livello 1: aree, con un pallino se nell'altra area c'è qualcosa che aspetta
-  const alertOut=late||todayN||newRep||ldBusy(), alertNl=!!nl.sending, alertRq=rq.loaded&&rqNew()>0;
+  const alertOut=late||todayN||newRep||ldBusy(), alertNl=!!nl.sending, alertRq=rq.loaded&&rqNew()>0, alertCt=ct.loaded&&!ct.missing&&ctPending().length>0;
   document.getElementById('secSwitch').innerHTML=SECTIONS.map(x=>{
-    const on=x.id===sec, al=x.id==='outbound'?alertOut:(x.id==='newsletter'?alertNl:alertRq);
-    const dot=!on&&al?`<span class="dotb${x.id==='outbound'&&late?' late':''}" aria-label="${x.id==='richieste'?'ci sono richieste nuove':'ci sono attività in sospeso'}"></span>`:'';
+    const on=x.id===sec, al=x.id==='outbound'?alertOut:(x.id==='newsletter'?alertNl:(x.id==='contabilita'?alertCt:alertRq));
+    const dot=!on&&al?`<span class="dotb${x.id==='outbound'&&late?' late':''}" aria-label="${x.id==='richieste'?'ci sono richieste nuove':x.id==='contabilita'?'ci sono movimenti da completare':'ci sono attività in sospeso'}"></span>`:'';
     return `<button type="button" aria-pressed="${on}" onclick="goSection('${x.id}')">${ico(x.icon)}<span>${x.label}</span>${dot}</button>`;
   }).join('');
   // livello 2: pagine dell'area attiva
@@ -1956,6 +1992,11 @@ function renderNav(){
   if(sec==='richieste'){
     const n=rq.loaded?rqNew():0;
     items=[`<button class="active" aria-current="page" onclick="go('richieste')"><span>Richieste dal sito</span>${n?`<span class="badge">${n}</span>`:''}</button>`];
+  } else if(sec==='contabilita'){
+    items=CT_TABS.map(pg=>{
+      const on=ct.tab===pg.tab, n=pg.tab==='movimenti'&&ct.loaded&&!ct.missing?ctPending().length:0;
+      return `<button class="${on?'active':''}" ${on?'aria-current="page"':''} onclick="ctGoTab('${pg.tab}')"><span>${pg.label}</span>${n?`<span class="badge">${n}</span>`:''}</button>`;
+    });
   } else if(sec==='newsletter'){
     items=NL_PAGES.map(pg=>{
       const on=nl.tab===pg.tab;
@@ -2031,6 +2072,7 @@ function heroCopy(){
   const backlog=state.contacts.filter(isUnplanned).length;
   if(state.view==='newsletter') return nlHeroCopy();
   if(state.view==='richieste') return rqHeroCopy();
+  if(state.view==='contabilita') return ctHeroCopy();
   if(state.view==='lead') return ldHeroCopy();
   if(state.view==='stats') return obHeroCopy();
   if(!n) return {t:'Benvenuto in Outbound.',l:'Importa una lista di contatti in CSV o Excel: le colonne vengono riconosciute in automatico.'};
@@ -2052,7 +2094,7 @@ function render(){
   document.getElementById('viewTitle').textContent=hc.t;
   const vl=document.getElementById('viewLede');if(vl)vl.textContent=hc.l;
   const vd=document.getElementById('viewDate');if(vd)vd.textContent=today().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
-  const pageName=state.view==='richieste'?'Richieste':state.view==='newsletter'?(nl.tab==='iscritti'?'Iscritti':'Campagne'):({dashboard:'Dashboard',pianifica:'Pianificazione',coda:'Coda invio',contatti:'Contatti',calendario:'Calendario',risposte:'Risposte',lead:'Ricerca lead',stats:'Statistiche'}[state.view]||'Dashboard');
+  const pageName=state.view==='contabilita'?(CT_TABS.find(x=>x.tab===ct.tab)||CT_TABS[0]).label:state.view==='richieste'?'Richieste':state.view==='newsletter'?(nl.tab==='iscritti'?'Iscritti':'Campagne'):({dashboard:'Dashboard',pianifica:'Pianificazione',coda:'Coda invio',contatti:'Contatti',calendario:'Calendario',risposte:'Risposte',lead:'Ricerca lead',stats:'Statistiche'}[state.view]||'Dashboard');
   const secName=SEC_NAME[sectionOf(state.view)];
   document.title=(pageName!==secName?pageName+' · ':'')+secName+' — FlowLine Suite';
   const cr=document.getElementById('viewCrumb');if(cr)cr.textContent=secName+(pageName!==secName?' · '+pageName:'');
@@ -2079,6 +2121,7 @@ function render(){
   } else { primary=`<button class="btn primary" onclick="pickFile()">${I.plus}Importa contatti</button>`; importPrimary=true; }
   if(state.view==='newsletter'){ ta.innerHTML=nlTopActions(); }
   else if(state.view==='richieste'){ ta.innerHTML=rqTopActions(); }
+  else if(state.view==='contabilita'){ ta.innerHTML=ctTopActions(); }
   else if(state.view==='lead'){ ta.innerHTML=ldTopActions(); }
   else if(state.view==='stats'){ ta.innerHTML=`<button class="btn" onclick="obLoad(true)"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6 M1 20v-6h6 M3.51 9a9 9 0 0 1 14.85-3.36L23 10 M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg><span class="lbl">Aggiorna</span></button>`; }
   else ta.innerHTML=primary
@@ -2095,6 +2138,7 @@ function render(){
   else if(state.view==='newsletter'){ if(!nl.inited) nlInit(); C.innerHTML=viewNewsletter(); }
   else if(state.view==='lead'){ if(!nl.inited) nlInit(); C.innerHTML=viewLead(); }
   else if(state.view==='richieste'){ if(!nl.inited) nlInit(); C.innerHTML=viewRichieste(); }
+  else if(state.view==='contabilita'){ if(!nl.inited) nlInit(); C.innerHTML=viewContabilita(); }
   else if(state.view==='stats'){ C.innerHTML=viewStats(); }
   if(state.view==='coda')bindCodaInputs();
   if(state.view==='pianifica')bindPianifica();
@@ -3186,7 +3230,7 @@ function nlSleep(ms){return new Promise(r=>setTimeout(r,ms))}
 function nlActive(){return nl.subs.filter(s=>!s.unsubscribed_at)}
 
 /* ---- connessione e accesso (condiviso con Ricerca lead) ---- */
-function nlAuthView(){return state.view==='newsletter'||state.view==='lead'||state.view==='richieste'}
+function nlAuthView(){return state.view==='newsletter'||state.view==='lead'||state.view==='richieste'||state.view==='contabilita'}
 async function nlInit(){
   if(nl.inited)return; nl.inited=true;
   if(typeof window.supabase==='undefined'){nl.inited=false;setTimeout(nlInit,400);return}
@@ -3195,7 +3239,7 @@ async function nlInit(){
     if(!nl.ready)return;                       // la sessione iniziale la gestisce getSession qui sotto
     const was=nl.session&&nl.session.user&&nl.session.user.id;
     nl.session=session;
-    if(ev==='SIGNED_OUT'){nl.editor=null;nl.loaded=false;nl.subs=[];nl.camps=[];nl.edit=null;ld.loaded=false;ld.searches=[];ld.leads=[];ld.sel.clear();clearTimeout(ld.pollT);rq.loaded=false;rq.rows=[];clearTimeout(rq.pollT);if(nlAuthView())render();}
+    if(ev==='SIGNED_OUT'){nl.editor=null;nl.loaded=false;nl.subs=[];nl.camps=[];nl.edit=null;ld.loaded=false;ld.searches=[];ld.leads=[];ld.sel.clear();clearTimeout(ld.pollT);rq.loaded=false;rq.rows=[];clearTimeout(rq.pollT);ct.loaded=false;ct.conti=[];ct.mov=[];ct.missing=false;if(nlAuthView())render();}
     else if(ev==='SIGNED_IN' && session && was!==session.user.id){nl.editor=null;if(nlAuthView())render();setTimeout(nlAfterLogin,0);}
   });
   const {data}=await nlSupa.auth.getSession();
@@ -3205,7 +3249,7 @@ async function nlInit(){
 async function nlAfterLogin(){
   const {data,error}=await nlSupa.rpc('newsletter_is_editor');
   nl.editor=!error&&data===true;
-  if(nl.editor){ ldLoad({silent:state.view!=='lead'}); rqLoad({silent:state.view!=='richieste'}); await nlLoad(); } else if(nlAuthView()) render();
+  if(nl.editor){ ldLoad({silent:state.view!=='lead'}); rqLoad({silent:state.view!=='richieste'}); ctLoad({silent:state.view!=='contabilita'}); await nlLoad(); } else if(nlAuthView()) render();
 }
 async function nlLogin(ev){
   ev&&ev.preventDefault();
@@ -3611,10 +3655,10 @@ function viewNewsletter(){
   return tabs+(nl.tab==='iscritti'?nlSubsView():nlCampsView());
 }
 function nlLoginView(mode){
-  const lead=mode==='lead', req=mode==='richieste';
+  const lead=mode==='lead', req=mode==='richieste', cnt=mode==='contabilita';
   return `<div class="tile nl-login">
-    <div class="tile-h"><h3>${lead?'Accedi per cercare i lead':req?'Accedi alle richieste':'Accedi alla newsletter'}</h3></div>
-    <p class="helptip" style="margin-bottom:18px">${req?'Nomi, email e telefoni di chi chiede la consulenza sono dati personali: li vede solo chi è in redazione. È lo stesso accesso della newsletter (progetto Lead Flowline → Authentication → Users).':lead?'Le ricerche partono dal database e costano credito Apify: le può lanciare solo chi ha accesso. È lo stesso accesso della newsletter, creato in Supabase (progetto Lead Flowline → Authentication → Users).':'Gli iscritti sono dati personali: li vede solo chi è in redazione. Usa l\'email e la password create in Supabase (progetto Lead Flowline → Authentication → Users).'}</p>
+    <div class="tile-h"><h3>${lead?'Accedi per cercare i lead':req?'Accedi alle richieste':cnt?'Accedi alla contabilità':'Accedi alla newsletter'}</h3></div>
+    <p class="helptip" style="margin-bottom:18px">${cnt?'Conti, saldi e movimenti sono dati economici dell\'azienda: li vede solo chi è in redazione. È lo stesso accesso di Newsletter e Richieste (progetto Lead Flowline → Authentication → Users).':req?'Nomi, email e telefoni di chi chiede la consulenza sono dati personali: li vede solo chi è in redazione. È lo stesso accesso della newsletter (progetto Lead Flowline → Authentication → Users).':lead?'Le ricerche partono dal database e costano credito Apify: le può lanciare solo chi ha accesso. È lo stesso accesso della newsletter, creato in Supabase (progetto Lead Flowline → Authentication → Users).':'Gli iscritti sono dati personali: li vede solo chi è in redazione. Usa l\'email e la password create in Supabase (progetto Lead Flowline → Authentication → Users).'}</p>
     <form onsubmit="nlLogin(event)" style="display:flex;flex-direction:column;gap:14px">
       <div class="form-row"><label for="nl-em">Email</label><input id="nl-em" type="email" autocomplete="username" value="info@flowline.it"></div>
       <div class="form-row"><label for="nl-pw">Password</label><input id="nl-pw" type="password" autocomplete="current-password"></div>
@@ -4014,6 +4058,428 @@ function viewRichieste(){
       <td>${rqChip(r)}</td></tr>`}).join('')}
   </tbody></table></div>${rows.length>500?`<p class="helptip" style="margin-top:10px">Mostro le prime 500 di ${rows.length}: usa la ricerca.</p>`:''}
   <p class="helptip" style="margin-top:12px">Clicca una richiesta per scrivere, chiamare, cambiare stato o aggiungere una nota. Quando scrivi o chiami una richiesta nuova, passa da sola a "Contattata".</p>`;
+}
+
+/* =======================================================
+   CONTABILITÀ — conti e movimenti dell'azienda (prima stavano su Notion)
+   Database: tabelle conti e movimenti nel progetto Supabase "Lead Flowline" (stesso di Outbound).
+   Dati economici: accesso solo dopo il login della redazione (stessa regola di Richieste).
+   Il saldo di un conto non è salvato: = saldo iniziale + tutto ciò che entra - tutto ciò che esce.
+   ======================================================= */
+const CT_TABS=[{tab:'panoramica',label:'Panoramica'},{tab:'movimenti',label:'Movimenti'},{tab:'conti',label:'Conti'},{tab:'report',label:'Report'}];
+const CT_MESI=['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
+const CT_MS=['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
+const CT_STATI=[{id:'completato',label:'Completato',chip:'done'},{id:'in_corso',label:'In corso',chip:'wait'},{id:'in_sospeso',label:'In sospeso',chip:'seq'}];
+const CT_TIPI=[{id:'in',label:'Entrata',chip:'reply'},{id:'out',label:'Uscita',chip:'late'},{id:'move',label:'Trasferimento',chip:'da'}];
+const CT_COLS='id,data,descrizione,importo,tipo,da_conto,a_conto,categoria,stato,riferimento,note,created_at';
+const CT_I={
+  plus:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14 M5 12h14"/></svg>',
+  refresh:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6 M1 20v-6h6 M3.51 9a9 9 0 0 1 14.85-3.36L23 10 M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>',
+  wallet:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7H5a2 2 0 0 1 0-4h13v4"/><path d="M3 5v14a2 2 0 0 0 2 2h15V7"/><path d="M16 14h.01"/></svg>'
+};
+const ct={conti:[],mov:[],loaded:false,loading:false,missing:false,tab:'panoramica',month:'',year:'',q:'',tipo:'',conto:'',cat:'',stato:'',mese:'',open:null,mtipo:'out'};
+// dati di partenza presi da Notion (sezione Contabilità), per chi parte da zero
+const CT_SEED_CONTI=[['azi','Conto Aziendale','azienda'],['giu','Giuseppe','socio'],['leo','Leonardo','socio'],['pie','Pietro','socio'],['gia','Giacomo','socio']];
+const CT_SEED=[
+['2026-01-29','Canva',12.85,'azi',null,'out','Abbonamento','C'],
+['2026-01-29','Deposito conto principale',20,'pie','azi','move','Versamento','C'],
+['2026-01-29','Deposito conto principale',20,'giu','azi','move','Versamento','C'],
+['2026-01-29','Deposito conto principale',20,'leo','azi','move','Versamento','C'],
+['2026-01-29','Deposito conto principale',20,'gia','azi','move','Versamento','C'],
+['2026-02-05','Claude',21.96,'azi',null,'out','Abbonamento','C'],
+['2026-02-25','Credito API IA',20,'azi',null,'out','Abbonamento','C'],
+['2026-03-05','Claude',21.96,'azi',null,'out','Abbonamento','C'],
+['2026-03-30','Deposito conto principale',25,'giu','azi','move','Versamento','C'],
+['2026-04-01','Google Workspace',10,'azi',null,'out','Abbonamento','C'],
+['2026-04-01','Deposito conto principale',20,'gia','azi','move','Versamento','C'],
+['2026-04-01','Deposito conto principale',20,'leo','azi','move','Versamento','C'],
+['2026-04-01','Pagamento OpenAPI',45.75,'azi','pie','out','Abbonamento','C'],
+['2026-04-02','Pagamento Open Router',20,'leo',null,'out','Abbonamento','C'],
+['2026-04-02','Deposito conto principale',20,'pie','azi','move','Versamento','C'],
+['2026-04-07','Claude',21.96,'leo',null,'out','Abbonamento','C'],
+['2026-04-20','ADevolution - 30% acconto',360,null,'azi','in','Bonifico','C'],
+['2026-05-05','Google Workspace',9.44,'azi',null,'out','Abbonamento','C'],
+['2026-05-05','Claude',21.96,'azi',null,'out','Abbonamento','C'],
+['2026-05-06','Pagamento Open API',61,'gia','azi','move','Versamento','C'],
+['2026-05-06','Pagamento Open API',61,'azi',null,'out','Abbonamento','C'],
+['2026-05-29','Prima rata - Perfettibile Industries SRL',794.7,null,'azi','in','Bonifico','C'],
+['2026-06-01','Google Workspace',9.78,'azi',null,'out','Abbonamento','C'],
+['2026-06-05','Claude',21.96,'azi',null,'out','Abbonamento','C'],
+['2026-06-16','ADevolution - 70% Saldo',741.72,null,'azi','in','Bonifico','C'],
+['2026-06-16','Quota giugno - Pietro Ziliotto',500,'azi','pie','out','Stipendio','C'],
+['2026-06-16','Quota giugno - Giacomo Matera',500,'azi','gia','out','Stipendio','C'],
+['2026-06-16','Quota giugno - Leonardo Foschi',500,'azi','leo','out','Stipendio','C'],
+['2026-06-29','Seconda rata - Perfettibile',864.9,null,'azi','in','Bonifico','C'],
+['2026-07-01','Acquisto dominio GEARXPro',6.09,'azi',null,'out','Abbonamento','I'],
+['2026-07-01','Google Workspace',15.76,'azi',null,'out','Abbonamento','C'],
+['2026-07-05','Claude',21.96,'azi',null,'out','Abbonamento','C'],
+['2026-07-14','Openrouter',22.48,'azi','leo','out','Abbonamento','C'],
+['2026-07-28','Dominio flowline-ia.it',7.31,'azi',null,'out','Abbonamento','C'],
+['2026-07-28','Supabase',21.99,'azi','leo','out','Abbonamento','C'],
+['2026-08-02','Google Workspace',38.88,'azi',null,'out','Abbonamento','C'],
+['2026-08-03','Google Workspace GEARXPro',5.3,'azi',null,'out','Abbonamento','I'],
+['2026-08-05','Claude',21.96,'azi','leo','out','Abbonamento','C'],
+['2026-08-07','Prima fattura GEARXPRO',384,null,'azi','in','Bonifico','C'],
+['2026-08-10','Quota agosto - Giuseppe Romano',500,'azi','giu','out','Stipendio','C'],
+['2026-08-10','Quota agosto - Pietro Ziliotto',500,'azi','pie','out','Stipendio','C'],
+['2026-08-10','Quota agosto - Giacomo Matera',500,'azi','gia','out','Stipendio','C'],
+['2026-08-10','Quota agosto - Leonardo Foschi',500,'azi','leo','out','Stipendio','C'],
+['2026-08-10','Hostinger Horizon (crediti)',12.19,'azi',null,'out','Abbonamento','C'],
+['2026-08-10','Terza rata - Perfettibile',864.9,null,'azi','in','Bonifico','C'],
+['2026-08-28','Supabase',38.4,'azi',null,'out','Abbonamento','C'],
+['2026-09-01','Google Workspace GEARXPro',29.65,'azi',null,'out','Abbonamento','P'],
+['2026-09-01','Google Workspace',39.53,'azi',null,'out','Abbonamento','C'],
+['2026-09-05','Claude',21.96,'azi',null,'out','Abbonamento','C'],
+['2026-09-07','Rimborso spese Pietro',214.7,'azi','pie','out','Rimborso','C'],
+['2026-09-07','Quarta rata - Perfettibile + rimborso spese',1082.22,null,'azi','in','Bonifico','C'],
+['2026-09-25','Seconda fattura GearxPro',441.04,null,'azi','in','Bonifico','C'],
+['2026-10-01','Quota ottobre - Leonardo Foschi',400,'azi','leo','out','Stipendio','C'],
+['2026-10-01','Quota ottobre - Pietro Ziliotto',400,'azi','pie','out','Stipendio','C'],
+['2026-10-01','Quota ottobre - Giacomo Matera',400,'azi','gia','out','Stipendio','C'],
+['2026-10-01','Quota ottobre - Giuseppe Romano',400,'azi','giu','out','Stipendio','C'],
+['2026-10-01','Quinta rata - Perfettibile',864.9,null,'azi','in','Bonifico','C'],
+['2026-10-05','Rata Claude',21.96,'azi','leo','out','Abbonamento','C'],
+['2026-10-26','Rata Edilbaldo',480.5,null,'azi','in','Bonifico','C'],
+['2026-11-02','Ricarica crediti Anthropic',21.86,'azi','leo','out','Rimborso','C'],
+['','Consulenza Grafi',50,null,'azi','in','Bonifico','C']
+];
+const CT_SEED_STATO={C:'completato',I:'in_corso',P:'in_sospeso'};
+
+const ctEur=n=>new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR'}).format(+n||0);
+const ctYM=d=>d?String(d).slice(0,7):'';
+function ctFdate(d){if(!d)return '—';const [y,m,g]=String(d).split('-');return g+' '+CT_MS[+m-1]+' '+y.slice(2)}
+function ctShiftM(k,d){const [y,m]=k.split('-').map(Number);const x=new Date(y,m-1+d,1);return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')}
+function ctInit(){if(!ct.month)ct.month=isoD(today()).slice(0,7)}
+function ctIsMain(c){return c.tipo==='azienda'}
+function ctMain(){return ct.conti.find(ctIsMain)||ct.conti[0]}
+function ctName(id){if(id==null)return 'Esterno';const c=ct.conti.find(x=>x.id===id);return c?c.nome:'?'}
+function ctCounts(m){return m.stato==='completato'||!!state.config.ctInclude}
+function ctBalance(id){
+  const c=ct.conti.find(x=>x.id===id); let s=c?+c.apertura||0:0;
+  for(const m of ct.mov){ if(!ctCounts(m))continue; if(m.a_conto===id)s+=+m.importo; if(m.da_conto===id)s-=+m.importo }
+  return Math.round(s*100)/100;
+}
+function ctOpenAmt(id){let s=0;for(const m of ct.mov){if(ctCounts(m))continue;if(m.a_conto===id)s+=+m.importo;if(m.da_conto===id)s-=+m.importo}return Math.round(s*100)/100}
+function ctSums(list){let i=0,o=0;for(const m of list){if(!ctCounts(m))continue;if(m.tipo==='in')i+=+m.importo;else if(m.tipo==='out')o+=+m.importo}return{i,o}}
+const ctByMonth=k=>ct.mov.filter(m=>ctYM(m.data)===k);
+const ctSorted=l=>[...l].sort((a,b)=>String(b.data||'0000').localeCompare(String(a.data||'0000'))||b.id-a.id);
+const ctPending=()=>ct.mov.filter(m=>m.stato!=='completato');
+function ctChip(list,id){const s=list.find(x=>x.id===id)||list[0];return `<span class="chip ${s.chip}"><span class="d"></span>${s.label}</span>`}
+
+/* ---- dati ---- */
+async function ctLoad(opts={}){
+  if(!nlSupa||!nl.editor)return;
+  ctInit(); ct.loading=true; if(state.view==='contabilita'&&!opts.silent) render();
+  try{
+    const {data:conti,error:e1}=await nlSupa.from('conti').select('id,nome,tipo,apertura,ordine').order('ordine').order('id');
+    if(e1)throw e1;
+    const mov=[]; let from=0;
+    for(;;){
+      const {data,error}=await nlSupa.from('movimenti').select(CT_COLS).order('id').range(from,from+999);
+      if(error)throw error; mov.push(...data); if(data.length<1000)break; from+=1000;
+    }
+    ct.conti=conti.map(c=>({...c,apertura:+c.apertura})); ct.mov=mov.map(m=>({...m,importo:+m.importo})); ct.loaded=true; ct.missing=false;
+  }catch(e){
+    if(e&&(e.code==='42P01'||e.code==='PGRST205'||/does not exist|schema cache/i.test(e.message||''))){ct.missing=true;ct.loaded=true}
+    else toast('Contabilità: '+(e.message||e),'err');
+  }
+  ct.loading=false;
+  if(state.view==='contabilita') render(); else renderNav();
+}
+async function ctRefresh(){
+  const b=document.getElementById('btnRefresh'); if(b){b.disabled=true;b.innerHTML='<span class="spinner"></span> Aggiorno…';}
+  await ctLoad({silent:true}); toast('Contabilità aggiornata','ok');
+}
+function ctGoTab(t){ct.tab=t;ct.open=null;if(state.view!=='contabilita')go('contabilita');else{closeRail();render();window.scrollTo(0,0)}}
+
+/* ---- movimenti: salva, elimina ---- */
+function ctVal(id){const e=document.getElementById(id);return e?e.value:''}
+async function ctSaveMov(ev,id){
+  ev&&ev.preventDefault();
+  const tipo=ct.mtipo, importo=Math.round(parseFloat(ctVal('ct-f-imp'))*100)/100;
+  if(!(importo>0)){toast('Inserisci un importo valido','warn');return}
+  const rec={data:ctVal('ct-f-data')||null,descrizione:ctVal('ct-f-desc').trim(),importo,tipo,
+    da_conto:tipo==='in'?null:(+ctVal('ct-f-da')||null),a_conto:+ctVal('ct-f-a')||null,
+    categoria:ctVal('ct-f-cat').trim()||null,stato:ctVal('ct-f-stato'),riferimento:ctVal('ct-f-rif').trim()||null,note:ctVal('ct-f-note').trim()||null};
+  if(!rec.descrizione){toast('Scrivi una descrizione','warn');return}
+  if(tipo==='in'&&!rec.a_conto){toast('Scegli il conto su cui arrivano i soldi','warn');return}
+  if(tipo==='out'&&!rec.da_conto){toast('Scegli da quale conto esce il pagamento','warn');return}
+  if(tipo==='move'&&(!rec.da_conto||!rec.a_conto||rec.da_conto===rec.a_conto)){toast('Un trasferimento richiede due conti diversi','warn');return}
+  const btn=document.getElementById('ct-save');if(btn){btn.disabled=true}
+  const q=id?nlSupa.from('movimenti').update(rec).eq('id',id):nlSupa.from('movimenti').insert(rec);
+  const {data,error}=await q.select(CT_COLS).single();
+  if(error){toast(error.message,'err');if(btn)btn.disabled=false;return}
+  const i=ct.mov.findIndex(x=>x.id===data.id); const row={...data,importo:+data.importo};
+  if(i>=0)ct.mov[i]=row; else ct.mov.push(row);
+  closeModal(); render(); toast(id?'Movimento aggiornato':'Movimento aggiunto','ok');
+}
+async function ctDeleteMov(id){
+  const m=ct.mov.find(x=>x.id===id); if(!m)return;
+  if(!confirm(`Eliminare il movimento "${m.descrizione}" (${ctEur(m.importo)})?`))return;
+  const {error}=await nlSupa.from('movimenti').delete().eq('id',id);
+  if(error){toast(error.message,'err');return}
+  ct.mov=ct.mov.filter(x=>x.id!==id); closeModal(); render(); toast('Movimento eliminato','ok');
+}
+function ctSetTipo(x){
+  ct.mtipo=x;
+  document.querySelectorAll('#ct-seg .fbtn').forEach(b=>b.classList.toggle('on',b.dataset.t===x));
+  const da=document.getElementById('ct-f-da'), a=document.getElementById('ct-f-a'), main=ctMain();
+  const L=(id,t)=>{const e=document.getElementById(id);if(e)e.textContent=t};
+  if(x==='in'){L('ct-l-da','Da (esterno)');da.value='';da.disabled=true;L('ct-l-a','Incassato sul conto');a.disabled=false;if(!a.value&&main)a.value=main.id;L('ct-hint','Soldi che arrivano da fuori: clienti, rimborsi.')}
+  if(x==='out'){L('ct-l-da','Pagato dal conto');da.disabled=false;if(!da.value&&main)da.value=main.id;L('ct-l-a','Destinatario (socio, facoltativo)');a.disabled=false;L('ct-hint','Spesa o pagamento. Se scegli un socio come destinatario, il suo conto aumenta (quote, rimborsi).')}
+  if(x==='move'){L('ct-l-da','Da conto');da.disabled=false;L('ct-l-a','A conto');a.disabled=false;L('ct-hint','Spostamento tra conti, per esempio il versamento di un socio sul conto aziendale: non conta come entrata né come uscita.')}
+}
+function ctOpenMov(id){
+  const m=id?ct.mov.find(x=>x.id===id):null;
+  const main=ctMain();
+  const t=m||{data:isoD(today()),descrizione:'',importo:'',tipo:'out',da_conto:main?main.id:null,a_conto:null,categoria:'',stato:'completato',riferimento:'',note:''};
+  ct.mtipo=t.tipo; ct.open=id||null;
+  const opts=(sel,ext)=>`<option value="">${ext}</option>`+ct.conti.map(c=>`<option value="${c.id}" ${sel===c.id?'selected':''}>${esc(c.nome)}</option>`).join('');
+  const cats=[...new Set(ct.mov.map(x=>x.categoria).filter(Boolean))].sort();
+  modal(`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="ct-h" onclick="event.stopPropagation()">
+    <div class="modal-h"><h3 id="ct-h">${m?'Modifica movimento':'Nuovo movimento'}</h3>
+      <div class="x" role="button" tabindex="0" aria-label="Chiudi" onclick="closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div>
+    <form onsubmit="ctSaveMov(event,${m?m.id:'null'})">
+    <div class="modal-b">
+      <div class="form-row"><label>Tipo</label><div class="seg" id="ct-seg">${CT_TIPI.map(x=>`<button type="button" class="fbtn ${t.tipo===x.id?'on':''}" data-t="${x.id}" onclick="ctSetTipo('${x.id}')">${x.label}</button>`).join('')}</div>
+        <span class="hint" id="ct-hint"></span></div>
+      <div class="form-row"><label for="ct-f-desc">Descrizione</label><input id="ct-f-desc" required value="${escAttr(t.descrizione)}" placeholder="Per esempio: rata cliente, Google Workspace"></div>
+      <div class="ct-two"><div class="form-row"><label for="ct-f-imp">Importo (€)</label><input id="ct-f-imp" type="number" step="0.01" min="0" required value="${escAttr(t.importo)}"></div>
+        <div class="form-row"><label for="ct-f-data">Data</label><input id="ct-f-data" type="date" value="${escAttr(t.data||'')}"></div></div>
+      <div class="ct-two"><div class="form-row"><label for="ct-f-da" id="ct-l-da">Da conto</label><select id="ct-f-da">${opts(t.da_conto,'Esterno')}</select></div>
+        <div class="form-row"><label for="ct-f-a" id="ct-l-a">A conto</label><select id="ct-f-a">${opts(t.a_conto,'Esterno')}</select></div></div>
+      <div class="ct-two"><div class="form-row"><label for="ct-f-cat">Categoria</label><input id="ct-f-cat" list="ct-cats" value="${escAttr(t.categoria||'')}" placeholder="Bonifico, Abbonamento…"><datalist id="ct-cats">${cats.map(c=>`<option value="${escAttr(c)}">`).join('')}</datalist></div>
+        <div class="form-row"><label for="ct-f-stato">Stato</label><select id="ct-f-stato">${CT_STATI.map(s=>`<option value="${s.id}" ${s.id===t.stato?'selected':''}>${s.label}</option>`).join('')}</select>
+          <span class="hint">Solo i movimenti completati contano nel saldo.</span></div></div>
+      <div class="form-row"><label for="ct-f-rif">Riferimento o numero fattura</label><input id="ct-f-rif" value="${escAttr(t.riferimento||'')}"></div>
+      <div class="form-row"><label for="ct-f-note">Note</label><textarea id="ct-f-note" style="min-height:70px">${esc(t.note||'')}</textarea></div>
+    </div>
+    <div class="modal-f" style="justify-content:space-between">
+      <div>${m?`<button type="button" class="btn sm ghost danger" onclick="ctDeleteMov(${m.id})">Elimina</button>`:''}</div>
+      <div style="display:flex;gap:9px"><button type="button" class="btn" onclick="closeModal()">Annulla</button><button class="btn primary" id="ct-save" type="submit">Salva</button></div>
+    </div></form></div>`);
+  ctSetTipo(t.tipo);
+  if(m){ // ctSetTipo non deve sovrascrivere i conti già scelti
+    document.getElementById('ct-f-da').value=t.da_conto||''; document.getElementById('ct-f-a').value=t.a_conto||'';
+    if(t.tipo==='in')document.getElementById('ct-f-da').value='';
+  }
+  setTimeout(()=>{const e=document.getElementById('ct-f-desc');if(e)e.focus()},40);
+}
+
+/* ---- conti ---- */
+function ctOpenConto(id){
+  const c=id?ct.conti.find(x=>x.id===id):{nome:'',tipo:'socio',apertura:0};
+  const used=id&&ct.mov.some(m=>m.da_conto===id||m.a_conto===id);
+  modal(`<div class="modal" role="dialog" aria-modal="true" onclick="event.stopPropagation()">
+    <div class="modal-h"><h3>${id?'Modifica conto':'Nuovo conto'}</h3><div class="x" role="button" tabindex="0" aria-label="Chiudi" onclick="closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div>
+    <form onsubmit="ctSaveConto(event,${id||'null'})"><div class="modal-b">
+      <div class="form-row"><label for="ct-c-nome">Nome</label><input id="ct-c-nome" required value="${escAttr(c.nome)}"></div>
+      <div class="ct-two"><div class="form-row"><label for="ct-c-tipo">Tipo</label><select id="ct-c-tipo"><option value="azienda" ${c.tipo==='azienda'?'selected':''}>Conto aziendale</option><option value="socio" ${c.tipo!=='azienda'?'selected':''}>Conto socio</option></select></div>
+        <div class="form-row"><label for="ct-c-ap">Saldo iniziale (€)</label><input id="ct-c-ap" type="number" step="0.01" value="${escAttr(c.apertura)}"></div></div>
+      <span class="hint">Il saldo attuale è il saldo iniziale più tutto ciò che entra, meno tutto ciò che esce.</span>
+    </div>
+    <div class="modal-f" style="justify-content:space-between"><div>${id&&!used?`<button type="button" class="btn sm ghost danger" onclick="ctDeleteConto(${id})">Elimina</button>`:''}</div>
+      <div style="display:flex;gap:9px"><button type="button" class="btn" onclick="closeModal()">Annulla</button><button class="btn primary" type="submit">Salva</button></div></div></form></div>`);
+}
+async function ctSaveConto(ev,id){
+  ev.preventDefault();
+  const rec={nome:ctVal('ct-c-nome').trim(),tipo:ctVal('ct-c-tipo'),apertura:Math.round((parseFloat(ctVal('ct-c-ap'))||0)*100)/100};
+  if(!rec.nome)return;
+  if(!id)rec.ordine=ct.conti.length+1;
+  const q=id?nlSupa.from('conti').update(rec).eq('id',id):nlSupa.from('conti').insert(rec);
+  const {data,error}=await q.select('id,nome,tipo,apertura,ordine').single();
+  if(error){toast(error.message,'err');return}
+  const row={...data,apertura:+data.apertura}, i=ct.conti.findIndex(x=>x.id===row.id);
+  if(i>=0)ct.conti[i]=row; else ct.conti.push(row);
+  closeModal(); render(); toast('Conto salvato','ok');
+}
+async function ctDeleteConto(id){
+  if(!confirm('Eliminare questo conto?'))return;
+  const {error}=await nlSupa.from('conti').delete().eq('id',id);
+  if(error){toast(error.message,'err');return}
+  ct.conti=ct.conti.filter(x=>x.id!==id); closeModal(); render(); toast('Conto eliminato','ok');
+}
+function ctOpenAlign(id){
+  const c=ct.conti.find(x=>x.id===id); if(!c)return; const cur=ctBalance(id);
+  modal(`<div class="modal" role="dialog" aria-modal="true" onclick="event.stopPropagation()">
+    <div class="modal-h"><h3>Allinea «${esc(c.nome)}» al saldo reale</h3><div class="x" role="button" tabindex="0" aria-label="Chiudi" onclick="closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div>
+    <form onsubmit="ctAlign(event,${id},${cur})"><div class="modal-b">
+      <p class="helptip">Saldo calcolato oggi: <b class="tnum" style="color:var(--text)">${ctEur(cur)}</b>. Scrivi il saldo che vedi in banca: la suite corregge il saldo iniziale in modo che i due numeri coincidano.</p>
+      <div class="form-row"><label for="ct-al">Saldo reale (€)</label><input id="ct-al" type="number" step="0.01" required></div>
+    </div><div class="modal-f"><button type="button" class="btn" onclick="closeModal()">Annulla</button><button class="btn primary" type="submit">Allinea</button></div></form></div>`);
+  setTimeout(()=>{const e=document.getElementById('ct-al');if(e)e.focus()},40);
+}
+async function ctAlign(ev,id,cur){
+  ev.preventDefault(); const c=ct.conti.find(x=>x.id===id); const real=parseFloat(ctVal('ct-al'));
+  if(!c||isNaN(real))return;
+  const ap=Math.round((c.apertura+(real-cur))*100)/100;
+  const {error}=await nlSupa.from('conti').update({apertura:ap}).eq('id',id);
+  if(error){toast(error.message,'err');return}
+  c.apertura=ap; closeModal(); render(); toast('Saldo iniziale aggiornato a '+ctEur(ap),'ok');
+}
+function ctToggleOpen(v){state.config.ctInclude=!!v;save(LS.config,state.config);render()}
+
+/* ---- primo avvio: porta i dati da Notion ---- */
+async function ctSeedNotion(){
+  if(ct.conti.length||ct.mov.length){toast('Ci sono già dei dati: non importo nulla','warn');return}
+  if(!confirm(`Importare i ${CT_SEED.length} movimenti e i ${CT_SEED_CONTI.length} conti della sezione Contabilità di Notion?`))return;
+  const b=document.getElementById('ct-seed-btn'); if(b){b.disabled=true;b.innerHTML='<span class="spinner"></span> Importo…'}
+  const {data:cs,error:e1}=await nlSupa.from('conti').insert(CT_SEED_CONTI.map((c,i)=>({nome:c[1],tipo:c[2],ordine:i+1}))).select('id,nome');
+  if(e1){toast(e1.message,'err');if(b){b.disabled=false;b.textContent='Importa i dati di Notion'}return}
+  const idOf={}; CT_SEED_CONTI.forEach(c=>{const row=cs.find(x=>x.nome===c[1]);if(row)idOf[c[0]]=row.id});
+  const rows=CT_SEED.map(r=>({data:r[0]||null,descrizione:r[1],importo:r[2],da_conto:r[3]?idOf[r[3]]:null,a_conto:r[4]?idOf[r[4]]:null,tipo:r[5],categoria:r[6]||null,stato:CT_SEED_STATO[r[7]]||'completato'}));
+  const {error:e2}=await nlSupa.from('movimenti').insert(rows);
+  if(e2){toast(e2.message,'err');return}
+  await ctLoad(); toast('Dati importati da Notion','ok');
+}
+
+/* ---- esporta ---- */
+function ctExportCsv(){
+  const cell=v=>{const s=String(v??'');return /[",;\n\r]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s};
+  const head=['data','descrizione','importo','tipo','categoria','da','a','stato','riferimento','note'];
+  const rows=ctShown().map(m=>[m.data||'',m.descrizione,String(m.importo).replace('.',','),ctChipLabel(CT_TIPI,m.tipo),m.categoria||'',ctName(m.da_conto),ctName(m.a_conto),ctChipLabel(CT_STATI,m.stato),m.riferimento||'',m.note||''].map(cell).join(';'));
+  const url=URL.createObjectURL(new Blob(['﻿'+[head.join(';'),...rows].join('\r\n')],{type:'text/csv;charset=utf-8'}));
+  const a=Object.assign(document.createElement('a'),{href:url,download:'movimenti-'+isoD(today())+'.csv'});
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function ctChipLabel(list,id){const s=list.find(x=>x.id===id);return s?s.label:id}
+
+/* ---- vista ---- */
+function ctHeroCopy(){
+  if(!nl.session) return {t:'Contabilità.',l:'Accedi per vedere conti, saldi e movimenti.'};
+  if(nl.editor===false) return {t:'Accesso non abilitato.',l:'Questo account non è nella redazione.'};
+  if(!ct.loaded) return {t:'Contabilità.',l:'Carico i conti…'};
+  if(ct.missing) return {t:'Contabilità da attivare.',l:'Mancano le tabelle nel database: si creano una volta sola con la migrazione.'};
+  if(!ct.conti.length) return {t:'Contabilità.',l:'Nessun conto ancora: puoi importare i dati di Notion o crearli a mano.'};
+  const m=ctMain(), pend=ctPending().length;
+  return {t:`Nel conto aziendale ci sono ${ctEur(ctBalance(m.id))}.`,l:`Saldo calcolato dai movimenti${state.config.ctInclude?' (compresi quelli non completati)':' completati'}.${pend?` ${pend} ${pend===1?'movimento aspetta':'movimenti aspettano'} di essere completat${pend===1?'o':'i'}.`:''}`};
+}
+function ctTopActions(){
+  if(!nl.session||!nl.editor||ct.missing||!ct.loaded)return '';
+  return `<button class="btn primary" onclick="ctOpenMov()">${CT_I.plus}Nuovo movimento</button>
+    <button class="btn" id="btnRefresh" onclick="ctRefresh()" title="Ricarica conti e movimenti">${CT_I.refresh}<span class="lbl">Aggiorna</span></button>`;
+}
+function ctGate(){
+  if(!nl.ready) return `<div class="empty"><span class="spinner"></span></div>`;
+  if(!nl.session) return nlLoginView('contabilita');
+  if(nl.editor===null) return `<div class="empty"><span class="spinner"></span><p style="margin-top:14px">Verifico l'accesso…</p></div>`;
+  if(nl.editor===false) return `<div class="empty">${CT_I.wallet}<h4>Questo account non è in redazione</h4>
+    <p>${esc(nl.session.user?.email||'')} ha fatto l'accesso, ma non è tra gli indirizzi abilitati. Chiedi a chi gestisce il database di aggiungerlo alla tabella <code>newsletter_editors</code>.</p>
+    <button class="btn" onclick="nlLogout()">Esci</button></div>`;
+  if(!ct.loaded) return `<div class="empty"><span class="spinner"></span><p style="margin-top:14px">Carico i conti…</p></div>`;
+  if(ct.missing) return `<div class="empty">${CT_I.wallet}<h4>Mancano le tabelle della contabilità</h4>
+    <p>Apri Supabase (progetto Lead Flowline) → SQL Editor ed esegui il file <code>supabase/migrations/20261103190000_contabilita.sql</code>. Poi torna qui e premi Aggiorna: dopo la migrazione potrai importare i dati di Notion con un clic.</p>
+    <button class="btn" onclick="ctRefresh()">Aggiorna</button></div>`;
+  if(!ct.conti.length) return `<div class="empty">${CT_I.wallet}<h4>Nessun conto per ora</h4>
+    <p>Puoi portare qui i ${CT_SEED.length} movimenti e i ${CT_SEED_CONTI.length} conti della sezione Contabilità di Notion, oppure partire da zero creando i conti a mano.</p>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btn primary" id="ct-seed-btn" onclick="ctSeedNotion()">Importa i dati di Notion</button><button class="btn" onclick="ctOpenConto()">Crea un conto</button></div></div>`;
+  return '';
+}
+function viewContabilita(){
+  ctInit();
+  const g=ctGate(); if(g)return g;
+  const tabs=`<div class="filters"><div class="seg">${CT_TABS.map(x=>`<button class="fbtn ${ct.tab===x.tab?'on':''}" onclick="ctGoTab('${x.tab}')">${x.label}</button>`).join('')}</div><span style="flex:1"></span>
+    <span class="email-cell">Accesso: ${esc(nl.session.user?.email||'')}</span><button class="btn sm ghost" onclick="nlLogout()">Esci</button></div>`;
+  return tabs+({panoramica:ctPanoramica,movimenti:ctMovimenti,conti:ctConti,report:ctReport}[ct.tab]||ctPanoramica)();
+}
+function ctTable(list,withHead=true){
+  if(!list.length)return `<div class="empty" style="padding:44px 24px"><h4 style="font-size:24px">Nessun movimento</h4><p style="margin-bottom:0">Cambia i filtri oppure aggiungi un nuovo movimento.</p></div>`;
+  return `<div class="table-wrap"><table class="ct-table"><thead><tr><th>Data</th><th>Descrizione</th><th>Tipo</th><th>Categoria</th><th>Da → A</th><th>Stato</th><th style="text-align:right">Importo</th></tr></thead><tbody>
+  ${list.map(m=>`<tr tabindex="0" onclick="ctOpenMov(${m.id})" onkeydown="if(event.key==='Enter')ctOpenMov(${m.id})">
+    <td class="email-cell tnum" style="white-space:nowrap">${ctFdate(m.data)}</td><td class="az ct-desc" title="${escAttr(m.descrizione)}">${esc(m.descrizione)}</td>
+    <td>${ctChip(CT_TIPI,m.tipo)}</td><td>${esc(m.categoria||'—')}</td>
+    <td class="email-cell" style="white-space:nowrap">${esc(ctName(m.da_conto))} → ${esc(ctName(m.a_conto))}</td><td>${ctChip(CT_STATI,m.stato)}</td>
+    <td class="tnum ct-amt ${m.tipo}">${m.tipo==='in'?'+':m.tipo==='out'?'−':''}${ctEur(m.importo)}</td></tr>`).join('')}</tbody></table></div>`;
+}
+function ctPanoramica(){
+  const main=ctMain(), k=ct.month, [y,mm]=k.split('-'), ms=ctSums(ctByMonth(k));
+  const pend=ctPending(), pendAmt=pend.reduce((s,m)=>s+(m.tipo==='in'?m.importo:m.tipo==='out'?-m.importo:0),0);
+  const rows=ct.conti.filter(ctIsMain).map((c,i)=>{const b=ctBalance(c.id),o=ctOpenAmt(c.id);
+    return `<tr tabindex="0" onclick="ctFilterConto(${c.id})" onkeydown="if(event.key==='Enter')ctFilterConto(${c.id})"><td class="b-n">${String(i+1).padStart(2,'0')}</td><td class="b-dest">${esc(c.nome)}</td>
+      <td class="b-city">${ctIsMain(c)?'Conto aziendale':'Conto socio'}${o?` · ${o>0?'+':''}${ctEur(o)} in sospeso`:''}</td><td class="b-st"><span class="flap ${b<0?'late':ctIsMain(c)?'reply':'plan'} tnum">${ctEur(b)}</span></td></tr>`}).join('');
+  const board=`<section class="board" aria-label="Saldo del conto aziendale"><div class="board-h"><span class="bt">Conto aziendale <span class="lit">oggi</span></span><span class="bsub">${esc(today().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'}))}</span><span class="spacer"></span><span class="clock" id="boardClock">${clockNow()}</span></div>
+    <table><thead><tr><th>N.</th><th>Conto</th><th>Tipo</th><th>Saldo</th></tr></thead><tbody>${rows}</tbody></table>
+    <div class="board-foot"><span>Entrate e uscite del mese nei riquadri qui sotto</span><span class="spacer"></span><span>${state.config.ctInclude?'compresi i non completati':'solo movimenti completati'}</span></div></section>`;
+  const stats=`<div class="rq-stats">
+    <div class="stat-t t-orange"><div class="k">Saldo ${esc(main.nome)}</div><div class="row"><div class="v ct-v">${ctEur(ctBalance(main.id))}</div></div></div>
+    <div class="stat-t t-lilac"><div class="k">Entrate di ${CT_MESI[+mm-1].toLowerCase()}</div><div class="row"><div class="v ct-v">${ctEur(ms.i)}</div></div></div>
+    <div class="stat-t t-ink"><div class="k">Uscite di ${CT_MESI[+mm-1].toLowerCase()}</div><div class="row"><div class="v ct-v">${ctEur(ms.o)}</div></div></div>
+    <div class="stat-t t-peach"><div class="k">Netto di ${CT_MESI[+mm-1].toLowerCase()}</div><div class="row"><div class="v ct-v">${ctEur(ms.i-ms.o)}</div></div></div></div>`;
+  const months=[];for(let i=5;i>=0;i--)months.push(ctShiftM(k,-i));
+  const data=months.map(x=>({k:x,...ctSums(ctByMonth(x))})), mx=Math.max(1,...data.flatMap(d=>[d.i,d.o]));
+  const chart=`<div class="tile"><div class="tile-h"><h3>Ultimi sei mesi</h3><span class="spacer"></span>
+    <button class="btn sm" onclick="ctMonth(-1)" aria-label="Mese precedente">‹</button><span class="sub" style="min-width:130px;text-align:center">${CT_MESI[+mm-1]} ${y}</span><button class="btn sm" onclick="ctMonth(1)" aria-label="Mese successivo">›</button></div>
+    <div class="ct-months">${data.map(d=>`<div class="ct-m ${d.k===k?'now':''}"><div class="ct-bars"><span class="ct-b in" style="height:${Math.max(4,d.i/mx*100)}%" title="Entrate ${ctEur(d.i)}"></span><span class="ct-b out" style="height:${Math.max(4,d.o/mx*100)}%" title="Uscite ${ctEur(d.o)}"></span></div>
+      <div class="ct-ml">${CT_MS[+d.k.slice(5)-1]} ${d.k.slice(2,4)}</div><div class="ct-mv in tnum">+${ctEur(d.i)}</div><div class="ct-mv out tnum">−${ctEur(d.o)}</div></div>`).join('')}</div>
+    <p class="helptip" style="margin-top:12px"><span class="ct-dot in"></span> entrate &nbsp; <span class="ct-dot out"></span> uscite. I trasferimenti tra conti non contano.</p></div>`;
+  const pendBox=`<div class="tile t-peach"><div class="tile-h"><h3>Da completare</h3></div>
+    ${pend.length?pend.map(m=>`<div class="ct-pend" onclick="ctOpenMov(${m.id})"><div><b>${esc(m.descrizione)}</b><div class="email-cell" style="color:inherit;opacity:.75">${ctFdate(m.data)} · ${ctChipLabel(CT_STATI,m.stato)}</div></div><b class="tnum">${ctEur(m.importo)}</b></div>`).join('')+`<p class="helptip" style="margin-top:10px;color:inherit;opacity:.8">Se si completassero tutti, il saldo cambierebbe di ${pendAmt>=0?'+':''}${ctEur(pendAmt)}.</p>`
+    :'<p>Tutto registrato: nessun movimento in sospeso.</p>'}</div>`;
+  const last=ctSorted(ct.mov).slice(0,8);
+  return `<div class="bento"><div class="span-7">${board}</div><div class="span-5" style="display:flex">${pendBox.replace('class="tile t-peach"','class="tile t-peach" style="flex:1"')}</div></div>
+    <div style="margin-top:16px">${stats}</div>${chart}
+    <div class="section-h"><h3>Ultimi movimenti</h3><div class="line"></div><button class="btn sm" onclick="ctGoTab('movimenti')">Vedi tutti</button></div>${ctTable(last)}`;
+}
+function ctMonth(d){ct.month=ctShiftM(ct.month,d);render()}
+function ctFilterConto(id){ct.conto=String(id);ct.q=ct.tipo=ct.cat=ct.stato=ct.mese='';ct.tab='movimenti';render();window.scrollTo(0,0)}
+function ctShown(){
+  const q=ct.q.trim().toLowerCase();
+  return ctSorted(ct.mov).filter(m=>(!q||[m.descrizione,m.riferimento,m.note,m.categoria].some(v=>String(v||'').toLowerCase().includes(q)))&&
+    (!ct.conto||String(m.da_conto)===ct.conto||String(m.a_conto)===ct.conto)&&(!ct.tipo||m.tipo===ct.tipo)&&(!ct.cat||m.categoria===ct.cat)&&(!ct.stato||m.stato===ct.stato)&&(!ct.mese||ctYM(m.data)===ct.mese));
+}
+function ctSet(k,v){ct[k]=v;render()}
+function ctSearch(v){ct.q=v;clearTimeout(window._ctq);window._ctq=setTimeout(()=>{render();const i=document.getElementById('ct-q');if(i){i.focus();i.setSelectionRange(v.length,v.length)}},220)}
+function ctClear(){ct.q=ct.conto=ct.tipo=ct.cat=ct.stato=ct.mese='';render()}
+function ctMovimenti(){
+  const list=ctShown(), s=ctSums(list);
+  const cats=[...new Set(ct.mov.map(m=>m.categoria).filter(Boolean))].sort();
+  const mesi=[...new Set(ct.mov.map(m=>ctYM(m.data)).filter(Boolean))].sort().reverse();
+  const sel=(id,cur,arr,all,lab=x=>x)=>`<select class="ct-sel" id="${id}" onchange="ctSet('${id.replace('ct-s-','')}',this.value)" aria-label="${all}"><option value="">${all}</option>${arr.map(x=>`<option value="${escAttr(x.v??x)}" ${String(x.v??x)===cur?'selected':''}>${esc(x.l??lab(x))}</option>`).join('')}</select>`;
+  const any=ct.q||ct.conto||ct.tipo||ct.cat||ct.stato||ct.mese;
+  return `<div class="filters"><div class="search"><svg class="ico" style="width:17px;height:17px;color:var(--faint)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="ct-q" placeholder="Cerca descrizione, riferimento, note…" value="${escAttr(ct.q)}" oninput="ctSearch(this.value)" aria-label="Cerca nei movimenti"></div>
+    <div class="seg">${[['','Tutti'],['in','Entrate'],['out','Uscite'],['move','Trasferimenti']].map(t=>`<button class="fbtn ${ct.tipo===t[0]?'on':''}" onclick="ctSet('tipo','${t[0]}')">${t[1]}</button>`).join('')}</div></div>
+  <div class="filters">${sel('ct-s-conto',ct.conto,ct.conti.map(c=>({v:c.id,l:c.nome})),'Tutti i conti')}${sel('ct-s-cat',ct.cat,cats,'Tutte le categorie')}${sel('ct-s-mese',ct.mese,mesi,'Tutti i mesi',k=>CT_MESI[+k.slice(5)-1]+' '+k.slice(0,4))}${sel('ct-s-stato',ct.stato,CT_STATI.map(s=>({v:s.id,l:s.label})),'Ogni stato')}
+    ${any?'<button class="btn sm ghost" onclick="ctClear()">Azzera filtri</button>':''}<span style="flex:1"></span><button class="btn sm" onclick="ctExportCsv()" ${list.length?'':'disabled'}>Esporta CSV</button></div>
+  ${ctTable(list)}
+  <p class="helptip" style="margin-top:12px"><b style="color:var(--text)">${list.length}</b> movimenti · entrate <b style="color:var(--ok)">${ctEur(s.i)}</b> · uscite <b style="color:var(--late)">${ctEur(s.o)}</b> · netto <b style="color:var(--text)">${ctEur(s.i-s.o)}</b>. Clicca un movimento per modificarlo.</p>`;
+}
+function ctConti(){
+  return `<div class="filters"><label class="ct-chk"><input type="checkbox" ${state.config.ctInclude?'checked':''} onchange="ctToggleOpen(this.checked)"> Conta nel saldo anche i movimenti non completati (in corso e in sospeso)</label><span style="flex:1"></span>
+    <button class="btn sm" onclick="ctOpenConto()">${CT_I.plus}Nuovo conto</button></div>
+  <div class="ct-accs">${ct.conti.filter(ctIsMain).map(c=>{
+    const b=ctBalance(c.id), ent=ct.mov.filter(m=>ctCounts(m)&&m.a_conto===c.id).reduce((s,m)=>s+m.importo,0), usc=ct.mov.filter(m=>ctCounts(m)&&m.da_conto===c.id).reduce((s,m)=>s+m.importo,0);
+    const n=ct.mov.filter(m=>m.a_conto===c.id||m.da_conto===c.id).length;
+    return `<div class="tile t-orange"><div class="tile-h"><h3>${esc(c.nome)}</h3></div><div class="sub" style="font-size:13.5px;opacity:.75">${n} movimenti</div>
+      <div class="v ct-v" style="font-size:44px;font-weight:800;font-stretch:112%;letter-spacing:-.045em;margin:16px 0 4px;line-height:1">${ctEur(b)}</div><div style="font-size:13px;opacity:.75;margin-bottom:14px">saldo calcolato</div>
+      <table class="spend-table" style="color:inherit"><tr><td>Saldo iniziale</td><td>${ctEur(c.apertura)}</td></tr><tr><td>Totale in ingresso</td><td>+${ctEur(ent)}</td></tr><tr><td>Totale in uscita</td><td>−${ctEur(usc)}</td></tr></table>
+      <div class="rq-actions" style="margin-top:14px"><button class="btn sm" onclick="ctFilterConto(${c.id})">Movimenti</button><button class="btn sm" onclick="ctOpenAlign(${c.id})">Allinea al saldo reale</button><button class="btn sm ghost" onclick="ctOpenConto(${c.id})">Modifica</button></div></div>`}).join('')}</div>
+  ${ct.conti.some(c=>!ctIsMain(c))?`<div class="section-h"><h3>Soci</h3><div class="line"></div></div>
+  <div class="table-wrap"><table><thead><tr><th>Nome</th><th>Movimenti</th><th></th></tr></thead><tbody>${ct.conti.filter(c=>!ctIsMain(c)).map(c=>`<tr><td class="az">${esc(c.nome)}</td><td class="tnum">${ct.mov.filter(m=>m.a_conto===c.id||m.da_conto===c.id).length}</td><td style="text-align:right"><button class="btn sm ghost" onclick="ctFilterConto(${c.id})">Movimenti</button><button class="btn sm ghost" onclick="ctOpenConto(${c.id})">Modifica</button></td></tr>`).join('')}</tbody></table></div>
+  <p class="helptip" style="margin-top:10px">I soci servono solo come destinatari di quote e rimborsi, o per chi versa sul conto: della loro situazione la suite non tiene il saldo.</p>`:''}
+  <p class="helptip" style="margin-top:16px;max-width:680px">Il saldo del conto aziendale è il saldo iniziale più tutto ciò che entra, meno tutto ciò che esce. Se non coincide con quello della banca, usa «Allinea al saldo reale»: scrivi il saldo di oggi e la suite corregge il saldo iniziale.</p>`;
+}
+function ctReport(){
+  const anni=[...new Set(ct.mov.map(m=>m.data&&m.data.slice(0,4)).filter(Boolean))].sort().reverse();
+  const y=anni.includes(ct.year)?ct.year:(anni[0]||String(new Date().getFullYear()));
+  const list=ct.mov.filter(m=>ctCounts(m)&&m.data&&m.data.startsWith(y)), s=ctSums(list);
+  const cat=t=>{const o={};list.filter(m=>m.tipo===t).forEach(m=>{const k=m.categoria||'Senza categoria';o[k]=(o[k]||0)+m.importo});return Object.entries(o).sort((a,b)=>b[1]-a[1])};
+  const mesi=Array.from({length:12},(_,i)=>{const k=y+'-'+String(i+1).padStart(2,'0');return{k,...ctSums(list.filter(m=>ctYM(m.data)===k))}});
+  const mx=Math.max(1,...mesi.flatMap(m=>[m.i,m.o]));
+  const hb=(arr,tot,color)=>arr.length?arr.map(([k,v])=>`<div class="ct-hb"><span>${esc(k)}</span><div class="nl-bar-wrap" style="background:var(--surface-2)"><div class="nl-bar" style="width:${tot?v/tot*100:0}%;background:${color}"></div></div><b class="tnum">${ctEur(v)}</b></div>`).join(''):'<p class="helptip">Nessun dato.</p>';
+  const out={};list.filter(m=>m.tipo==='out').forEach(m=>{const k=m.descrizione.replace(/ - .*$/,'').replace(/^Quota .*/,'Quote soci').replace(/^Rata /,'').trim();out[k]=(out[k]||0)+m.importo});
+  const top=Object.entries(out).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  return `<div class="filters"><label for="ct-year" class="email-cell" style="color:var(--text);font-weight:650">Anno</label><select class="ct-sel" id="ct-year" onchange="ct.year=this.value;render()">${(anni.length?anni:[y]).map(a=>`<option ${a===y?'selected':''}>${a}</option>`).join('')}</select></div>
+  <div class="nl-kpis"><div class="stat-t t-lilac"><div class="k">Entrate ${y}</div><div class="row"><div class="v ct-v">${ctEur(s.i)}</div></div></div>
+    <div class="stat-t t-ink"><div class="k">Uscite ${y}</div><div class="row"><div class="v ct-v">${ctEur(s.o)}</div></div></div>
+    <div class="stat-t t-orange"><div class="k">Risultato ${y}</div><div class="row"><div class="v ct-v">${ctEur(s.i-s.o)}</div></div></div></div>
+  <div class="section-h"><h3>Mese per mese</h3><div class="line"></div></div>
+  <div class="table-wrap"><table><thead><tr><th>Mese</th><th></th><th style="text-align:right">Entrate</th><th style="text-align:right">Uscite</th><th style="text-align:right">Netto</th></tr></thead><tbody>
+  ${mesi.map(m=>`<tr><td class="az">${CT_MESI[+m.k.slice(5)-1]}</td><td style="width:32%"><div style="display:flex;flex-direction:column;gap:4px"><div style="height:6px;border-radius:99px;background:var(--ok);width:${m.i/mx*100}%"></div><div style="height:6px;border-radius:99px;background:var(--late);width:${m.o/mx*100}%"></div></div></td><td class="tnum" style="text-align:right;color:${m.i?'var(--ok)':'var(--faint)'}">${ctEur(m.i)}</td><td class="tnum" style="text-align:right;color:${m.o?'var(--late)':'var(--faint)'}">${ctEur(m.o)}</td><td class="tnum" style="text-align:right;font-weight:650">${ctEur(m.i-m.o)}</td></tr>`).join('')}</tbody></table></div>
+  <div class="section-h"><h3>Per categoria</h3><div class="line"></div></div>
+  <div class="ct-two2"><div class="tile"><div class="tile-h"><h3>Entrate</h3></div>${hb(cat('in'),s.i,'var(--ok)')}</div><div class="tile"><div class="tile-h"><h3>Uscite</h3></div>${hb(cat('out'),s.o,'var(--late)')}</div></div>
+  <div class="section-h"><h3>Dove vanno le uscite</h3><div class="line"></div></div>
+  <div class="tile">${hb(top,s.o,'var(--text)')}</div>
+  <p class="helptip" style="margin-top:12px">I trasferimenti tra conti, come i versamenti dei soci sul conto aziendale, non contano né come entrate né come uscite.</p>`;
 }
 
 /* =======================================================
