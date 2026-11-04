@@ -721,6 +721,24 @@ body[data-view="agenda"] .hero{--hb:var(--lilac);--hi:var(--on-lilac)}
 .ag-modal{max-width:660px}
 .ag-pick{display:flex;gap:8px;flex-wrap:wrap}
 .ag-pk{display:inline-flex;align-items:center;gap:7px;padding:6px 12px 6px 8px;border-radius:99px;background:var(--surface-2);font-weight:600;font-size:14px;cursor:pointer}
+
+.ag-pop{position:fixed;z-index:60;background:var(--surface);color:var(--text);border-radius:22px;box-shadow:0 18px 50px rgba(0,0,0,.22),0 0 0 1px var(--border);overflow:hidden;animation:agPopIn .16s var(--ease)}
+@keyframes agPopIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.ag-pop-h{display:flex;align-items:center;gap:10px;padding:14px 16px 10px;white-space:nowrap}
+.ag-pop-l{max-height:min(60vh,420px);overflow-y:auto;padding:0 8px}
+.ag-pop-i{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;padding:11px 10px;border-radius:14px}
+.ag-pop-i:hover,.ag-pop-i:focus-visible{background:var(--surface-2)}
+.ag-pop-i .ag-nd{margin-top:6px;flex:0 0 8px;background:transparent}
+.ag-pop-i.new .ag-nd{background:var(--brand)}
+.ag-pop-b{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
+.ag-pop-t{display:flex;justify-content:space-between;gap:10px;font-size:13.5px}
+.ag-pop-t span{color:var(--faint);font-size:12px;white-space:nowrap}
+.ag-pop-x{font-size:13.5px;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ag-pop-i.new .ag-pop-x{color:var(--text)}
+.ag-pop-e{padding:18px 16px;color:var(--muted);font-size:14px}
+.ag-pop-f{display:block;width:100%;padding:13px 16px;border-top:1px solid var(--border);font-weight:650;font-size:14px;text-align:center}
+.ag-pop-f:hover{background:var(--surface-2)}
+.spend-pill[hidden]{display:none}
 @media(max-width:1100px){.ag-week{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:700px){.ag-week{grid-template-columns:1fr}.ag-day{min-height:0}.ag-me span{display:none}.ag-me{padding:0 6px}.ag-pill{font-size:10.5px}.ag-mc{padding:4px}.ag-mb{gap:3px}}
 </style>
@@ -2037,6 +2055,7 @@ function renderNav(){
   const ico=d=>`<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`;
   // livello 1: aree, con un pallino se nell'altra area c'è qualcosa che aspetta
   const alertOut=late||todayN||newRep||ldBusy(), alertNl=!!nl.sending, alertRq=rq.loaded&&rqNew()>0, alertCt=ct.loaded&&!ct.missing&&ctPending().length>0, alertAg=ag.loaded&&!ag.missing&&agUnread()>0;
+  const sp=document.getElementById('spendPill');if(sp)sp.hidden=sec!=='outbound';
   document.getElementById('secSwitch').innerHTML=SECTIONS.map(x=>{
     const on=x.id===sec, al=x.id==='outbound'?alertOut:(x.id==='newsletter'?alertNl:(x.id==='contabilita'?alertCt:(x.id==='agenda'?alertAg:alertRq)));
     const dot=!on&&al?`<span class="dotb${x.id==='outbound'&&late?' late':''}" aria-label="${x.id==='richieste'?'ci sono richieste nuove':x.id==='contabilita'?'ci sono movimenti da completare':x.id==='agenda'?'ci sono notifiche da leggere':'ci sono attività in sospeso'}"></span>`:'';
@@ -4686,7 +4705,7 @@ function agStop(){
 }
 function agOnNotif(n){
   if(!n||ag.notif.some(x=>x.id===n.id))return;
-  ag.notif.unshift(n);toast(n.titolo+': '+n.testo,'ok');agTitle();
+  ag.notif.unshift(n);toast(n.titolo+': '+n.testo,'ok');agTitle();agPopRefresh();
   if(state.view==='agenda')render();else renderNav();
 }
 function agTitle(){const n=agUnread();const t=document.title.replace(/^\(\d+\)\s/,'');document.title=(n?'('+n+') ':'')+t}
@@ -4696,7 +4715,7 @@ function agRenderUser(){
   const b=document.getElementById('userBox');if(!b)return;
   if(!nl.session){b.innerHTML='';return}
   const n=agUnread(),me=ag.me,email=nl.session.user?.email||'';
-  b.innerHTML=`<button class="icon-btn ag-bell" onclick="agGoNotif()" title="Notifiche" aria-label="Notifiche${n?': '+n+' da leggere':''}">${AG_I.bell}${n?`<span class="ag-bellb">${n>9?'9+':n}</span>`:''}</button>
+  b.innerHTML=`<button class="icon-btn ag-bell" id="agBell" onclick="agBellToggle(event)" aria-haspopup="true" aria-expanded="false" title="Notifiche" aria-label="Notifiche${n?': '+n+' da leggere':''}">${AG_I.bell}${n?`<span class="ag-bellb">${n>9?'9+':n}</span>`:''}</button>
     <button class="ag-me" onclick="agProfile()" title="${escAttr(email)}">${me?agAv(me.id):''}<span>${esc(me?me.nome:email.split('@')[0])}</span></button>`;
 }
 function agProfile(){
@@ -4719,6 +4738,53 @@ async function agSaveProfile(ev){
   if(error){toast(error.message,'err');return}
   ag.me.nome=nome;ag.me.colore=colore;const t=agPerson(ag.me.id);if(t){t.nome=nome;t.colore=colore}
   closeModal();render();toast('Profilo aggiornato','ok');
+}
+
+/* ---- anteprima delle notifiche dalla campanella ---- */
+function agAgo(iso){
+  const m=Math.round((Date.now()-new Date(iso).getTime())/60000);
+  if(m<1)return 'adesso';if(m<60)return m+' min fa';
+  const h=Math.round(m/60);if(h<24)return h+(h===1?' ora fa':' ore fa');
+  const d=Math.round(h/24);return d===1?'ieri':d+' giorni fa';
+}
+function agPopHtml(){
+  const un=agUnread(),list=ag.notif.slice(0,6);
+  return `<div class="ag-pop-h"><b>Notifiche</b><span class="email-cell">${un?un+' da leggere':'Tutto letto'}</span><span style="flex:1"></span>${un?'<button class="btn sm ghost" onclick="agPopReadAll()">Segna tutte come lette</button>':''}</div>
+    ${list.length?`<div class="ag-pop-l">${list.map(n=>`<button class="ag-pop-i ${n.letta_il?'':'new'}" onclick="agPopOpen(${n.id})"><span class="ag-nd" aria-hidden="true"></span><span class="ag-pop-b"><span class="ag-pop-t"><b>${esc(n.titolo)}</b><span>${esc(agAgo(n.created_at))}</span></span><span class="ag-pop-x">${esc(n.testo)}</span></span></button>`).join('')}</div>`
+    :'<p class="ag-pop-e">Nessuna notifica per ora.</p>'}
+    <button class="ag-pop-f" onclick="agPopAll()">Vedi tutte le notifiche</button>`;
+}
+function agPopClose(){
+  const e=document.getElementById('agPop');if(e)e.remove();
+  const b=document.getElementById('agBell');if(b)b.setAttribute('aria-expanded','false');
+  document.removeEventListener('mousedown',agPopOutside,true);document.removeEventListener('keydown',agPopKey,true);
+}
+function agPopOutside(e){const p=document.getElementById('agPop'),b=document.getElementById('agBell');if(p&&!p.contains(e.target)&&!(b&&b.contains(e.target)))agPopClose()}
+function agPopKey(e){if(e.key==='Escape'){agPopClose();const b=document.getElementById('agBell');if(b)b.focus()}}
+function agBellToggle(ev){
+  if(ev)ev.stopPropagation();
+  if(document.getElementById('agPop')){agPopClose();return}
+  const b=document.getElementById('agBell');if(!b)return;
+  const r=b.getBoundingClientRect(),w=Math.min(380,window.innerWidth-24);
+  const el=document.createElement('div');el.id='agPop';el.className='ag-pop';el.setAttribute('role','dialog');el.setAttribute('aria-label','Anteprima notifiche');
+  el.style.width=w+'px';el.style.top=(r.bottom+10)+'px';
+  el.style.left=Math.max(12,Math.min(window.innerWidth-w-12,r.right-w+24))+'px';
+  el.innerHTML=agPopHtml();document.body.appendChild(el);
+  b.setAttribute('aria-expanded','true');
+  document.addEventListener('mousedown',agPopOutside,true);document.addEventListener('keydown',agPopKey,true);
+}
+function agPopRefresh(){const e=document.getElementById('agPop');if(e)e.innerHTML=agPopHtml()}
+async function agPopReadAll(){await agReadAll();agPopRefresh()}
+function agPopAll(){agPopClose();agGoNotif()}
+async function agPopOpen(id){
+  const n=ag.notif.find(x=>x.id===id);agPopClose();if(!n)return;
+  if(!n.letta_il)await agRead(id);
+  const ev=n.evento_id&&ag.ev.find(e=>e.id===n.evento_id);
+  if(ev){
+    const d=new Date(ev.inizio);ag.tab='settimana';ag.week=agMonday(d);ag.month=isoD(d).slice(0,7);agEnsure(ag.week);
+    if(state.view!=='agenda')go('agenda');else{closeRail();render();window.scrollTo(0,0)}
+    agOpen(ev.id);
+  } else agGoNotif();
 }
 function agGoNotif(){ag.tab='notifiche';if(state.view!=='agenda')go('agenda');else{closeRail();render();window.scrollTo(0,0)}}
 
@@ -4758,7 +4824,7 @@ function viewAgenda(){
   if(ag.missing)return `<div class="empty">${AG_I.cal}<h4>Il calendario non è ancora attivo</h4><p>Nel database mancano le tabelle del calendario. Si creano una volta sola eseguendo la migrazione <code>20261104100000_team_calendario_notifiche.sql</code> nel SQL Editor di Supabase.</p><button class="btn" onclick="agRefresh()">Riprova</button></div>`;
   if(ag.noMember)return `<div class="empty">${AG_I.cal}<h4>Il tuo account non è ancora nella squadra</h4><p>${esc(nl.session.user?.email||'')} ha fatto l'accesso, ma non è tra le persone del calendario. Dal SQL Editor di Supabase: <code>select public.team_aggiungi('${esc(nl.session.user?.email||'')}', 'Nome', '#F59E0B');</code></p><button class="btn" onclick="nlLogout()">Esci</button></div>`;
   const un=agUnread();
-  const tabs=`<div class="filters"><div class="seg">${AG_TABS.map(x=>`<button class="fbtn ${ag.tab===x.tab?'on':''}" onclick="agGoTab('${x.tab}')">${x.label}${x.tab==='notifiche'&&un?` <span class="badge" style="margin-left:6px">${un}</span>`:''}</button>`).join('')}</div></div>`;
+  const tabs='';
   if(ag.tab==='notifiche')return tabs+agNotifView();
   const who=`<div class="filters ag-who"><span class="email-cell" style="color:var(--text);font-weight:650">Persone</span>
     <button class="fbtn ${!ag.who?'on':''}" onclick="agWho('')">Tutti</button>
