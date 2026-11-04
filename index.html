@@ -795,9 +795,23 @@ body[data-view="agenda"] .hero{--hb:var(--lilac);--hi:var(--on-lilac)}
 @media(max-width:700px){.bento .span-3,.bento .span-4,.bento .span-5,.bento .span-6{grid-column:span 12}.hm-big{font-size:52px}}
 @media(max-width:1100px){.ag-week{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:700px){.ag-week{grid-template-columns:1fr}.ag-day{min-height:0}.ag-me span{display:none}.ag-me{padding:0 6px}.ag-pill{font-size:10.5px}.ag-mc{padding:4px}.ag-mb{gap:3px}}
+
+/* ---- accesso unico: finché non si è dentro, la suite non si vede ---- */
+body.locked .app{display:none}
+#gate{display:none;min-height:100vh;align-items:center;justify-content:center;padding:24px;background:var(--bg)}
+body.locked #gate{display:flex}
+.gate-card{width:100%;max-width:420px;background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:34px 30px;box-shadow:0 18px 50px rgba(0,0,0,.08)}
+.gate-brand{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+.gate-brand .logo{width:38px;height:38px}
+.gate-brand h1{font-size:22px;margin:0}
+.gate-card h2{font-size:26px;letter-spacing:-.02em;margin:0 0 6px}
+.gate-card p.sub{margin:0 0 20px;color:var(--ink-2,inherit);opacity:.8}
+.gate-card form{display:flex;flex-direction:column;gap:14px}
+.gate-card .code{font-family:'JetBrains Mono',monospace;font-size:12px;word-break:break-all}
 </style>
 </head>
-<body>
+<body class="locked">
+<div id="gate" role="main" aria-live="polite"></div>
 <div class="app">
   <header class="topnav" id="rail">
     <div class="topnav-in">
@@ -2230,6 +2244,7 @@ function heroCopy(){
   }
 }
 function render(){
+  gateUpdate();
   renderNav();renderConn();renderSpend();
   document.body.dataset.view=state.view;
   const hc=heroCopy();
@@ -3378,6 +3393,38 @@ function nlActive(){return nl.subs.filter(s=>!s.unsubscribed_at)}
 
 /* ---- connessione e accesso (condiviso con Ricerca lead) ---- */
 function nlAuthView(){return state.view==='home'||state.view==='newsletter'||state.view==='lead'||state.view==='richieste'||state.view==='contabilita'||state.view==='agenda'}
+/* ---- accesso unico alla suite ---- */
+function gateBrand(){return `<div class="gate-brand"><div class="logo" aria-hidden="true">${document.querySelector('.brand .logo')?.innerHTML||''}</div><h1>FlowLine <span class="suite">Suite</span></h1></div>`}
+function gateMode(){
+  if(!nl.ready) return 'loading';
+  if(!nl.session) return 'login';
+  if(nl.editor===null) return 'loading';
+  if(nl.editor===false&&!ag.me) return 'denied';
+  return 'open';
+}
+function gateUpdate(){
+  const m=gateMode(), g=document.getElementById('gate');
+  document.body.classList.toggle('locked',m!=='open');
+  if(!g||m==='open'){if(g){g.dataset.mode='open';g.innerHTML='';}return}
+  const key=m+(m==='denied'?(nl.session?.user?.email||''):'');
+  if(g.dataset.mode===key)return;                    // non ridisegno: si perderebbe quello che stai scrivendo
+  g.dataset.mode=key;
+  let body;
+  if(m==='loading') body=`<div class="gate-card">${gateBrand()}<div class="empty" style="padding:24px 0"><span class="spinner"></span><p style="margin-top:14px">Un attimo…</p></div></div>`;
+  else if(m==='login') body=`<div class="gate-card">${gateBrand()}
+    <h2>Accedi</h2><p class="sub">Un solo accesso per tutta la suite.</p>
+    <form onsubmit="nlLogin(event)">
+      <div class="form-row"><label for="nl-em">Email</label><input id="nl-em" type="email" autocomplete="username" placeholder="la tua email di accesso" autofocus></div>
+      <div class="form-row"><label for="nl-pw">Password</label><input id="nl-pw" type="password" autocomplete="current-password"></div>
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><button class="btn primary" id="nl-login-btn" type="submit">Accedi</button><span id="nl-login-msg" class="email-cell" role="status" aria-live="polite"></span></div>
+    </form></div>`;
+  else { const em=esc(nl.session?.user?.email||''); body=`<div class="gate-card">${gateBrand()}
+    <h2>Accesso non abilitato</h2><p class="sub"><b>${em}</b> ha fatto l'accesso, ma non è tra le persone della squadra.</p>
+    <p class="helptip">Dal SQL Editor di Supabase: <span class="code">select public.team_aggiungi('${em}', 'Nome', '#F59E0B');</span></p>
+    <button class="btn" style="margin-top:16px" onclick="nlLogout()">Esci</button></div>`; }
+  g.innerHTML=body;
+  if(m==='login')setTimeout(()=>document.getElementById('nl-em')?.focus(),50);
+}
 async function nlInit(){
   if(nl.inited)return; nl.inited=true;
   if(typeof window.supabase==='undefined'){nl.inited=false;setTimeout(nlInit,400);return}
@@ -3386,12 +3433,12 @@ async function nlInit(){
     if(!nl.ready)return;                       // la sessione iniziale la gestisce getSession qui sotto
     const was=nl.session&&nl.session.user&&nl.session.user.id;
     nl.session=session;
-    if(ev==='SIGNED_OUT'){nl.editor=null;nl.loaded=false;nl.subs=[];nl.camps=[];nl.edit=null;ld.loaded=false;ld.searches=[];ld.leads=[];ld.sel.clear();clearTimeout(ld.pollT);rq.loaded=false;rq.rows=[];clearTimeout(rq.pollT);ct.loaded=false;ct.conti=[];ct.mov=[];ct.missing=false;agStop();hmStop();if(nlAuthView())render();else renderNav();}
-    else if(ev==='SIGNED_IN' && session && was!==session.user.id){nl.editor=null;if(nlAuthView())render();setTimeout(nlAfterLogin,0);}
+    if(ev==='SIGNED_OUT'){nl.editor=null;nl.loaded=false;nl.subs=[];nl.camps=[];nl.edit=null;ld.loaded=false;ld.searches=[];ld.leads=[];ld.sel.clear();clearTimeout(ld.pollT);rq.loaded=false;rq.rows=[];clearTimeout(rq.pollT);ct.loaded=false;ct.conti=[];ct.mov=[];ct.missing=false;agStop();hmStop();nl.editor=null;render();}
+    else if(ev==='SIGNED_IN' && session && was!==session.user.id){nl.editor=null;render();setTimeout(nlAfterLogin,0);}
   });
   const {data}=await nlSupa.auth.getSession();
   nl.session=data.session; nl.ready=true;
-  if(nl.session) await nlAfterLogin(); else if(nlAuthView()) render();
+  if(nl.session) await nlAfterLogin(); else render();
 }
 async function nlAfterLogin(){
   // un solo accesso per tutta la suite: l'account è una persona della squadra (team_members) oppure, per i vecchi accessi, un indirizzo di redazione
@@ -3399,7 +3446,8 @@ async function nlAfterLogin(){
   hmLoad({silent:true});
   const {data,error}=await nlSupa.rpc('newsletter_is_editor');
   nl.editor=(!error&&data===true)||!!ag.me;
-  if(nl.editor){ ldLoad({silent:state.view!=='lead'}); rqLoad({silent:state.view!=='richieste'}); ctLoad({silent:state.view!=='contabilita'}); await nlLoad(); } else if(nlAuthView()) render();
+  if(nl.editor){ ldLoad({silent:state.view!=='lead'}); rqLoad({silent:state.view!=='richieste'}); ctLoad({silent:state.view!=='contabilita'}); await nlLoad(); } else render();
+  render();
 }
 async function nlLogin(ev){
   ev&&ev.preventDefault();
@@ -5725,6 +5773,7 @@ function viewStats(){
     else if(state.google.email){ setTimeout(()=>refreshToken(),800); }
   }
   initSupabase();
+  nlInit();
   render();
 })();
 </script>
