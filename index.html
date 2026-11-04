@@ -667,7 +667,8 @@ body[data-view="contabilita"] .dot.on{background:#5FD08A}
 .ct-pend:last-of-type{border-bottom:0}
 .ct-hb{display:grid;grid-template-columns:minmax(90px,150px) 1fr auto;gap:12px;align-items:center;padding:8px 0;font-size:14px}
 .board .b-st{width:auto}
-@media(max-width:1100px){.ct-two2{grid-template-columns:1fr}.bento .span-7,.bento .span-5{grid-column:span 12}}
+@media(max-width:1100px){.ct-two2{grid-template-columns:1fr}.bento .span-7,.bento .span-5{grid-column:span 12}.bento .span-4{grid-column:span 6}}
+@media(max-width:700px){.bento .span-4{grid-column:span 12}.hm-big{font-size:52px}.hm-time{flex-basis:60px}}
 @media(max-width:700px){.ct-two{grid-template-columns:1fr}.ct-months{grid-template-columns:repeat(3,minmax(0,1fr))}.ct-v{font-size:30px!important}.ct-desc{max-width:180px}.ct-hb{grid-template-columns:1fr auto}.ct-hb .nl-bar-wrap{grid-column:1/-1;order:3}}
 
 /* ===== calendario condiviso, squadra e notifiche ===== */
@@ -739,6 +740,44 @@ body[data-view="agenda"] .hero{--hb:var(--lilac);--hi:var(--on-lilac)}
 .ag-pop-f{display:block;width:100%;padding:13px 16px;border-top:1px solid var(--border);font-weight:650;font-size:14px;text-align:center}
 .ag-pop-f:hover{background:var(--surface-2)}
 .spend-pill[hidden]{display:none}
+
+.hm-big{font-size:64px;font-weight:800;font-stretch:112%;letter-spacing:-.05em;line-height:.95;font-variant-numeric:tabular-nums}
+.hm-cap{font-size:14px;font-weight:600;opacity:.8;margin-top:8px}
+.hm-foot{margin-top:18px}
+.hm-empty{font-size:15px;opacity:.75;padding:6px 0}
+.hm-lines{display:flex;flex-direction:column;gap:6px;margin-top:14px}
+.hm-line{display:flex;justify-content:space-between;gap:12px;font-size:14.5px;font-weight:600}
+.hm-line.zero{opacity:.7}.hm-line b{font-variant-numeric:tabular-nums}
+.hm-list{display:flex;flex-direction:column;gap:6px}
+.hm-row{display:flex;align-items:center;gap:14px;padding:11px 14px;border-radius:16px;background:var(--surface-2);cursor:pointer;transition:background .15s var(--ease)}
+.hm-row:hover{background:var(--border)}
+.hm-row.past{opacity:.55}
+.hm-time{flex:0 0 74px;font-weight:800;font-variant-numeric:tabular-nums;font-size:15px}
+.hm-main{display:flex;flex-direction:column;min-width:0;flex:1}
+.hm-main b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hm-sub{font-size:13px;opacity:.7;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hm-posts{display:flex;flex-direction:column;gap:10px;max-height:560px;overflow-y:auto;padding-right:4px}
+.hm-post{padding:14px 16px;border-radius:18px;background:var(--surface-2);cursor:pointer}
+.hm-post:hover{background:var(--border)}
+.hm-post.pin{box-shadow:inset 0 0 0 2px var(--brand)}
+.hm-post-h{display:flex;align-items:center;gap:8px;font-size:16px}
+.hm-pin{display:inline-flex;color:var(--brand)}.hm-pin .ico{width:16px;height:16px}
+.hm-post-t{margin-top:6px;white-space:pre-wrap;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;font-size:14.5px}
+.hm-post-f{display:flex;align-items:center;gap:7px;margin-top:10px;font-size:12.5px;opacity:.75}
+.hm-convs{display:flex;flex-direction:column;gap:6px}
+.hm-conv{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:16px;background:rgba(255,255,255,.55);cursor:pointer}
+[data-theme="dark"] .hm-conv{background:rgba(0,0,0,.22)}
+.hm-conv:hover{background:rgba(255,255,255,.85)}
+[data-theme="dark"] .hm-conv:hover{background:rgba(0,0,0,.35)}
+.hm-conv.new .hm-sub{opacity:1;font-weight:650}
+.hm-when{font-size:12px;opacity:.7;white-space:nowrap}
+.hm-thread{display:flex;flex-direction:column;gap:6px;max-height:340px;overflow-y:auto;padding:4px 2px}
+.hm-day{align-self:center;font-size:12px;font-weight:650;opacity:.6;margin:8px 0 2px}
+.hm-b{max-width:80%;padding:9px 13px;border-radius:18px;font-size:14.5px;white-space:pre-wrap;word-break:break-word}
+.hm-b span{display:block;font-size:11px;opacity:.65;margin-top:3px}
+.hm-b.me{align-self:flex-end;background:var(--ink);color:#fff;border-bottom-right-radius:6px}
+[data-theme="dark"] .hm-b.me{background:var(--text);color:var(--bg)}
+.hm-b.lui{align-self:flex-start;background:var(--surface-2);border-bottom-left-radius:6px}
 @media(max-width:1100px){.ag-week{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:700px){.ag-week{grid-template-columns:1fr}.ag-day{min-height:0}.ag-me span{display:none}.ag-me{padding:0 6px}.ag-pill{font-size:10.5px}.ag-mc{padding:4px}.ag-mb{gap:3px}}
 </style>
@@ -996,7 +1035,7 @@ let state = {
   cadence: load(LS.cadence, STEPS_DEFAULT),
   templates: load(LS.templates, TEMPLATES_DEFAULT),
   usage: load(LS.usage, {input:0, output:0, gen:0, since:new Date().toISOString().slice(0,10)}),
-  view: 'dashboard',
+  view: 'home',
   google: load(LS.gauth, {token:null, email:null, expires:0}),
   sendAs: [],            // alias "Invia come" letti da Gmail
   sendAsErr: '',
@@ -2022,18 +2061,19 @@ function handleFile(file){
    ======================================================= */
 // FlowLine Suite: due aree, ciascuna con le sue pagine
 const SECTIONS=[
+  {id:'home',label:'Home',icon:'M3 11l9-8 9 8 M5 10v10h14V10'},
   {id:'outbound',label:'Outbound',icon:'M22 2 11 13 M22 2l-7 20-4-9-9-4 20-7z'},
   {id:'newsletter',label:'Newsletter',icon:'M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z M22 6l-10 7L2 6'},
   {id:'richieste',label:'Richieste',icon:'M22 12h-6l-2 3h-4l-2-3H2 M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z'},
   {id:'contabilita',label:'Contabilità',icon:'M20 7H5a2 2 0 0 1 0-4h13v4 M3 5v14a2 2 0 0 0 2 2h15V7 M16 14h.01'},
   {id:'agenda',label:'Calendario',icon:'M3 4h18v18H3z M16 2v4 M8 2v4 M3 10h18 M8 14h2 M14 14h2'},
 ];
-const SEC_NAME={outbound:'Outbound',newsletter:'Newsletter',richieste:'Richieste',contabilita:'Contabilità',agenda:'Calendario'};
+const SEC_NAME={home:'Home',outbound:'Outbound',newsletter:'Newsletter',richieste:'Richieste',contabilita:'Contabilità',agenda:'Calendario'};
 const NL_PAGES=[{tab:'campagne',label:'Campagne'},{tab:'iscritti',label:'Iscritti'}];
-function sectionOf(v){return v==='newsletter'||v==='richieste'||v==='contabilita'||v==='agenda'?v:'outbound'}
+function sectionOf(v){return v==='home'||v==='newsletter'||v==='richieste'||v==='contabilita'||v==='agenda'?v:'outbound'}
 function goSection(sec){
   if(sec===sectionOf(state.view)){closeRail();return}
-  if(sec==='newsletter'||sec==='richieste'||sec==='contabilita'||sec==='agenda') go(sec); else go(state.lastOutbound&&sectionOf(state.lastOutbound)==='outbound'?state.lastOutbound:'dashboard');
+  if(sec==='home'||sec==='newsletter'||sec==='richieste'||sec==='contabilita'||sec==='agenda') go(sec); else go(state.lastOutbound&&sectionOf(state.lastOutbound)==='outbound'?state.lastOutbound:'dashboard');
 }
 function goNl(tab){nl.tab=tab;nl.edit=null;if(state.view!=='newsletter')go('newsletter');else{closeRail();render();window.scrollTo(0,0)}}
 const NAV=[
@@ -2054,11 +2094,11 @@ function renderNav(){
   const newRep=state.contacts.filter(c=>c.haRisposto&&c.replySeen===false).length;
   const ico=d=>`<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`;
   // livello 1: aree, con un pallino se nell'altra area c'è qualcosa che aspetta
-  const alertOut=late||todayN||newRep||ldBusy(), alertNl=!!nl.sending, alertRq=rq.loaded&&rqNew()>0, alertCt=ct.loaded&&!ct.missing&&ctPending().length>0, alertAg=ag.loaded&&!ag.missing&&agUnread()>0;
+  const alertOut=late||todayN||newRep||ldBusy(), alertNl=!!nl.sending, alertRq=rq.loaded&&rqNew()>0, alertCt=ct.loaded&&!ct.missing&&ctPending().length>0, alertAg=ag.loaded&&!ag.missing&&agUnread()>0, alertHm=hm.loaded&&!hm.missing&&hmUnread()>0;
   const sp=document.getElementById('spendPill');if(sp)sp.hidden=sec!=='outbound';
   document.getElementById('secSwitch').innerHTML=SECTIONS.map(x=>{
-    const on=x.id===sec, al=x.id==='outbound'?alertOut:(x.id==='newsletter'?alertNl:(x.id==='contabilita'?alertCt:(x.id==='agenda'?alertAg:alertRq)));
-    const dot=!on&&al?`<span class="dotb${x.id==='outbound'&&late?' late':''}" aria-label="${x.id==='richieste'?'ci sono richieste nuove':x.id==='contabilita'?'ci sono movimenti da completare':x.id==='agenda'?'ci sono notifiche da leggere':'ci sono attività in sospeso'}"></span>`:'';
+    const on=x.id===sec, al=x.id==='home'?alertHm:x.id==='outbound'?alertOut:(x.id==='newsletter'?alertNl:(x.id==='contabilita'?alertCt:(x.id==='agenda'?alertAg:alertRq)));
+    const dot=!on&&al?`<span class="dotb${x.id==='outbound'&&late?' late':''}" aria-label="${x.id==='home'?'ci sono messaggi da leggere':x.id==='richieste'?'ci sono richieste nuove':x.id==='contabilita'?'ci sono movimenti da completare':x.id==='agenda'?'ci sono notifiche da leggere':'ci sono attività in sospeso'}"></span>`:'';
     return `<button type="button" aria-pressed="${on}" onclick="goSection('${x.id}')">${ico(x.icon)}<span>${x.label}</span>${dot}</button>`;
   }).join('');
   // livello 2: pagine dell'area attiva
@@ -2068,6 +2108,8 @@ function renderNav(){
   if(sec==='richieste'){
     const n=rq.loaded?rqNew():0;
     items=[`<button class="active" aria-current="page" onclick="go('richieste')"><span>Richieste dal sito</span>${n?`<span class="badge">${n}</span>`:''}</button>`];
+  } else if(sec==='home'){
+    items=[];
   } else if(sec==='agenda'){
     items=AG_TABS.map(pg=>{
       const on=ag.tab===pg.tab, n=pg.tab==='notifiche'&&ag.loaded?agUnread():0;
@@ -2096,6 +2138,7 @@ function renderNav(){
     });
   }
   nav.innerHTML=`<span class="nav-area" aria-hidden="true">${SEC_NAME[sec]}</span>`+items.join('');
+  nav.parentElement.style.display=sec==='home'?'none':'';
   agRenderUser();
 }
 function renderSpend(){
@@ -2152,6 +2195,7 @@ function heroCopy(){
   const due=state.contacts.filter(dueToday).length, late=state.contacts.filter(isLate).length;
   const rep=state.contacts.filter(c=>c.haRisposto).length, newRep=state.contacts.filter(c=>c.haRisposto&&c.replySeen===false).length;
   const backlog=state.contacts.filter(isUnplanned).length;
+  if(state.view==='home') return hmHeroCopy();
   if(state.view==='newsletter') return nlHeroCopy();
   if(state.view==='richieste') return rqHeroCopy();
   if(state.view==='contabilita') return ctHeroCopy();
@@ -2177,7 +2221,7 @@ function render(){
   document.getElementById('viewTitle').textContent=hc.t;
   const vl=document.getElementById('viewLede');if(vl)vl.textContent=hc.l;
   const vd=document.getElementById('viewDate');if(vd)vd.textContent=today().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
-  const pageName=state.view==='agenda'?(AG_TABS.find(x=>x.tab===ag.tab)||AG_TABS[0]).label:state.view==='contabilita'?(CT_TABS.find(x=>x.tab===ct.tab)||CT_TABS[0]).label:state.view==='richieste'?'Richieste':state.view==='newsletter'?(nl.tab==='iscritti'?'Iscritti':'Campagne'):({dashboard:'Dashboard',pianifica:'Pianificazione',coda:'Coda invio',contatti:'Contatti',calendario:'Piano invii',risposte:'Risposte',lead:'Ricerca lead',stats:'Statistiche'}[state.view]||'Dashboard');
+  const pageName=state.view==='home'?'Home':state.view==='agenda'?(AG_TABS.find(x=>x.tab===ag.tab)||AG_TABS[0]).label:state.view==='contabilita'?(CT_TABS.find(x=>x.tab===ct.tab)||CT_TABS[0]).label:state.view==='richieste'?'Richieste':state.view==='newsletter'?(nl.tab==='iscritti'?'Iscritti':'Campagne'):({dashboard:'Dashboard',pianifica:'Pianificazione',coda:'Coda invio',contatti:'Contatti',calendario:'Piano invii',risposte:'Risposte',lead:'Ricerca lead',stats:'Statistiche'}[state.view]||'Dashboard');
   const secName=SEC_NAME[sectionOf(state.view)];
   document.title=(pageName!==secName?pageName+' · ':'')+secName+' — FlowLine Suite';
   agTitle();
@@ -2203,7 +2247,8 @@ function render(){
     if(dueN) primary=`<button class="btn primary" id="btnSendAll" onclick="sendAllToday()">${I.send}Invia tutte${state.config.testMode?' (test)':''}</button>
       <button class="btn" onclick="generateAllDrafts()">${I.spark}Genera mancanti</button>`;
   } else { primary=`<button class="btn primary" onclick="pickFile()">${I.plus}Importa contatti</button>`; importPrimary=true; }
-  if(state.view==='newsletter'){ ta.innerHTML=nlTopActions(); }
+  if(state.view==='home'){ ta.innerHTML=hmTopActions(); }
+  else if(state.view==='newsletter'){ ta.innerHTML=nlTopActions(); }
   else if(state.view==='richieste'){ ta.innerHTML=rqTopActions(); }
   else if(state.view==='contabilita'){ ta.innerHTML=ctTopActions(); }
   else if(state.view==='agenda'){ ta.innerHTML=agTopActions(); }
@@ -2214,7 +2259,8 @@ function render(){
     +(has?`<button class="btn" onclick="checkReplies()" title="Controlla ora se sono arrivate risposte">${I.reply}<span class="lbl">Controlla risposte</span></button>`:'')
     +`<button class="btn" id="btnRefresh" onclick="refreshAll()" title="Aggiorna dati dal database e dal foglio">${I.refresh}<span class="lbl">Aggiorna</span></button>`;
   const C=document.getElementById('content');
-  if(state.view==='dashboard')C.innerHTML=viewDashboard();
+  if(state.view==='home'){ if(!nl.inited) nlInit(); C.innerHTML=viewHome(); }
+  else if(state.view==='dashboard')C.innerHTML=viewDashboard();
   else if(state.view==='coda')C.innerHTML=viewCoda();
   else if(state.view==='pianifica')C.innerHTML=viewPianifica();
   else if(state.view==='contatti')C.innerHTML=viewContatti();
@@ -3316,7 +3362,7 @@ function nlSleep(ms){return new Promise(r=>setTimeout(r,ms))}
 function nlActive(){return nl.subs.filter(s=>!s.unsubscribed_at)}
 
 /* ---- connessione e accesso (condiviso con Ricerca lead) ---- */
-function nlAuthView(){return state.view==='newsletter'||state.view==='lead'||state.view==='richieste'||state.view==='contabilita'||state.view==='agenda'}
+function nlAuthView(){return state.view==='home'||state.view==='newsletter'||state.view==='lead'||state.view==='richieste'||state.view==='contabilita'||state.view==='agenda'}
 async function nlInit(){
   if(nl.inited)return; nl.inited=true;
   if(typeof window.supabase==='undefined'){nl.inited=false;setTimeout(nlInit,400);return}
@@ -3371,7 +3417,7 @@ async function nlLoad(opts={}){
     if(nl.edit&&nl.edit.id){const c=camps.find(x=>x.id===nl.edit.id); if(c&&c.status!=='draft'){nl.edit=c;await nlLoadSends(c.id);}}
   }catch(e){toast('Newsletter: '+e.message,'err')}
   nl.loading=false;
-  if(state.view==='newsletter' && !opts.keepView) render();
+  if((state.view==='newsletter'||state.view==='home') && !opts.keepView) render();
 }
 async function nlLoadSends(id){
   const {data,error}=await nlSupa.from('newsletter_sends').select('id,email,status,sent_at,error').eq('campaign_id',id).order('id').range(0,4999);
@@ -3743,7 +3789,7 @@ function viewNewsletter(){
   return tabs+(nl.tab==='iscritti'?nlSubsView():nlCampsView());
 }
 function nlLoginView(mode){
-  const t={lead:'Accedi per cercare i lead',richieste:'Accedi alle richieste',contabilita:'Accedi alla contabilità',agenda:'Accedi al calendario'}[mode]||'Accedi alla newsletter';
+  const t={home:'Accedi alla home',lead:'Accedi per cercare i lead',richieste:'Accedi alle richieste',contabilita:'Accedi alla contabilità',agenda:'Accedi al calendario'}[mode]||'Accedi alla newsletter';
   return `<div class="tile nl-login">
     <div class="tile-h"><h3>${t}</h3></div>
     <p class="helptip" style="margin-bottom:18px">Ogni persona del team entra con il proprio account: lo stesso accesso vale per tutta la FlowLine Suite (Outbound, Newsletter, Richieste, Contabilità e Calendario). Gli account si creano in Supabase → Authentication → Users e si collegano alla squadra una volta sola (vedi README).</p>
@@ -4285,7 +4331,7 @@ async function ctLoad(opts={}){
     else toast('Contabilità: '+(e.message||e),'err');
   }
   ct.loading=false;
-  if(state.view==='contabilita') render(); else renderNav();
+  if(state.view==='contabilita'||state.view==='home') render(); else renderNav();
 }
 async function ctRefresh(){
   const b=document.getElementById('btnRefresh'); if(b){b.disabled=true;b.innerHTML='<span class="spinner"></span> Aggiorno…';}
@@ -4684,7 +4730,8 @@ async function agLoad(opts={}){
     else toast('Calendario: '+(e.message||e),'err');
   }
   ag.loading=false;agTitle();
-  if(state.view==='agenda')render();else{renderNav()}
+  if(ag.me&&!ag.missing)await hmLoad();
+  if(state.view==='agenda'||state.view==='home')render();else{renderNav()}
 }
 function agDeferLoad(){clearTimeout(ag.loadT);ag.loadT=setTimeout(()=>agLoad({silent:true}),700)}
 function agSubscribe(){
@@ -4694,6 +4741,8 @@ function agSubscribe(){
       .on('postgres_changes',{event:'INSERT',schema:'public',table:'notifiche',filter:'user_id=eq.'+ag.me.id},p=>agOnNotif(p.new))
       .on('postgres_changes',{event:'*',schema:'public',table:'eventi'},agDeferLoad)
       .on('postgres_changes',{event:'*',schema:'public',table:'evento_partecipanti'},agDeferLoad)
+      .on('postgres_changes',{event:'*',schema:'public',table:'bacheca'},agDeferLoad)
+      .on('postgres_changes',{event:'INSERT',schema:'public',table:'messaggi'},agDeferLoad)
       .subscribe();
   }catch(e){}
   clearInterval(ag.pollT);ag.pollT=setInterval(()=>{if(!document.hidden)agLoad({silent:true})},90000);  // rete di sicurezza se il tempo reale non è attivo
@@ -4706,7 +4755,8 @@ function agStop(){
 function agOnNotif(n){
   if(!n||ag.notif.some(x=>x.id===n.id))return;
   ag.notif.unshift(n);toast(n.titolo+': '+n.testo,'ok');agTitle();agPopRefresh();
-  if(state.view==='agenda')render();else renderNav();
+  if(n.tipo==='messaggio'||n.tipo==='bacheca')agDeferLoad();
+  if(state.view==='agenda'||state.view==='home')render();else renderNav();
 }
 function agTitle(){const n=agUnread();const t=document.title.replace(/^\(\d+\)\s/,'');document.title=(n?'('+n+') ':'')+t}
 
@@ -4779,12 +4829,29 @@ function agPopAll(){agPopClose();agGoNotif()}
 async function agPopOpen(id){
   const n=ag.notif.find(x=>x.id===id);agPopClose();if(!n)return;
   if(!n.letta_il)await agRead(id);
-  const ev=n.evento_id&&ag.ev.find(e=>e.id===n.evento_id);
-  if(ev){
-    const d=new Date(ev.inizio);ag.tab='settimana';ag.week=agMonday(d);ag.month=isoD(d).slice(0,7);agEnsure(ag.week);
-    if(state.view!=='agenda')go('agenda');else{closeRail();render();window.scrollTo(0,0)}
-    agOpen(ev.id);
-  } else agGoNotif();
+  agNotifGo(n);
+}
+function agGoEvent(id){
+  const ev=ag.ev.find(e=>e.id===id);if(!ev)return;
+  const d=new Date(ev.inizio);ag.tab='settimana';ag.week=agMonday(d);ag.month=isoD(d).slice(0,7);agEnsure(ag.week);
+  if(state.view!=='agenda')go('agenda');else{closeRail();render();window.scrollTo(0,0)}
+  agOpen(ev.id);
+}
+async function agNotifGo(n){
+  if(n.tipo==='messaggio'){
+    if(state.view!=='home')go('home');
+    let m=()=>hm.msg.find(x=>x.a_user===ag.me.id&&Math.abs(new Date(x.created_at)-new Date(n.created_at))<8000);
+    if(!m())await hmLoad();
+    const f=m();if(f)hmThread(f.da_user);
+    return;
+  }
+  if(n.tipo==='bacheca'){
+    if(state.view!=='home')go('home');
+    if(n.rif_id&&!hm.bac.some(b=>b.id===n.rif_id))await hmLoad();
+    if(n.rif_id)hmPostOpen(n.rif_id);
+    return;
+  }
+  if(n.evento_id&&ag.ev.some(e=>e.id===n.evento_id))agGoEvent(n.evento_id);else agGoNotif();
 }
 function agGoNotif(){ag.tab='notifiche';if(state.view!=='agenda')go('agenda');else{closeRail();render();window.scrollTo(0,0)}}
 
@@ -4869,7 +4936,7 @@ function agNotifView(){
   return head+`<div class="ag-notifs">${ag.notif.map(n=>{const ev=n.evento_id&&ag.ev.find(e=>e.id===n.evento_id);
     return `<div class="ag-n ${n.letta_il?'':'new'}" onclick="agOpenNotif(${n.id})"><span class="ag-nd" aria-hidden="true"></span><div class="ag-nb"><div class="ag-nt"><b>${esc(n.titolo)}</b><span class="email-cell">${esc(nlFmt(n.created_at,true))}</span></div>
       <div>${esc(n.testo)}</div></div>
-      <div class="ag-na">${ev?`<button class="btn sm" onclick="event.stopPropagation();agOpenNotif(${n.id},true)">Apri evento</button>`:''}${n.letta_il?'':`<button class="btn sm ghost" onclick="event.stopPropagation();agRead(${n.id})">Letta</button>`}</div></div>`}).join('')}</div>
+      <div class="ag-na">${ev||n.tipo==='messaggio'||n.tipo==='bacheca'?`<button class="btn sm" onclick="event.stopPropagation();agOpenNotif(${n.id},true)">${ev?'Apri evento':'Apri'}</button>`:''}${n.letta_il?'':`<button class="btn sm ghost" onclick="event.stopPropagation();agRead(${n.id})">Letta</button>`}</div></div>`}).join('')}</div>
     <p class="helptip" style="margin-top:12px">Le notifiche sono personali: ognuno vede solo le sue. Per ora arrivano qui in suite; l'invio via email si può aggiungere in seguito.</p>`;
 }
 async function agRead(id){
@@ -4886,7 +4953,7 @@ async function agReadAll(){
 async function agOpenNotif(id,openEv){
   const n=ag.notif.find(x=>x.id===id);if(!n)return;
   if(!n.letta_il)await agRead(id);
-  if(openEv&&n.evento_id)agOpen(n.evento_id);
+  if(openEv)agNotifGo(n);
 }
 
 /* ---- evento: crea, modifica, annulla, elimina ---- */
@@ -4981,6 +5048,265 @@ async function agDelete(id){
   const {error}=await nlSupa.from('eventi').delete().eq('id',id);
   if(error){toast(error.message,'err');return}
   ag.ev=ag.ev.filter(x=>x.id!==id);delete ag.part[id];closeModal();render();toast('Evento eliminato','ok');
+}
+
+/* ============================================================
+   HOME — scorciatoie, bacheca delle comunicazioni, messaggi personali
+   ============================================================ */
+const hm={bac:[],msg:[],loaded:false,missing:false,conv:null};
+const HM_X='<div class="x" role="button" tabindex="0" aria-label="Chiudi" onclick="closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></div>';
+const HM_PIN='<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5 M9 3h6l-1 7 3 3v2H7v-2l3-3z"/></svg>';
+const HM_ARROW='<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+function hmTables(e){return e&&(e.code==='42P01'||e.code==='PGRST205'||/does not exist|schema cache/i.test(e.message||''))}
+async function hmLoad(){
+  if(!nlSupa||!nl.session||!ag.me)return;
+  try{
+    const {data:b,error:e1}=await nlSupa.from('bacheca').select('id,created_at,autore,titolo,testo,fissata').order('fissata',{ascending:false}).order('created_at',{ascending:false}).limit(50);
+    if(e1)throw e1;
+    const {data:m,error:e2}=await nlSupa.from('messaggi').select('id,created_at,da_user,a_user,testo,letto_il').order('created_at',{ascending:false}).limit(400);
+    if(e2)throw e2;
+    hm.bac=b;hm.msg=m;hm.missing=false;
+  }catch(e){
+    if(hmTables(e))hm.missing=true; else toast('Home: '+(e.message||e),'err');
+  }
+  hm.loaded=true;
+  if(hm.conv)hmThreadRefresh();
+  if(state.view==='home')render();else renderNav();
+}
+function hmUnread(){return ag.me?hm.msg.filter(m=>m.a_user===ag.me.id&&!m.letto_il).length:0}
+function hmConvs(){
+  const me=ag.me.id,map={};
+  hm.msg.forEach(m=>{
+    const o=m.da_user===me?m.a_user:m.da_user;
+    const c=map[o]||(map[o]={id:o,last:m,un:0});
+    if(m.created_at>c.last.created_at)c.last=m;
+    if(m.a_user===me&&!m.letto_il)c.un++;
+  });
+  return Object.values(map).sort((a,b)=>String(b.last.created_at).localeCompare(String(a.last.created_at)));
+}
+function hmGreet(){const h=new Date().getHours();return h<13?'Buongiorno':h<18?'Buon pomeriggio':'Buonasera'}
+function hmCallsToday(){
+  if(!ag.me)return {calls:[],other:0};
+  const mine=e=>e.stato!=='annullato'&&agOverlaps(e,today())&&(e.calendario==='azienda'||agParts(e.id).includes(ag.me.id));
+  const all=ag.ev.filter(mine).sort((a,b)=>(b.tutto_il_giorno-a.tutto_il_giorno)||String(a.inizio).localeCompare(String(b.inizio)));
+  const calls=all.filter(e=>e.tipo==='call');
+  return {calls,other:all.length-calls.length};
+}
+function hmMailsToday(){
+  const due=state.contacts.filter(dueToday),by=state.cadence.map(()=>0);
+  due.forEach(c=>{const na=nextAction(c);if(na&&by[na.stepIndex]!=null)by[na.stepIndex]++});
+  return {total:due.length,by,late:state.contacts.filter(isLate).length};
+}
+function hmHeroCopy(){
+  if(!nl.session)return {t:'Home.',l:'Accedi con il tuo account per vedere la giornata di Flowline.'};
+  if(nl.editor===false&&!ag.me)return {t:'Accesso non abilitato.',l:'Questo account non è nella squadra.'};
+  if(!ag.loaded)return {t:'Home.',l:'Preparo la giornata…'};
+  const nome=ag.me?ag.me.nome:'';
+  const c=hmCallsToday().calls.length,m=hmMailsToday().total,r=state.contacts.filter(x=>x.haRisposto&&x.replySeen===false).length,u=hmUnread();
+  const l=[c?`${c} ${c===1?'call oggi':'call oggi'}`:'Nessuna call oggi',m?`${m} ${m===1?'email da inviare':'email da inviare'}`:null,r?`${r} ${r===1?'nuova risposta':'nuove risposte'}`:null,u?`${u} ${u===1?'messaggio da leggere':'messaggi da leggere'}`:null].filter(Boolean).join(' · ');
+  return {t:`${hmGreet()}${nome?', '+esc(nome):''}.`,l};
+}
+function hmTopActions(){
+  if(!nl.session||!ag.me||hm.missing)return '';
+  return `<button class="btn primary" onclick="hmThread('')">${AG_I.plus}Nuovo messaggio</button><button class="btn" onclick="hmPostOpen(null)">${AG_I.plus}Nuova comunicazione</button>`;
+}
+
+/* ---- tessere ---- */
+function hmTileCalls(){
+  const {calls,other}=hmCallsToday(),now=new Date();
+  const rows=calls.map(e=>{
+    const past=!e.tutto_il_giorno&&new Date(e.fine)<now;
+    return `<div class="hm-row ${past?'past':''}" role="button" tabindex="0" onclick="agGoEvent(${e.id})" onkeydown="if(event.key==='Enter')agGoEvent(${e.id})">
+      <span class="hm-time">${e.tutto_il_giorno?'Tutto il giorno':agT(e.inizio)}</span>
+      <span class="hm-main"><b>${esc(e.titolo)}</b>${e.cliente&&e.cliente!==e.titolo?`<span class="hm-sub">${esc(e.cliente)}</span>`:''}</span>
+      <span class="ag-avs">${agAvs(e)}</span>
+      ${e.link_call?`<a class="btn sm" href="${escAttr(e.link_call)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Entra</a>`:''}</div>`;
+  }).join('');
+  return `<section class="tile t-white span-7" aria-label="Le call del giorno">
+    <div class="tile-h"><h3>Le call di oggi</h3><span class="spacer"></span><button class="btn sm" onclick="agGoTab('settimana')">Apri il calendario</button></div>
+    ${calls.length?`<div class="hm-list">${rows}</div>`:`<p class="hm-empty">Nessuna call in programma oggi.</p>`}
+    ${other?`<p class="helptip" style="margin-top:10px">Oggi ci ${other===1?'è anche 1 altro impegno':'sono anche '+other+' altri impegni'} in calendario.</p>`:''}
+  </section>`;
+}
+function hmTileBalance(){
+  let body;
+  if(!ct.loaded)body=`<p class="hm-empty">Carico il saldo…</p>`;
+  else if(ct.missing||!ctMain())body=`<p class="hm-empty">Nessun conto aziendale da mostrare.</p>`;
+  else{
+    const mc=ctMain(),n=ctPending().length;
+    body=`<div class="hm-big">${esc(ctEur(ctBalance(mc.id)))}</div><div class="hm-cap">${esc(mc.nome)}${n?` · ${n} ${n===1?'movimento da completare':'movimenti da completare'}`:''}</div>`;
+  }
+  return `<section class="tile t-ink span-5" aria-label="Saldo del conto aziendale">
+    <div class="tile-h"><h3>Saldo aziendale</h3><span class="spacer"></span><button class="btn sm" onclick="go('contabilita')">Contabilità</button></div>${body}</section>`;
+}
+function hmTileMails(){
+  const m=hmMailsToday();
+  const names=state.cadence.map((c,i)=>i===0?'Introduzione (prima email)':(c.nome||'Follow-up '+i));
+  const rows=m.by.map((n,i)=>`<div class="hm-line ${n?'':'zero'}"><span>${esc(names[i])}</span><b>${n}</b></div>`).join('');
+  return `<section class="tile t-orange span-4" aria-label="Email da inviare oggi">
+    <div class="tile-h"><h3>Email da inviare</h3></div>
+    ${state.contacts.length?`<div class="hm-big">${m.total}</div><div class="hm-lines">${rows}</div>${m.late?`<div class="hm-cap" style="margin-top:8px">+ ${m.late} in ritardo</div>`:''}`:`<p class="hm-empty">Nessun contatto importato.</p>`}
+    <div class="hm-foot"><button class="btn sm" onclick="go('coda')">Apri la coda invio</button></div></section>`;
+}
+function hmTileReplies(){
+  const nuove=state.contacts.filter(c=>c.haRisposto&&c.replySeen===false).sort((a,b)=>String(b.reply?.date||'').localeCompare(String(a.reply?.date||'')));
+  return `<section class="tile t-lilac span-4" aria-label="Nuove risposte alle email">
+    <div class="tile-h"><h3>Nuove risposte</h3></div>
+    <div class="hm-big">${nuove.length}</div>
+    ${nuove.length?`<div class="hm-lines">${nuove.slice(0,2).map(c=>`<div class="hm-line"><span>${esc(c.azienda||c.email)}</span></div>`).join('')}</div>`:`<div class="hm-cap">Nessuna risposta da leggere.</div>`}
+    <div class="hm-foot"><button class="btn sm" onclick="go('risposte')">Apri le risposte</button></div></section>`;
+}
+function hmTileNl(){
+  let big='—',cap='Carico gli iscritti…';
+  if(nl.loaded){
+    const act=nlActive(),wk=Date.now()-7*864e5,nw=act.filter(s=>new Date(s.created_at).getTime()>=wk).length;
+    big=String(act.length);cap=nw?`+${nw} negli ultimi 7 giorni`:'Nessun nuovo iscritto negli ultimi 7 giorni';
+  }
+  return `<section class="tile t-cobalt span-4" aria-label="Iscritti alla newsletter">
+    <div class="tile-h"><h3>Iscritti newsletter</h3></div>
+    <div class="hm-big">${big}</div><div class="hm-cap">${cap}</div>
+    <div class="hm-foot"><button class="btn sm" onclick="goNl('iscritti')">Vedi gli iscritti</button></div></section>`;
+}
+function hmTileBacheca(){
+  if(hm.missing)return `<section class="tile t-white span-7"><div class="tile-h"><h3>Bacheca</h3></div><p class="hm-empty">Mancano le tabelle nel database: si creano una volta sola con la migrazione <code>20261104150000_home_bacheca_messaggi.sql</code>.</p></section>`;
+  const list=hm.bac.map(b=>{
+    const au=agPerson(b.autore);
+    return `<article class="hm-post ${b.fissata?'pin':''}" role="button" tabindex="0" onclick="hmPostOpen(${b.id})" onkeydown="if(event.key==='Enter')hmPostOpen(${b.id})">
+      <div class="hm-post-h">${b.fissata?`<span class="hm-pin" title="Fissata in alto">${HM_PIN}</span>`:''}<b>${esc(b.titolo)}</b></div>
+      <div class="hm-post-t">${esc(b.testo)}</div>
+      <div class="hm-post-f">${au?agAv(au.id,true):''}<span>${esc(au?au.nome:'Ex collaboratore')}</span><span>·</span><span>${esc(agAgo(b.created_at))}</span></div></article>`;
+  }).join('');
+  return `<section class="tile t-white span-7" aria-label="Bacheca delle comunicazioni">
+    <div class="tile-h"><h3>Bacheca</h3><span class="spacer"></span><button class="btn sm" onclick="hmPostOpen(null)">${AG_I.plus}Nuova comunicazione</button></div>
+    ${hm.bac.length?`<div class="hm-posts">${list}</div>`:`<p class="hm-empty">Nessuna comunicazione. Scrivi la prima: la vedono tutti, e a tutti arriva una notifica.</p>`}
+  </section>`;
+}
+function hmTileMessages(){
+  if(hm.missing)return `<section class="tile t-peach span-5"><div class="tile-h"><h3>Messaggi</h3></div><p class="hm-empty">Disponibili dopo la migrazione del database.</p></section>`;
+  const cv=hmConvs();
+  const rows=cv.map(c=>{const p=agPerson(c.id),mine=c.last.da_user===ag.me.id;
+    return `<div class="hm-conv ${c.un?'new':''}" role="button" tabindex="0" onclick="hmThread('${c.id}')" onkeydown="if(event.key==='Enter')hmThread('${c.id}')">
+      ${p?agAv(p.id):''}<span class="hm-main"><b>${esc(p?p.nome:'Ex collaboratore')}</b><span class="hm-sub">${mine?'Tu: ':''}${esc(c.last.testo)}</span></span>
+      <span class="hm-when">${esc(agAgo(c.last.created_at))}</span>${c.un?`<span class="badge">${c.un}</span>`:''}</div>`;
+  }).join('');
+  return `<section class="tile t-peach span-5" aria-label="Messaggi personali">
+    <div class="tile-h"><h3>Messaggi</h3><span class="spacer"></span><button class="btn sm" onclick="hmThread('')">${AG_I.plus}Nuovo</button></div>
+    ${cv.length?`<div class="hm-convs">${rows}</div>`:`<p class="hm-empty">Nessun messaggio. Scrivi a un collega: li vede solo lui.</p>`}</section>`;
+}
+function viewHome(){
+  if(!nl.ready)return `<div class="empty"><span class="spinner"></span></div>`;
+  if(!nl.session)return nlLoginView('home');
+  if(nl.editor===null||!ag.loaded)return `<div class="empty"><span class="spinner"></span><p style="margin-top:14px">Preparo la giornata…</p></div>`;
+  if(ag.noMember||ag.missing){
+    return `<div class="bento">${hmTileMails()}${hmTileReplies()}${hmTileNl()}${hmTileBalance().replace('span-5','span-12')}</div>
+      <p class="helptip" style="margin-top:14px">${ag.missing?'Il calendario non è ancora attivo: mancano le tabelle nel database.':'Il tuo account non è ancora nella squadra: call, bacheca e messaggi si attivano dopo <code>team_aggiungi</code> (vedi README).'}</p>`;
+  }
+  return `<div class="bento">${hmTileCalls()}${hmTileBalance()}${hmTileMails()}${hmTileReplies()}${hmTileNl()}${hmTileBacheca()}${hmTileMessages()}</div>`;
+}
+
+/* ---- bacheca: scrivi, modifica, elimina ---- */
+function hmPostOpen(id){
+  if(!ag.me){toast('Account non collegato alla squadra','warn');return}
+  const b=id?hm.bac.find(x=>x.id===id):null;
+  if(id&&!b)return;
+  const mine=!b||b.autore===ag.me.id;
+  if(b&&!mine){
+    const au=agPerson(b.autore);
+    modal(`<div class="modal" role="dialog" aria-modal="true" onclick="event.stopPropagation()">
+      <div class="modal-h"><h3>${esc(b.titolo)}</h3>${HM_X}</div>
+      <div class="modal-b"><p style="white-space:pre-wrap">${esc(b.testo)}</p>
+        <p class="helptip" style="margin-top:14px">${esc(au?au.nome:'Ex collaboratore')} · ${esc(nlFmt(b.created_at,true))}</p></div>
+      <div class="modal-f"><button type="button" class="btn" onclick="closeModal()">Chiudi</button></div></div>`);
+    return;
+  }
+  const t=b||{titolo:'',testo:'',fissata:false};
+  modal(`<div class="modal" role="dialog" aria-modal="true" onclick="event.stopPropagation()">
+    <div class="modal-h"><h3>${b?'Modifica comunicazione':'Nuova comunicazione'}</h3>${HM_X}</div>
+    <form onsubmit="hmPostSave(event,${b?b.id:'null'})"><div class="modal-b">
+      <div class="form-row"><label for="hm-tit">Titolo</label><input id="hm-tit" required maxlength="140" value="${escAttr(t.titolo)}" placeholder="Per esempio: Chiusura per le feste"></div>
+      <div class="form-row"><label for="hm-txt">Testo</label><textarea id="hm-txt" required rows="6" placeholder="Scrivi la comunicazione per tutto il team">${esc(t.testo)}</textarea></div>
+      <label class="ct-chk"><input type="checkbox" id="hm-pin" ${t.fissata?'checked':''}> Fissa in alto</label>
+      <p class="helptip">${b?'Chi ha già letto la comunicazione non riceve un nuovo avviso.':'Tutti gli altri ricevono una notifica.'}</p>
+    </div><div class="modal-f" style="justify-content:space-between">${b?`<button type="button" class="btn sm ghost danger" onclick="hmPostDelete(${b.id})">Elimina</button>`:'<span></span>'}
+      <div style="display:flex;gap:9px"><button type="button" class="btn" onclick="closeModal()">Chiudi</button><button class="btn primary" type="submit">${b?'Salva':'Pubblica'}</button></div></div></form></div>`);
+  setTimeout(()=>document.getElementById('hm-tit')?.focus(),30);
+}
+async function hmPostSave(ev,id){
+  ev.preventDefault();
+  const titolo=(document.getElementById('hm-tit').value||'').trim(),testo=(document.getElementById('hm-txt').value||'').trim(),fissata=document.getElementById('hm-pin').checked;
+  if(!titolo||!testo)return;
+  const q=id?nlSupa.from('bacheca').update({titolo,testo,fissata}).eq('id',id):nlSupa.from('bacheca').insert({titolo,testo,fissata,autore:ag.me.id});
+  const {error}=await q;
+  if(error){toast(error.message,'err');return}
+  closeModal();toast(id?'Comunicazione salvata':'Comunicazione pubblicata','ok');await hmLoad();
+}
+async function hmPostDelete(id){
+  if(!confirm('Eliminare questa comunicazione?'))return;
+  const {error}=await nlSupa.from('bacheca').delete().eq('id',id);
+  if(error){toast(error.message,'err');return}
+  closeModal();toast('Comunicazione eliminata','ok');await hmLoad();
+}
+
+/* ---- messaggi personali ---- */
+function hmBubbles(uid){
+  const me=ag.me.id,list=hm.msg.filter(m=>(m.da_user===me&&m.a_user===uid)||(m.da_user===uid&&m.a_user===me)).slice().sort((a,b)=>String(a.created_at).localeCompare(String(b.created_at)));
+  if(!list.length)return '<p class="hm-empty" style="margin:10px 0">Nessun messaggio ancora: scrivi il primo.</p>';
+  let last='';
+  return list.map(m=>{
+    const day=agDay(m.created_at),sep=day!==last?`<div class="hm-day">${esc(day)}</div>`:'';last=day;
+    return sep+`<div class="hm-b ${m.da_user===me?'me':'lui'}"><div>${esc(m.testo)}</div><span>${esc(agT(m.created_at))}</span></div>`;
+  }).join('');
+}
+function hmThread(uid){
+  if(!ag.me){toast('Account non collegato alla squadra','warn');return}
+  hm.conv=uid||'';
+  const others=ag.team.filter(p=>p.id!==ag.me.id);
+  const p=uid?agPerson(uid):null;
+  modal(`<div class="modal" role="dialog" aria-modal="true" onclick="event.stopPropagation()" style="max-width:560px">
+    <div class="modal-h"><h3>${p?`${agAv(p.id,true)} ${esc(p.nome)}`:'Nuovo messaggio'}</h3><div class="x" role="button" tabindex="0" aria-label="Chiudi" onclick="hmThreadClose()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div>
+    <form onsubmit="hmSend(event)"><div class="modal-b">
+      ${uid?'':`<div class="form-row"><label for="hm-to">A</label><select id="hm-to" onchange="hmPickTo(this.value)"><option value="">Scegli un collega…</option>${others.map(o=>`<option value="${o.id}">${esc(o.nome)}</option>`).join('')}</select></div>`}
+      <div class="hm-thread" id="hm-msgs">${uid?hmBubbles(uid):''}</div>
+      <div class="form-row" style="margin-top:12px"><label for="hm-body">Messaggio</label><textarea id="hm-body" rows="3" required placeholder="Scrivi un messaggio personale"></textarea></div>
+      <p class="helptip">Lo vedete solo tu e ${p?esc(p.nome):'il destinatario'}.</p>
+    </div><div class="modal-f"><button type="button" class="btn" onclick="hmThreadClose()">Chiudi</button><button class="btn primary" type="submit">Invia</button></div></form></div>`);
+  const box=document.getElementById('hm-msgs');if(box)box.scrollTop=box.scrollHeight;
+  setTimeout(()=>document.getElementById(uid?'hm-body':'hm-to')?.focus(),30);
+  if(uid)hmMarkRead(uid);
+}
+function hmPickTo(v){hm.conv=v;const b=document.getElementById('hm-msgs');if(b){b.innerHTML=v?hmBubbles(v):'';b.scrollTop=b.scrollHeight}if(v)hmMarkRead(v)}
+function hmThreadClose(){hm.conv=null;closeModal()}
+function hmThreadRefresh(){
+  const b=document.getElementById('hm-msgs');if(!b||!hm.conv)return;
+  const stick=b.scrollTop+b.clientHeight>=b.scrollHeight-30;
+  b.innerHTML=hmBubbles(hm.conv);if(stick)b.scrollTop=b.scrollHeight;hmMarkRead(hm.conv);
+}
+async function hmMarkRead(uid){
+  const ids=hm.msg.filter(m=>m.a_user===ag.me.id&&m.da_user===uid&&!m.letto_il).map(m=>m.id);
+  if(!ids.length)return;
+  const t=new Date().toISOString();
+  const {error}=await nlSupa.from('messaggi').update({letto_il:t}).in('id',ids);
+  if(error)return;
+  hm.msg.forEach(m=>{if(ids.includes(m.id))m.letto_il=t});
+  // anche le notifiche in campanella di questi messaggi sono lette
+  const nn=ag.notif.filter(n=>n.tipo==='messaggio'&&!n.letta_il);
+  if(nn.length){await nlSupa.from('notifiche').update({letta_il:t}).in('id',nn.map(n=>n.id));nn.forEach(n=>{n.letta_il=t});agTitle()}
+  if(state.view==='home')render();else renderNav();
+}
+async function hmSend(ev){
+  ev.preventDefault();
+  const to=hm.conv,testo=(document.getElementById('hm-body').value||'').trim();
+  if(!to){toast('Scegli a chi scrivere','warn');return}
+  if(!testo)return;
+  const btn=ev.target.querySelector('button[type=submit]');if(btn)btn.disabled=true;
+  const {data,error}=await nlSupa.from('messaggi').insert({da_user:ag.me.id,a_user:to,testo}).select('id,created_at,da_user,a_user,testo,letto_il').single();
+  if(btn)btn.disabled=false;
+  if(error){toast(error.message,'err');return}
+  if(data&&!hm.msg.some(m=>m.id===data.id))hm.msg.unshift(data);
+  document.getElementById('hm-body').value='';
+  const b=document.getElementById('hm-msgs');if(b){b.innerHTML=hmBubbles(to);b.scrollTop=b.scrollHeight}
+  if(state.view==='home')render();
+  document.getElementById('hm-body')?.focus();
 }
 
 /* =======================================================
