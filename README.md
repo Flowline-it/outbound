@@ -4,6 +4,12 @@ Strumenti interni di Flowline in un'unica pagina (`index.html`), pubblicata con 
 
 ## Aree
 
+**Home**: la prima pagina, con le scorciatoie della giornata.
+- Le call di oggi (dal Calendario, con il link per entrare), saldo del conto aziendale, email da inviare oggi divise tra introduzione, follow-up 1 e follow-up 2, nuove risposte alle email, iscritti alla newsletter. Ogni tessera porta alla sezione di riferimento
+- Bacheca: comunicazioni per tutto il team, che si possono fissare in alto. Le scrive chiunque, le modifica ed elimina solo l'autore, a tutti gli altri arriva una notifica
+- Messaggi: messaggi personali tra due collaboratori, visibili solo a loro. Arrivano anche nella campanella e un clic sulla notifica apre la conversazione
+- Messa in funzione: eseguire una volta `supabase/migrations/20261104150000_home_bacheca_messaggi.sql` dal SQL Editor (dopo quella del Calendario)
+
 **Outbound**: campagne email a freddo.
 - Dashboard: partenze di oggi, risposte, carico della settimana
 - Ricerca lead: ricerche su Google Maps (Apify, tramite il flusso n8n "Ricerca lead da Outbound") con obiettivo di lead e tetto di spesa
@@ -36,6 +42,6 @@ Strumenti interni di Flowline in un'unica pagina (`index.html`), pubblicata con 
 
 ## Dati
 
-Database Supabase "Lead Flowline": `contacts`, `leads`, `lead_searches`, tabelle `newsletter_*`, `richieste_sito`, `conti`, `movimenti`, `team_members`, `eventi`, `evento_partecipanti`, `notifiche`.
+Database Supabase "Lead Flowline": `contacts`, `leads`, `lead_searches`, tabelle `newsletter_*`, `richieste_sito`, `conti`, `movimenti`, `team_members`, `eventi`, `evento_partecipanti`, `notifiche`, `bacheca`, `messaggi`.
 Il form del sito scrive in `richieste_sito` solo con la funzione `richiesta_sito_invia`; Newsletter, Ricerca lead, Richieste e Contabilità si leggono dopo il login di un indirizzo presente in `newsletter_editors`; Calendario richiede un utente in `team_members` (che viene aggiunto anche a `newsletter_editors`).
 Le migrazioni e la funzione `nl-track` sono in `supabase/`.
