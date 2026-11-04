@@ -669,6 +669,60 @@ body[data-view="contabilita"] .dot.on{background:#5FD08A}
 .board .b-st{width:auto}
 @media(max-width:1100px){.ct-two2{grid-template-columns:1fr}.bento .span-7,.bento .span-5{grid-column:span 12}}
 @media(max-width:700px){.ct-two{grid-template-columns:1fr}.ct-months{grid-template-columns:repeat(3,minmax(0,1fr))}.ct-v{font-size:30px!important}.ct-desc{max-width:180px}.ct-hb{grid-template-columns:1fr auto}.ct-hb .nl-bar-wrap{grid-column:1/-1;order:3}}
+
+/* ===== calendario condiviso, squadra e notifiche ===== */
+body[data-view="agenda"] .hero{--hb:var(--lilac);--hi:var(--on-lilac)}
+.user-box{display:flex;align-items:center;gap:2px;margin-right:6px}
+.ag-bell{position:relative}
+.ag-bellb{position:absolute;top:2px;right:0;min-width:17px;height:17px;border-radius:99px;background:var(--late);color:#fff;font-size:10.5px;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0 4px}
+.ag-me{display:flex;align-items:center;gap:8px;height:42px;padding:0 14px 0 6px;border-radius:var(--pill);font-weight:700;font-size:13.5px;background:var(--surface-2);color:var(--text);max-width:170px}
+.ag-me span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ag-me:hover{filter:brightness(.97)}
+.ag-av{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;color:#fff;font-weight:800;font-size:13px;flex:0 0 auto}
+.ag-av.sm{width:22px;height:22px;font-size:11px}
+.ag-week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px}
+.ag-day{background:var(--surface-2);border-radius:var(--r-md);padding:10px;display:flex;flex-direction:column;gap:8px;min-height:190px;min-width:0}
+.ag-day.today{background:var(--accent-soft)}
+.ag-dh{display:flex;align-items:baseline;gap:6px}
+.ag-dn{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.ag-dd{font-size:22px;font-weight:800;letter-spacing:-.03em}
+.ag-add{margin-left:auto;width:26px;height:26px;border-radius:50%;font-weight:800;color:var(--muted);background:var(--surface);align-self:center}
+.ag-add:hover{color:var(--text)}
+.ag-none{color:var(--faint);font-size:13px}
+.ag-ev{display:flex;flex-direction:column;gap:3px;text-align:left;background:var(--surface);border-radius:12px;padding:9px 10px;border-left:4px solid var(--wait);width:100%;color:var(--text);cursor:pointer;min-width:0}
+.ag-ev:hover{filter:brightness(.97)}
+.ag-ev[data-tipo="appuntamento"],.ag-pill[data-tipo="appuntamento"]{border-left-color:#B565B5}
+.ag-ev[data-tipo="impegno"],.ag-pill[data-tipo="impegno"]{border-left-color:var(--brand)}
+.ag-ev[data-tipo="altro"],.ag-pill[data-tipo="altro"]{border-left-color:var(--faint)}
+.ag-ev.pers{border-left-style:dashed}
+.ag-ev.ann{opacity:.55}.ag-ev.ann .ag-evn{text-decoration:line-through}
+.ag-evt{font-size:11.5px;font-weight:700;color:var(--muted)}
+.ag-evn{font-weight:700;font-size:14px;line-height:1.25;overflow-wrap:anywhere}
+.ag-evc{font-size:12.5px;color:var(--muted)}
+.ag-evf{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:4px;flex-wrap:wrap}
+.ag-avs{display:flex}.ag-avs .ag-av{margin-left:-5px;border:2px solid var(--surface)}.ag-avs .ag-av:first-child{margin-left:0}
+.ag-who .fbtn{display:inline-flex;align-items:center;gap:6px}
+.ag-mh{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-bottom:6px}
+.ag-mh span{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);padding:0 6px}
+.ag-mb{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.ag-mc{background:var(--surface-2);border-radius:12px;padding:6px;display:flex;flex-direction:column;gap:3px;min-width:0}
+.ag-mc.out{opacity:.5}.ag-mc.today{background:var(--accent-soft)}
+.ag-mn{align-self:flex-start;font-weight:800;font-size:14px;padding:2px 6px;border-radius:8px;color:var(--text)}
+.ag-mn:hover{background:var(--surface)}
+.ag-pill{font-size:11.5px;text-align:left;padding:3px 6px;border-radius:7px;background:var(--surface);border-left:3px solid var(--wait);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;color:var(--text);cursor:pointer}
+.ag-pill.ann{text-decoration:line-through;opacity:.55}
+.ag-more{font-size:11.5px;color:var(--muted);text-align:left;padding:2px 6px}
+.ag-notifs{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.ag-n{display:flex;gap:14px;align-items:flex-start;background:var(--surface);border-radius:var(--r-md);padding:14px 16px;cursor:pointer}
+.ag-n.new{background:var(--accent-soft)}
+.ag-nd{width:10px;height:10px;border-radius:50%;background:transparent;margin-top:6px;flex:0 0 auto}.ag-n.new .ag-nd{background:var(--accent)}
+.ag-nb{flex:1;min-width:0}.ag-nt{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.ag-na{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.ag-modal{max-width:660px}
+.ag-pick{display:flex;gap:8px;flex-wrap:wrap}
+.ag-pk{display:inline-flex;align-items:center;gap:7px;padding:6px 12px 6px 8px;border-radius:99px;background:var(--surface-2);font-weight:600;font-size:14px;cursor:pointer}
+@media(max-width:1100px){.ag-week{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.ag-week{grid-template-columns:1fr}.ag-day{min-height:0}.ag-me span{display:none}.ag-me{padding:0 6px}.ag-pill{font-size:10.5px}.ag-mc{padding:4px}.ag-mb{gap:3px}}
 </style>
 </head>
 <body>
@@ -684,6 +738,7 @@ body[data-view="contabilita"] .dot.on{background:#5FD08A}
       <div class="sec-switch" id="secSwitch" role="group" aria-label="Area"></div>
       <span class="nav-spacer"></span>
       <div class="nav-tools">
+        <div class="user-box" id="userBox"></div>
         <button class="spend-pill" id="spendPill" onclick="openSpend()" title="Spesa API stimata — clicca per dettagli">
           <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 1v22 M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
           <span id="spendTxt">≈ €0,000</span>
@@ -1953,13 +2008,14 @@ const SECTIONS=[
   {id:'newsletter',label:'Newsletter',icon:'M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z M22 6l-10 7L2 6'},
   {id:'richieste',label:'Richieste',icon:'M22 12h-6l-2 3h-4l-2-3H2 M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z'},
   {id:'contabilita',label:'Contabilità',icon:'M20 7H5a2 2 0 0 1 0-4h13v4 M3 5v14a2 2 0 0 0 2 2h15V7 M16 14h.01'},
+  {id:'agenda',label:'Calendario',icon:'M3 4h18v18H3z M16 2v4 M8 2v4 M3 10h18 M8 14h2 M14 14h2'},
 ];
-const SEC_NAME={outbound:'Outbound',newsletter:'Newsletter',richieste:'Richieste',contabilita:'Contabilità'};
+const SEC_NAME={outbound:'Outbound',newsletter:'Newsletter',richieste:'Richieste',contabilita:'Contabilità',agenda:'Calendario'};
 const NL_PAGES=[{tab:'campagne',label:'Campagne'},{tab:'iscritti',label:'Iscritti'}];
-function sectionOf(v){return v==='newsletter'||v==='richieste'||v==='contabilita'?v:'outbound'}
+function sectionOf(v){return v==='newsletter'||v==='richieste'||v==='contabilita'||v==='agenda'?v:'outbound'}
 function goSection(sec){
   if(sec===sectionOf(state.view)){closeRail();return}
-  if(sec==='newsletter'||sec==='richieste'||sec==='contabilita') go(sec); else go(state.lastOutbound&&sectionOf(state.lastOutbound)==='outbound'?state.lastOutbound:'dashboard');
+  if(sec==='newsletter'||sec==='richieste'||sec==='contabilita'||sec==='agenda') go(sec); else go(state.lastOutbound&&sectionOf(state.lastOutbound)==='outbound'?state.lastOutbound:'dashboard');
 }
 function goNl(tab){nl.tab=tab;nl.edit=null;if(state.view!=='newsletter')go('newsletter');else{closeRail();render();window.scrollTo(0,0)}}
 const NAV=[
@@ -1968,7 +2024,7 @@ const NAV=[
   {id:'contatti',label:'Contatti',icon:'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2 M9 7a4 4 0 1 0 0 8 4 4 0 0 0 0-8z M23 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75'},
   {id:'pianifica',label:'Pianificazione',icon:'M3 4h18v18H3z M16 2v4 M8 2v4 M3 10h18 M8 14h2 M14 14h2 M8 18h2'},
   {id:'coda',label:'Coda invio',icon:'M22 2 11 13 M22 2l-7 20-4-9-9-4 20-7z'},
-  {id:'calendario',label:'Calendario',icon:'M3 4h18v18H3z M16 2v4 M8 2v4 M3 10h18'},
+  {id:'calendario',label:'Piano invii',icon:'M3 4h18v18H3z M16 2v4 M8 2v4 M3 10h18'},
   {id:'risposte',label:'Risposte',icon:'M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z'},
   {id:'stats',label:'Statistiche',icon:'M3 3v18h18 M7 16v-5 M12 16V8 M17 16v-8'},
 ];
@@ -1980,10 +2036,10 @@ function renderNav(){
   const newRep=state.contacts.filter(c=>c.haRisposto&&c.replySeen===false).length;
   const ico=d=>`<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`;
   // livello 1: aree, con un pallino se nell'altra area c'è qualcosa che aspetta
-  const alertOut=late||todayN||newRep||ldBusy(), alertNl=!!nl.sending, alertRq=rq.loaded&&rqNew()>0, alertCt=ct.loaded&&!ct.missing&&ctPending().length>0;
+  const alertOut=late||todayN||newRep||ldBusy(), alertNl=!!nl.sending, alertRq=rq.loaded&&rqNew()>0, alertCt=ct.loaded&&!ct.missing&&ctPending().length>0, alertAg=ag.loaded&&!ag.missing&&agUnread()>0;
   document.getElementById('secSwitch').innerHTML=SECTIONS.map(x=>{
-    const on=x.id===sec, al=x.id==='outbound'?alertOut:(x.id==='newsletter'?alertNl:(x.id==='contabilita'?alertCt:alertRq));
-    const dot=!on&&al?`<span class="dotb${x.id==='outbound'&&late?' late':''}" aria-label="${x.id==='richieste'?'ci sono richieste nuove':x.id==='contabilita'?'ci sono movimenti da completare':'ci sono attività in sospeso'}"></span>`:'';
+    const on=x.id===sec, al=x.id==='outbound'?alertOut:(x.id==='newsletter'?alertNl:(x.id==='contabilita'?alertCt:(x.id==='agenda'?alertAg:alertRq)));
+    const dot=!on&&al?`<span class="dotb${x.id==='outbound'&&late?' late':''}" aria-label="${x.id==='richieste'?'ci sono richieste nuove':x.id==='contabilita'?'ci sono movimenti da completare':x.id==='agenda'?'ci sono notifiche da leggere':'ci sono attività in sospeso'}"></span>`:'';
     return `<button type="button" aria-pressed="${on}" onclick="goSection('${x.id}')">${ico(x.icon)}<span>${x.label}</span>${dot}</button>`;
   }).join('');
   // livello 2: pagine dell'area attiva
@@ -1993,6 +2049,11 @@ function renderNav(){
   if(sec==='richieste'){
     const n=rq.loaded?rqNew():0;
     items=[`<button class="active" aria-current="page" onclick="go('richieste')"><span>Richieste dal sito</span>${n?`<span class="badge">${n}</span>`:''}</button>`];
+  } else if(sec==='agenda'){
+    items=AG_TABS.map(pg=>{
+      const on=ag.tab===pg.tab, n=pg.tab==='notifiche'&&ag.loaded?agUnread():0;
+      return `<button class="${on?'active':''}" ${on?'aria-current="page"':''} onclick="agGoTab('${pg.tab}')"><span>${pg.label}</span>${n?`<span class="badge">${n}</span>`:''}</button>`;
+    });
   } else if(sec==='contabilita'){
     items=CT_TABS.map(pg=>{
       const on=ct.tab===pg.tab, n=pg.tab==='movimenti'&&ct.loaded&&!ct.missing?ctPending().length:0;
@@ -2016,6 +2077,7 @@ function renderNav(){
     });
   }
   nav.innerHTML=`<span class="nav-area" aria-hidden="true">${SEC_NAME[sec]}</span>`+items.join('');
+  agRenderUser();
 }
 function renderSpend(){
   const eur=costEUR(state.usage);
@@ -2074,6 +2136,7 @@ function heroCopy(){
   if(state.view==='newsletter') return nlHeroCopy();
   if(state.view==='richieste') return rqHeroCopy();
   if(state.view==='contabilita') return ctHeroCopy();
+  if(state.view==='agenda') return agHeroCopy();
   if(state.view==='lead') return ldHeroCopy();
   if(state.view==='stats') return obHeroCopy();
   if(!n) return {t:'Benvenuto in Outbound.',l:'Importa una lista di contatti in CSV o Excel: le colonne vengono riconosciute in automatico.'};
@@ -2095,9 +2158,10 @@ function render(){
   document.getElementById('viewTitle').textContent=hc.t;
   const vl=document.getElementById('viewLede');if(vl)vl.textContent=hc.l;
   const vd=document.getElementById('viewDate');if(vd)vd.textContent=today().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
-  const pageName=state.view==='contabilita'?(CT_TABS.find(x=>x.tab===ct.tab)||CT_TABS[0]).label:state.view==='richieste'?'Richieste':state.view==='newsletter'?(nl.tab==='iscritti'?'Iscritti':'Campagne'):({dashboard:'Dashboard',pianifica:'Pianificazione',coda:'Coda invio',contatti:'Contatti',calendario:'Calendario',risposte:'Risposte',lead:'Ricerca lead',stats:'Statistiche'}[state.view]||'Dashboard');
+  const pageName=state.view==='agenda'?(AG_TABS.find(x=>x.tab===ag.tab)||AG_TABS[0]).label:state.view==='contabilita'?(CT_TABS.find(x=>x.tab===ct.tab)||CT_TABS[0]).label:state.view==='richieste'?'Richieste':state.view==='newsletter'?(nl.tab==='iscritti'?'Iscritti':'Campagne'):({dashboard:'Dashboard',pianifica:'Pianificazione',coda:'Coda invio',contatti:'Contatti',calendario:'Piano invii',risposte:'Risposte',lead:'Ricerca lead',stats:'Statistiche'}[state.view]||'Dashboard');
   const secName=SEC_NAME[sectionOf(state.view)];
   document.title=(pageName!==secName?pageName+' · ':'')+secName+' — FlowLine Suite';
+  agTitle();
   const cr=document.getElementById('viewCrumb');if(cr)cr.textContent=secName+(pageName!==secName?' · '+pageName:'');
   const ta=document.getElementById('topActions');
   const I={
@@ -2123,6 +2187,7 @@ function render(){
   if(state.view==='newsletter'){ ta.innerHTML=nlTopActions(); }
   else if(state.view==='richieste'){ ta.innerHTML=rqTopActions(); }
   else if(state.view==='contabilita'){ ta.innerHTML=ctTopActions(); }
+  else if(state.view==='agenda'){ ta.innerHTML=agTopActions(); }
   else if(state.view==='lead'){ ta.innerHTML=ldTopActions(); }
   else if(state.view==='stats'){ ta.innerHTML=`<button class="btn" onclick="obLoad(true)"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6 M1 20v-6h6 M3.51 9a9 9 0 0 1 14.85-3.36L23 10 M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg><span class="lbl">Aggiorna</span></button>`; }
   else ta.innerHTML=primary
@@ -2140,6 +2205,7 @@ function render(){
   else if(state.view==='lead'){ if(!nl.inited) nlInit(); C.innerHTML=viewLead(); }
   else if(state.view==='richieste'){ if(!nl.inited) nlInit(); C.innerHTML=viewRichieste(); }
   else if(state.view==='contabilita'){ if(!nl.inited) nlInit(); C.innerHTML=viewContabilita(); }
+  else if(state.view==='agenda'){ if(!nl.inited) nlInit(); C.innerHTML=viewAgenda(); }
   else if(state.view==='stats'){ C.innerHTML=viewStats(); }
   if(state.view==='coda')bindCodaInputs();
   if(state.view==='pianifica')bindPianifica();
@@ -3231,7 +3297,7 @@ function nlSleep(ms){return new Promise(r=>setTimeout(r,ms))}
 function nlActive(){return nl.subs.filter(s=>!s.unsubscribed_at)}
 
 /* ---- connessione e accesso (condiviso con Ricerca lead) ---- */
-function nlAuthView(){return state.view==='newsletter'||state.view==='lead'||state.view==='richieste'||state.view==='contabilita'}
+function nlAuthView(){return state.view==='newsletter'||state.view==='lead'||state.view==='richieste'||state.view==='contabilita'||state.view==='agenda'}
 async function nlInit(){
   if(nl.inited)return; nl.inited=true;
   if(typeof window.supabase==='undefined'){nl.inited=false;setTimeout(nlInit,400);return}
@@ -3240,7 +3306,7 @@ async function nlInit(){
     if(!nl.ready)return;                       // la sessione iniziale la gestisce getSession qui sotto
     const was=nl.session&&nl.session.user&&nl.session.user.id;
     nl.session=session;
-    if(ev==='SIGNED_OUT'){nl.editor=null;nl.loaded=false;nl.subs=[];nl.camps=[];nl.edit=null;ld.loaded=false;ld.searches=[];ld.leads=[];ld.sel.clear();clearTimeout(ld.pollT);rq.loaded=false;rq.rows=[];clearTimeout(rq.pollT);ct.loaded=false;ct.conti=[];ct.mov=[];ct.missing=false;if(nlAuthView())render();}
+    if(ev==='SIGNED_OUT'){nl.editor=null;nl.loaded=false;nl.subs=[];nl.camps=[];nl.edit=null;ld.loaded=false;ld.searches=[];ld.leads=[];ld.sel.clear();clearTimeout(ld.pollT);rq.loaded=false;rq.rows=[];clearTimeout(rq.pollT);ct.loaded=false;ct.conti=[];ct.mov=[];ct.missing=false;agStop();if(nlAuthView())render();else renderNav();}
     else if(ev==='SIGNED_IN' && session && was!==session.user.id){nl.editor=null;if(nlAuthView())render();setTimeout(nlAfterLogin,0);}
   });
   const {data}=await nlSupa.auth.getSession();
@@ -3248,8 +3314,10 @@ async function nlInit(){
   if(nl.session) await nlAfterLogin(); else if(nlAuthView()) render();
 }
 async function nlAfterLogin(){
+  // un solo accesso per tutta la suite: l'account è una persona della squadra (team_members) oppure, per i vecchi accessi, un indirizzo di redazione
+  await agLoad({silent:true});
   const {data,error}=await nlSupa.rpc('newsletter_is_editor');
-  nl.editor=!error&&data===true;
+  nl.editor=(!error&&data===true)||!!ag.me;
   if(nl.editor){ ldLoad({silent:state.view!=='lead'}); rqLoad({silent:state.view!=='richieste'}); ctLoad({silent:state.view!=='contabilita'}); await nlLoad(); } else if(nlAuthView()) render();
 }
 async function nlLogin(ev){
@@ -3656,12 +3724,12 @@ function viewNewsletter(){
   return tabs+(nl.tab==='iscritti'?nlSubsView():nlCampsView());
 }
 function nlLoginView(mode){
-  const lead=mode==='lead', req=mode==='richieste', cnt=mode==='contabilita';
+  const t={lead:'Accedi per cercare i lead',richieste:'Accedi alle richieste',contabilita:'Accedi alla contabilità',agenda:'Accedi al calendario'}[mode]||'Accedi alla newsletter';
   return `<div class="tile nl-login">
-    <div class="tile-h"><h3>${lead?'Accedi per cercare i lead':req?'Accedi alle richieste':cnt?'Accedi alla contabilità':'Accedi alla newsletter'}</h3></div>
-    <p class="helptip" style="margin-bottom:18px">${cnt?'Conti, saldi e movimenti sono dati economici dell\'azienda: li vede solo chi è in redazione. È lo stesso accesso di Newsletter e Richieste (progetto Lead Flowline → Authentication → Users).':req?'Nomi, email e telefoni di chi chiede la consulenza sono dati personali: li vede solo chi è in redazione. È lo stesso accesso della newsletter (progetto Lead Flowline → Authentication → Users).':lead?'Le ricerche partono dal database e costano credito Apify: le può lanciare solo chi ha accesso. È lo stesso accesso della newsletter, creato in Supabase (progetto Lead Flowline → Authentication → Users).':'Gli iscritti sono dati personali: li vede solo chi è in redazione. Usa l\'email e la password create in Supabase (progetto Lead Flowline → Authentication → Users).'}</p>
+    <div class="tile-h"><h3>${t}</h3></div>
+    <p class="helptip" style="margin-bottom:18px">Ogni persona del team entra con il proprio account: lo stesso accesso vale per tutta la FlowLine Suite (Outbound, Newsletter, Richieste, Contabilità e Calendario). Gli account si creano in Supabase → Authentication → Users e si collegano alla squadra una volta sola (vedi README).</p>
     <form onsubmit="nlLogin(event)" style="display:flex;flex-direction:column;gap:14px">
-      <div class="form-row"><label for="nl-em">Email</label><input id="nl-em" type="email" autocomplete="username" value="info@flowline.it"></div>
+      <div class="form-row"><label for="nl-em">Email</label><input id="nl-em" type="email" autocomplete="username" placeholder="la tua email di accesso"></div>
       <div class="form-row"><label for="nl-pw">Password</label><input id="nl-pw" type="password" autocomplete="current-password"></div>
       <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><button class="btn primary" id="nl-login-btn" type="submit">Accedi</button><span id="nl-login-msg" class="email-cell" role="status" aria-live="polite"></span></div>
     </form>
@@ -4521,6 +4589,332 @@ function ctReport(){
   <div class="section-h"><h3>Ripartizione quote ai soci</h3><div class="line"></div></div>
   <div class="tile">${hb(quoteSocio,s.q,'var(--wait)')}</div>
   <p class="helptip" style="margin-top:12px">Le quote ai soci sono la divisione degli utili: restano fuori dalle uscite e hanno una voce a parte. I versamenti dei soci sul conto aziendale non contano né come entrate né come uscite.</p>`;
+}
+
+/* =======================================================
+   CALENDARIO — squadra, eventi condivisi e notifiche
+   Database: team_members, eventi, evento_partecipanti, notifiche nel progetto Supabase "Lead Flowline".
+   Ogni persona della squadra entra con il proprio account (Supabase Auth) e ha gli stessi permessi degli altri.
+   Gli eventi «azienda» sono sincronizzati con Google Calendar (info@flowline.it) da due flussi n8n; gli impegni «personali» no.
+   Le notifiche le crea il database (trigger) e arrivano qui in tempo reale. Per i futuri task basta riusare la tabella notifiche (rif_tipo, rif_id).
+   ======================================================= */
+const AG_TABS=[{tab:'settimana',label:'Settimana'},{tab:'mese',label:'Mese'},{tab:'notifiche',label:'Notifiche'}];
+const AG_TIPI=[{id:'call',label:'Call',chip:'wait'},{id:'appuntamento',label:'Appuntamento',chip:'plan'},{id:'impegno',label:'Impegno',chip:'seq'},{id:'altro',label:'Altro',chip:'da'}];
+const AG_GG=['lun','mar','mer','gio','ven','sab','dom'];
+const AG_GGL=['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato','Domenica'];
+const AG_COLS='id,titolo,descrizione,luogo,link_call,cliente,inizio,fine,tutto_il_giorno,tipo,calendario,stato,creato_da,origine,google_id,google_link,ospiti,sync_da_inviare,updated_at';
+const AG_I={
+  plus:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14 M5 12h14"/></svg>',
+  refresh:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6 M1 20v-6h6 M3.51 9a9 9 0 0 1 14.85-3.36L23 10 M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>',
+  bell:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9 M13.73 21a2 2 0 0 1-3.46 0"/></svg>',
+  cal:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h18v18H3z M16 2v4 M8 2v4 M3 10h18"/></svg>'
+};
+const ag={team:[],me:null,ev:[],part:{},notif:[],loaded:false,loading:false,missing:false,noMember:false,tab:'settimana',week:null,month:'',who:'',personali:true,
+  from:null,ch:null,pollT:null,loadT:null,mtipo:'call'};
+
+/* ---- piccole utilità ---- */
+function agMonday(d){const x=new Date(d);x.setHours(0,0,0,0);const w=(x.getDay()+6)%7;x.setDate(x.getDate()-w);return x}
+function agInit(){if(!ag.week)ag.week=agMonday(new Date());if(!ag.month)ag.month=isoD(new Date()).slice(0,7);if(!ag.from)ag.from=addDays(today(),-60)}
+const agT=d=>new Date(d).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+function agDay(d){return new Date(d).toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'})}
+function agDtl(d){d=new Date(d);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')+'T'+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}
+const agPerson=id=>ag.team.find(t=>t.id===id);
+const agParts=id=>ag.part[id]||[];
+const agUnread=()=>ag.notif.filter(n=>!n.letta_il).length;
+const agTipo=t=>AG_TIPI.find(x=>x.id===t)||AG_TIPI[3];
+function agAv(id,sm){const p=agPerson(id);if(!p)return '';return `<span class="ag-av${sm?' sm':''}" style="background:${escAttr(p.colore)}" title="${escAttr(p.nome)}">${esc((p.nome||'?').trim().charAt(0).toUpperCase())}</span>`}
+function agAvs(e){return agParts(e.id).map(u=>agAv(u,true)).join('')}
+function agWhen(e){
+  const a=new Date(e.inizio),b=new Date(e.fine),same=isoD(a)===isoD(b);
+  if(e.tutto_il_giorno)return same?'Tutto il giorno':agDay(a)+' – '+agDay(b);
+  return same?agT(a)+' – '+agT(b):agDay(a)+' '+agT(a)+' → '+agDay(b)+' '+agT(b);
+}
+function agOverlaps(e,day){const s=new Date(day);s.setHours(0,0,0,0);const n=addDays(s,1);const a=new Date(e.inizio),b=new Date(e.fine);return a<n&&(b>s||(+a===+b&&a>=s))}
+function agShown(){
+  return ag.ev.filter(e=>(ag.personali||e.calendario!=='personale')&&(!ag.who||agParts(e.id).includes(ag.who)));
+}
+const agDayEv=day=>agShown().filter(e=>agOverlaps(e,day)).sort((a,b)=>(b.tutto_il_giorno-a.tutto_il_giorno)||String(a.inizio).localeCompare(String(b.inizio)));
+
+/* ---- dati ---- */
+async function agLoad(opts={}){
+  if(!nlSupa||!nl.session)return;
+  agInit(); ag.loading=true; if(state.view==='agenda'&&!opts.silent)render();
+  try{
+    const {data:team,error:e0}=await nlSupa.from('team_members').select('id,nome,email,colore,attivo').order('nome');
+    if(e0)throw e0;
+    ag.team=team.filter(t=>t.attivo); ag.me=team.find(t=>t.id===nl.session.user.id)||null; ag.noMember=!ag.me;
+    if(ag.me){
+      const ev=[];let from=0;
+      for(;;){
+        const {data,error}=await nlSupa.from('eventi').select(AG_COLS).gte('fine',ag.from.toISOString()).order('inizio').range(from,from+999);
+        if(error)throw error;ev.push(...data);if(data.length<1000)break;from+=1000;
+      }
+      const part={};from=0;
+      for(;;){
+        const {data,error}=await nlSupa.from('evento_partecipanti').select('evento_id,user_id').range(from,from+999);
+        if(error)throw error;data.forEach(p=>{(part[p.evento_id]=part[p.evento_id]||[]).push(p.user_id)});if(data.length<1000)break;from+=1000;
+      }
+      const {data:nt,error:e3}=await nlSupa.from('notifiche').select('id,created_at,tipo,titolo,testo,evento_id,rif_tipo,rif_id,letta_il').order('created_at',{ascending:false}).limit(100);
+      if(e3)throw e3;
+      ag.ev=ev;ag.part=part;ag.notif=nt;ag.missing=false;
+      agSubscribe();
+    }
+    ag.loaded=true;
+  }catch(e){
+    if(e&&(e.code==='42P01'||e.code==='PGRST205'||/does not exist|schema cache/i.test(e.message||''))){ag.missing=true;ag.loaded=true}
+    else toast('Calendario: '+(e.message||e),'err');
+  }
+  ag.loading=false;agTitle();
+  if(state.view==='agenda')render();else{renderNav()}
+}
+function agDeferLoad(){clearTimeout(ag.loadT);ag.loadT=setTimeout(()=>agLoad({silent:true}),700)}
+function agSubscribe(){
+  if(ag.ch||!ag.me)return;
+  try{
+    ag.ch=nlSupa.channel('suite-'+ag.me.id)
+      .on('postgres_changes',{event:'INSERT',schema:'public',table:'notifiche',filter:'user_id=eq.'+ag.me.id},p=>agOnNotif(p.new))
+      .on('postgres_changes',{event:'*',schema:'public',table:'eventi'},agDeferLoad)
+      .on('postgres_changes',{event:'*',schema:'public',table:'evento_partecipanti'},agDeferLoad)
+      .subscribe();
+  }catch(e){}
+  clearInterval(ag.pollT);ag.pollT=setInterval(()=>{if(!document.hidden)agLoad({silent:true})},90000);  // rete di sicurezza se il tempo reale non è attivo
+}
+function agStop(){
+  try{if(ag.ch)nlSupa.removeChannel(ag.ch)}catch(e){}
+  ag.ch=null;clearInterval(ag.pollT);clearTimeout(ag.loadT);
+  Object.assign(ag,{team:[],me:null,ev:[],part:{},notif:[],loaded:false,noMember:false,missing:false});agTitle();
+}
+function agOnNotif(n){
+  if(!n||ag.notif.some(x=>x.id===n.id))return;
+  ag.notif.unshift(n);toast(n.titolo+': '+n.testo,'ok');agTitle();
+  if(state.view==='agenda')render();else renderNav();
+}
+function agTitle(){const n=agUnread();const t=document.title.replace(/^\(\d+\)\s/,'');document.title=(n?'('+n+') ':'')+t}
+
+/* ---- profilo e uscita ---- */
+function agRenderUser(){
+  const b=document.getElementById('userBox');if(!b)return;
+  if(!nl.session){b.innerHTML='';return}
+  const n=agUnread(),me=ag.me,email=nl.session.user?.email||'';
+  b.innerHTML=`<button class="icon-btn ag-bell" onclick="agGoNotif()" title="Notifiche" aria-label="Notifiche${n?': '+n+' da leggere':''}">${AG_I.bell}${n?`<span class="ag-bellb">${n>9?'9+':n}</span>`:''}</button>
+    <button class="ag-me" onclick="agProfile()" title="${escAttr(email)}">${me?agAv(me.id):''}<span>${esc(me?me.nome:email.split('@')[0])}</span></button>`;
+}
+function agProfile(){
+  const me=ag.me,email=nl.session?.user?.email||'';
+  modal(`<div class="modal" role="dialog" aria-modal="true" onclick="event.stopPropagation()">
+    <div class="modal-h"><h3>Il mio profilo</h3><div class="x" role="button" tabindex="0" aria-label="Chiudi" onclick="closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div>
+    <form onsubmit="agSaveProfile(event)"><div class="modal-b">
+      <p class="helptip">Accesso come <b style="color:var(--text)">${esc(email)}</b>. Le notifiche che ricevi sono solo le tue.</p>
+      ${me?`<div class="ct-two"><div class="form-row"><label for="ag-p-nome">Nome</label><input id="ag-p-nome" required value="${escAttr(me.nome)}"></div>
+        <div class="form-row"><label for="ag-p-col">Colore nel calendario</label><input id="ag-p-col" type="color" value="${escAttr(me.colore)}" style="height:44px;padding:4px"></div></div>`
+      :'<p class="helptip">Questo account non è ancora nella squadra: il calendario si attiva dopo <code>team_aggiungi</code> (vedi README).</p>'}
+    </div><div class="modal-f" style="justify-content:space-between"><button type="button" class="btn sm ghost danger" onclick="closeModal();nlLogout()">Esci</button>
+      <div style="display:flex;gap:9px"><button type="button" class="btn" onclick="closeModal()">Chiudi</button>${me?'<button class="btn primary" type="submit">Salva</button>':''}</div></div></form></div>`);
+}
+async function agSaveProfile(ev){
+  ev.preventDefault();if(!ag.me)return;
+  const nome=(document.getElementById('ag-p-nome').value||'').trim(),colore=document.getElementById('ag-p-col').value;
+  if(!nome)return;
+  const {error}=await nlSupa.from('team_members').update({nome,colore}).eq('id',ag.me.id);
+  if(error){toast(error.message,'err');return}
+  ag.me.nome=nome;ag.me.colore=colore;const t=agPerson(ag.me.id);if(t){t.nome=nome;t.colore=colore}
+  closeModal();render();toast('Profilo aggiornato','ok');
+}
+function agGoNotif(){ag.tab='notifiche';if(state.view!=='agenda')go('agenda');else{closeRail();render();window.scrollTo(0,0)}}
+
+/* ---- navigazione ---- */
+function agGoTab(t){ag.tab=t;if(state.view!=='agenda')go('agenda');else{closeRail();render();window.scrollTo(0,0)}}
+function agEnsure(d){if(d<ag.from){ag.from=addDays(agMonday(d),-14);agLoad({silent:true})}}
+function agWeek(n){ag.week=addDays(ag.week,n*7);agEnsure(ag.week);render()}
+function agThisWeek(){ag.week=agMonday(new Date());ag.month=isoD(new Date()).slice(0,7);render()}
+function agMonthGo(n){const [y,m]=ag.month.split('-').map(Number);const d=new Date(y,m-1+n,1);ag.month=isoD(d).slice(0,7);agEnsure(d);render()}
+function agPickDay(iso){const [y,m,g]=iso.split('-').map(Number);ag.week=agMonday(new Date(y,m-1,g));ag.tab='settimana';render();window.scrollTo(0,0)}
+function agWho(v){ag.who=v;render()}
+function agTogglePers(on){ag.personali=on;render()}
+
+/* ---- viste ---- */
+function agHeroCopy(){
+  if(!nl.session)return {t:'Calendario.',l:'Accedi con il tuo account per vedere call e impegni di Flowline.'};
+  if(nl.editor===false&&!ag.me)return {t:'Accesso non abilitato.',l:'Questo account non è nella squadra.'};
+  if(!ag.loaded)return {t:'Calendario.',l:'Carico gli impegni…'};
+  if(ag.missing)return {t:'Calendario da attivare.',l:'Mancano le tabelle nel database: si creano una volta sola con la migrazione.'};
+  if(ag.noMember)return {t:'Account da collegare.',l:'Il tuo accesso funziona, ma non è ancora nella squadra del calendario.'};
+  const t0=today(),n=agDayEv(t0).filter(e=>e.stato!=='annullato'),mine=n.filter(e=>agParts(e.id).includes(ag.me.id)).length,un=agUnread();
+  const next=agShown().filter(e=>e.stato!=='annullato'&&new Date(e.fine)>=new Date()).sort((a,b)=>String(a.inizio).localeCompare(String(b.inizio)))[0];
+  const head=n.length?`Oggi ${n.length===1?'c\'è 1 impegno':'ci sono '+n.length+' impegni'}.`:'Oggi nessun impegno.';
+  const l=[mine?`${mine} ${mine===1?'è tuo':'sono tuoi'}`:null,next?`Prossimo: ${next.titolo}, ${agDay(next.inizio)}${next.tutto_il_giorno?'':' alle '+agT(next.inizio)}`:null,un?`${un} ${un===1?'notifica nuova':'notifiche nuove'}`:null].filter(Boolean).join(' · ');
+  return {t:head,l:l||'Il calendario condiviso di Flowline: call, appuntamenti e impegni di tutti.'};
+}
+function agTopActions(){
+  if(!nl.session||!ag.me||ag.missing)return '';
+  return `<button class="btn primary" onclick="agOpen(null)">${AG_I.plus}Nuovo evento</button><button class="btn" id="btnRefresh" onclick="agRefresh()">${AG_I.refresh}<span class="lbl">Aggiorna</span></button>`;
+}
+async function agRefresh(){const b=document.getElementById('btnRefresh');if(b){b.disabled=true;b.innerHTML='<span class="spinner"></span> Aggiorno…'}await agLoad({silent:true});toast('Calendario aggiornato','ok')}
+function viewAgenda(){
+  if(!nl.ready)return `<div class="empty"><span class="spinner"></span></div>`;
+  if(!nl.session)return nlLoginView('agenda');
+  if(nl.editor===null||(!ag.loaded&&ag.loading))return `<div class="empty"><span class="spinner"></span><p style="margin-top:14px">Carico il calendario…</p></div>`;
+  if(!ag.loaded)return `<div class="empty"><span class="spinner"></span><p style="margin-top:14px">Carico il calendario…</p></div>`;
+  if(ag.missing)return `<div class="empty">${AG_I.cal}<h4>Il calendario non è ancora attivo</h4><p>Nel database mancano le tabelle del calendario. Si creano una volta sola eseguendo la migrazione <code>20261104100000_team_calendario_notifiche.sql</code> nel SQL Editor di Supabase.</p><button class="btn" onclick="agRefresh()">Riprova</button></div>`;
+  if(ag.noMember)return `<div class="empty">${AG_I.cal}<h4>Il tuo account non è ancora nella squadra</h4><p>${esc(nl.session.user?.email||'')} ha fatto l'accesso, ma non è tra le persone del calendario. Dal SQL Editor di Supabase: <code>select public.team_aggiungi('${esc(nl.session.user?.email||'')}', 'Nome', '#F59E0B');</code></p><button class="btn" onclick="nlLogout()">Esci</button></div>`;
+  const un=agUnread();
+  const tabs=`<div class="filters"><div class="seg">${AG_TABS.map(x=>`<button class="fbtn ${ag.tab===x.tab?'on':''}" onclick="agGoTab('${x.tab}')">${x.label}${x.tab==='notifiche'&&un?` <span class="badge" style="margin-left:6px">${un}</span>`:''}</button>`).join('')}</div></div>`;
+  if(ag.tab==='notifiche')return tabs+agNotifView();
+  const who=`<div class="filters ag-who"><span class="email-cell" style="color:var(--text);font-weight:650">Persone</span>
+    <button class="fbtn ${!ag.who?'on':''}" onclick="agWho('')">Tutti</button>
+    ${ag.team.map(p=>`<button class="fbtn ${ag.who===p.id?'on':''}" onclick="agWho('${p.id}')">${agAv(p.id,true)} ${esc(p.nome)}</button>`).join('')}
+    <span style="flex:1"></span><label class="ct-chk"><input type="checkbox" ${ag.personali?'checked':''} onchange="agTogglePers(this.checked)"> Mostra impegni personali</label></div>`;
+  return tabs+who+(ag.tab==='mese'?agMonthView():agWeekView());
+}
+function agCard(e){
+  const t=agTipo(e.tipo),ann=e.stato==='annullato';
+  return `<button class="ag-ev ${ann?'ann':''} ${e.calendario==='personale'?'pers':''}" data-tipo="${e.tipo}" onclick="agOpen(${e.id})" title="${escAttr(e.titolo)}">
+    <span class="ag-evt">${esc(agWhen(e))}${e.calendario==='personale'?' · personale':''}${e.origine==='google'?' · Google':''}</span>
+    <span class="ag-evn">${esc(e.titolo)}</span>
+    ${e.cliente&&e.cliente!==e.titolo?`<span class="ag-evc">${esc(e.cliente)}</span>`:''}
+    <span class="ag-evf"><span class="chip ${t.chip}"><span class="d"></span>${ann?'Annullato':t.label}</span><span class="ag-avs">${agAvs(e)}</span></span></button>`;
+}
+function agWeekView(){
+  const days=Array.from({length:7},(_,i)=>addDays(ag.week,i)),t0=isoD(today()),last=days[6];
+  const lab=days[0].getMonth()===last.getMonth()?`${days[0].getDate()}–${last.getDate()} ${CT_MESI[last.getMonth()].toLowerCase()} ${last.getFullYear()}`:`${days[0].getDate()} ${CT_MS[days[0].getMonth()]} – ${last.getDate()} ${CT_MS[last.getMonth()]} ${last.getFullYear()}`;
+  const tot=days.reduce((s,d)=>s+agDayEv(d).filter(e=>e.stato!=='annullato').length,0);
+  return `<div class="tile"><div class="tile-h"><h3>Settimana</h3><span class="spacer"></span><button class="btn sm" onclick="agWeek(-1)" aria-label="Settimana precedente">‹</button><span class="sub" style="min-width:150px;text-align:center">${lab}</span><button class="btn sm" onclick="agWeek(1)" aria-label="Settimana successiva">›</button><button class="btn sm ghost" onclick="agThisWeek()">Oggi</button></div>
+    <div class="ag-week">${days.map((d,i)=>{const iso=isoD(d),list=agDayEv(d);
+      return `<div class="ag-day ${iso===t0?'today':''} ${i>4?'we':''}"><div class="ag-dh"><span class="ag-dn">${AG_GG[i]}</span><span class="ag-dd">${d.getDate()}</span><button class="ag-add" onclick="agOpen(null,'${iso}')" aria-label="Nuovo evento il ${iso}">+</button></div>
+        ${list.length?list.map(agCard).join(''):'<span class="ag-none">—</span>'}</div>`}).join('')}</div>
+    <p class="helptip" style="margin-top:12px">${tot} ${tot===1?'impegno':'impegni'} questa settimana${ag.who?' per '+esc((agPerson(ag.who)||{}).nome||''):''}. Clicca un evento per modificarlo, il + per aggiungerne uno in quel giorno.</p></div>`;
+}
+function agMonthView(){
+  const [y,m]=ag.month.split('-').map(Number),first=new Date(y,m-1,1),start=agMonday(first),t0=isoD(today());
+  const cells=[];for(let i=0;i<42;i++)cells.push(addDays(start,i));
+  const rows=cells[35].getMonth()===m-1?6:5;
+  return `<div class="tile"><div class="tile-h"><h3>${CT_MESI[m-1]} ${y}</h3><span class="spacer"></span><button class="btn sm" onclick="agMonthGo(-1)" aria-label="Mese precedente">‹</button><button class="btn sm" onclick="agMonthGo(1)" aria-label="Mese successivo">›</button><button class="btn sm ghost" onclick="agThisWeek()">Oggi</button></div>
+    <div class="ag-mgrid"><div class="ag-mh">${AG_GG.map(g=>`<span>${g}</span>`).join('')}</div>
+    <div class="ag-mb" style="grid-template-rows:repeat(${rows},minmax(104px,auto))">${cells.slice(0,rows*7).map(d=>{const iso=isoD(d),list=agDayEv(d),out=d.getMonth()!==m-1;
+      return `<div class="ag-mc ${out?'out':''} ${iso===t0?'today':''}"><button class="ag-mn" onclick="agPickDay('${iso}')" aria-label="Apri la settimana del ${iso}">${d.getDate()}</button>
+        ${list.slice(0,3).map(e=>`<button class="ag-pill ${e.stato==='annullato'?'ann':''}" data-tipo="${e.tipo}" onclick="agOpen(${e.id})" title="${escAttr(e.titolo)}"><b>${e.tutto_il_giorno?'':agT(e.inizio)}</b> ${esc(e.titolo)}</button>`).join('')}
+        ${list.length>3?`<button class="ag-more" onclick="agPickDay('${iso}')">+${list.length-3} altri</button>`:''}</div>`}).join('')}</div></div></div>`;
+}
+const AG_NT={evento_aggiunto:'Nuovo',evento_spostato:'Spostato',evento_modificato:'Modificato',evento_annullato:'Annullato'};
+function agNotifView(){
+  const un=agUnread();
+  const head=`<div class="filters"><span class="email-cell" style="color:var(--text);font-weight:650">${un?un+(un===1?' notifica da leggere':' notifiche da leggere'):'Tutto letto'}</span><span style="flex:1"></span>${un?'<button class="btn sm" onclick="agReadAll()">Segna tutte come lette</button>':''}</div>`;
+  if(!ag.notif.length)return head+`<div class="empty" style="margin-top:8px">${AG_I.cal}<h4>Nessuna notifica</h4><p>Ti avviso qui quando vieni aggiunto a una call, ti viene assegnato un appuntamento o cambia un evento a cui partecipi. In futuro anche per i task.</p></div>`;
+  return head+`<div class="ag-notifs">${ag.notif.map(n=>{const ev=n.evento_id&&ag.ev.find(e=>e.id===n.evento_id);
+    return `<div class="ag-n ${n.letta_il?'':'new'}" onclick="agOpenNotif(${n.id})"><span class="ag-nd" aria-hidden="true"></span><div class="ag-nb"><div class="ag-nt"><b>${esc(n.titolo)}</b><span class="email-cell">${esc(nlFmt(n.created_at,true))}</span></div>
+      <div>${esc(n.testo)}</div></div>
+      <div class="ag-na">${ev?`<button class="btn sm" onclick="event.stopPropagation();agOpenNotif(${n.id},true)">Apri evento</button>`:''}${n.letta_il?'':`<button class="btn sm ghost" onclick="event.stopPropagation();agRead(${n.id})">Letta</button>`}</div></div>`}).join('')}</div>
+    <p class="helptip" style="margin-top:12px">Le notifiche sono personali: ognuno vede solo le sue. Per ora arrivano qui in suite; l'invio via email si può aggiungere in seguito.</p>`;
+}
+async function agRead(id){
+  const n=ag.notif.find(x=>x.id===id);if(!n||n.letta_il)return;
+  const {error}=await nlSupa.from('notifiche').update({letta_il:new Date().toISOString()}).eq('id',id);
+  if(error){toast(error.message,'err');return}
+  n.letta_il=new Date().toISOString();agTitle();render();
+}
+async function agReadAll(){
+  const {error}=await nlSupa.from('notifiche').update({letta_il:new Date().toISOString()}).is('letta_il',null);
+  if(error){toast(error.message,'err');return}
+  const t=new Date().toISOString();ag.notif.forEach(n=>{if(!n.letta_il)n.letta_il=t});agTitle();render();
+}
+async function agOpenNotif(id,openEv){
+  const n=ag.notif.find(x=>x.id===id);if(!n)return;
+  if(!n.letta_il)await agRead(id);
+  if(openEv&&n.evento_id)agOpen(n.evento_id);
+}
+
+/* ---- evento: crea, modifica, annulla, elimina ---- */
+function agOpen(id,dayIso){
+  if(!ag.me){toast('Account non collegato alla squadra','warn');return}
+  const e=id?ag.ev.find(x=>x.id===id):null;
+  if(id&&!e)return;
+  let a,b;
+  if(e){a=new Date(e.inizio);b=new Date(e.fine)}
+  else{const base=dayIso?new Date(dayIso+'T09:00'):new Date();if(!dayIso){base.setMinutes(0,0,0);base.setHours(base.getHours()+1)}a=base;b=new Date(+a+3600000)}
+  const t=e||{titolo:'',tipo:'call',cliente:'',luogo:'',link_call:'',descrizione:'',tutto_il_giorno:false,calendario:'azienda',stato:'confermato',ospiti:[]};
+  const sel=e?agParts(e.id):[ag.me.id];
+  ag.mtipo=t.tipo;
+  const g=e&&e.origine==='google';
+  modal(`<div class="modal ag-modal" role="dialog" aria-modal="true" aria-labelledby="ag-h" onclick="event.stopPropagation()">
+    <div class="modal-h"><h3 id="ag-h">${e?'Modifica evento':'Nuovo evento'}</h3><div class="x" role="button" tabindex="0" aria-label="Chiudi" onclick="closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div>
+    <form onsubmit="agSave(event,${e?e.id:'null'})"><div class="modal-b">
+      ${e&&e.stato==='annullato'?'<p class="helptip" style="color:var(--late)">Questo evento è annullato.</p>':''}
+      <div class="form-row"><label for="ag-f-tit">Titolo</label><input id="ag-f-tit" required value="${escAttr(t.titolo)}" placeholder="Per esempio: Call di kickoff"></div>
+      <div class="form-row"><label>Tipo</label><div class="seg" id="ag-tipi">${AG_TIPI.map(x=>`<button type="button" class="fbtn ${t.tipo===x.id?'on':''}" data-t="${x.id}" onclick="agSetTipo('${x.id}')">${x.label}</button>`).join('')}</div></div>
+      <div class="form-row"><label for="ag-f-cli">Cliente o progetto</label><input id="ag-f-cli" value="${escAttr(t.cliente||'')}" placeholder="Nome del cliente o del progetto"></div>
+      <label class="ct-chk" style="margin:2px 0 -4px"><input type="checkbox" id="ag-f-all" ${t.tutto_il_giorno?'checked':''} onchange="agAllDay(this.checked)"> Tutto il giorno</label>
+      <div class="ct-two" id="ag-dt" style="${t.tutto_il_giorno?'display:none':''}"><div class="form-row"><label for="ag-f-ini">Inizio</label><input id="ag-f-ini" type="datetime-local" value="${agDtl(a)}"></div>
+        <div class="form-row"><label for="ag-f-fin">Fine</label><input id="ag-f-fin" type="datetime-local" value="${agDtl(b)}"></div></div>
+      <div class="ct-two" id="ag-d" style="${t.tutto_il_giorno?'':'display:none'}"><div class="form-row"><label for="ag-f-di">Dal</label><input id="ag-f-di" type="date" value="${isoD(a)}"></div>
+        <div class="form-row"><label for="ag-f-df">Al</label><input id="ag-f-df" type="date" value="${isoD(b)}"></div></div>
+      <div class="form-row"><label>Calendario</label><div class="seg" id="ag-cal">${[['azienda','Azienda (condiviso con Google)'],['personale','Personale (solo mio)']].map(x=>`<button type="button" class="fbtn ${t.calendario===x[0]?'on':''}" data-c="${x[0]}" onclick="agSetCal('${x[0]}')">${x[1]}</button>`).join('')}</div>
+        <span class="hint" id="ag-cal-h"></span></div>
+      <div class="form-row" id="ag-part-row"><label>Partecipanti</label><div class="ag-pick">${ag.team.map(p=>`<label class="ag-pk"><input type="checkbox" value="${p.id}" ${sel.includes(p.id)?'checked':''}>${agAv(p.id,true)}<span>${esc(p.nome)}</span></label>`).join('')}</div>
+        <span class="hint">Chi viene aggiunto riceve una notifica.</span></div>
+      <div class="ct-two"><div class="form-row"><label for="ag-f-luo">Luogo</label><input id="ag-f-luo" value="${escAttr(t.luogo||'')}" placeholder="Indirizzo o sede"></div>
+        <div class="form-row"><label for="ag-f-lnk">Link della call</label><input id="ag-f-lnk" type="url" value="${escAttr(t.link_call||'')}" placeholder="https://meet.google.com/…"></div></div>
+      <div class="form-row" id="ag-osp-row"><label for="ag-f-osp">Ospiti esterni (email, separate da virgola)</label><input id="ag-f-osp" value="${escAttr((t.ospiti||[]).join(', '))}" placeholder="cliente@azienda.it"><span class="hint">Compaiono come invitati su Google Calendar, senza inviare email in automatico.</span></div>
+      <div class="form-row"><label for="ag-f-des">Note</label><textarea id="ag-f-des" style="min-height:70px">${esc(t.descrizione||'')}</textarea></div>
+      ${e?`<p class="helptip">${g?'Arriva da Google Calendar. ':''}${e.calendario==='azienda'?'Le modifiche si riflettono anche su Google Calendar entro pochi secondi.':'È un impegno personale: non va su Google Calendar.'}${e.creato_da&&agPerson(e.creato_da)?' Creato da '+esc(agPerson(e.creato_da).nome)+'.':''}</p>`:''}
+    </div>
+    <div class="modal-f" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <div style="display:flex;gap:8px;flex-wrap:wrap">${e?`<button type="button" class="btn sm ghost danger" onclick="agDelete(${e.id})">Elimina</button><button type="button" class="btn sm ghost" onclick="agToggleCancel(${e.id})">${e.stato==='annullato'?'Riattiva':'Annulla evento'}</button>`:''}</div>
+      <div style="display:flex;gap:9px"><button type="button" class="btn" onclick="closeModal()">Chiudi</button><button class="btn primary" id="ag-save" type="submit">Salva</button></div>
+    </div></form></div>`);
+  agSetCal(t.calendario);
+  setTimeout(()=>{const x=document.getElementById('ag-f-tit');if(x&&!e)x.focus()},40);
+}
+function agSetTipo(x){ag.mtipo=x;document.querySelectorAll('#ag-tipi .fbtn').forEach(b=>b.classList.toggle('on',b.dataset.t===x))}
+function agSetCal(c){
+  document.querySelectorAll('#ag-cal .fbtn').forEach(b=>b.classList.toggle('on',b.dataset.c===c));
+  const per=c==='personale',pr=document.getElementById('ag-part-row'),or=document.getElementById('ag-osp-row'),h=document.getElementById('ag-cal-h');
+  if(pr)pr.style.display=per?'none':'';if(or)or.style.display=per?'none':'';
+  if(h)h.textContent=per?'Impegno solo tuo: non va su Google Calendar e gli altri lo vedono come tuo.':'Call e appuntamenti di Flowline: vanno anche sul Google Calendar di info@flowline.it.';
+}
+function agAllDay(on){document.getElementById('ag-dt').style.display=on?'none':'';document.getElementById('ag-d').style.display=on?'':'none'}
+async function agSave(ev,id){
+  ev.preventDefault();
+  const v=i=>(document.getElementById(i)?.value||'').trim(),all=document.getElementById('ag-f-all').checked;
+  const cal=document.querySelector('#ag-cal .fbtn.on')?.dataset.c||'azienda',per=cal==='personale';
+  let a,b;
+  if(all){a=new Date(v('ag-f-di')+'T00:00');b=new Date((v('ag-f-df')||v('ag-f-di'))+'T23:59')}
+  else{a=new Date(v('ag-f-ini'));b=new Date(v('ag-f-fin'))}
+  if(isNaN(a)||isNaN(b)){toast('Controlla le date','warn');return}
+  if(b<a){toast('La fine non può essere prima dell\'inizio','warn');return}
+  const titolo=v('ag-f-tit');if(!titolo){toast('Scrivi un titolo','warn');return}
+  const ospiti=per?[]:v('ag-f-osp').split(/[,;\s]+/).map(s=>s.trim().toLowerCase()).filter(Boolean);
+  const bad=ospiti.find(s=>!NL.emailRe.test(s));if(bad){toast('Email non valida: '+bad,'warn');return}
+  const rec={titolo,tipo:ag.mtipo,cliente:v('ag-f-cli')||null,luogo:v('ag-f-luo')||null,link_call:v('ag-f-lnk')||null,descrizione:v('ag-f-des')||null,
+    inizio:a.toISOString(),fine:b.toISOString(),tutto_il_giorno:all,calendario:cal,ospiti};
+  const want=per?[ag.me.id]:[...document.querySelectorAll('.ag-pick input:checked')].map(x=>x.value);
+  if(!per&&!want.length){toast('Scegli almeno un partecipante','warn');return}
+  const btn=document.getElementById('ag-save');if(btn)btn.disabled=true;
+  try{
+    const have=id?agParts(id):[],toDel=have.filter(u=>!want.includes(u)),toAdd=want.filter(u=>!have.includes(u));
+    // prima chi esce, poi la modifica (la notifica di spostamento non arriva a chi è stato tolto), infine chi entra
+    if(id&&toDel.length){const {error}=await nlSupa.from('evento_partecipanti').delete().eq('evento_id',id).in('user_id',toDel);if(error)throw error}
+    const q=id?nlSupa.from('eventi').update(rec).eq('id',id):nlSupa.from('eventi').insert({...rec,creato_da:ag.me.id});
+    const {data,error}=await q.select(AG_COLS).single();if(error)throw error;
+    if(toAdd.length){const {error:e2}=await nlSupa.from('evento_partecipanti').insert(toAdd.map(u=>({evento_id:data.id,user_id:u})));if(e2)throw e2}
+    const i=ag.ev.findIndex(x=>x.id===data.id);if(i>=0)ag.ev[i]=data;else ag.ev.push(data);
+    ag.part[data.id]=want;ag.ev.sort((x,y)=>String(x.inizio).localeCompare(String(y.inizio)));
+    closeModal();render();toast(id?'Evento aggiornato':'Evento aggiunto','ok');
+  }catch(e){toast(e.message||String(e),'err');if(btn)btn.disabled=false}
+}
+async function agToggleCancel(id){
+  const e=ag.ev.find(x=>x.id===id);if(!e)return;
+  const stato=e.stato==='annullato'?'confermato':'annullato';
+  if(stato==='annullato'&&!confirm(`Annullare "${e.titolo}"? I partecipanti ricevono una notifica.`))return;
+  const {data,error}=await nlSupa.from('eventi').update({stato}).eq('id',id).select(AG_COLS).single();
+  if(error){toast(error.message,'err');return}
+  const i=ag.ev.findIndex(x=>x.id===id);if(i>=0)ag.ev[i]=data;closeModal();render();toast(stato==='annullato'?'Evento annullato':'Evento riattivato','ok');
+}
+async function agDelete(id){
+  const e=ag.ev.find(x=>x.id===id);if(!e)return;
+  if(!confirm(`Eliminare "${e.titolo}"? Sparisce anche da Google Calendar e nessuno viene avvisato (per avvisare i partecipanti usa prima «Annulla evento»).`))return;
+  const {error}=await nlSupa.from('eventi').delete().eq('id',id);
+  if(error){toast(error.message,'err');return}
+  ag.ev=ag.ev.filter(x=>x.id!==id);delete ag.part[id];closeModal();render();toast('Evento eliminato','ok');
 }
 
 /* =======================================================

@@ -8,7 +8,7 @@ Strumenti interni di Flowline in un'unica pagina (`index.html`), pubblicata con 
 - Dashboard: partenze di oggi, risposte, carico della settimana
 - Ricerca lead: ricerche su Google Maps (Apify, tramite il flusso n8n "Ricerca lead da Outbound") con obiettivo di lead e tetto di spesa
 - Contatti: elenco con filtri, selezione multipla ed eliminazione in blocco
-- Pianificazione, Coda invio, Calendario, Risposte: sequenza di email da Gmail
+- Pianificazione, Coda invio, Piano invii, Risposte: sequenza di email da Gmail
 
 **Newsletter**: iscritti dal sito flowline.it, scrittura e invio da Gmail, statistiche anonime di aperture e clic.
 
@@ -24,8 +24,17 @@ Strumenti interni di Flowline in un'unica pagina (`index.html`), pubblicata con 
 - I movimenti arrivano anche da PayPal: il flusso n8n «PayPal → Contabilità FlowLine» li salva «Da verificare» (non contano nel saldo) e si confermano uno a uno o tutti insieme
 - Le quote ai soci (soldi dal conto aziendale al conto personale di un socio) sono una ripartizione degli utili, non un costo: hanno il tipo «Quota ai soci», una voce a parte in panoramica, grafico e report, e restano fuori dalle uscite. Nel database sono trasferimenti (`tipo = move`) dal conto aziendale a un socio; le vecchie righe «uscita» con categoria Stipendio/Quota verso un socio vengono lette come quote
 
+**Calendario**: agenda condivisa del team con notifiche.
+- Accesso personale per Giuseppe, Giacomo, Leonardo e Pietro (Supabase Auth), uguale per tutte le aree. Tutti hanno gli stessi permessi
+- Vista settimana e mese, filtri per persona e per calendario, nuovo evento con partecipanti ben visibili (call, appuntamento, impegno, altro)
+- Calendario «azienda» (sincronizzato con Google Calendar `info@flowline.it`) e calendario «personale» (non va mai su Google)
+- Notifiche in app (campanella): aggiunto a un evento, evento spostato, modificato o annullato. Le crea solo il database, il client non può scriverle. Le email si potranno aggiungere in seguito (`notifiche.email_stato`)
+- Task e Progetti: la struttura è già pronta (`notifiche.rif_tipo/rif_id`, `eventi.progetto_id`), le sezioni non ci sono ancora
+- Sincronizzazione con Google, due flussi n8n: «Calendario: Google → Suite» (ogni 5 minuti; crea e aggiorna eventi, annulla quelli cancellati, aggiunge i partecipanti) e «Calendario: Suite → Google» (webhook; crea, aggiorna ed elimina su Google senza inviare email di invito). Gli ospiti esterni indicati nell'evento diventano invitati su Google
+- Messa in funzione: creare i quattro utenti in Authentication → Users, eseguire la migrazione `20261104100000_team_calendario_notifiche.sql`, poi per ciascuno `select public.team_aggiungi('email','Nome','#colore');` dal SQL Editor. Per la sincronizzazione servono due segreti in Vault, `calendar_webhook_url` (indirizzo del webhook n8n) e `calendar_webhook_key` (stessa chiave del flusso), e le credenziali Google sui tre nodi HTTP del flusso Suite → Google
+
 ## Dati
 
-Database Supabase "Lead Flowline": `contacts`, `leads`, `lead_searches`, tabelle `newsletter_*`, `richieste_sito`, `conti`, `movimenti`.
-Il form del sito scrive in `richieste_sito` solo con la funzione `richiesta_sito_invia`; Newsletter, Ricerca lead, Richieste e Contabilità si leggono dopo il login di un indirizzo presente in `newsletter_editors`.
+Database Supabase "Lead Flowline": `contacts`, `leads`, `lead_searches`, tabelle `newsletter_*`, `richieste_sito`, `conti`, `movimenti`, `team_members`, `eventi`, `evento_partecipanti`, `notifiche`.
+Il form del sito scrive in `richieste_sito` solo con la funzione `richiesta_sito_invia`; Newsletter, Ricerca lead, Richieste e Contabilità si leggono dopo il login di un indirizzo presente in `newsletter_editors`; Calendario richiede un utente in `team_members` (che viene aggiunto anche a `newsletter_editors`).
 Le migrazioni e la funzione `nl-track` sono in `supabase/`.
