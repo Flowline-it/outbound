@@ -4,6 +4,13 @@ Strumenti interni di Flowline in un'unica pagina (`index.html`), pubblicata con 
 
 ## Aree
 
+**Home**: la prima pagina dopo l'accesso, con scorciatoie a ciò che serve oggi.
+- Call di oggi (dal Calendario), email da inviare oggi divise in prima email, follow-up 1 e follow-up 2, saldo del conto aziendale, iscritti alla newsletter, nuove risposte alle email
+- Ogni scheda porta alla sezione corrispondente
+- Messaggi: scambio di messaggi personali tra collaboratori, visibili solo ai due interessati; chi riceve vede una notifica nella campanella. Si può cancellare solo il proprio messaggio
+- Bacheca: comunicazioni per tutta la squadra, con titolo facoltativo e possibilità di metterle in evidenza. Ognuno modifica, mette in evidenza ed elimina solo le proprie; tutti ricevono una notifica quando ne esce una nuova
+- Serve la migrazione `20261104150000_messaggi_bacheca.sql` (dopo quella del Calendario)
+
 **Outbound**: campagne email a freddo.
 - Dashboard: partenze di oggi, risposte, carico della settimana
 - Ricerca lead: ricerche su Google Maps (Apify, tramite il flusso n8n "Ricerca lead da Outbound") con obiettivo di lead e tetto di spesa
@@ -36,6 +43,6 @@ Strumenti interni di Flowline in un'unica pagina (`index.html`), pubblicata con 
 
 ## Dati
 
-Database Supabase "Lead Flowline": `contacts`, `leads`, `lead_searches`, tabelle `newsletter_*`, `richieste_sito`, `conti`, `movimenti`, `team_members`, `eventi`, `evento_partecipanti`, `notifiche`.
+Database Supabase "Lead Flowline": `contacts`, `leads`, `lead_searches`, tabelle `newsletter_*`, `richieste_sito`, `conti`, `movimenti`, `team_members`, `eventi`, `evento_partecipanti`, `notifiche`, `messaggi`, `bacheca`.
 Il form del sito scrive in `richieste_sito` solo con la funzione `richiesta_sito_invia`; Newsletter, Ricerca lead, Richieste e Contabilità si leggono dopo il login di un indirizzo presente in `newsletter_editors`; Calendario richiede un utente in `team_members` (che viene aggiunto anche a `newsletter_editors`).
 Le migrazioni e la funzione `nl-track` sono in `supabase/`.
