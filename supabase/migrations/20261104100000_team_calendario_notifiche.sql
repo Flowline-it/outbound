@@ -26,6 +26,8 @@ create table if not exists public.team_members (
   colore      text not null default '#6B7280',
   attivo      boolean not null default true
 );
+-- indirizzo con cui la persona compare su Google Calendar, se diverso da quello di accesso
+alter table public.team_members add column if not exists email_google text;
 create unique index if not exists team_members_email_key on public.team_members (lower(email));
 alter table public.team_members enable row level security;
 revoke all on public.team_members from anon;
