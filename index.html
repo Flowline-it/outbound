@@ -5112,7 +5112,7 @@ function agOpen(id,dayIso){
       <div class="form-row" id="ag-part-row"><label>Partecipanti</label><div class="ag-pick">${ag.team.map(p=>`<label class="ag-pk"><input type="checkbox" value="${p.id}" ${sel.includes(p.id)?'checked':''}>${agAv(p.id,true)}<span>${esc(p.nome)}</span></label>`).join('')}</div>
         <span class="hint">Chi viene aggiunto riceve una notifica.</span></div>
       <div class="ct-two"><div class="form-row"><label for="ag-f-luo">Luogo</label><input id="ag-f-luo" value="${escAttr(t.luogo||'')}" placeholder="Indirizzo o sede"></div>
-        <div class="form-row"><label for="ag-f-lnk">Link della call</label><input id="ag-f-lnk" type="url" value="${escAttr(t.link_call||'')}" placeholder="https://meet.google.com/…"></div></div>
+        <div class="form-row"><label for="ag-f-lnk">Link della call</label><input id="ag-f-lnk" type="url" value="${escAttr(t.link_call||'')}" placeholder="Si crea da solo (Google Meet)" oninput="agLinkHint()"><span class="hint" id="ag-lnk-h"></span></div></div>
       <div class="form-row" id="ag-osp-row"><label for="ag-f-osp">Ospiti esterni (email, separate da virgola)</label><input id="ag-f-osp" value="${escAttr((t.ospiti||[]).join(', '))}" placeholder="cliente@azienda.it"><span class="hint">Compaiono come invitati su Google Calendar, senza inviare email in automatico.</span></div>
       <div class="form-row"><label for="ag-f-des">Note</label><textarea id="ag-f-des" style="min-height:70px">${esc(t.descrizione||'')}</textarea></div>
       ${e?`<p class="helptip">${g?'Arriva da Google Calendar. ':''}${e.calendario==='azienda'?'Le modifiche si riflettono anche su Google Calendar entro pochi secondi.':'È un impegno personale: non va su Google Calendar.'}${e.creato_da&&agPerson(e.creato_da)?' Creato da '+esc(agPerson(e.creato_da).nome)+'.':''}</p>`:''}
@@ -5124,12 +5124,18 @@ function agOpen(id,dayIso){
   agSetCal(t.calendario);
   setTimeout(()=>{const x=document.getElementById('ag-f-tit');if(x&&!e)x.focus()},40);
 }
-function agSetTipo(x){ag.mtipo=x;document.querySelectorAll('#ag-tipi .fbtn').forEach(b=>b.classList.toggle('on',b.dataset.t===x))}
+function agSetTipo(x){ag.mtipo=x;document.querySelectorAll('#ag-tipi .fbtn').forEach(b=>b.classList.toggle('on',b.dataset.t===x));agLinkHint()}
+function agLinkHint(){
+  const h=document.getElementById('ag-lnk-h');if(!h)return;
+  const l=document.getElementById('ag-f-lnk'),on=document.querySelector('#ag-cal .fbtn.on'),per=on&&on.dataset.c==='personale';
+  h.textContent=ag.mtipo!=='call'||(l&&l.value.trim())?'':per?'Gli impegni personali non vanno su Google: se serve un link, scrivilo tu.':'Lascia vuoto: il link di Google Meet viene creato in automatico e compare qui dopo pochi secondi.';
+}
 function agSetCal(c){
   document.querySelectorAll('#ag-cal .fbtn').forEach(b=>b.classList.toggle('on',b.dataset.c===c));
   const per=c==='personale',pr=document.getElementById('ag-part-row'),or=document.getElementById('ag-osp-row'),h=document.getElementById('ag-cal-h');
   if(pr)pr.style.display=per?'none':'';if(or)or.style.display=per?'none':'';
   if(h)h.textContent=per?'Impegno solo tuo: non va su Google Calendar e gli altri lo vedono come tuo.':'Call e appuntamenti di Flowline: vanno anche sul Google Calendar di info@flowline.it.';
+  agLinkHint();
 }
 function agAllDay(on){document.getElementById('ag-dt').style.display=on?'none':'';document.getElementById('ag-d').style.display=on?'':'none'}
 async function agSave(ev,id){
