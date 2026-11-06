@@ -5914,10 +5914,26 @@ function ldSetView(v){ld.view=v;ld.sel.clear();render()}
 function ldToggleOpt(k){ld[k]=!ld[k];ld.sel.clear();render()}
 function ldSearch(v){ld.q=v;clearTimeout(window._ldq);window._ldq=setTimeout(()=>{render();const i=document.getElementById('ld-q');if(i){i.focus();i.setSelectionRange(v.length,v.length)}},220)}
 function ldSel(id,on){if(on)ld.sel.add(id);else ld.sel.delete(id);ldPaintSel()}
-function ldSelAll(on){const have=ldContactEmails();ldRows().slice(0,500).forEach(l=>{if(ldLeadState(l,have)==='new'){if(on)ld.sel.add(l.id);else ld.sel.delete(l.id)}});render()}
+function ldSelAll(on){ldRows().slice(0,500).forEach(l=>{if(on)ld.sel.add(l.id);else ld.sel.delete(l.id)});render()}
 function ldPaintSel(){
   const n=ld.sel.size, el=document.getElementById('ld-selbar');
   if(el){el.hidden=!n;const b=document.getElementById('ld-sel-n');if(b)b.textContent=n;const t=document.getElementById('ld-sel-t');if(t)t.textContent=n===1?'lead scelto':'lead scelti';}
+}
+function ldExportCsv(all){
+  const have=ldContactEmails();
+  const rows=all?ldRows():ld.leads.filter(l=>ld.sel.has(l.id));
+  if(!rows.length){toast('Scegli almeno un lead da esportare','warn');return}
+  const cell=v=>{const t=String(v??'').replace(/\s*[\r\n]+\s*/g,' ');return /[";,]/.test(t)?'"'+t.replace(/"/g,'""')+'"':t};
+  const byId=Object.fromEntries(ld.searches.map(s=>[s.id,s]));
+  const stl={new:'Nuovo',in:'Nei contatti',gone:'Eliminato dai contatti',noemail:'Senza email'};
+  const head=['azienda','email','telefono','sito web','sede','settore','referente / ruolo','descrizione','fonte','email: origine','campagna','trovato il','stato'];
+  const out=rows.map(l=>[l.azienda,l.email,l.telefono,l.sito_web,l.sede,l.settore,l.ruolo,l.descrizione,l.fonte,l.email_fonte,l.search_id&&byId[l.search_id]?ldSearchLabel(byId[l.search_id]):'Flusso giornaliero',l.created_at?String(l.created_at).slice(0,10):'',stl[ldLeadState(l,have)]].map(cell).join(';'));
+  const sch=ld.view!=='tutte'&&ld.view!=='precedenti'?byId[ld.view]:null;
+  const nome=(sch?'lead-campagna-'+String(sch.created_at).slice(0,10):'lead-tutte-le-ricerche')+'-esportato-'+isoD(today())+'.csv';
+  const url=URL.createObjectURL(new Blob(['\ufeff'+[head.join(';'),...out].join('\r\n')],{type:'text/csv;charset=utf-8'}));
+  const a=Object.assign(document.createElement('a'),{href:url,download:nome});
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  toast(`${rows.length} ${rows.length===1?'lead esportato':'lead esportati'} in CSV`,'ok');
 }
 async function ldImport(){
   const have=ldContactEmails();
@@ -6033,7 +6049,7 @@ function ldSearchesView(){
 }
 function ldResultsView(){
   const have=ldContactEmails(), rows=ldRows(), shown=rows.slice(0,500);
-  const selectable=shown.filter(l=>ldLeadState(l,have)==='new');
+  const selectable=shown;
   const allSel=selectable.length&&selectable.every(l=>ld.sel.has(l.id));
   const opts=[`<option value="tutte"${ld.view==='tutte'?' selected':''}>Tutte le ricerche</option>`]
     .concat(ld.searches.filter(s=>s.inserted).map(s=>`<option value="${s.id}"${ld.view===s.id?' selected':''}>${esc(nlFmt(s.created_at,true))} · ${esc(ldSearchLabel(s).slice(0,70))}</option>`))
@@ -6043,17 +6059,18 @@ function ldResultsView(){
   return `<div class="section-h" id="ld-res"><h3>Lead trovati</h3><span class="count">${rows.length}</span><div class="line"></div></div>
   <div class="filters">
     <div class="search">${LD_I.search.replace('class="ico"','class="ico" style="width:17px;height:17px;color:var(--faint)"')}<input id="ld-q" placeholder="Cerca azienda, email, città, settore…" value="${escAttr(ld.q)}" oninput="ldSearch(this.value)" aria-label="Cerca tra i lead"></div>
-    <div class="form-row ld-which"><label for="ld-which" class="sr-only">Ricerca</label><select id="ld-which" onchange="ldSetView(this.value)">${opts.join('')}</select></div>
+    <div class="form-row ld-which"><label for="ld-which" class="sr-only">Ricerca</label><select id="ld-which" aria-label="Campagna" onchange="ldSetView(this.value)">${opts.join('')}</select></div>
   </div>
   <div class="filters ld-opts">
     <label><input type="checkbox" ${ld.nascondiImportati?'checked':''} onchange="ldToggleOpt('nascondiImportati')"> Nascondi quelli già nei contatti</label>
     <label><input type="checkbox" ${ld.soloEmail?'checked':''} onchange="ldToggleOpt('soloEmail')"> Solo con email</label>
+    <span class="spacer"></span><button class="btn sm" onclick="ldExportCsv(true)" ${rows.length?'':'disabled'} title="Esporta tutti i lead che vedi con questi filtri">${LD_I.ext}Esporta tutti (${rows.length})</button>
   </div>
   ${shown.length?`<div class="table-wrap"><table class="ld-table"><thead><tr>
-      <th style="width:34px"><input type="checkbox" aria-label="Scegli tutti i lead nuovi" ${allSel?'checked':''} ${selectable.length?'':'disabled'} onclick="ldSelAll(this.checked)"></th>
+      <th style="width:34px"><input type="checkbox" aria-label="Scegli tutti i lead" ${allSel?'checked':''} ${selectable.length?'':'disabled'} onclick="ldSelAll(this.checked)"></th>
       <th>Azienda</th><th>Settore</th><th>Sede</th><th>Email</th><th>Telefono</th><th>Stato</th></tr></thead><tbody>
     ${shown.map(l=>{const st=ldLeadState(l,have);return `<tr>
-      <td><input type="checkbox" aria-label="Scegli ${escAttr(l.azienda||'lead')}" ${ld.sel.has(l.id)?'checked':''} ${st==='new'?'':'disabled'} onclick="ldSel('${l.id}',this.checked)"></td>
+      <td><input type="checkbox" aria-label="Scegli ${escAttr(l.azienda||'lead')}" ${ld.sel.has(l.id)?'checked':''} onclick="ldSel('${l.id}',this.checked)"></td>
       <td class="az"><div>${esc(l.azienda||'—')}</div>${site(l.sito_web)}${l.ruolo?`<div class="ld-sub">${esc(l.ruolo)}</div>`:''}${l.descrizione?`<div class="ld-sub" title="${escAttr(l.descrizione)}">${esc(l.descrizione)}</div>`:''}</td>
       <td class="email-cell">${esc(l.settore||'—')}</td>
       <td class="email-cell">${esc(l.sede||'—')}</td>
@@ -6061,7 +6078,7 @@ function ldResultsView(){
       <td class="email-cell tnum" style="white-space:nowrap">${l.telefono?`<a href="tel:${escAttr(l.telefono.replace(/\s+/g,''))}" style="color:inherit">${esc(l.telefono)}</a>`:'—'}</td>
       <td>${stChip(st)}</td></tr>`}).join('')}
   </tbody></table></div>${rows.length>500?`<p class="helptip" style="margin-top:10px">Mostro i primi 500 di ${rows.length}: usa la ricerca o scegli una ricerca specifica.</p>`:''}
-  <div class="ld-selbar" id="ld-selbar" ${ld.sel.size?'':'hidden'}><span class="plan-sel-info"><b id="ld-sel-n">${ld.sel.size}</b> <span id="ld-sel-t">${ld.sel.size===1?'lead scelto':'lead scelti'}</span></span><span class="spacer"></span><button class="btn sm ghost" onclick="ld.sel.clear();render()">Annulla</button><button class="btn primary" onclick="ldImport()">${LD_I.plus}Aggiungi ai contatti</button></div>`
+  <div class="ld-selbar" id="ld-selbar" ${ld.sel.size?'':'hidden'}><span class="plan-sel-info"><b id="ld-sel-n">${ld.sel.size}</b> <span id="ld-sel-t">${ld.sel.size===1?'lead scelto':'lead scelti'}</span></span><span class="spacer"></span><button class="btn sm ghost" onclick="ld.sel.clear();render()">Annulla</button><button class="btn" onclick="ldExportCsv()">${LD_I.ext}Esporta in CSV</button><button class="btn primary" onclick="ldImport()">${LD_I.plus}Aggiungi ai contatti</button></div>`
   :`<div class="empty">${LD_I.search}<h4>${ld.leads.length?'Nessun lead con questi filtri':'Ancora nessun lead'}</h4><p>${ld.leads.length?'Prova a togliere un filtro o a cambiare ricerca.':'Avvia la prima ricerca qui sopra: i risultati compaiono qui appena n8n ha finito.'}</p></div>`}
   <p class="helptip" style="margin-top:12px">Aggiungendo un lead ai contatti entra in Outbound come “da pianificare”, con descrizione e sito per scrivere l'email. I lead senza email restano qui: puoi chiamarli o cercare l'indirizzo sul sito.</p>`;
 }
