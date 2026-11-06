@@ -14,7 +14,7 @@ Strumenti interni di Flowline in un'unica pagina (`index.html`), pubblicata con 
 
 **Outbound**: campagne email a freddo.
 - Dashboard: partenze di oggi, risposte, carico della settimana
-- Ricerca lead: ricerche su Google Maps (Apify, tramite il flusso n8n "Ricerca lead da Outbound") con obiettivo di lead e tetto di spesa
+- Ricerca lead: ricerche su Google Maps (Apify, tramite il flusso n8n "Ricerca lead da Outbound") con obiettivo di lead e tetto di spesa. Esporta in CSV i lead: scegli la campagna, seleziona i lead (o "Esporta tutti" per quelli filtrati) e premi "Esporta in CSV"
 - Contatti: elenco con filtri, selezione multipla ed eliminazione in blocco
 - Pianificazione, Coda invio, Piano invii, Risposte: sequenza di email da Gmail
 
