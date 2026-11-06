@@ -876,6 +876,131 @@ body[data-view="password"] .hero .btn.primary:hover{background:var(--brand-hover
 .ag-me{max-width:120px}
 .topnav-in{max-width:1480px}
 @media(max-width:1599px) and (min-width:1181px){.sec-switch button[aria-pressed="false"]>span:not(.dotb){display:none}.sec-switch button[aria-pressed="false"]{padding:0 12px}.on-lbl{display:none}}
+/* ---- Progetti e attività ---- */
+body[data-view="progetti"] .hero{--hb:var(--lilac);--hi:var(--on-lilac)}
+[data-theme="dark"] body[data-view="progetti"] .hero .btn.primary{background:var(--brand);color:var(--on-brand)}
+.pj-who{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.pj-quick{display:flex;gap:8px;align-items:center;background:var(--surface);border-radius:var(--pill);padding:7px 7px 7px 8px;margin-bottom:18px}
+.pj-quick input{flex:1;min-width:0;height:40px;border:0;border-radius:var(--pill);background:var(--surface-2);padding:0 16px;outline:none}
+.pj-quick input:focus-visible,.pj-quick select:focus-visible{outline:2px solid var(--focus)}
+.pj-quick select{max-width:260px;height:40px;border:0;border-radius:var(--pill);background:var(--surface-2);padding:0 14px;font-weight:600;font-size:13.5px}
+.pj-tile .pj-quick{background:var(--surface-2);margin:0 0 6px}
+.pj-tile .pj-quick input,.pj-tile .pj-quick select{background:var(--surface)}
+.pj-board{margin-bottom:6px}
+.pj-brows{display:flex;flex-direction:column;gap:2px;padding:0 12px}
+.pj-brow{display:grid;grid-template-columns:minmax(0,1fr) auto 128px;gap:16px;align-items:center;min-height:56px;padding:8px 14px;border-radius:16px;cursor:pointer}
+.pj-brow:hover,.pj-brow:focus-visible{background:var(--ink-2)}
+.pj-brow .flap{justify-self:end;min-width:108px}
+.pj-prow{grid-template-columns:minmax(0,2.2fr) 96px minmax(120px,1.3fr) 82px 128px}
+.pj-bt{min-width:0}
+.pj-bt b{display:block;font-weight:700;font-size:15px;letter-spacing:-.01em;line-height:1.3}
+.pj-bt small{display:block;color:var(--ink-dim);font-size:13px;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pj-avs{display:flex;gap:3px}
+.pj-avs .ag-av{width:26px;height:26px;font-size:11.5px}
+.pj-prog{display:flex;align-items:center;gap:10px;min-width:0}
+.pj-prog span:last-child{font-size:12.5px;font-weight:650;color:var(--ink-dim);font-variant-numeric:tabular-nums;white-space:nowrap}
+.pj-track{flex:1;height:6px;border-radius:var(--pill);background:rgba(255,255,255,.16);overflow:hidden;min-width:40px}
+.pj-track i{display:block;height:100%;border-radius:inherit;background:#fff}
+.pj-track.full i{background:#8FE0AE}
+.pj-tile .pj-track{background:var(--surface-2)}.pj-tile .pj-track i{background:var(--text)}.pj-tile .pj-track.full i{background:var(--ok)}
+.pj-tile .pj-prog span:last-child{color:var(--muted)}
+.pj-open{font-size:13px;font-weight:650;font-variant-numeric:tabular-nums;white-space:nowrap}
+.pj-open.z{color:var(--ink-dim)}
+.board-foot .btn.sm{height:34px}
+.pj-tile{padding:16px 18px 18px}
+.pj-grp{display:flex;align-items:center;gap:10px;padding:14px 6px 8px}
+.pj-grp:first-child{padding-top:4px}
+.pj-grp button{font-weight:800;font-size:15.5px;letter-spacing:-.015em;text-align:left}
+.pj-grp button:hover{color:var(--accent)}
+.pj-gc{font-size:13px;color:var(--muted);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pj-gl{font-weight:800;font-size:15.5px;letter-spacing:-.015em}
+.pj-grp .count{font-size:12.5px;font-weight:700;min-width:26px;height:26px;padding:0 8px;border-radius:var(--pill);background:var(--surface-2);display:inline-flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums}
+.pj-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.pj-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;padding:10px 12px 10px 14px;border-radius:18px;background:var(--surface-2)}
+.pj-row.done .pj-main b{color:var(--faint);text-decoration:line-through;text-decoration-color:var(--border-strong)}
+.pj-chk{width:24px;height:24px;border-radius:8px;box-shadow:inset 0 0 0 2px var(--border-strong);background:var(--surface);display:inline-flex;align-items:center;justify-content:center;color:#fff;transition:background .15s var(--ease),box-shadow .15s var(--ease)}
+.pj-chk:hover{box-shadow:inset 0 0 0 2px var(--ok)}
+.pj-chk.on{background:var(--ok);box-shadow:none}
+.pj-chk svg{width:14px;height:14px}
+.pj-main{min-width:0;cursor:pointer;border-radius:10px}
+.pj-main b{display:block;font-weight:600;font-size:14.5px;line-height:1.4}
+.pj-main:hover b{color:var(--accent)}
+.pj-meta{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:3px;font-size:12.5px;color:var(--muted);align-items:center}
+.pj-m{display:inline-flex;align-items:center;gap:4px}.pj-m .ico{width:13px;height:13px}
+.pj-ptag{font-weight:700;font-size:12.5px;color:var(--muted)}.pj-ptag:hover{color:var(--accent)}
+.pj-right{display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.pj-st{cursor:pointer}.pj-st:hover{filter:brightness(.95);box-shadow:inset 0 0 0 1.5px currentColor}
+.pj-more{margin-top:14px;font-size:13.5px;font-weight:650;color:var(--muted);padding:6px 4px}
+.pj-more:hover{color:var(--text)}
+.pj-back{display:inline-flex;align-items:center;gap:4px;font-size:14px;font-weight:650;color:var(--muted);margin:0 0 14px}
+.pj-back:hover{color:var(--text)}.pj-back .ico{width:16px;height:16px}
+.pj-detail{align-items:start}
+.pj-col{display:flex;flex-direction:column;gap:16px;min-width:0}
+.pj-ph{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.pj-ph .pj-prog{flex:1 1 220px}
+.pj-sel{height:36px;border:0;border-radius:var(--pill);background:var(--surface-2);padding:0 14px;font-weight:700;font-size:13.5px}
+.pj-urg{background:var(--late-soft)}
+.pj-side .tile-h{margin-bottom:12px}.pj-side .tile-h h3{font-size:20px}
+.pj-path{font-size:13.5px;line-height:1.45;opacity:.85}.pj-path b{opacity:1}
+.pj-dact{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.pj-flist{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-direction:column;gap:4px}
+.pj-flist li{display:flex;align-items:center;gap:6px}
+.pj-flist a{flex:1;min-width:0;display:flex;align-items:center;gap:9px;padding:8px 12px;border-radius:12px;background:rgba(255,255,255,.55);color:inherit;text-decoration:none;font-size:14px;font-weight:600}
+[data-theme="dark"] .pj-flist a{background:rgba(255,255,255,.08)}
+.modal .pj-flist a{background:var(--surface-2)}
+.pj-flist a:hover{background:rgba(255,255,255,.9)}
+.modal .pj-flist a:hover{background:var(--border)}
+.pj-flist a span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pj-flist .ico{width:15px;height:15px;flex:0 0 auto}
+.pj-kv{display:grid;grid-template-columns:76px 1fr;gap:10px 12px;font-size:14px;margin:0}
+.pj-kv dt{font-size:12.5px;font-weight:700;color:var(--muted);padding-top:2px}
+.pj-kv dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.pj-pp{display:flex;flex-wrap:wrap;gap:6px}
+.pj-pp .pw-chip{height:30px;padding:0 12px;font-size:12.5px}
+.pj-lab{font-size:13.5px;font-weight:700}
+.pj-seg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.pj-seg label{position:relative;cursor:pointer}
+.pj-seg input{position:absolute;opacity:0;pointer-events:none}
+.pj-seg span{display:flex;align-items:center;justify-content:center;height:40px;border-radius:var(--pill);background:var(--surface-2);font-weight:700;font-size:13px}
+.pj-seg input:focus-visible+span{outline:2px solid var(--focus);outline-offset:2px}
+.pj-seg .da input:checked+span{background:var(--text);color:var(--bg)}
+.pj-seg .seq input:checked+span{background:var(--accent-soft);color:var(--accent);box-shadow:inset 0 0 0 2px var(--accent)}
+.pj-seg .wait input:checked+span{background:var(--wait-soft);color:var(--wait);box-shadow:inset 0 0 0 2px var(--wait)}
+.pj-seg .reply input:checked+span{background:var(--ok-soft);color:var(--ok);box-shadow:inset 0 0 0 2px var(--ok)}
+.pj-pc{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 14px 0 6px;border-radius:var(--pill);background:var(--surface-2);cursor:pointer;font-weight:650;font-size:13.5px;position:relative}
+.pj-pc input{position:absolute;opacity:0;pointer-events:none}
+.pj-pc:has(input:checked){background:var(--text);color:var(--bg)}
+.pj-pc:has(input:focus-visible){outline:2px solid var(--focus);outline-offset:2px}
+.pj-two{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:end}
+.pj-two .toggle{height:44px}
+.pj-fadd{display:flex;gap:8px;flex-wrap:wrap}
+.pj-fadd input{flex:1 1 220px;min-width:0}
+.pj-link{color:var(--accent);font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.pj-undo{margin-left:12px;background:rgba(255,255,255,.12);color:var(--brand);border-radius:var(--pill);padding:4px 11px;font-weight:700;font-size:13px}
+.pj-cc{opacity:.6;font-variant-numeric:tabular-nums;margin-left:2px}
+.pj-bar{margin-bottom:16px}
+.pj-home .pj-hsplit li{border-top-color:var(--border)}
+.pj-home .pj-hsplit{margin-bottom:12px}
+.pj-hlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.pj-hlist li{display:grid;grid-template-columns:10px minmax(0,1fr);column-gap:10px;align-items:baseline;font-size:14px;font-weight:600}
+.pj-hlist small{grid-column:2;font-size:12.5px;color:var(--muted);font-weight:500}
+.pj-hd{width:8px;height:8px;border-radius:50%;background:var(--brand);align-self:center}.pj-hd.u{background:var(--late)}
+@media(max-width:1100px){.pj-prow{grid-template-columns:minmax(0,1fr) minmax(100px,1fr) 128px}.pj-prow .pj-avs,.pj-prow .pj-open{display:none}.bento.pj-detail .span-8,.bento.pj-detail .span-4{grid-column:span 12}}
+@media(max-width:700px){
+  .pj-brow,.pj-prow{grid-template-columns:minmax(0,1fr) auto;gap:10px;padding:8px 10px}
+  .pj-brow .pj-avs,.pj-prow .pj-prog{display:none}
+  .pj-brow .flap{min-width:0}
+  .pj-brows{padding:0 6px}
+  .pj-row{grid-template-columns:auto minmax(0,1fr);gap:10px 12px}
+  .pj-right{grid-column:2;justify-content:flex-start}
+  .pj-right .pj-avs{display:none}
+  .pj-quick{flex-wrap:wrap;border-radius:22px}
+  .pj-quick input{flex:1 1 100%}
+  .pj-quick select{flex:1;max-width:none;min-width:0}
+  .pj-seg{grid-template-columns:1fr 1fr}
+  .pj-two{grid-template-columns:1fr}
+  .pj-tile{padding:14px 12px 14px}
+}
 </style>
 </head>
 <body class="locked">
@@ -2165,14 +2290,15 @@ const SECTIONS=[
   {id:'richieste',label:'Richieste',icon:'M22 12h-6l-2 3h-4l-2-3H2 M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z'},
   {id:'contabilita',label:'Contabilità',icon:'M20 7H5a2 2 0 0 1 0-4h13v4 M3 5v14a2 2 0 0 0 2 2h15V7 M16 14h.01'},
   {id:'agenda',label:'Calendario',icon:'M3 4h18v18H3z M16 2v4 M8 2v4 M3 10h18 M8 14h2 M14 14h2'},
+  {id:'progetti',label:'Progetti',icon:'M9 11l3 3L22 4 M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11'},
   {id:'password',label:'Password',icon:'M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4'},
 ];
-const SEC_NAME={home:'Home',outbound:'Outbound',newsletter:'Newsletter',richieste:'Richieste',contabilita:'Contabilità',agenda:'Calendario',password:'Password'};
+const SEC_NAME={home:'Home',outbound:'Outbound',newsletter:'Newsletter',richieste:'Richieste',contabilita:'Contabilità',agenda:'Calendario',progetti:'Progetti',password:'Password'};
 const NL_PAGES=[{tab:'campagne',label:'Campagne'},{tab:'iscritti',label:'Iscritti'}];
-function sectionOf(v){return v==='home'||v==='newsletter'||v==='richieste'||v==='contabilita'||v==='agenda'||v==='password'?v:'outbound'}
+function sectionOf(v){return v==='home'||v==='newsletter'||v==='richieste'||v==='contabilita'||v==='agenda'||v==='progetti'||v==='password'?v:'outbound'}
 function goSection(sec){
   if(sec===sectionOf(state.view)){closeRail();return}
-  if(sec==='home'||sec==='newsletter'||sec==='richieste'||sec==='contabilita'||sec==='agenda'||sec==='password') go(sec); else go(state.lastOutbound&&sectionOf(state.lastOutbound)==='outbound'?state.lastOutbound:'dashboard');
+  if(sec==='home'||sec==='newsletter'||sec==='richieste'||sec==='contabilita'||sec==='agenda'||sec==='progetti'||sec==='password') go(sec); else go(state.lastOutbound&&sectionOf(state.lastOutbound)==='outbound'?state.lastOutbound:'dashboard');
 }
 function goNl(tab){nl.tab=tab;nl.edit=null;if(state.view!=='newsletter')go('newsletter');else{closeRail();render();window.scrollTo(0,0)}}
 const NAV=[
@@ -2196,7 +2322,7 @@ function renderNav(){
   const alertOut=late||todayN||newRep||ldBusy(), alertNl=!!nl.sending, alertRq=rq.loaded&&rqNew()>0, alertCt=ct.loaded&&!ct.missing&&ctPending().length>0, alertAg=ag.loaded&&!ag.missing&&agUnread()>0, alertHm=hm.loaded&&!hm.missing&&(hmUnreadMsgs()>0);
   const sp=document.getElementById('spendPill');if(sp)sp.hidden=sec!=='outbound';
   document.getElementById('secSwitch').innerHTML=SECTIONS.map(x=>{
-    const on=x.id===sec, al=x.id==='outbound'?alertOut:(x.id==='newsletter'?alertNl:(x.id==='contabilita'?alertCt:(x.id==='agenda'?alertAg:(x.id==='home'?alertHm:(x.id==='password'?false:alertRq)))));
+    const on=x.id===sec, al=x.id==='outbound'?alertOut:(x.id==='newsletter'?alertNl:(x.id==='contabilita'?alertCt:(x.id==='agenda'?alertAg:(x.id==='home'?alertHm:(x.id==='password'||x.id==='progetti'?false:alertRq)))));
     const dot=!on&&al?`<span class="dotb${x.id==='outbound'&&late?' late':''}" aria-label="${x.id==='richieste'?'ci sono richieste nuove':x.id==='contabilita'?'ci sono movimenti da completare':x.id==='agenda'?'ci sono notifiche da leggere':x.id==='home'?'ci sono messaggi da leggere':'ci sono attività in sospeso'}"></span>`:'';
     return `<button type="button" aria-pressed="${on}" title="${x.label}" onclick="goSection('${x.id}')">${ico(x.icon)}<span>${x.label}</span>${dot}</button>`;
   }).join('');
@@ -2207,6 +2333,8 @@ function renderNav(){
   const sw=document.querySelector('.subnav-wrap');if(sw)sw.style.display=sec==='home'?'none':'';
   if(sec==='home'){
     items=[];
+  } else if(sec==='progetti'){
+    items=PJ_TABS.map(pg=>{const on=pj.tab===pg.tab;return `<button class="${on?'active':''}" ${on?'aria-current="page"':''} onclick="pjGoTab('${pg.tab}')"><span>${pg.label}</span></button>`});
   } else if(sec==='password'){
     items=PW_TABS.map(pg=>{const on=pw.tab===pg.tab;return `<button class="${on?'active':''}" ${on?'aria-current="page"':''} onclick="pwGoTab('${pg.tab}')"><span>${pg.label}</span></button>`});
   } else if(sec==='richieste'){
@@ -2301,6 +2429,7 @@ function heroCopy(){
   if(state.view==='richieste') return rqHeroCopy();
   if(state.view==='contabilita') return ctHeroCopy();
   if(state.view==='agenda') return agHeroCopy();
+  if(state.view==='progetti') return pjHeroCopy();
   if(state.view==='password') return pwHeroCopy();
   if(state.view==='lead') return ldHeroCopy();
   if(state.view==='stats') return obHeroCopy();
@@ -2325,7 +2454,7 @@ function render(){
   document.getElementById('viewTitle').textContent=hc.t;
   const vl=document.getElementById('viewLede');if(vl)vl.textContent=hc.l;
   const vd=document.getElementById('viewDate');if(vd)vd.textContent=today().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
-  const pageName=state.view==='home'?'Home':state.view==='password'?(PW_TABS.find(x=>x.tab===pw.tab)||PW_TABS[0]).label:state.view==='agenda'?(AG_TABS.find(x=>x.tab===ag.tab)||AG_TABS[0]).label:state.view==='contabilita'?(CT_TABS.find(x=>x.tab===ct.tab)||CT_TABS[0]).label:state.view==='richieste'?'Richieste':state.view==='newsletter'?(nl.tab==='iscritti'?'Iscritti':'Campagne'):({dashboard:'Dashboard',pianifica:'Pianificazione',coda:'Coda invio',contatti:'Contatti',calendario:'Piano invii',risposte:'Risposte',lead:'Ricerca lead',stats:'Statistiche'}[state.view]||'Dashboard');
+  const pageName=state.view==='home'?'Home':state.view==='progetti'?(pj.tab==='progetti'&&pj.open&&pjP(pj.open)?pjP(pj.open).nome:(PJ_TABS.find(x=>x.tab===pj.tab)||PJ_TABS[0]).label):state.view==='password'?(PW_TABS.find(x=>x.tab===pw.tab)||PW_TABS[0]).label:state.view==='agenda'?(AG_TABS.find(x=>x.tab===ag.tab)||AG_TABS[0]).label:state.view==='contabilita'?(CT_TABS.find(x=>x.tab===ct.tab)||CT_TABS[0]).label:state.view==='richieste'?'Richieste':state.view==='newsletter'?(nl.tab==='iscritti'?'Iscritti':'Campagne'):({dashboard:'Dashboard',pianifica:'Pianificazione',coda:'Coda invio',contatti:'Contatti',calendario:'Piano invii',risposte:'Risposte',lead:'Ricerca lead',stats:'Statistiche'}[state.view]||'Dashboard');
   const secName=SEC_NAME[sectionOf(state.view)];
   document.title=(pageName!==secName?pageName+' · ':'')+secName+' — FlowLine Suite';
   agTitle();
@@ -2356,6 +2485,7 @@ function render(){
   else if(state.view==='richieste'){ ta.innerHTML=rqTopActions(); }
   else if(state.view==='contabilita'){ ta.innerHTML=ctTopActions(); }
   else if(state.view==='agenda'){ ta.innerHTML=agTopActions(); }
+  else if(state.view==='progetti'){ ta.innerHTML=pjTopActions(); }
   else if(state.view==='password'){ ta.innerHTML=pwTopActions(); }
   else if(state.view==='lead'){ ta.innerHTML=ldTopActions(); }
   else if(state.view==='stats'){ ta.innerHTML=`<button class="btn" onclick="obLoad(true)"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6 M1 20v-6h6 M3.51 9a9 9 0 0 1 14.85-3.36L23 10 M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg><span class="lbl">Aggiorna</span></button>`; }
@@ -2376,6 +2506,7 @@ function render(){
   else if(state.view==='richieste'){ if(!nl.inited) nlInit(); C.innerHTML=viewRichieste(); }
   else if(state.view==='contabilita'){ if(!nl.inited) nlInit(); C.innerHTML=viewContabilita(); }
   else if(state.view==='agenda'){ if(!nl.inited) nlInit(); C.innerHTML=viewAgenda(); }
+  else if(state.view==='progetti'){ if(!nl.inited) nlInit(); C.innerHTML=viewProgetti(); }
   else if(state.view==='password'){ if(!nl.inited) nlInit(); C.innerHTML=viewPassword(); }
   else if(state.view==='stats'){ C.innerHTML=viewStats(); }
   if(state.view==='coda')bindCodaInputs();
@@ -3468,7 +3599,7 @@ function nlSleep(ms){return new Promise(r=>setTimeout(r,ms))}
 function nlActive(){return nl.subs.filter(s=>!s.unsubscribed_at)}
 
 /* ---- connessione e accesso (condiviso con Ricerca lead) ---- */
-function nlAuthView(){return state.view==='home'||state.view==='newsletter'||state.view==='lead'||state.view==='richieste'||state.view==='contabilita'||state.view==='agenda'||state.view==='password'}
+function nlAuthView(){return state.view==='home'||state.view==='newsletter'||state.view==='lead'||state.view==='richieste'||state.view==='contabilita'||state.view==='agenda'||state.view==='progetti'||state.view==='password'}
 /* ---- accesso unico alla suite ---- */
 function gateBrand(){return `<div class="gate-brand"><div class="logo" aria-hidden="true">${document.querySelector('.brand .logo')?.innerHTML||''}</div><h1>FlowLine <span class="suite">Suite</span></h1></div>`}
 function gateMode(){
@@ -3509,7 +3640,7 @@ async function nlInit(){
     if(!nl.ready)return;                       // la sessione iniziale la gestisce getSession qui sotto
     const was=nl.session&&nl.session.user&&nl.session.user.id;
     nl.session=session;
-    if(ev==='SIGNED_OUT'){nl.editor=null;nl.loaded=false;nl.subs=[];nl.camps=[];nl.edit=null;ld.loaded=false;ld.searches=[];ld.leads=[];ld.sel.clear();clearTimeout(ld.pollT);rq.loaded=false;rq.rows=[];clearTimeout(rq.pollT);ct.loaded=false;ct.conti=[];ct.mov=[];ct.missing=false;agStop();hmStop();onStop();pwStop();nl.editor=null;render();}
+    if(ev==='SIGNED_OUT'){nl.editor=null;nl.loaded=false;nl.subs=[];nl.camps=[];nl.edit=null;ld.loaded=false;ld.searches=[];ld.leads=[];ld.sel.clear();clearTimeout(ld.pollT);rq.loaded=false;rq.rows=[];clearTimeout(rq.pollT);ct.loaded=false;ct.conti=[];ct.mov=[];ct.missing=false;agStop();hmStop();onStop();pwStop();pjStop();nl.editor=null;render();}
     else if(ev==='SIGNED_IN' && session && was!==session.user.id){nl.editor=null;render();setTimeout(nlAfterLogin,0);}
   });
   const {data}=await nlSupa.auth.getSession();
@@ -4972,6 +5103,7 @@ function agShowEvent(id){
 function agNotifGo(n){
   if(n.rif_tipo==='messaggio'){const m=hm.msgs.find(x=>x.id===n.rif_id);go('home');if(m)hmThread(m.da_id);return true}
   if(n.rif_tipo==='bacheca'){go('home');return true}
+  if(n.rif_tipo==='attivita'){pjOpenTask(n.rif_id);return true}
   if(n.evento_id)return agShowEvent(n.evento_id);
   return false;
 }
@@ -5063,7 +5195,7 @@ function agNotifView(){
   return head+`<div class="ag-notifs">${ag.notif.map(n=>{const ev=n.evento_id&&ag.ev.find(e=>e.id===n.evento_id);
     return `<div class="ag-n ${n.letta_il?'':'new'}" onclick="agOpenNotif(${n.id})"><span class="ag-nd" aria-hidden="true"></span><div class="ag-nb"><div class="ag-nt"><b>${esc(n.titolo)}</b><span class="email-cell">${esc(nlFmt(n.created_at,true))}</span></div>
       <div>${esc(n.testo)}</div></div>
-      <div class="ag-na">${ev?`<button class="btn sm" onclick="event.stopPropagation();agOpenNotif(${n.id},true)">Apri evento</button>`:(n.rif_tipo==='messaggio'||n.rif_tipo==='bacheca')?`<button class="btn sm" onclick="event.stopPropagation();agOpenNotif(${n.id},true)">Apri</button>`:''}${n.letta_il?'':`<button class="btn sm ghost" onclick="event.stopPropagation();agRead(${n.id})">Letta</button>`}</div></div>`}).join('')}</div>
+      <div class="ag-na">${ev?`<button class="btn sm" onclick="event.stopPropagation();agOpenNotif(${n.id},true)">Apri evento</button>`:(n.rif_tipo==='messaggio'||n.rif_tipo==='bacheca'||n.rif_tipo==='attivita')?`<button class="btn sm" onclick="event.stopPropagation();agOpenNotif(${n.id},true)">Apri</button>`:''}${n.letta_il?'':`<button class="btn sm ghost" onclick="event.stopPropagation();agRead(${n.id})">Letta</button>`}</div></div>`}).join('')}</div>
     <p class="helptip" style="margin-top:12px">Le notifiche sono personali: ognuno vede solo le sue. Per ora arrivano qui in suite; l'invio via email si può aggiungere in seguito.</p>`;
 }
 async function agRead(id){
@@ -5080,7 +5212,7 @@ async function agReadAll(){
 async function agOpenNotif(id,openEv){
   const n=ag.notif.find(x=>x.id===id);if(!n)return;
   if(!n.letta_il)await agRead(id);
-  if(openEv||n.rif_tipo==='messaggio'||n.rif_tipo==='bacheca')agNotifGo(n);
+  if(openEv||n.rif_tipo==='messaggio'||n.rif_tipo==='bacheca'||n.rif_tipo==='attivita')agNotifGo(n);
 }
 
 /* ---- evento: crea, modifica, annulla, elimina ---- */
@@ -5442,6 +5574,7 @@ function viewHome(){
       <div class="hm-big">${rep}</div><div class="hm-sub">${repTot} ${repTot===1?'risposta in tutto':'risposte in tutto'}</div>
       <div class="hm-foot">Apri le risposte ${HM_I.arrow}</div>
     </section>
+    ${pjHomeTile()}
     <section class="tile span-8 hm-msgs" aria-label="Messaggi">
       <div class="tile-h"><h3>Messaggi</h3>${hmUnreadMsgs()?`<span class="badge">${hmUnreadMsgs()}</span>`:''}<span class="spacer"></span><button class="btn sm" onclick="hmNewMsg()">${AG_I.plus}Nuovo</button></div>
       ${hm.missing?`<p class="hm-empty">Messaggi e bacheca si attivano con la migrazione <code>20261104150000_messaggi_bacheca.sql</code>.</p>`
@@ -5725,6 +5858,478 @@ async function pwImport(ev){
   }
   closeModal();toast(`Importate ${ok} credenziali`+(ko?` · ${ko} saltate`:''),ko?'warn':'ok');
   await pwLoad({silent:true});
+}
+
+/* =======================================================
+   PROGETTI E ATTIVITÀ — al posto di Notion › Progetti › Project Tracker
+   Database: progetti, attivita (migrazione 20261107100000_progetti_attivita.sql), stessi permessi per tutta la squadra.
+   Semplice di proposito: 4 stati per le attività, 5 per i progetti, un solo «Urgente», cartella Drive per progetto.
+   Quando qualcuno ti aggiunge a un'attività il database crea una notifica (rif_tipo 'attivita').
+   ======================================================= */
+const PJ_TABS=[{tab:'mie',label:'Le mie attività'},{tab:'progetti',label:'Progetti'}];
+const PJ_ST={demo:{l:'Demo',f:'plan'},attivo:{l:'Attivo',f:'reply'},assistenza:{l:'Assistenza',f:'wait'},pausa:{l:'In pausa',f:'plan'},chiuso:{l:'Chiuso',f:'done'}};
+const PJ_GROUPS={attivo:['attivo','assistenza'],demo:['demo'],pausa:['pausa'],chiuso:['chiuso']};
+const PJ_GLABEL={attivo:'Attivi',demo:'Demo',pausa:'In pausa',chiuso:'Chiusi'};
+const PJ_TS={da_fare:{l:'Da fare',c:'da'},in_corso:{l:'In corso',c:'seq'},in_attesa:{l:'In attesa',c:'wait'},fatto:{l:'Fatto',c:'reply'}};
+const PJ_NEXT={da_fare:'in_corso',in_corso:'in_attesa',in_attesa:'da_fare'};
+const PJ_PCOLS='id,nome,cliente,stato,urgente,inizio,link,persone,drive_id,drive_nome,drive_percorso,drive_cartelle,note,completate_notion,created_at,updated_at';
+const PJ_ACOLS='id,progetto_id,titolo,stato,urgente,scadenza,persone,note,file,fatto_il,creato_da,created_at,updated_at';
+const PJ_FOLDER='https://drive.google.com/drive/folders/';
+const PJ_ROOT_ID='1ttHvHsJrblvvfksUuj7J4klHaF9ZpT5X';   // Drive condiviso › Progetti
+const PJ_INTERNO='Flowline (interno)';
+const pj={pr:[],att:[],loaded:false,loading:false,missing:false,tab:'mie',ptab:'attivo',who:'',mine:false,open:null,showDone:false,
+  ch:null,loadT:null,pollT:null,edit:null,editP:null,files:[],lastP:null};
+const PJ_I={
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg>',
+  folder:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>',
+  ext:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6 M15 3h6v6 M10 14 21 3"/></svg>',
+  back:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>',
+  clip:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 12-8.5 8.5a5 5 0 0 1-7-7L14 5a3.5 3.5 0 0 1 5 5l-8.5 8.5a2 2 0 0 1-3-3L15 8"/></svg>',
+  note:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 6h14M5 12h14M5 18h9"/></svg>',
+  edit:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9 M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>',
+  x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>',
+  task:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4 M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>'
+};
+
+/* ---- piccole utilità ---- */
+const pjP=id=>pj.pr.find(p=>p.id===id);
+const pjA=id=>pj.att.find(a=>a.id===id);
+const pjOpenA=a=>a.stato!=='fatto';
+function pjWho(){return pj.who||(ag.me?ag.me.id:'tutti')}
+function pjMine(a){const w=pjWho();return w==='tutti'||(a.persone||[]).includes(w)}
+function pjStats(p){
+  const ts=pj.att.filter(a=>a.progetto_id===p.id),open=ts.filter(pjOpenA).length,done=(p.completate_notion||0)+ts.length-open;
+  return {open,done,total:open+done};
+}
+function pjSort(list){return list.slice().sort((a,b)=>(b.urgente-a.urgente)||String(a.scadenza||'9999').localeCompare(String(b.scadenza||'9999'))||(a.id-b.id))}
+function pjProjName(p){return p?(p.cliente&&p.cliente!==PJ_INTERNO?p.cliente:p.nome):'—'}
+function pjDue(d){
+  if(!d)return null;
+  const x=new Date(d+'T00:00:00'),n=Math.round((x-today())/864e5);
+  const lab=x.toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'});
+  if(n<0)return {c:'late',l:'Scaduta '+x.toLocaleDateString('it-IT',{day:'numeric',month:'short'})};
+  if(n===0)return {c:'today',l:'Oggi'};
+  if(n===1)return {c:'da',l:'Domani'};
+  return {c:'da',l:lab};
+}
+function pjDriveId(u){u=String(u||'').trim();const m=u.match(/\/folders\/([A-Za-z0-9_-]{10,})/)||u.match(/[?&]id=([A-Za-z0-9_-]{10,})/);return m?m[1]:(/^[A-Za-z0-9_-]{20,}$/.test(u)?u:'')}
+function pjSafeUrl(u){u=String(u||'').trim();return /^https?:\/\//i.test(u)?u:''}
+const pjAvs=ids=>`<span class="ag-avs pj-avs">${(ids||[]).map(u=>agAv(u,true)).join('')}</span>`;
+function pjGoTab(t){pj.tab=t;pj.open=null;if(state.view!=='progetti')go('progetti');else{closeRail();render();window.scrollTo(0,0)}}
+function pjOpen(id){pj.tab='progetti';pj.open=id;pj.showDone=false;if(state.view!=='progetti')go('progetti');else{closeRail();render();window.scrollTo(0,0)}}
+
+/* ---- dati ---- */
+function pjStop(){
+  try{if(pj.ch)nlSupa.removeChannel(pj.ch)}catch(e){}
+  clearInterval(pj.pollT);clearTimeout(pj.loadT);
+  Object.assign(pj,{pr:[],att:[],loaded:false,loading:false,missing:false,ch:null,open:null,edit:null,editP:null,who:''});
+}
+async function pjLoad(opts={}){
+  if(!nlSupa||!nl.session||pj.loading)return;
+  pj.loading=true;if(state.view==='progetti'&&!opts.silent)render();
+  try{
+    const a=await nlSupa.from('progetti').select(PJ_PCOLS).order('nome');
+    if(a.error){
+      if(/does not exist|schema cache|42P01|PGRST205/i.test((a.error.code||'')+' '+a.error.message)){pj.missing=true;pj.loaded=true;pj.pr=[];pj.att=[];return}
+      throw a.error;
+    }
+    const att=[];let from=0;
+    for(;;){
+      const {data,error}=await nlSupa.from('attivita').select(PJ_ACOLS).order('id').range(from,from+999);
+      if(error)throw error;att.push(...data);if(data.length<1000)break;from+=1000;
+    }
+    pj.pr=a.data||[];pj.att=att;pj.missing=false;pj.loaded=true;
+    pjSubscribe();
+  }catch(e){toast('Progetti: '+(e.message||e),'err');pj.loaded=true}
+  finally{pj.loading=false;if(state.view==='progetti'||state.view==='home')render();else renderNav()}
+}
+function pjDeferLoad(){clearTimeout(pj.loadT);pj.loadT=setTimeout(()=>pjLoad({silent:true}),700)}
+function pjSubscribe(){
+  if(pj.ch||!ag.me)return;
+  try{
+    pj.ch=nlSupa.channel('suite-progetti-'+ag.me.id)
+      .on('postgres_changes',{event:'*',schema:'public',table:'progetti'},pjDeferLoad)
+      .on('postgres_changes',{event:'*',schema:'public',table:'attivita'},pjDeferLoad)
+      .subscribe();
+  }catch(e){}
+  clearInterval(pj.pollT);pj.pollT=setInterval(()=>{if(!document.hidden&&(state.view==='progetti'||state.view==='home'))pjLoad({silent:true})},120000);
+}
+
+/* ---- intestazione e azioni ---- */
+function pjHeroCopy(){
+  if(!nl.session)return {t:'Progetti.',l:'Accedi con il tuo account per vedere progetti e attività di Flowline.'};
+  if(pj.missing)return {t:'Progetti.',l:'La sezione si attiva con la migrazione del database.'};
+  if(!pj.loaded||!ag.loaded)return {t:'Progetti.',l:'Carico progetti e attività…'};
+  if(pj.tab==='progetti'&&pj.open){
+    const p=pjP(pj.open);if(!p)return {t:'Progetti.',l:''};
+    const s=pjStats(p);
+    return {t:p.nome+'.',l:[p.cliente,PJ_ST[p.stato].l,s.open?`${s.open} ${s.open===1?'attività aperta':'attività aperte'}`:'nessuna attività aperta'].filter(Boolean).join(' · ')};
+  }
+  if(pj.tab==='progetti'){
+    const act=pj.pr.filter(p=>PJ_GROUPS.attivo.includes(p.stato));
+    const open=pj.att.filter(a=>pjOpenA(a)&&act.some(p=>p.id===a.progetto_id)).length;
+    return {t:'Progetti.',l:`${act.length} ${act.length===1?'progetto attivo':'progetti attivi'} · ${open} ${open===1?'attività aperta':'attività aperte'}`};
+  }
+  const my=pj.att.filter(a=>pjOpenA(a)&&pjMine(a));
+  const c=k=>my.filter(a=>a.stato===k).length,u=my.filter(a=>a.urgente).length;
+  const w=pjWho(),nm=w==='tutti'?'della squadra':(ag.me&&w===ag.me.id?'tue':'di '+((agPerson(w)||{}).nome||''));
+  return {t:w==='tutti'?'Le attività della squadra.':(ag.me&&w===ag.me.id?'Le tue attività.':`Le attività ${nm}.`),
+    l:[`${c('in_corso')} in corso`,`${c('da_fare')} da fare`,`${c('in_attesa')} in attesa`,u?`${u} ${u===1?'urgente':'urgenti'}`:null].filter(Boolean).join(' · ')};
+}
+function pjTopActions(){
+  if(!nl.session||!ag.me||pj.missing||!pj.loaded)return '';
+  return `<button class="btn primary" onclick="pjTaskForm(null)">${AG_I.plus}Nuova attività</button>`
+    +(pj.tab==='progetti'&&!pj.open?`<button class="btn" onclick="pjProjForm(null)">${AG_I.plus}<span class="lbl">Nuovo progetto</span></button>`:'')
+    +(pj.tab==='progetti'&&pj.open?`<button class="btn" onclick="pjProjForm(${pj.open})">${PJ_I.edit}<span class="lbl">Modifica progetto</span></button>`:'')
+    +`<button class="btn" onclick="pjLoad()">${AG_I.refresh}<span class="lbl">Aggiorna</span></button>`;
+}
+
+/* ---- riga attività ---- */
+function pjRow(a,o={}){
+  const p=pjP(a.progetto_id),du=a.stato!=='fatto'?pjDue(a.scadenza):null,files=Array.isArray(a.file)?a.file.length:0;
+  const meta=[];
+  if(o.proj&&p)meta.push(`<button class="pj-ptag" onclick="event.stopPropagation();pjOpen(${p.id})">${esc(pjProjName(p))}</button>`);
+  if(a.note)meta.push(`<span class="pj-m">${PJ_I.note}Note</span>`);
+  if(files)meta.push(`<span class="pj-m">${PJ_I.clip}${files} ${files===1?'file':'file'}</span>`);
+  if(a.stato==='fatto'&&a.fatto_il)meta.push(`<span class="pj-m">Fatta il ${esc(nlFmt(a.fatto_il))}</span>`);
+  return `<li class="pj-row ${a.stato==='fatto'?'done':''}">
+    <button class="pj-chk ${a.stato==='fatto'?'on':''}" onclick="pjDone(${a.id})" aria-label="${a.stato==='fatto'?'Riapri':'Segna come fatta'}: ${escAttr(a.titolo)}" title="${a.stato==='fatto'?'Riapri':'Segna come fatta'}">${a.stato==='fatto'?PJ_I.check:''}</button>
+    <div class="pj-main" role="button" tabindex="0" onclick="pjTaskForm(${a.id})" onkeydown="if(event.key==='Enter'){pjTaskForm(${a.id})}"><b>${esc(a.titolo)}</b>${meta.length?`<div class="pj-meta">${meta.join('')}</div>`:''}</div>
+    <div class="pj-right">
+      ${a.urgente&&a.stato!=='fatto'?'<span class="chip late"><span class="d"></span>Urgente</span>':''}
+      ${du?`<span class="chip ${du.c}"><span class="d"></span>${esc(du.l)}</span>`:''}
+      ${a.stato!=='fatto'?`<button class="chip ${PJ_TS[a.stato].c} pj-st" onclick="pjCycle(${a.id})" title="Cambia stato: Da fare › In corso › In attesa"><span class="d"></span>${PJ_TS[a.stato].l}</button>`:''}
+      ${pjAvs(a.persone)}
+    </div></li>`;
+}
+function pjGroupByProject(list){
+  const g={};list.forEach(a=>{(g[a.progetto_id]=g[a.progetto_id]||[]).push(a)});
+  const ids=Object.keys(g).map(Number).sort((x,y)=>{const a=pjP(x)||{},b=pjP(y)||{};return (b.urgente-a.urgente)||(g[y].length-g[x].length)});
+  return ids.map(id=>{const p=pjP(id);return `<div class="pj-grp"><button onclick="pjOpen(${id})">${esc(p?p.nome:'Progetto')}</button><span class="pj-gc">${esc(p&&p.cliente||'')}</span><span class="spacer"></span><span class="count">${g[id].length}</span></div><ul class="pj-list">${pjSort(g[id]).map(a=>pjRow(a)).join('')}</ul>`}).join('');
+}
+function pjQuick(pid){
+  const opts=pj.pr.filter(p=>p.stato!=='chiuso').sort((a,b)=>a.nome.localeCompare(b.nome,'it'));
+  const mineP=opts.find(p=>PJ_GROUPS.attivo.includes(p.stato)&&ag.me&&(p.persone||[]).includes(ag.me.id));
+  const sel=pj.lastP&&opts.some(p=>p.id===pj.lastP)?pj.lastP:(mineP||opts[0]||{}).id;
+  return `<form class="pj-quick" onsubmit="pjQuickAdd(event)" autocomplete="off">
+    <input id="pj-qt" maxlength="500" placeholder="Scrivi un'attività e premi Invio" aria-label="Nuova attività">
+    ${pid?`<input type="hidden" id="pj-qp" value="${pid}">`:`<select id="pj-qp" aria-label="Progetto">${opts.map(p=>`<option value="${p.id}" ${p.id===sel?'selected':''}>${esc(p.nome)}</option>`).join('')}</select>`}
+    <button class="btn primary sm" type="submit">${AG_I.plus}<span class="lbl">Aggiungi</span></button></form>`;
+}
+
+/* ---- viste ---- */
+function viewProgetti(){
+  if(!nl.ready)return `<div class="empty"><span class="spinner"></span></div>`;
+  if(!nl.session)return nlLoginView('home');
+  if(nl.editor===null||!ag.loaded)return `<div class="empty"><span class="spinner"></span><p style="margin-top:14px">Un attimo…</p></div>`;
+  if(!ag.me)return `<div class="empty">${PJ_I.task}<h4>Il tuo account non è ancora nella squadra</h4><p>Progetti e attività sono riservati alle persone della squadra.</p></div>`;
+  if(!pj.loaded){if(!pj.loading)setTimeout(()=>pjLoad({silent:true}),0);return `<div class="empty"><span class="spinner"></span><p style="margin-top:14px">Carico progetti e attività…</p></div>`}
+  if(pj.missing)return `<div class="empty">${PJ_I.task}<h4>La sezione non è ancora attiva</h4><p>Esegui nel SQL Editor di Supabase la migrazione <code>20261107100000_progetti_attivita.sql</code> e poi <code>20261107100500_progetti_import_notion.sql</code>, quindi premi Aggiorna.</p><button class="btn" style="margin-top:16px" onclick="pjLoad()">${AG_I.refresh}Aggiorna</button></div>`;
+  if(pj.tab==='progetti')return pj.open?pjViewProject(pj.open):pjViewList();
+  return pjViewMine();
+}
+function pjViewMine(){
+  const w=pjWho(),my=pj.att.filter(pjMine);
+  const by=k=>my.filter(a=>a.stato===k);
+  const doing=by('in_corso'),todo=by('da_fare'),wait=by('in_attesa');
+  const week=Date.now()-7*864e5,recent=my.filter(a=>a.stato==='fatto'&&a.fatto_il&&new Date(a.fatto_il).getTime()>week).sort((a,b)=>String(b.fatto_il).localeCompare(String(a.fatto_il)));
+  const chip=(id,l)=>`<button class="pw-chip ${w===id?'on':''}" aria-pressed="${w===id}" onclick="pj.who='${id}';render()">${l}</button>`;
+  const name=w==='tutti'?'la squadra':(agPerson(w)||{}).nome||'';
+  return `<div class="pj-who">${chip(ag.me.id,'Io')}${ag.team.filter(t=>t.id!==ag.me.id).map(t=>chip(t.id,esc(t.nome))).join('')}${chip('tutti','Tutti')}</div>
+    ${pjQuick()}
+    <section class="board pj-board" aria-label="In corso">
+      <div class="board-h"><span class="bt">In corso</span><span class="bsub">${esc(name)}</span><span class="spacer"></span><span class="clock">${doing.length}</span></div>
+      ${doing.length?`<div class="pj-brows">${pjSort(doing).map(a=>{const p=pjP(a.progetto_id);return `<div class="pj-brow" role="button" tabindex="0" onclick="pjTaskForm(${a.id})" onkeydown="if(event.key==='Enter'){pjTaskForm(${a.id})}">
+        <div class="pj-bt"><b>${esc(a.titolo)}</b><small>${esc(p?p.nome:'')}${p&&p.cliente?' · '+esc(p.cliente):''}</small></div>${pjAvs(a.persone)}
+        <span class="flap ${a.urgente?'late':'today'}">${a.urgente?'Urgente':'In corso'}</span></div>`}).join('')}</div>`
+      :`<p class="board-empty">Niente in corso. Tocca lo stato di un'attività qui sotto per spostarla qui.</p>`}
+      <div class="board-foot">Lo stato si cambia con un tocco: Da fare › In corso › In attesa. La casella a sinistra la segna come fatta.</div>
+    </section>
+    <div class="section-h"><h3>Da fare</h3><span class="count">${todo.length}</span><div class="line"></div></div>
+    ${todo.length?`<section class="tile pj-tile">${pjGroupByProject(todo)}</section>`:`<p class="hm-empty">Nessuna attività da fare.</p>`}
+    <div class="section-h"><h3>In attesa di qualcuno</h3><span class="count">${wait.length}</span><div class="line"></div></div>
+    ${wait.length?`<section class="tile pj-tile">${pjGroupByProject(wait)}</section>`:`<p class="hm-empty">Non stai aspettando nessuno.</p>`}
+    ${recent.length?`<div class="section-h"><h3>Fatte negli ultimi 7 giorni</h3><span class="count">${recent.length}</span><div class="line"></div></div>
+    <section class="tile pj-tile"><ul class="pj-list">${recent.slice(0,12).map(a=>pjRow(a,{proj:true})).join('')}</ul></section>`:''}`;
+}
+function pjViewList(){
+  const me=ag.me.id,base=pj.pr.filter(p=>!pj.mine||(p.persone||[]).includes(me));
+  const cnt=k=>base.filter(p=>PJ_GROUPS[k].includes(p.stato)).length;
+  const list=base.filter(p=>PJ_GROUPS[pj.ptab].includes(p.stato)).sort((a,b)=>(b.urgente-a.urgente)||(pjStats(b).open-pjStats(a).open)||a.nome.localeCompare(b.nome,'it'));
+  const tot=list.reduce((s,p)=>s+pjStats(p).open,0);
+  return `<div class="pw-bar pj-bar">
+      <div class="pw-chips" style="margin:0">${Object.keys(PJ_GROUPS).map(k=>`<button class="pw-chip ${pj.ptab===k?'on':''}" aria-pressed="${pj.ptab===k}" onclick="pj.ptab='${k}';render()">${PJ_GLABEL[k]} <span class="pj-cc">${cnt(k)}</span></button>`).join('')}</div>
+      <label class="toggle ${pj.mine?'on':''}" onclick="event.preventDefault();pj.mine=!pj.mine;render()"><span class="sw"></span><span>Solo i miei</span></label>
+    </div>
+    <section class="board pj-board" aria-label="${escAttr(PJ_GLABEL[pj.ptab])}">
+      <div class="board-h"><span class="bt">Progetti <span class="lit">${esc(PJ_GLABEL[pj.ptab].toLowerCase())}</span></span><span class="spacer"></span><span class="bsub">${list.length} progetti · ${tot} attività aperte</span></div>
+      ${list.length?`<div class="pj-brows">${list.map(p=>{const s=pjStats(p),pct=s.total?Math.round(s.done/s.total*100):0,st=PJ_ST[p.stato],urg=p.urgente&&p.stato!=='chiuso';
+        return `<div class="pj-brow pj-prow" role="button" tabindex="0" onclick="pjOpen(${p.id})" onkeydown="if(event.key==='Enter'){pjOpen(${p.id})}">
+          <div class="pj-bt"><b>${esc(p.nome)}</b><small>${esc(p.cliente||'')}</small></div>
+          ${pjAvs(p.persone)}
+          <div class="pj-prog"><span class="pj-track ${s.total&&!s.open?'full':''}"><i style="width:${pct}%"></i></span><span>${s.total?s.done+'/'+s.total:'nessuna attività'}</span></div>
+          <span class="pj-open ${s.open?'':'z'}">${s.open} ${s.open===1?'aperta':'aperte'}</span>
+          <span class="flap ${urg?'late':st.f}">${urg?'Priorità':st.l}</span></div>`}).join('')}</div>`
+      :`<p class="board-empty">Nessun progetto in questa lista.</p>`}
+      <div class="board-foot">Avanzamento = attività fatte su totali, comprese quelle già chiuse in Notion.${pj.ptab==='attivo'?' «Priorità» segna i progetti urgenti.':''}<span class="spacer"></span><button class="btn sm" onclick="pjProjForm(null)">${AG_I.plus}Nuovo progetto</button></div>
+    </section>`;
+}
+function pjViewProject(id){
+  const p=pjP(id);if(!p)return `<div class="empty"><h4>Progetto non trovato</h4><p>Forse è stato eliminato.</p><button class="btn" onclick="pjGoTab('progetti')">Tutti i progetti</button></div>`;
+  const ts=pj.att.filter(a=>a.progetto_id===id),s=pjStats(p),pct=s.total?Math.round(s.done/s.total*100):0;
+  const sec=(k,l)=>{const a=pjSort(ts.filter(x=>x.stato===k));return a.length?`<div class="pj-grp"><span class="pj-gl">${l}</span><span class="spacer"></span><span class="count">${a.length}</span></div><ul class="pj-list">${a.map(x=>pjRow(x)).join('')}</ul>`:''};
+  const done=ts.filter(a=>a.stato==='fatto').sort((a,b)=>String(b.fatto_il||'').localeCompare(String(a.fatto_il||'')));
+  const subs=Array.isArray(p.drive_cartelle)?p.drive_cartelle:[];
+  const drive=p.drive_id?`
+      <div class="pj-path">${esc(p.drive_percorso||'Google Drive')} › <b>${esc(p.drive_nome||'Cartella del progetto')}</b></div>
+      <div class="pj-dact"><a class="btn sm dark" href="${PJ_FOLDER+encodeURIComponent(p.drive_id)}" target="_blank" rel="noopener">${PJ_I.ext}Apri su Drive</a></div>
+      ${subs.length?`<ul class="pj-flist">${subs.map(f=>`<li><a href="${PJ_FOLDER+encodeURIComponent(f.id)}" target="_blank" rel="noopener">${PJ_I.folder}<span>${esc(f.n)}</span>${PJ_I.ext}</a></li>`).join('')}</ul>`:''}`
+    :`<p class="hm-empty">Nessuna cartella collegata.</p>
+      <div class="pj-dact"><a class="btn sm" href="${PJ_FOLDER+PJ_ROOT_ID}" target="_blank" rel="noopener">${PJ_I.ext}Apri Progetti su Drive</a><button class="btn sm dark" onclick="pjProjForm(${p.id},'drive')">${PJ_I.folder}Collega cartella</button></div>
+      <p class="helptip" style="margin-top:12px">Crea la cartella in Drive condiviso › Progetti, poi incolla qui il suo link.</p>`;
+  const link=pjSafeUrl(p.link);
+  return `<button class="pj-back" onclick="pjGoTab('progetti')">${PJ_I.back}Tutti i progetti</button>
+  <div class="bento pj-detail">
+    <div class="span-8 pj-col">
+      <section class="tile pj-tile">
+        <div class="pj-ph">
+          <div class="pj-prog lg"><span class="pj-track ${s.total&&!s.open?'full':''}"><i style="width:${pct}%"></i></span><span>${s.done} fatte su ${s.total}</span></div>
+          <select class="pj-sel" onchange="pjSetState(${p.id},this.value)" aria-label="Stato del progetto">${Object.entries(PJ_ST).map(([k,v])=>`<option value="${k}" ${p.stato===k?'selected':''}>${v.l}</option>`).join('')}</select>
+          <button class="btn sm ${p.urgente?'danger pj-urg':''}" onclick="pjToggleUrg(${p.id})">${p.urgente?'Priorità alta':'Segna prioritario'}</button>
+        </div>
+        ${pjQuick(p.id)}
+        ${s.open?sec('in_corso','In corso')+sec('da_fare','Da fare')+sec('in_attesa','In attesa'):`<p class="hm-empty" style="padding:18px 4px">Nessuna attività aperta. Aggiungine una qui sopra.</p>`}
+        ${s.done?`<button class="pj-more" onclick="pj.showDone=!pj.showDone;render()">${pj.showDone?'Nascondi':'Mostra'} le attività fatte (${s.done}${p.completate_notion?(p.completate_notion===s.done?', chiuse in Notion':`, di cui ${p.completate_notion} chiuse in Notion`):''})</button>`:''}
+        ${pj.showDone&&done.length?`<ul class="pj-list" style="margin-top:8px">${done.map(a=>pjRow(a)).join('')}</ul>`:''}
+        ${pj.showDone&&p.completate_notion?`<p class="helptip" style="margin-top:10px">Le ${p.completate_notion} attività chiuse in Notion sono state importate solo come conteggio.</p>`:''}
+      </section>
+    </div>
+    <div class="span-4 pj-col">
+      <section class="tile t-peach pj-side"><div class="tile-h"><h3>Cartella Drive</h3></div>${drive}</section>
+      <section class="tile pj-side"><div class="tile-h"><h3>Scheda</h3><span class="spacer"></span><button class="pw-ib" onclick="pjProjForm(${p.id})" title="Modifica" aria-label="Modifica progetto">${PJ_I.edit}</button></div>
+        <dl class="pj-kv">
+          <dt>Cliente</dt><dd>${esc(p.cliente||'—')}</dd>
+          <dt>Persone</dt><dd><div class="pj-pp">${ag.team.map(t=>`<button class="pw-chip ${(p.persone||[]).includes(t.id)?'on':''}" aria-pressed="${(p.persone||[]).includes(t.id)}" onclick="pjTogglePerson(${p.id},'${t.id}')">${esc(t.nome)}</button>`).join('')}</div></dd>
+          <dt>Inizio</dt><dd>${p.inizio?esc(new Date(p.inizio+'T00:00:00').toLocaleDateString('it-IT',{day:'numeric',month:'long',year:'numeric'})):'—'}</dd>
+          ${link?`<dt>Link</dt><dd><a href="${escAttr(link)}" target="_blank" rel="noopener noreferrer">${esc(link.replace(/^https?:\/\//,'').replace(/\/$/,''))}</a></dd>`:''}
+          ${p.note?`<dt>Note</dt><dd style="white-space:pre-wrap">${esc(p.note)}</dd>`:''}
+        </dl></section>
+    </div>
+  </div>`;
+}
+
+/* ---- azioni rapide ---- */
+async function pjPatchA(id,patch,okMsg){
+  const a=pjA(id);if(!a)return false;const old={...a};Object.assign(a,patch);render();
+  const {data,error}=await nlSupa.from('attivita').update(patch).eq('id',id).select(PJ_ACOLS).single();
+  if(error){Object.assign(a,old);render();toast(error.message,'err');return false}
+  Object.assign(a,data);if(okMsg)toast(okMsg,'ok');render();return true;
+}
+async function pjDone(id){
+  const a=pjA(id);if(!a)return;
+  if(a.stato==='fatto'){await pjPatchA(id,{stato:'da_fare'},'Attività riaperta');return}
+  const prev=a.stato;
+  if(await pjPatchA(id,{stato:'fatto'})){
+    const t=a.titolo.length>46?a.titolo.slice(0,44)+'…':a.titolo;
+    pjUndoToast('Fatta: '+t,()=>pjPatchA(id,{stato:prev}));
+  }
+}
+function pjUndoToast(msg,undo){
+  toast(msg,'ok');
+  const box=document.querySelector('#toasts .toast:last-child');
+  if(box&&!box.querySelector('.pj-undo')){const b=document.createElement('button');b.className='pj-undo';b.textContent='Annulla';b.onclick=()=>{undo();b.remove()};box.appendChild(b)}
+}
+function pjCycle(id){const a=pjA(id);if(a)pjPatchA(id,{stato:PJ_NEXT[a.stato]||'da_fare'})}
+async function pjQuickAdd(ev){
+  ev.preventDefault();
+  const t=document.getElementById('pj-qt'),pid=+document.getElementById('pj-qp').value,tit=(t.value||'').trim();
+  if(!tit||!pid)return;
+  pj.lastP=pid;t.disabled=true;
+  const w=pjWho(),persone=w==='tutti'||pj.open?[ag.me.id]:[w];
+  const {data,error}=await nlSupa.from('attivita').insert({progetto_id:pid,titolo:tit,persone}).select(PJ_ACOLS).single();
+  t.disabled=false;
+  if(error){toast(error.message,'err');return}
+  pj.att.push(data);toast('Aggiunta a '+(pjP(pid)||{}).nome,'ok');render();
+  const n=document.getElementById('pj-qt');if(n)n.focus();
+}
+async function pjPatchP(id,patch,okMsg){
+  const p=pjP(id);if(!p)return;const old={...p};Object.assign(p,patch);render();
+  const {data,error}=await nlSupa.from('progetti').update(patch).eq('id',id).select(PJ_PCOLS).single();
+  if(error){Object.assign(p,old);render();toast(error.message,'err');return}
+  Object.assign(p,data);if(okMsg)toast(okMsg,'ok');render();
+}
+function pjSetState(id,st){pjPatchP(id,{stato:st},'Stato: '+PJ_ST[st].l)}
+function pjToggleUrg(id){const p=pjP(id);if(p)pjPatchP(id,{urgente:!p.urgente})}
+function pjTogglePerson(id,uid){const p=pjP(id);if(!p)return;const s=p.persone||[];pjPatchP(id,{persone:s.includes(uid)?s.filter(x=>x!==uid):s.concat(uid)})}
+
+/* ---- scheda attività ---- */
+function pjTaskForm(id,preset){
+  if(!ag.me){toast('Account non collegato alla squadra','warn');return}
+  const a=id?pjA(id):null;if(id&&!a){toast('Attività non trovata','warn');return}
+  const pid=a?a.progetto_id:(preset&&preset.p)||pj.open||pj.lastP||((pj.pr.find(p=>PJ_GROUPS.attivo.includes(p.stato)&&(p.persone||[]).includes(ag.me.id))||pj.pr.find(p=>p.stato!=='chiuso')||{}).id);
+  const w=pjWho(),who=a?(a.persone||[]):(w==='tutti'?[ag.me.id]:[w]);
+  pj.edit=a?a.id:null;pj.files=a&&Array.isArray(a.file)?a.file.map(f=>({...f})):[];
+  const st=a?a.stato:'da_fare';
+  const projs=pj.pr.filter(p=>p.stato!=='chiuso'||p.id===pid).sort((x,y)=>x.nome.localeCompare(y.nome,'it'));
+  const autore=a&&a.creato_da?agPerson(a.creato_da):null;
+  modal(`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="pj-mt" onclick="event.stopPropagation()">
+    <div class="modal-h"><h3 id="pj-mt">${a?'Attività':'Nuova attività'}</h3><div class="x" role="button" tabindex="0" aria-label="Chiudi" onclick="closeModal()">${PJ_I.x}</div></div>
+    <form onsubmit="pjTaskSave(event)" autocomplete="off"><div class="modal-b">
+      <div class="form-row"><label for="pj-ft">Cosa c'è da fare</label><textarea id="pj-ft" rows="2" required maxlength="500" style="min-height:0">${esc(a?a.titolo:'')}</textarea></div>
+      <div class="form-row"><span class="pj-lab">Stato</span><div class="pj-seg" role="radiogroup">${Object.entries(PJ_TS).map(([k,v])=>`<label class="${v.c}"><input type="radio" name="pj-fs" value="${k}" ${st===k?'checked':''}><span>${v.l}</span></label>`).join('')}</div></div>
+      <div class="form-row"><label for="pj-fp">Progetto</label><select id="pj-fp">${projs.map(p=>`<option value="${p.id}" ${p.id===pid?'selected':''}>${esc(p.nome)}${p.cliente?' — '+esc(p.cliente):''}</option>`).join('')}</select></div>
+      <div class="form-row"><span class="pj-lab">Chi se ne occupa</span><div class="pj-pp">${ag.team.map(t=>`<label class="pj-pc"><input type="checkbox" name="pj-fw" value="${t.id}" ${who.includes(t.id)?'checked':''}>${agAv(t.id,true)}<span>${esc(t.nome)}</span></label>`).join('')}</div></div>
+      <div class="pj-two">
+        <div class="form-row"><label for="pj-fd">Scadenza (facoltativa)</label><input id="pj-fd" type="date" value="${escAttr(a&&a.scadenza||'')}"></div>
+        <div class="form-row"><span class="pj-lab">Urgente</span><label class="toggle ${a&&a.urgente?'on':''}" id="pj-fu" onclick="event.preventDefault();this.classList.toggle('on')"><span class="sw"></span><span>Sì, ha la precedenza</span></label></div>
+      </div>
+      <div class="form-row"><label for="pj-fn">Note</label><textarea id="pj-fn" rows="3" maxlength="5000" placeholder="Dettagli, cosa manca, a chi chiedere…">${esc(a?a.note||'':'')}</textarea></div>
+      <div class="form-row"><span class="pj-lab">File di Drive</span><div id="pj-files">${pjFilesHtml()}</div>
+        <div class="pj-fadd"><input id="pj-fl" type="url" placeholder="Incolla il link di un file o di una cartella" aria-label="Link Drive"><button type="button" class="btn sm" onclick="pjFileAdd()">${PJ_I.clip}Collega</button><button type="button" class="btn sm ghost" onclick="pjPickDrive()">Scegli da Drive</button></div></div>
+      ${a?`<p class="helptip">Creata ${esc(nlFmt(a.created_at))}${autore?' da '+esc(autore.nome):''}${a.fatto_il?' · fatta '+esc(nlFmt(a.fatto_il)):''}</p>`:''}
+    </div><div class="modal-f" style="justify-content:space-between">${a?`<button type="button" class="btn danger" onclick="pjTaskDelete(${a.id})">Elimina</button>`:'<span></span>'}<span style="display:flex;gap:9px"><button type="button" class="btn" onclick="closeModal()">Annulla</button><button class="btn primary" id="pj-fb" type="submit">${a?'Salva':'Aggiungi'}</button></span></div></form></div>`);
+  setTimeout(()=>{const t=document.getElementById('pj-ft');if(t&&!a)t.focus()},50);
+}
+function pjFilesHtml(){
+  if(!pj.files.length)return '';
+  return `<ul class="pj-flist">${pj.files.map((f,i)=>`<li><a href="${escAttr(pjSafeUrl(f.url))}" target="_blank" rel="noopener noreferrer">${PJ_I.clip}<span>${esc(f.n||f.url)}</span></a><button type="button" class="pw-ib" onclick="pjFileDel(${i})" aria-label="Togli ${escAttr(f.n||'file')}">${PJ_I.x}</button></li>`).join('')}</ul>`;
+}
+function pjPaintFiles(){const e=document.getElementById('pj-files');if(e)e.innerHTML=pjFilesHtml()}
+function pjFileDel(i){pj.files.splice(i,1);pjPaintFiles()}
+function pjFileAdd(){
+  const e=document.getElementById('pj-fl'),u=pjSafeUrl(e&&e.value);
+  if(!u){toast('Incolla un link che inizi con https://','warn');return}
+  if(pj.files.some(f=>f.url===u)){e.value='';return}
+  let n='File collegato';
+  try{const x=new URL(u);n=/drive|docs\.google/.test(x.hostname)?(/folders/.test(x.pathname)?'Cartella Drive':'Documento Drive'):x.hostname}catch(err){}
+  pj.files.push({n,url:u});e.value='';pjPaintFiles();
+}
+function pjPickDrive(){
+  const p=pjP(+document.getElementById('pj-fp').value);
+  if(!googleReady()){toast('Per scegliere da Drive collega Google (in basso a destra). Intanto puoi incollare il link.','warn');return}
+  if(!state.config.googleApiKey){toast('Per il selettore di Drive serve la Google API key nelle Impostazioni. Intanto puoi incollare il link.','warn');return}
+  if(typeof gapi==='undefined'){toast('API Google non ancora caricate, riprova tra un attimo','err');return}
+  gapi.load('picker',()=>{
+    try{
+      const view=new google.picker.DocsView().setIncludeFolders(true).setSelectFolderEnabled(true);
+      if(p&&p.drive_id)view.setParent(p.drive_id);
+      const picker=new google.picker.PickerBuilder().addView(view).enableFeature(google.picker.Feature.SUPPORT_DRIVES).enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
+        .setOAuthToken(state.google.token).setDeveloperKey(state.config.googleApiKey)
+        .setCallback(data=>{
+          if(data.action===google.picker.Action.PICKED&&data.docs){
+            data.docs.forEach(d=>{const url=d.url||(PJ_FOLDER+d.id);if(!pj.files.some(f=>f.url===url))pj.files.push({n:d.name||'File Drive',url})});
+            pjPaintFiles();
+          }
+        }).build();
+      picker.setVisible(true);
+    }catch(e){toast('Drive: '+e.message,'err')}
+  });
+}
+async function pjTaskSave(ev){
+  ev.preventDefault();
+  const g=i=>document.getElementById(i);
+  const row={titolo:(g('pj-ft').value||'').trim(),stato:(document.querySelector('input[name="pj-fs"]:checked')||{}).value||'da_fare',
+    progetto_id:+g('pj-fp').value,persone:[...document.querySelectorAll('input[name="pj-fw"]:checked')].map(x=>x.value),
+    scadenza:g('pj-fd').value||null,urgente:g('pj-fu').classList.contains('on'),note:(g('pj-fn').value||'').trim()||null,file:pj.files};
+  if(!row.titolo){g('pj-ft').focus();return}
+  if(!row.progetto_id){toast('Scegli un progetto','warn');return}
+  const b=g('pj-fb');if(b)b.disabled=true;
+  const id=pj.edit;
+  const q=id?nlSupa.from('attivita').update(row).eq('id',id):nlSupa.from('attivita').insert(row);
+  const {data,error}=await q.select(PJ_ACOLS).single();
+  if(error){if(b)b.disabled=false;toast(error.message,'err');return}
+  if(id){const a=pjA(id);if(a)Object.assign(a,data)}else pj.att.push(data);
+  pj.lastP=row.progetto_id;closeModal();toast(id?'Attività salvata':'Attività aggiunta','ok');render();
+}
+async function pjTaskDelete(id){
+  const a=pjA(id);if(!a)return;
+  if(!confirm('Eliminare l\'attività «'+a.titolo+'»? Se è solo finita, meglio segnarla come fatta.'))return;
+  const {error}=await nlSupa.from('attivita').delete().eq('id',id);
+  if(error){toast(error.message,'err');return}
+  pj.att=pj.att.filter(x=>x.id!==id);closeModal();toast('Attività eliminata','ok');render();
+}
+/* apre un'attività da una notifica */
+async function pjOpenTask(id){
+  if(!pj.loaded)await pjLoad({silent:true});
+  const a=pjA(id);
+  if(!a){pjGoTab('mie');toast('L\'attività non c\'è più','warn');return}
+  pjOpen(a.progetto_id);pjTaskForm(id);
+}
+
+/* ---- scheda progetto ---- */
+function pjProjForm(id,focus){
+  if(!ag.me){toast('Account non collegato alla squadra','warn');return}
+  const p=id?pjP(id):null;pj.editP=p?p.id:null;
+  const clients=[...new Set(pj.pr.map(x=>x.cliente).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'it'));
+  const who=p?(p.persone||[]):[ag.me.id];
+  modal(`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="pj-pt" onclick="event.stopPropagation()">
+    <div class="modal-h"><h3 id="pj-pt">${p?'Modifica progetto':'Nuovo progetto'}</h3><div class="x" role="button" tabindex="0" aria-label="Chiudi" onclick="closeModal()">${PJ_I.x}</div></div>
+    <form onsubmit="pjProjSave(event)" autocomplete="off"><div class="modal-b">
+      <div class="form-row"><label for="pj-pn">Nome del progetto</label><input id="pj-pn" required maxlength="200" value="${escAttr(p?p.nome:'')}" placeholder="Per esempio: Chatbot prenotazioni"></div>
+      <div class="form-row"><label for="pj-pc">Cliente</label><input id="pj-pc" list="pj-clients" maxlength="200" value="${escAttr(p?p.cliente:'')}" placeholder="Scrivi o scegli un cliente, vuoto se è un progetto interno" oninput="pjClientHint()"><datalist id="pj-clients">${clients.map(c=>`<option value="${escAttr(c)}">`).join('')}</datalist></div>
+      <div class="pj-two">
+        <div class="form-row"><label for="pj-ps">Stato</label><select id="pj-ps">${Object.entries(PJ_ST).map(([k,v])=>`<option value="${k}" ${(p?p.stato:'attivo')===k?'selected':''}>${v.l}</option>`).join('')}</select></div>
+        <div class="form-row"><label for="pj-pi">Inizio</label><input id="pj-pi" type="date" value="${escAttr(p?p.inizio||'':isoD(new Date()))}"></div>
+      </div>
+      <div class="form-row"><span class="pj-lab">Persone</span><div class="pj-pp">${ag.team.map(t=>`<label class="pj-pc"><input type="checkbox" name="pj-pw" value="${t.id}" ${who.includes(t.id)?'checked':''}>${agAv(t.id,true)}<span>${esc(t.nome)}</span></label>`).join('')}</div></div>
+      <div class="form-row"><label for="pj-pd">Cartella Drive (link)</label><input id="pj-pd" type="url" value="${escAttr(p&&p.drive_id?PJ_FOLDER+p.drive_id:'')}" placeholder="https://drive.google.com/drive/folders/…">
+        <span class="hint" id="pj-pdh">Le cartelle dei progetti stanno in Drive condiviso › Progetti, una per cliente. <a href="${PJ_FOLDER+PJ_ROOT_ID}" target="_blank" rel="noopener">Apri Progetti su Drive</a></span></div>
+      <div class="form-row"><label for="pj-pl">Link dell'app o del sito (facoltativo)</label><input id="pj-pl" type="url" maxlength="400" value="${escAttr(p?p.link||'':'')}" placeholder="https://"></div>
+      <div class="form-row"><label for="pj-px">Note (facoltative)</label><textarea id="pj-px" rows="3" maxlength="5000">${esc(p?p.note||'':'')}</textarea></div>
+      <label class="toggle ${p&&p.urgente?'on':''}" id="pj-pu" onclick="event.preventDefault();this.classList.toggle('on')"><span class="sw"></span><span>Progetto prioritario</span></label>
+    </div><div class="modal-f" style="justify-content:space-between">${p?`<button type="button" class="btn danger" onclick="pjProjDelete(${p.id})">Elimina</button>`:'<span></span>'}<span style="display:flex;gap:9px"><button type="button" class="btn" onclick="closeModal()">Annulla</button><button class="btn primary" id="pj-pb" type="submit">${p?'Salva':'Crea progetto'}</button></span></div></form></div>`);
+  setTimeout(()=>{const t=document.getElementById(focus==='drive'?'pj-pd':'pj-pn');if(t)t.focus();pjClientHint()},50);
+}
+function pjClientHint(){
+  const c=(document.getElementById('pj-pc')||{}).value,d=document.getElementById('pj-pd'),h=document.getElementById('pj-pdh');
+  if(!c||!d||!h||d.value)return;
+  const ex=pj.pr.find(x=>x.cliente===c.trim()&&x.drive_id&&x.id!==pj.editP);
+  if(ex)h.innerHTML=`C'è già la cartella di ${esc(c.trim())}: <button type="button" class="pj-link" onclick="document.getElementById('pj-pd').value='${PJ_FOLDER+ex.drive_id}';this.parentNode.textContent='Collegata la cartella «${escAttr(ex.drive_nome||c.trim())}».'">usa «${esc(ex.drive_nome||c.trim())}»</button>`;
+}
+async function pjProjSave(ev){
+  ev.preventDefault();
+  const g=i=>document.getElementById(i),id=pj.editP,p=id?pjP(id):null;
+  const durl=(g('pj-pd').value||'').trim(),did=pjDriveId(durl);
+  if(durl&&!did){toast('Il link della cartella Drive non è valido','warn');g('pj-pd').focus();return}
+  const cliente=(g('pj-pc').value||'').trim();
+  const row={nome:(g('pj-pn').value||'').trim(),cliente,stato:g('pj-ps').value,inizio:g('pj-pi').value||null,
+    persone:[...document.querySelectorAll('input[name="pj-pw"]:checked')].map(x=>x.value),
+    link:pjSafeUrl(g('pj-pl').value)||null,note:(g('pj-px').value||'').trim()||null,urgente:g('pj-pu').classList.contains('on'),drive_id:did||null};
+  if(!row.nome)return;
+  if(did&&(!p||p.drive_id!==did)){
+    const same=pj.pr.find(x=>x.drive_id===did);
+    row.drive_nome=same?same.drive_nome:(cliente||row.nome);row.drive_percorso=same?same.drive_percorso:'Drive condiviso › Progetti';row.drive_cartelle=same?same.drive_cartelle:[];
+  }
+  if(!did){row.drive_nome=null;row.drive_percorso=null;row.drive_cartelle=[]}
+  const b=g('pj-pb');if(b)b.disabled=true;
+  const q=id?nlSupa.from('progetti').update(row).eq('id',id):nlSupa.from('progetti').insert(row);
+  const {data,error}=await q.select(PJ_PCOLS).single();
+  if(error){if(b)b.disabled=false;toast(error.message,'err');return}
+  if(id)Object.assign(p,data);else pj.pr.push(data);
+  closeModal();toast(id?'Progetto salvato':'Progetto creato','ok');
+  if(!id)pjOpen(data.id);else render();
+}
+async function pjProjDelete(id){
+  const p=pjP(id);if(!p)return;const n=pj.att.filter(a=>a.progetto_id===id).length;
+  if(!confirm(`Eliminare il progetto «${p.nome}»${n?` e le sue ${n} attività`:''}? Non si recupera. Se è solo finito, meglio metterlo «Chiuso».`))return;
+  const {error}=await nlSupa.from('progetti').delete().eq('id',id);
+  if(error){toast(error.message,'err');return}
+  pj.pr=pj.pr.filter(x=>x.id!==id);pj.att=pj.att.filter(a=>a.progetto_id!==id);closeModal();toast('Progetto eliminato','ok');pjGoTab('progetti');
+}
+
+/* ---- scheda nella Home ---- */
+function pjHomeTile(){
+  if(!pj.loaded){if(!pj.loading&&ag.me)setTimeout(()=>pjLoad({silent:true}),0);return `<section class="tile span-6 hm-card" ${hmLink("pjGoTab('mie')")} aria-label="Le mie attività"><div class="tile-h"><h3>Le mie attività</h3></div><p class="hm-empty">Carico le attività…</p></section>`}
+  if(pj.missing)return `<section class="tile span-6 hm-card" ${hmLink("pjGoTab('mie')")} aria-label="Le mie attività"><div class="tile-h"><h3>Le mie attività</h3></div><p class="hm-empty">Progetti e attività si attivano con la migrazione <code>20261107100000_progetti_attivita.sql</code>.</p></section>`;
+  const me=ag.me.id,my=pj.att.filter(a=>pjOpenA(a)&&(a.persone||[]).includes(me));
+  const c=k=>my.filter(a=>a.stato===k).length,urg=my.filter(a=>a.urgente||(a.scadenza&&a.scadenza<=isoD(today()))).length;
+  const top=pjSort(my.filter(a=>a.stato==='in_corso'||a.urgente)).slice(0,3);
+  return `<section class="tile span-6 hm-card pj-home ${urg?'hm-alert':''}" ${hmLink("pjGoTab('mie')")} aria-label="Le mie attività">
+    <div class="tile-h"><h3>Le mie attività</h3><span class="spacer"></span><span class="sub">${my.length} aperte</span></div>
+    <ul class="hm-split pj-hsplit"><li><span>In corso</span><b>${c('in_corso')}</b></li><li><span>Da fare</span><b>${c('da_fare')}</b></li><li><span>In attesa</span><b>${c('in_attesa')}</b></li></ul>
+    ${top.length?`<ul class="pj-hlist">${top.map(a=>`<li><span class="pj-hd ${a.urgente?'u':''}"></span><span>${esc(a.titolo)}</span><small>${esc((pjP(a.progetto_id)||{}).nome||'')}</small></li>`).join('')}</ul>`:''}
+    <div class="hm-foot">${urg?`${urg} ${urg===1?'urgente o in scadenza':'urgenti o in scadenza'} · `:''}Apri le attività ${HM_I.arrow}</div>
+  </section>`;
 }
 
 /* =======================================================
