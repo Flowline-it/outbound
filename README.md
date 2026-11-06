@@ -43,6 +43,15 @@ Strumenti interni di Flowline in un'unica pagina (`index.html`), pubblicata con 
 - Per il link Meet automatico serve anche la migrazione `20261105120000_link_call_meet.sql` (evita una notifica «Evento modificato» quando il link viene aggiunto dal sistema)
 - Messa in funzione: creare i quattro utenti in Authentication → Users, eseguire la migrazione `20261104100000_team_calendario_notifiche.sql`, poi per ciascuno `select public.team_aggiungi('email','Nome','#colore');` dal SQL Editor. Per la sincronizzazione servono due segreti in Vault, `calendar_webhook_url` (indirizzo del webhook n8n) e `calendar_webhook_key` (stessa chiave del flusso), e le credenziali Google sui tre nodi HTTP del flusso Suite → Google
 
+**Progetti**: progetti e attività del team, al posto di Notion › Progetti › Project Tracker.
+- Le mie attività: per persona (Io, un collega, Tutti) con un pannello «In corso» e le liste «Da fare» e «In attesa di qualcuno», divise per progetto. Si aggiunge un'attività scrivendola e premendo Invio. La casella a sinistra la segna come fatta (con «Annulla»); un tocco sullo stato la sposta: Da fare › In corso › In attesa
+- Progetti: Attivi (Attivo e Assistenza), Demo, In pausa, Chiusi, con il filtro «Solo i miei». Ogni riga mostra persone, avanzamento (fatte su totali, comprese quelle chiuse in Notion), attività aperte e stato; «Priorità» segna i progetti urgenti
+- Pagina del progetto: attività per stato, aggiunta rapida, stato e priorità del progetto, cartella Google Drive con le sottocartelle, scheda con cliente, persone, inizio e link
+- Attività: 4 stati (Da fare, In corso, In attesa, Fatto), persone, scadenza facoltativa, «Urgente», note, file e cartelle di Drive collegati (si incolla il link; con Google collegato e la Google API key nelle Impostazioni si può anche scegliere dal selettore di Drive, che si apre nella cartella del progetto)
+- Le cartelle Drive stanno in Drive condiviso › Progetti, una per cliente. Per un progetto nuovo si crea la cartella su Drive e se ne incolla il link nella scheda (se il cliente ha già una cartella, la Suite la propone)
+- Notifiche: chi viene aggiunto a un'attività da un collega riceve un avviso nella campanella; un clic apre l'attività. Nella Home c'è la scheda «Le mie attività»
+- Messa in funzione: eseguire `20261107100000_progetti_attivita.sql`, poi `20261107100500_progetti_import_notion.sql` per caricare i 18 progetti e le 40 attività aperte di Notion (le attività già chiuse restano come conteggio). Le persone vengono abbinate per nome a `team_members`
+
 **Password**: archivio delle credenziali di Flowline, al posto della pagina Password di Notion.
 - Archivio: ricerca, filtro per categoria, aggiunta, modifica ed eliminazione; utente e password si copiano con un clic; la password si può mostrare (si nasconde da sola dopo 20 secondi); generatore di password casuali; importazione di un elenco incollato («servizio ; utente ; password ; sito ; note»)
 - Le password sono cifrate nel database (pgcrypto, chiave casuale nel Vault di Supabase `password_archivio_key`, creata dalla migrazione): la tabella non le mostra mai e si aprono solo con la funzione `password_rivela`, riservata alla squadra. **Non cancellare né cambiare quel segreto**, altrimenti le password salvate non si aprono più. La cifratura protegge da fughe e accessi non autorizzati al database, ma chi amministra Supabase può leggere anche la chiave
@@ -51,6 +60,6 @@ Strumenti interni di Flowline in un'unica pagina (`index.html`), pubblicata con 
 
 ## Dati
 
-Database Supabase "Lead Flowline": `contacts`, `leads`, `lead_searches`, tabelle `newsletter_*`, `richieste_sito`, `conti`, `movimenti`, `team_members`, `eventi`, `evento_partecipanti`, `notifiche`, `messaggi`, `bacheca`, `credenziali`, `password_log`.
-Il form del sito scrive in `richieste_sito` solo con la funzione `richiesta_sito_invia`; Newsletter, Ricerca lead, Richieste e Contabilità si leggono dopo il login di un indirizzo presente in `newsletter_editors`; Calendario richiede un utente in `team_members` (che viene aggiunto anche a `newsletter_editors`).
+Database Supabase "Lead Flowline": `contacts`, `leads`, `lead_searches`, tabelle `newsletter_*`, `richieste_sito`, `conti`, `movimenti`, `team_members`, `eventi`, `evento_partecipanti`, `notifiche`, `messaggi`, `bacheca`, `credenziali`, `password_log`, `progetti`, `attivita`.
+Il form del sito scrive in `richieste_sito` solo con la funzione `richiesta_sito_invia`; Newsletter, Ricerca lead, Richieste e Contabilità si leggono dopo il login di un indirizzo presente in `newsletter_editors`; Calendario, Progetti e Password richiedono un utente in `team_members` (che viene aggiunto anche a `newsletter_editors`).
 Le migrazioni e la funzione `nl-track` sono in `supabase/`.
