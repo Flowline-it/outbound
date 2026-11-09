@@ -2,6 +2,13 @@
 
 Strumenti interni di Flowline in un'unica pagina (`index.html`), pubblicata con GitHub Pages.
 
+## Menu
+
+**Home · Outbound · Marketing · Calendario · Progetti · Amministrazione · Impostazioni**
+
+- **Marketing** raccoglie Newsletter (Campagne, Iscritti) e Richieste (Dal sito); **Amministrazione** raccoglie Contabilità e Password. Nella barra sotto il titolo le pagine sono raggruppate per modulo, e ogni area ricorda l'ultimo modulo aperto.
+- **Impostazioni** è una pagina con cinque schede: Generali (profilo, tema, modalità test), Collegamenti (Google con il mittente «Invia come» e la Google API key per il selettore di Drive, Anthropic, Supabase), Outbound (regole di invio, sequenza, firma e formato, testi AI), Newsletter (sito per la disiscrizione), Avanzate (SQL di setup, configurazione team, migrazione dal Google Sheet, spesa API, azzera tutto). Si salva con la barra «Salva» in fondo alla pagina.
+
 ## Aree
 
 **Home**: la prima pagina dopo l'accesso, con scorciatoie a ciò che serve oggi.
