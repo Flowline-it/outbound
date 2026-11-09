@@ -6,8 +6,24 @@ Strumenti interni di Flowline in un'unica pagina (`index.html`), pubblicata con 
 
 **Home · Outbound · Marketing · Calendario · Progetti · Amministrazione · Impostazioni**
 
-- **Marketing** raccoglie Newsletter (Campagne, Iscritti) e Richieste (Dal sito); **Amministrazione** raccoglie Contabilità e Password. Nella barra sotto il titolo le pagine sono raggruppate per modulo, e ogni area ricorda l'ultimo modulo aperto.
+- Un clic su un'area apre il suo menu a tendina con le pagine. **Marketing** (Newsletter, Richieste) e **Amministrazione** (Contabilità, Password) hanno un sottomenu a cascata: a sinistra i moduli, a destra le pagine del modulo su cui passi. Su telefono il menu si apre a fisarmonica. Sotto il titolo restano le schede del modulo in cui sei.
+- **Home personalizzabile**: «Personalizza» in alto nella Home. Si trascinano i riquadri (o si usano le frecce), si sceglie la dimensione (Piccolo, Medio, Grande, Largo, Riga intera) e si nascondono quelli che non servono. Vale per la singola persona e si salva in `team_members.home_layout` (senza la migrazione `20261109200000_avvisi_email_home.sql` resta nel browser).
 - **Impostazioni** è una pagina con cinque schede: Generali (profilo, tema, modalità test), Collegamenti (Google con il mittente «Invia come» e la Google API key per il selettore di Drive, Anthropic, Supabase), Outbound (regole di invio, sequenza, firma e formato, testi AI), Newsletter (sito per la disiscrizione), Avanzate (SQL di setup, configurazione team, migrazione dal Google Sheet, spesa API, azzera tutto). Si salva con la barra «Salva» in fondo alla pagina.
+
+## Avvisi via email
+
+Quando qualcuno pubblica in **Bacheca**, tutta la squadra (tranne chi scrive) riceve una email. Quando qualcuno ti **aggiunge a un'attività** di Progetti, ricevi una email (a te stesso no). La mail ha un pulsante che apre la Bacheca o direttamente l'attività (`#bacheca`, `#attivita-123`), anche passando dall'accesso.
+
+Come funziona: la migrazione `20261109200000_avvisi_email_home.sql` segna «da_inviare» le notifiche di tipo `bacheca` e `attivita_assegnata` e chiama il flusso n8n **«Suite: email di avviso»** (webhook `flowline-avvisi`, header `x-flowline-key`). Il flusso prende la notifica con `notifica_email_prendi` (una volta sola, niente doppioni), manda la mail con Gmail come «FlowLine Suite» e, se non parte, la segna «errore» con `notifica_email_errore`.
+
+Messa in funzione:
+1. SQL Editor → `20261109200000_avvisi_email_home.sql`
+2. Vault, una volta sola (la chiave è la stessa scritta nel nodo «Controlla chiave» del flusso):
+   `select vault.create_secret('https://leo98.app.n8n.cloud/webhook/flowline-avvisi', 'avvisi_webhook_url');`
+   `select vault.create_secret('<chiave>', 'avvisi_webhook_key');`
+3. n8n: flusso attivo, credenziali «Lead Flowline» (Postgres) e Gmail.
+
+Senza Vault o senza flusso non si rompe niente: la campanella funziona come prima e le notifiche restano «da_inviare».
 
 ## Aree
 

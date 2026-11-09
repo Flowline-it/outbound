@@ -89,14 +89,14 @@ body.scrolled .topnav{border-bottom-color:var(--border)}
 /* livello 1: aree della suite, pillola che scorre */
 .sec-wrap{position:relative;display:flex;padding:4px;border-radius:var(--pill);background:var(--surface);box-shadow:var(--card-shadow);margin:0 auto}
 .sec-switch{display:flex;gap:2px;position:relative;z-index:1}
-.sec-switch button{display:flex;align-items:center;gap:7px;height:38px;padding:0 14px;border-radius:var(--pill);font-size:14px;font-weight:600;color:var(--muted);white-space:nowrap;transition:color .25s var(--ease),background .2s var(--ease)}
-.sec-switch button:hover{color:var(--text);background:var(--surface-2)}
-.sec-switch button[aria-pressed="true"],.sec-switch button[aria-pressed="true"]:hover{color:#fff;background:transparent}
-[data-theme="dark"] .sec-switch button[aria-pressed="true"]{color:var(--bg)}
-.sec-switch .ico{width:16px;height:16px;display:none}
-.sec-switch button[aria-pressed="true"] .ico{display:block}
-.sec-switch .dotb{width:7px;height:7px;border-radius:50%;background:var(--brand);margin-left:-2px}
-.sec-switch .dotb.late{background:var(--late)}
+.sec-switch > button{display:flex;align-items:center;gap:7px;height:38px;padding:0 14px;border-radius:var(--pill);font-size:14px;font-weight:600;color:var(--muted);white-space:nowrap;transition:color .25s var(--ease),background .2s var(--ease)}
+.sec-switch > button:hover{color:var(--text);background:var(--surface-2)}
+.sec-switch > button[aria-pressed="true"],.sec-switch > button[aria-pressed="true"]:hover{color:#fff;background:transparent}
+[data-theme="dark"] .sec-switch > button[aria-pressed="true"]{color:var(--bg)}
+.sec-switch > button .ico{width:16px;height:16px;display:none}
+.sec-switch > button[aria-pressed="true"] .ico{display:block}
+.sec-switch > button .dotb{width:7px;height:7px;border-radius:50%;background:var(--brand);margin-left:-2px}
+.sec-switch > button .dotb.late{background:var(--late)}
 .pill-ind{position:absolute;top:0;left:0;height:0;width:0;border-radius:var(--pill);background:var(--ink);z-index:0;pointer-events:none;opacity:0;
   transition:transform .45s var(--spring),width .45s var(--spring),height .2s var(--ease),opacity .2s var(--ease)}
 [data-theme="dark"] .pill-ind{background:var(--text)}
@@ -494,7 +494,7 @@ input[type=checkbox]{width:18px;height:18px;cursor:pointer;accent-color:var(--in
   .menu-btn{display:flex}
   .topnav.open .topnav-in{height:auto;border-radius:26px;padding:10px 10px 14px 12px}
   .topnav.open .sec-switch{display:flex;flex-basis:100%;order:3;margin-top:8px}
-  .topnav.open .sec-switch button{flex:1;justify-content:center;padding:0 8px;gap:6px;font-size:14px}
+  .topnav.open .sec-switch > button{flex:1;justify-content:center;padding:0 8px;gap:6px;font-size:14px}
   .topnav.open .subnav-wrap{display:block}
   .topnav.open .nav{flex-direction:column;align-items:stretch;border-radius:26px;padding:8px;overflow:visible}
   .topnav.open .nav button{height:46px}
@@ -1166,7 +1166,7 @@ tbody tr:hover{background:var(--surface-2)}
 /* lo stato del database si vede solo quando c'è qualcosa che non va */
 .conn-pill:has(#sdot.on){display:none}
 /* voci del menu sopra la pillola che scorre */
-.sec-switch button,.nav button{position:relative;z-index:1}
+.sec-switch > button,.nav button{position:relative;z-index:1}
 /* utente e online in alto (l'avatar resta sempre visibile, anche quando il nome si nasconde) */
 .ag-me .ag-av{display:inline-flex!important}
 .user-box{margin:0 0 0 6px}
@@ -1206,9 +1206,9 @@ tbody tr:hover{background:var(--surface-2)}
    --------------------------------------------------------------------- */
 @media(max-width:1499px){.ag-me span{display:none}.ag-me{padding:0 5px}.on-lbl{display:none}}
 @media(max-width:1299px) and (min-width:901px){
-  .sec-switch button .ico{display:block}
-  .sec-switch button[aria-pressed="false"]>span:not(.dotb){display:none}
-  .sec-switch button[aria-pressed="false"]{padding:0 11px}
+  .sec-switch > button .ico{display:block}
+  .sec-switch > button[aria-pressed="false"]>span:not(.dotb){display:none}
+  .sec-switch > button[aria-pressed="false"]{padding:0 11px}
   .on-lbl{display:none}
 }
 @media(max-width:1180px){
@@ -1224,11 +1224,11 @@ tbody tr:hover{background:var(--surface-2)}
   .topnav.open .topnav-in{padding:8px 14px 16px}
   .topnav.open .sec-wrap{display:flex;order:3;flex-basis:100%;margin:8px 0 0;border-radius:20px;padding:6px}
   .topnav.open .sec-switch{flex-direction:column;width:100%;gap:2px}
-  .topnav.open .sec-switch button{justify-content:flex-start;height:46px;padding:0 14px;font-size:15px;border-radius:14px;flex:none}
-  .topnav.open .sec-switch button .ico{display:block}
-  .topnav.open .sec-switch button>span:not(.dotb){display:inline}
-  .topnav.open .sec-switch button[aria-pressed="true"]{background:var(--ink)}
-  [data-theme="dark"] .topnav.open .sec-switch button[aria-pressed="true"]{background:var(--text)}
+  .topnav.open .sec-switch > button{justify-content:flex-start;height:46px;padding:0 14px;font-size:15px;border-radius:14px;flex:none}
+  .topnav.open .sec-switch > button .ico{display:block}
+  .topnav.open .sec-switch > button>span:not(.dotb){display:inline}
+  .topnav.open .sec-switch > button[aria-pressed="true"]{background:var(--ink)}
+  [data-theme="dark"] .topnav.open .sec-switch > button[aria-pressed="true"]{background:var(--text)}
   .topnav.open .sec-wrap .pill-ind{display:none}
   .topnav.open .nav-tools{display:flex;flex-basis:100%;order:4;margin-top:10px;justify-content:space-between}
   .page-head .subnav-wrap{display:flex}
@@ -1255,9 +1255,6 @@ tbody tr:hover{background:var(--surface-2)}
   .pill-ind{transition:none}
 }
 
-/* ---- menu: moduli raggruppati nelle aree Marketing e Amministrazione ---- */
-.nav .nav-grp{display:flex;align-items:center;height:34px;padding:0 6px 0 12px;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);white-space:nowrap;flex:0 0 auto}
-.nav .nav-sep{width:1px;height:20px;background:var(--border);margin:0 6px;flex:0 0 auto}
 /* ---- impostazioni ---- */
 .st-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr));gap:16px;align-items:start}
 .st-card{display:flex;flex-direction:column;gap:0;scroll-margin-top:96px}
@@ -1288,6 +1285,79 @@ tbody tr:hover{background:var(--surface-2)}
 .st-bar.dirty .st-msg-clean{display:none}
 .st-bar.dirty .btn.ghost{display:inline-flex}
 @media(max-width:700px){.st-bar{border-radius:20px;bottom:10px}.st-bar-t{flex-basis:100%}}
+
+/* ---- menu a tendina delle aree, con sottomenu a cascata ---- */
+.sec-switch > button{padding:0 11px 0 13px;gap:6px}
+.sec-chev{width:12px;height:12px;opacity:.55;margin-left:-1px;transition:transform .25s var(--ease),opacity .2s}
+.sec-switch > button[aria-expanded="true"] .sec-chev{transform:rotate(180deg);opacity:1}
+.sec-switch > button[aria-expanded="true"]:not([aria-pressed="true"]){background:var(--surface-2);color:var(--text)}
+.sec-menu{position:absolute;top:calc(100% - 6px);left:0;z-index:40;background:var(--surface);border-radius:20px;box-shadow:var(--shadow-lg);padding:8px;min-width:250px;animation:smIn .22s var(--ease)}
+.sec-menu[hidden]{display:none}
+@keyframes smIn{from{opacity:0;transform:translateY(-6px) scale(.98)}to{opacity:1;transform:none}}
+.sm-cols{display:grid;grid-template-columns:270px 230px;gap:6px}
+.sm-mods{display:flex;flex-direction:column;gap:2px;padding-right:6px;border-right:1px solid var(--border)}
+.sm-mod{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:10px 10px 10px 12px;border-radius:14px;color:var(--text);transition:background .15s var(--ease)}
+.sm-mod .ico{width:18px;height:18px;color:var(--muted);flex:0 0 auto}
+.sm-mod:hover,.sm-mod.on{background:var(--surface-2)}
+.sm-mod.on .ico{color:var(--accent)}
+.sm-mt{display:flex;flex-direction:column;min-width:0;flex:1;line-height:1.3}
+.sm-mt b{font-weight:650;font-size:14px}
+.sm-mt small{font-size:12.5px;color:var(--muted)}
+.sm-chev{width:15px;height:15px;color:var(--faint);transition:transform .2s var(--ease)}
+.sm-mod.on .sm-chev{color:var(--text);transform:translateX(2px)}
+.sm-list{display:flex;flex-direction:column;gap:2px;animation:smList .2s var(--ease)}
+.sm-list[hidden]{display:none}
+@keyframes smList{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}
+.sm-head{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);padding:8px 12px 6px}
+.sm-page{display:flex;align-items:center;gap:10px;width:100%;text-align:left;height:38px;padding:0 12px;border-radius:12px;font-size:14px;font-weight:550;color:var(--text);transition:background .15s var(--ease)}
+.sm-page:hover,.sm-page:focus-visible{background:var(--surface-2)}
+.sm-page.on{background:var(--ink);color:#fff}
+[data-theme="dark"] .sm-page.on{background:var(--text);color:var(--bg)}
+.sm-page .ico{width:16px;height:16px;color:var(--muted)}
+.sm-page.on .ico{color:inherit}
+.sm-page > span:not(.badge):not(.sm-dot){flex:1}
+.sm-dot{width:6px;height:6px;border-radius:50%;background:var(--border-strong);margin:0 5px}
+.sm-page.on .sm-dot{background:var(--brand)}
+.sm-page .badge{font-size:11px;font-weight:700;min-width:19px;height:19px;padding:0 6px;border-radius:var(--pill);display:flex;align-items:center;justify-content:center;background:var(--brand);color:var(--on-brand);font-variant-numeric:tabular-nums}
+.sm-page .badge.late{background:var(--late);color:#fff}.sm-page .badge.ok{background:#1E7D45;color:#fff}.sm-page .badge.plain{background:var(--surface-3);color:var(--text)}
+.sm-one{min-width:240px}
+.topnav{position:sticky}
+/* telefono: le pagine si aprono sotto la voce, a fisarmonica */
+.sm-acc{width:100%;padding:4px 0 8px 8px;animation:smList .2s var(--ease)}
+.sm-acc .sm-cols{display:flex;flex-direction:column;gap:4px}
+.sm-acc .sm-mods{border:0;padding:0}
+.sm-acc .sm-pages{padding-left:14px}
+.sm-acc .sm-sub{padding:2px 0 6px 18px}
+.sm-acc .sm-head{display:none}
+.sm-acc .sm-mod{padding:8px 10px}
+.sm-acc .sm-mod.on .sm-chev{transform:rotate(90deg)}
+@media(max-width:900px){.sec-menu{display:none!important}.topnav.open .sec-switch{display:flex}.topnav.open .sec-switch > button .sec-chev{margin-left:auto}}
+@media(prefers-reduced-motion:reduce){.sec-menu,.sm-list,.sm-acc{animation:none}}
+
+/* ---- Home personalizzabile ---- */
+.hm-editbar{position:sticky;top:84px;z-index:8;display:flex;align-items:center;gap:8px 10px;flex-wrap:wrap;padding:12px 12px 12px 20px;margin-bottom:16px;border-radius:20px;background:var(--surface);box-shadow:0 0 0 2px var(--brand),var(--shadow);animation:v3In .35s var(--ease)}
+.hm-editbar .spacer{flex:1}
+.hm-eb-t{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1 1 360px}
+.hm-eb-t b{font-weight:650}
+.hm-eb-t span{font-size:13px;color:var(--muted)}
+.hm-editing .tile{cursor:grab;outline:1.5px dashed color-mix(in srgb,var(--text) 22%,transparent);outline-offset:-1.5px;transition:opacity .2s var(--ease),transform .25s var(--ease),outline-color .2s}
+.hm-editing .tile:hover{outline-color:var(--brand);transform:none}
+.hm-editing .tile > :not(.hm-tools){pointer-events:none;user-select:none}
+.hm-editing .tile.hm-off{opacity:.45;filter:grayscale(.6)}
+.hm-editing .tile.hm-dragging{opacity:.35;outline:2px solid var(--brand)}
+.hm-tools{display:flex;align-items:center;gap:4px;margin:-8px -10px 14px;padding:6px 6px 6px 8px;border-radius:14px;background:var(--surface-2);color:var(--text);font-size:13px;cursor:default}
+.t-orange .hm-tools,.t-ink .hm-tools{background:var(--surface);color:var(--text)}
+.hm-tools .spacer{flex:1}
+.hm-tools b{font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.hm-grip{display:inline-flex;width:20px;height:20px;color:var(--faint);cursor:grab}
+.hm-grip svg{width:18px;height:18px}
+.hm-tb{width:30px;height:30px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;color:var(--muted);background:var(--surface);flex:0 0 auto}
+.hm-tb:hover:not(:disabled){color:var(--text);background:var(--surface-3)}
+.hm-tb:disabled{opacity:.35;cursor:default}
+.hm-tb svg{width:16px;height:16px}
+.hm-eye.off{color:var(--late)}
+.hm-size{height:30px;border-radius:9px;border:0;background:var(--surface);padding:0 8px;font-size:12.5px;font-weight:600;color:var(--text);flex:0 0 auto}
+@media(max-width:700px){.hm-editbar{top:66px}}
 </style>
 </head>
 <body class="locked">
@@ -1315,6 +1385,7 @@ tbody tr:hover{background:var(--surface-2)}
         <svg style="width:19px;height:19px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       </button>
     </div>
+    <div class="sec-menu" id="secMenu" hidden></div>
   </header>
   <div class="scrim" id="scrim" onclick="closeRail()"></div>
 
@@ -2623,52 +2694,94 @@ function renderNav(){
   document.getElementById('secSwitch').innerHTML=SECTIONS.map(x=>{
     const on=x.id===area, al=AL[x.id];
     const dot=!on&&al&&al[0]?`<span class="dotb${x.id==='outbound'&&late?' late':''}" aria-label="${al[1]}"></span>`:'';
-    return `<button type="button" aria-pressed="${on}" title="${x.label}" onclick="goSection('${x.id}')">${ico(x.icon)}<span>${x.label}</span>${dot}</button>`;
+    const sub=x.id!=='home';
+    return `<button type="button" data-area="${x.id}" aria-pressed="${on}" ${sub?`aria-expanded="${sm.area===x.id}" aria-controls="secMenu"`:''} title="${x.label}" onclick="smToggle('${x.id}',event)">${ico(x.icon)}<span>${x.label}</span>${dot}${sub?'<svg class="sec-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>':''}</button>`;
   }).join('');
-  // livello 2: pagine dell'area attiva; nelle aree con più moduli le pagine sono raggruppate per modulo
+  // livello 2: un unico elenco di moduli e pagine, usato dal menu a tendina e dalle schede della pagina
   const nav=document.getElementById('nav');
-  nav.setAttribute('aria-label','Pagine di '+AREA_NAME[area]);
-  const btn=(on,click,label,badge='')=>`<button class="${on?'active':''}" ${on?'aria-current="page"':''} onclick="${click}"><span>${label}</span>${badge}</button>`;
-  const MOD={
-    newsletter:()=>NL_PAGES.map(pg=>{
-      const on=state.view==='newsletter'&&nl.tab===pg.tab;
-      const badge=pg.tab==='iscritti'&&nl.loaded?`<span class="badge plain">${nlActive().length}</span>`:(pg.tab==='campagne'&&nl.sending?'<span class="badge">invio</span>':'');
-      return btn(on,`goNl('${pg.tab}')`,pg.label,badge);}),
-    richieste:()=>{const n=rq.loaded?rqNew():0;return [btn(state.view==='richieste',"go('richieste')",'Dal sito',n?`<span class="badge">${n}</span>`:'')]},
-    contabilita:()=>CT_TABS.map(pg=>{const n=pg.tab==='movimenti'&&ct.loaded&&!ct.missing?ctPending().length:0;
-      return btn(state.view==='contabilita'&&ct.tab===pg.tab,`ctGoTab('${pg.tab}')`,pg.label,n?`<span class="badge">${n}</span>`:'');}),
-    password:()=>PW_TABS.map(pg=>btn(state.view==='password'&&pw.tab===pg.tab,`pwGoTab('${pg.tab}')`,pg.label)),
-  };
-  let items;
-  const sw=document.querySelector('.subnav-wrap');if(sw)sw.style.display=sec==='home'?'none':'';
-  if(sec==='home'){
-    items=[];
-  } else if(AREA_MODS[area]){
-    items=AREA_MODS[area].map((m,i)=>`${i?'<span class="nav-sep" aria-hidden="true"></span>':''}<span class="nav-grp">${SEC_NAME[m]}</span>`+MOD[m]().join(''));
-  } else if(sec==='impostazioni'){
-    items=ST_TABS.map(pg=>btn(st.tab===pg.tab,`stGoTab('${pg.tab}')`,pg.label));
-  } else if(sec==='progetti'){
-    items=PJ_TABS.map(pg=>{const on=pj.tab===pg.tab;return `<button class="${on?'active':''}" ${on?'aria-current="page"':''} onclick="pjGoTab('${pg.tab}')"><span>${pg.label}</span></button>`});
-  } else if(sec==='agenda'){
-    items=AG_TABS.map(pg=>{
-      const on=ag.tab===pg.tab, n=pg.tab==='notifiche'&&ag.loaded?agUnread():0;
-      return `<button class="${on?'active':''}" ${on?'aria-current="page"':''} onclick="agGoTab('${pg.tab}')"><span>${pg.label}</span>${n?`<span class="badge">${n}</span>`:''}</button>`;
-    });
-  } else {
-    items=NAV.map(n=>{
-      let badge='';
-      if(n.id==='coda'&&(todayN||late)) badge=`<span class="badge${late?' late':''}">${todayN||late}</span>`;
-      if(n.id==='risposte'&&newRep) badge=`<span class="badge ok">${newRep}</span>`;
-      if(n.id==='pianifica'&&backlog) badge=`<span class="badge plain">${backlog}</span>`;
-      if(n.id==='lead'&&ldBusy()) badge=`<span class="badge">in corso</span>`;
-      const on=state.view===n.id;
-      return `<button class="${on?'active':''}" ${on?'aria-current="page"':''} onclick="go('${n.id}')">${ico(n.icon)}<span>${n.label}</span>${badge}</button>`;
-    });
-  }
-  nav.innerHTML=`<span class="nav-area" aria-hidden="true">${AREA_NAME[area]}</span>`+items.join('');
+  const mod=sectionOf(state.view);
+  nav.setAttribute('aria-label','Pagine di '+SEC_NAME[mod]);
+  const btn=(p)=>`<button class="${p.on?'active':''}" ${p.on?'aria-current="page"':''} onclick="${p.click}">${p.icon?ico(p.icon):''}<span>${p.label}</span>${p.badge||''}</button>`;
+  const items=navPages(mod);
+  const sw=document.querySelector('.subnav-wrap');if(sw)sw.style.display=items.length<2?'none':'';
+  nav.innerHTML=`<span class="nav-area" aria-hidden="true">${SEC_NAME[mod]}</span>`+items.map(btn).join('');
   agRenderUser();
+  smPaint();
   v3Pills();
 }
+// pagine di ogni modulo, con il loro stato (attiva, contatori)
+const MOD_INFO={
+  outbound:{icon:'M22 2 11 13 M22 2l-7 20-4-9-9-4 20-7z',desc:'Campagne email a freddo'},
+  newsletter:{icon:'M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z M22 6l-10 7L2 6',desc:'Campagne e iscritti'},
+  richieste:{icon:'M22 12h-6l-2 3h-4l-2-3H2 M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z',desc:'Contatti arrivati da flowline.it'},
+  contabilita:{icon:'M20 7H5a2 2 0 0 1 0-4h13v4 M3 5v14a2 2 0 0 0 2 2h15V7 M16 14h.01',desc:'Conti, movimenti e report'},
+  password:{icon:'M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4',desc:'Credenziali della squadra'},
+  agenda:{icon:'M3 4h18v18H3z M16 2v4 M8 2v4 M3 10h18',desc:'Agenda condivisa'},
+  progetti:{icon:'M9 11l3 3L22 4 M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11',desc:'Progetti e attività'},
+  impostazioni:{icon:'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z',desc:'Profilo, collegamenti, invii'},
+};
+function navPages(mod){
+  const v=state.view, B=(n,c)=>n?`<span class="badge${c?' '+c:''}">${n}</span>`:'';
+  if(mod==='outbound'){
+    const todayN=state.contacts.filter(dueToday).length, late=state.contacts.filter(isLate).length, backlog=state.contacts.filter(isUnplanned).length, newRep=state.contacts.filter(c=>c.haRisposto&&c.replySeen===false).length;
+    return NAV.map(n=>({label:n.label,icon:n.icon,on:v===n.id,click:`go('${n.id}')`,
+      badge:n.id==='coda'&&(todayN||late)?B(todayN||late,late?'late':''):n.id==='risposte'&&newRep?B(newRep,'ok'):n.id==='pianifica'&&backlog?B(backlog,'plain'):n.id==='lead'&&ldBusy()?B('in corso'):''}));
+  }
+  if(mod==='newsletter')return NL_PAGES.map(pg=>({label:pg.label,on:v==='newsletter'&&nl.tab===pg.tab,click:`goNl('${pg.tab}')`,
+      badge:pg.tab==='iscritti'&&nl.loaded?B(nlActive().length,'plain'):(pg.tab==='campagne'&&nl.sending?B('invio'):'')}));
+  if(mod==='richieste')return [{label:'Dal sito',on:v==='richieste',click:"go('richieste')",badge:B(rq.loaded?rqNew():0)}];
+  if(mod==='contabilita')return CT_TABS.map(pg=>({label:pg.label,on:v==='contabilita'&&ct.tab===pg.tab,click:`ctGoTab('${pg.tab}')`,badge:pg.tab==='movimenti'&&ct.loaded&&!ct.missing?B(ctPending().length):''}));
+  if(mod==='password')return PW_TABS.map(pg=>({label:pg.label,on:v==='password'&&pw.tab===pg.tab,click:`pwGoTab('${pg.tab}')`}));
+  if(mod==='agenda')return AG_TABS.map(pg=>({label:pg.label,on:v==='agenda'&&ag.tab===pg.tab,click:`agGoTab('${pg.tab}')`,badge:pg.tab==='notifiche'&&ag.loaded?B(agUnread()):''}));
+  if(mod==='progetti')return PJ_TABS.map(pg=>({label:pg.label,on:v==='progetti'&&pj.tab===pg.tab,click:`pjGoTab('${pg.tab}')`}));
+  if(mod==='impostazioni')return ST_TABS.map(pg=>({label:pg.label,on:v==='impostazioni'&&st.tab===pg.tab,click:`stGoTab('${pg.tab}')`}));
+  return [];
+}
+function areaMods(a){return AREA_MODS[a]||[a]}
+
+/* ---- menu a tendina delle aree, con sottomenu a cascata per i moduli ---- */
+const sm={area:null,mod:null};
+function smMobile(){return window.matchMedia('(max-width:900px)').matches}
+function smToggle(area,ev){
+  if(ev)ev.stopPropagation();
+  if(area==='home'){smClose();goSection('home');return}
+  if(sm.area===area){smClose();return}
+  sm.area=area;
+  const mods=areaMods(area), cur=sectionOf(state.view);
+  sm.mod=mods.includes(cur)?cur:mods[0];
+  renderNav();
+  if(!smMobile())setTimeout(()=>document.querySelector('#secMenu .sm-mod.on,#secMenu .sm-page')?.focus(),30);
+}
+function smClose(){if(!sm.area)return;const a=sm.area;sm.area=null;sm.mod=null;renderNav();const b=document.querySelector(`#secSwitch button[data-area="${a}"]`);return b}
+function smFocus(m){if(sm.mod===m)return;sm.mod=m;if(smMobile()){smPaint();return}document.querySelectorAll('.sm-mod').forEach(b=>{const on=b.dataset.mod===m;b.classList.toggle('on',on);b.setAttribute('aria-expanded',on)});document.querySelectorAll('.sm-list[data-mod]').forEach(l=>l.hidden=l.dataset.mod!==m)}
+// clic sul modulo: su telefono apre le sue pagine, su schermo grande porta alla prima
+function smModClick(m){if(smMobile()){smFocus(m);return}smGo(navPages(m)[0].click)}
+function smGo(click){sm.area=null;sm.mod=null;closeRail();(new Function(click))()}
+function smHtml(area){
+  const ico=d=>`<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`;
+  const chev='<svg class="sm-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>';
+  const list=m=>navPages(m).map(p=>`<button class="sm-page${p.on?' on':''}" ${p.on?'aria-current="page"':''} onclick="smGo(this.dataset.go)" data-go="${escAttr(p.click)}">${p.icon?ico(p.icon):'<span class="sm-dot" aria-hidden="true"></span>'}<span>${p.label}</span>${p.badge||''}</button>`).join('');
+  const mods=areaMods(area);
+  if(smMobile()&&mods.length>1) return mods.map(m=>`<button class="sm-mod${sm.mod===m?' on':''}" data-mod="${m}" aria-expanded="${sm.mod===m}" onclick="smModClick('${m}')">${ico(MOD_INFO[m].icon)}<span class="sm-mt"><b>${SEC_NAME[m]}</b><small>${MOD_INFO[m].desc}</small></span>${chev}</button>${sm.mod===m?`<div class="sm-list sm-sub">${list(m)}</div>`:''}`).join('');
+  if(mods.length===1) return `<div class="sm-one"><div class="sm-head">${AREA_NAME[area]}</div><div class="sm-list">${list(mods[0])}</div></div>`;
+  return `<div class="sm-cols"><div class="sm-mods" role="group" aria-label="${AREA_NAME[area]}">${mods.map(m=>`<button class="sm-mod${sm.mod===m?' on':''}" data-mod="${m}" aria-expanded="${sm.mod===m}" onmouseenter="smFocus('${m}')" onfocus="smFocus('${m}')" onclick="smModClick('${m}')">${ico(MOD_INFO[m].icon)}<span class="sm-mt"><b>${SEC_NAME[m]}</b><small>${MOD_INFO[m].desc}</small></span>${chev}</button>`).join('')}</div>
+    <div class="sm-pages">${mods.map(m=>`<div class="sm-list" data-mod="${m}" ${sm.mod===m?'':'hidden'}><div class="sm-head">${SEC_NAME[m]}</div>${list(m)}</div>`).join('')}</div></div>`;
+}
+// disegna il menu aperto: su schermo grande sotto la voce, su telefono dentro l'elenco
+function smPaint(){
+  const box=document.getElementById('secMenu');if(!box)return;
+  document.querySelectorAll('#secSwitch button[data-area]').forEach(b=>b.setAttribute('aria-expanded',b.dataset.area===sm.area));
+  document.querySelectorAll('.sm-acc').forEach(e=>e.remove());
+  if(!sm.area){box.hidden=true;box.innerHTML='';return}
+  const b=document.querySelector(`#secSwitch button[data-area="${sm.area}"]`);
+  if(smMobile()){box.hidden=true;box.innerHTML='';if(b)b.insertAdjacentHTML('afterend',`<div class="sm-acc">${smHtml(sm.area)}</div>`);return}
+  box.innerHTML=smHtml(sm.area);box.hidden=false;
+  if(b){const hb=document.getElementById('rail').getBoundingClientRect(),r=b.getBoundingClientRect();
+    const w=box.offsetWidth, left=Math.max(12,Math.min(r.left-hb.left-8,innerWidth-w-12));box.style.left=left+'px';}
+}
+document.addEventListener('pointerdown',e=>{if(sm.area&&!e.target.closest('#secMenu,.sm-acc,#secSwitch'))smClose()},true);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&sm.area){const a=sm.area;smClose();document.querySelector(`#secSwitch button[data-area="${a}"]`)?.focus()}});
+window.addEventListener('resize',()=>{if(sm.area)smPaint()});
 function renderSpend(){
   const eur=costEUR(state.usage);
   const txt=document.getElementById('spendTxt');
@@ -4087,6 +4200,16 @@ async function nlAfterLogin(){
   nl.editor=(!error&&data===true)||!!ag.me;
   if(nl.editor){ ldLoad({silent:state.view!=='lead'}); rqLoad({silent:state.view!=='richieste'}); ctLoad({silent:state.view!=='contabilita'}); await nlLoad(); } else render();
   render();
+  suiteLinkGo();
+}
+// link diretti dalle email di avviso: #bacheca e #attivita-123 (valgono anche se prima serve l'accesso)
+function suiteLinkGo(){
+  const h=(location.hash||'').slice(1);if(!h)return;
+  const m=h.match(/^attivita-(\d+)$/);
+  if(!m&&h!=='bacheca')return;
+  try{history.replaceState(null,'',location.pathname+location.search)}catch(_){}
+  if(m){pjOpenTask(+m[1]);return}
+  go('home');setTimeout(()=>document.querySelector('.hm-board')?.scrollIntoView({behavior:'smooth',block:'start'}),400);
 }
 async function nlLogin(ev){
   ev&&ev.preventDefault();
@@ -5944,7 +6067,96 @@ function hmOpenCall(id){
   if(u)window.open(u,'_blank','noopener,noreferrer');
   else{toast('Questa call non ha un link: apro i dettagli','warn');agShowEvent(id)}
 }
-function hmLink(fn){return `role="link" tabindex="0" onclick="${fn}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();${fn}}"`}
+/* ---- Home personalizzabile: ogni persona sceglie ordine, visibilità e dimensione dei riquadri ---- */
+const HM_TILES=[
+  {id:'calls',label:'Call di oggi',size:6},
+  {id:'mail',label:'Email da inviare',size:3},
+  {id:'saldo',label:'Saldo conto',size:3},
+  {id:'iscritti',label:'Iscritti newsletter',size:3},
+  {id:'risposte',label:'Nuove risposte',size:3},
+  {id:'attivita',label:'Le mie attività',size:6},
+  {id:'messaggi',label:'Messaggi',size:8},
+  {id:'online',label:'Online',size:4},
+  {id:'bacheca',label:'Bacheca',size:12},
+];
+const HM_SIZES=[{n:3,l:'Piccolo'},{n:4,l:'Medio'},{n:6,l:'Grande'},{n:8,l:'Largo'},{n:12,l:'Riga intera'}];
+const hl={editing:false,draft:null,saved:null,db:null,key:null,drag:null};
+function hmLayoutKey(){return 'flo_home_'+(ag.me?ag.me.id:'x')}
+// unisco la disposizione salvata con l'elenco dei riquadri: quelli nuovi finiscono in fondo
+function hmNormalize(arr){
+  const known=new Map(HM_TILES.map(t=>[t.id,t])), out=[];
+  (Array.isArray(arr)?arr:[]).forEach(x=>{if(x&&known.has(x.id)&&!out.some(o=>o.id===x.id))out.push({id:x.id,show:x.show!==false,size:HM_SIZES.some(z=>z.n===+x.size)?+x.size:known.get(x.id).size})});
+  HM_TILES.forEach(t=>{if(!out.some(o=>o.id===t.id))out.push({id:t.id,show:true,size:t.size})});
+  return out;
+}
+function hmLayout(){
+  if(hl.editing&&hl.draft)return hl.draft;
+  if(hl.key!==hmLayoutKey()){hl.key=hmLayoutKey();hl.saved=hmNormalize(load(hl.key,null));hmLayoutFetch();}
+  return hl.saved;
+}
+// la disposizione sta anche sul database (team_members.home_layout): così è la stessa su ogni dispositivo
+async function hmLayoutFetch(){
+  if(!nlSupa||!ag.me)return;
+  const {data,error}=await nlSupa.from('team_members').select('home_layout').eq('id',ag.me.id).maybeSingle();
+  if(error){hl.db=false;return}            // colonna non ancora creata: resta in questo browser
+  hl.db=true;
+  if(data&&data.home_layout){const n=hmNormalize(data.home_layout);
+    if(JSON.stringify(n)!==JSON.stringify(hl.saved)){hl.saved=n;save(hl.key,n);if(state.view==='home'&&!hl.editing)render();}}
+}
+function hmSpan(id){const t=hmLayout().find(x=>x.id===id);return 'span-'+(t?t.size:4)}
+const HM_ED_I={
+  grip:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></svg>',
+  left:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg>',
+  right:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>',
+  eye:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+  off:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18 M10.6 5.1A10.6 10.6 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4.2 M6.6 6.6A17 17 0 0 0 2 12s3.5 7 10 7a9.8 9.8 0 0 0 5.4-1.6 M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>',
+  edit:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>',
+};
+function hmRenderTiles(T){
+  const L=hmLayout(), ed=hl.editing;
+  const html=L.filter(t=>ed||t.show).map((t,i,arr)=>{
+    let h=T[t.id]();
+    if(!ed)return h;
+    const lab=(HM_TILES.find(x=>x.id===t.id)||{}).label||t.id;
+    const tools=`<div class="hm-tools">
+      <span class="hm-grip" title="Trascina per spostare ${escAttr(lab)}">${HM_ED_I.grip}</span><span class="spacer"></span>
+      <button class="hm-tb" onclick="hmMove('${t.id}',-1)" ${i===0?'disabled':''} aria-label="Sposta ${escAttr(lab)} prima">${HM_ED_I.left}</button>
+      <button class="hm-tb" onclick="hmMove('${t.id}',1)" ${i===arr.length-1?'disabled':''} aria-label="Sposta ${escAttr(lab)} dopo">${HM_ED_I.right}</button>
+      <select class="hm-size" onchange="hmSize('${t.id}',this.value)" aria-label="Dimensione di ${escAttr(lab)}">${HM_SIZES.map(z=>`<option value="${z.n}" ${z.n===t.size?'selected':''}>${z.l}</option>`).join('')}</select>
+      <button class="hm-tb hm-eye ${t.show?'':'off'}" onclick="hmToggle('${t.id}')" aria-pressed="${!t.show}" title="${t.show?'Nascondi':'Mostra'}" aria-label="${t.show?'Nascondi':'Mostra'} ${escAttr(lab)}">${t.show?HM_ED_I.eye:HM_ED_I.off}</button>
+    </div>`;
+    return h.replace(/<section\b([^>]*?)class="/, `<section data-tile="${t.id}" draggable="true"$1class="hm-ed ${t.show?'':'hm-off'} `).replace(/(<section\b[^>]*>)/, `$1${tools}`);
+  }).join('');
+  if(!ed)return `<div class="bento hm">${html}</div>`;
+  return `<div class="hm-editbar" role="region" aria-label="Personalizza la Home"><div class="hm-eb-t"><b>Personalizza la tua Home</b><span>Trascina i riquadri o usa le frecce per l'ordine, scegli la dimensione, nascondi quelli che non ti servono. Vale solo per te.</span></div><span class="spacer"></span>
+    <button class="btn ghost" onclick="hmEditReset()">Ripristina</button><button class="btn" onclick="hmEditCancel()">Annulla</button><button class="btn primary" onclick="hmEditSave()">Salva</button></div>
+    <div class="bento hm hm-editing" id="hmGrid">${html}</div>`;
+}
+function hmEditStart(){hl.draft=JSON.parse(JSON.stringify(hmLayout()));hl.editing=true;render()}
+function hmEditCancel(){hl.editing=false;hl.draft=null;render()}
+function hmEditReset(){hl.draft=hmNormalize([]);render()}
+async function hmEditSave(){
+  const lay=hl.draft;hl.saved=lay;hl.editing=false;hl.draft=null;save(hmLayoutKey(),lay);render();
+  if(hl.db===false){toast('Home salvata in questo browser','ok');return}
+  const {error}=await nlSupa.from('team_members').update({home_layout:lay}).eq('id',ag.me.id);
+  if(error){hl.db=false;toast('Home salvata in questo browser','ok')}else toast('Home salvata','ok');
+}
+function hmMove(id,d){const L=hl.draft,i=L.findIndex(x=>x.id===id);
+  // salto i riquadri nascosti? no: in modifica si vedono tutti, quindi lo spostamento è quello che vedi
+  const j=i+d;if(i<0||j<0||j>=L.length)return;[L[i],L[j]]=[L[j],L[i]];render();
+  setTimeout(()=>document.querySelector(`[data-tile="${id}"] .hm-tb[aria-label^="Sposta"]:not([disabled])`)?.focus(),0)}
+function hmSize(id,n){const t=hl.draft.find(x=>x.id===id);if(t){t.size=+n;render()}}
+function hmToggle(id){const t=hl.draft.find(x=>x.id===id);if(t){t.show=!t.show;render()}}
+// trascinamento (mouse): sposto il riquadro dal vivo, alla fine leggo l'ordine
+document.addEventListener('dragstart',e=>{const t=e.target.closest&&e.target.closest('#hmGrid [data-tile]');if(!t)return;hl.drag=t;t.classList.add('hm-dragging');e.dataTransfer.effectAllowed='move';try{e.dataTransfer.setData('text/plain',t.dataset.tile)}catch(_){}});
+document.addEventListener('dragover',e=>{if(!hl.drag)return;const t=e.target.closest('#hmGrid [data-tile]');if(!t||t===hl.drag)return;e.preventDefault();
+  const r=t.getBoundingClientRect(),after=(e.clientX-r.left)>r.width/2;const g=t.parentNode;
+  if(after){if(t.nextSibling!==hl.drag)g.insertBefore(hl.drag,t.nextSibling)}else if(t.previousSibling!==hl.drag)g.insertBefore(hl.drag,t)});
+document.addEventListener('drop',e=>{if(hl.drag)e.preventDefault()});
+document.addEventListener('dragend',()=>{if(!hl.drag)return;hl.drag.classList.remove('hm-dragging');hl.drag=null;
+  const ids=[...document.querySelectorAll('#hmGrid [data-tile]')].map(x=>x.dataset.tile);
+  hl.draft=ids.map(id=>hl.draft.find(x=>x.id===id)).filter(Boolean);render()});
+function hmLink(fn){if(hl.editing)return '';return `role="link" tabindex="0" onclick="${fn}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();${fn}}"`}
 function hmGreeting(){const h=new Date().getHours();return h<13?'Buongiorno':h<18?'Buon pomeriggio':'Buonasera'}
 function hmHeroCopy(){
   if(!nl.session)return {t:'Home.',l:'Accedi con il tuo account per vedere call, email, saldo e bacheca di Flowline.'};
@@ -5957,7 +6169,8 @@ function hmHeroCopy(){
 }
 function hmTopActions(){
   if(!nl.session||!ag.me)return '';
-  return `<button class="btn primary" onclick="hmPostForm()">${AG_I.plus}Nuova comunicazione</button><button class="btn" onclick="hmNewMsg()">${HM_I.msg}<span class="lbl">Nuovo messaggio</span></button>`;
+  if(hl.editing)return '';
+  return `<button class="btn primary" onclick="hmPostForm()">${AG_I.plus}Nuova comunicazione</button><button class="btn" onclick="hmNewMsg()">${HM_I.msg}<span class="lbl">Nuovo messaggio</span></button><button class="btn" onclick="hmEditStart()" title="Scegli ordine, dimensione e riquadri da mostrare">${HM_ED_I.edit}<span class="lbl">Personalizza</span></button>`;
 }
 function viewHome(){
   if(!nl.ready)return `<div class="empty"><span class="spinner"></span></div>`;
@@ -5973,51 +6186,54 @@ function viewHome(){
       return `<li class="hm-callrow"><button class="hm-call ${past?'past':''}" onclick="event.stopPropagation();hmOpenCall(${e.id})" title="${url?'Apri la call':'Nessun link: apro i dettagli'}"><span class="hm-ctime">${e.tutto_il_giorno?'Tutto il giorno':esc(agT(e.inizio))}</span><span class="hm-cname">${esc(e.cliente||e.titolo)}${e.cliente&&e.cliente!==e.titolo?`<small>${esc(e.titolo)}</small>`:''}</span><span class="ag-avs">${agAvs(e)}</span>${url?`<span class="hm-cjoin" aria-hidden="true">${PW_I.ext}</span>`:''}</button><button class="hm-cset" onclick="event.stopPropagation();hmGoEvent(${e.id})" title="Impostazioni della call" aria-label="Impostazioni della call">${HM_GEAR}</button></li>`}).join('')}</ul>`
     :`<p class="hm-empty">Nessuna call in programma oggi.</p>`;
   const posts=hm.allPosts?hm.posts:hm.posts.slice(0,5);
-  return `<div class="bento hm">
-    <section class="tile t-lilac span-5 hm-card" ${hmLink("agGoTab('settimana')")} aria-label="Call di oggi">
+  // ogni riquadro della Home: la persona sceglie ordine, visibilità e dimensione (Personalizza)
+  const SP=id=>hmSpan(id);
+  const TILES={
+    calls:()=>`<section class="tile t-lilac ${SP('calls')} hm-card" ${hmLink("agGoTab('settimana')")} aria-label="Call di oggi">
       <div class="tile-h"><h3>Call di oggi</h3><span class="spacer"></span><span class="sub">${calls.length}</span></div>
       ${callsHtml}
       <div class="hm-foot">${others?`${others} ${others===1?'altro impegno':'altri impegni'} oggi · `:''}Apri il calendario ${HM_I.arrow}</div>
-    </section>
-    <section class="tile t-cobalt span-4 hm-card" ${hmLink("go('coda')")} aria-label="Email da inviare oggi">
+    </section>`,
+    mail:()=>`<section class="tile t-cobalt ${SP('mail')} hm-card" ${hmLink("go('coda')")} aria-label="Email da inviare oggi">
       <div class="tile-h"><h3>Email da inviare</h3></div>
       ${state.contacts.length?`<div class="hm-big">${mail.total}</div>
       <ul class="hm-split">${mail.by.map((n,i)=>`<li><span>${esc(names[i])}</span><b>${n}</b></li>`).join('')}</ul>
       <div class="hm-foot">${mail.late?`${mail.late} in ritardo · `:''}Apri la coda invio ${HM_I.arrow}</div>`
       :`<p class="hm-empty">Non ci sono ancora contatti in Outbound.</p><div class="hm-foot">Vai a Outbound ${HM_I.arrow}</div>`}
-    </section>
-    <section class="tile t-peach span-3 hm-card" ${hmLink("go('contabilita')")} aria-label="Saldo conto aziendale">
+    </section>`,
+    saldo:()=>`<section class="tile t-peach ${SP('saldo')} hm-card" ${hmLink("go('contabilita')")} aria-label="Saldo conto aziendale">
       <div class="tile-h"><h3>Saldo conto</h3></div>
       ${mc?`<div class="hm-big sm">${esc(ctEur(ctBalance(mc.id)))}</div><div class="hm-sub">${esc(mc.nome)}</div>
       <div class="hm-foot">${pend?`${pend} da completare · `:''}Contabilità ${HM_I.arrow}</div>`:`<p class="hm-empty">${ct.missing?'Contabilità da attivare.':'Carico il saldo…'}</p>`}
-    </section>
-    <section class="tile t-orange span-3 hm-card" ${hmLink("nl.tab='iscritti';go('newsletter')")} aria-label="Iscritti alla newsletter">
+    </section>`,
+    iscritti:()=>`<section class="tile t-orange ${SP('iscritti')} hm-card" ${hmLink("nl.tab='iscritti';go('newsletter')")} aria-label="Iscritti alla newsletter">
       <div class="tile-h"><h3>Iscritti newsletter</h3></div>
       ${subs?`<div class="hm-big">${subs.n}</div><div class="hm-sub">${subs.week?`+${subs.week} negli ultimi 7 giorni`:'Nessun nuovo iscritto questa settimana'}</div>`:`<p class="hm-empty">Carico gli iscritti…</p>`}
       <div class="hm-foot">Vedi gli iscritti ${HM_I.arrow}</div>
-    </section>
-    <section class="tile span-3 hm-card ${rep?'hm-alert':''}" ${hmLink("go('risposte')")} aria-label="Nuove risposte alle email">
+    </section>`,
+    risposte:()=>`<section class="tile ${SP('risposte')} hm-card ${rep?'hm-alert':''}" ${hmLink("go('risposte')")} aria-label="Nuove risposte alle email">
       <div class="tile-h"><h3>Nuove risposte</h3></div>
       <div class="hm-big">${rep}</div><div class="hm-sub">${repTot} ${repTot===1?'risposta in tutto':'risposte in tutto'}</div>
       <div class="hm-foot">Apri le risposte ${HM_I.arrow}</div>
-    </section>
-    ${pjHomeTile()}
-    <section class="tile span-8 hm-msgs" aria-label="Messaggi">
+    </section>`,
+    attivita:()=>`${pjHomeTile().replace('span-6',SP('attivita'))}`,
+    messaggi:()=>`<section class="tile ${SP('messaggi')} hm-msgs" aria-label="Messaggi">
       <div class="tile-h"><h3>Messaggi</h3>${hmUnreadMsgs()?`<span class="badge">${hmUnreadMsgs()}</span>`:''}<span class="spacer"></span><button class="btn sm" onclick="hmNewMsg()">${AG_I.plus}Nuovo</button></div>
       ${hm.missing?`<p class="hm-empty">Messaggi e bacheca si attivano con la migrazione <code>20261104150000_messaggi_bacheca.sql</code>.</p>`
       :convos.length?`<div class="hm-convs">${convos.slice(0,5).map(hmConvoCard).join('')}</div>`:`<p class="hm-empty">Nessun messaggio. Scrivi a un collega con «Nuovo».</p>`}
-    </section>
-    <section class="tile span-4 hm-online" aria-label="Online adesso">
+    </section>`,
+    online:()=>`<section class="tile ${SP('online')} hm-online" aria-label="Online adesso">
       <div class="tile-h"><h3>Online</h3><span class="spacer"></span><span class="on-dot attivo" aria-hidden="true"></span></div>
       <div id="on-tile-body">${onTileHtml()}</div>
-    </section>
-    <section class="tile span-12 hm-board" aria-label="Bacheca comunicazioni">
+    </section>`,
+    bacheca:()=>`<section class="tile ${SP('bacheca')} hm-board" aria-label="Bacheca comunicazioni">
       <div class="tile-h"><h3>Bacheca</h3><span class="sub">comunicazioni per tutta la squadra</span><span class="spacer"></span><button class="btn sm primary" onclick="hmPostForm()">${AG_I.plus}Nuova comunicazione</button></div>
       ${hm.missing?`<p class="hm-empty">Messaggi e bacheca si attivano con la migrazione <code>20261104150000_messaggi_bacheca.sql</code>.</p>`
       :posts.length?`<div class="hm-posts">${posts.map(hmPostCard).join('')}</div>${hm.posts.length>5?`<button class="btn sm" style="margin-top:12px" onclick="hm.allPosts=!hm.allPosts;render()">${hm.allPosts?'Mostra meno':'Mostra tutte ('+hm.posts.length+')'}</button>`:''}`
       :`<p class="hm-empty">La bacheca è vuota. Pubblica una comunicazione per tutta la squadra.</p>`}
-    </section>
-  </div>`;
+    </section>`,
+  };
+  return hmRenderTiles(TILES);
 }
 
 const HM_GEAR='<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>';
