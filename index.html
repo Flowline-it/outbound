@@ -1254,6 +1254,40 @@ tbody tr:hover{background:var(--surface-2)}
   .rv,.page-head.enter .ph-title,.page-head.enter .ph-actions,.page-head.enter .ph-bar,.wk.grow .wk-b{animation:none!important}
   .pill-ind{transition:none}
 }
+
+/* ---- menu: moduli raggruppati nelle aree Marketing e Amministrazione ---- */
+.nav .nav-grp{display:flex;align-items:center;height:34px;padding:0 6px 0 12px;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);white-space:nowrap;flex:0 0 auto}
+.nav .nav-sep{width:1px;height:20px;background:var(--border);margin:0 6px;flex:0 0 auto}
+/* ---- impostazioni ---- */
+.st-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr));gap:16px;align-items:start}
+.st-card{display:flex;flex-direction:column;gap:0;scroll-margin-top:96px}
+.st-card-h{margin-bottom:16px}
+.st-card-h h3{font-size:16.5px;font-weight:650;letter-spacing:-.02em}
+.st-card-h p{font-size:13.5px;color:var(--muted);margin-top:2px}
+.st-card-b{display:flex;flex-direction:column;gap:16px}
+.st-card-b .toggle{align-items:flex-start}
+.st-card-b .toggle .sw{margin-top:1px}
+.st-card-b .toggle .hint{font-size:12.5px;color:var(--faint);font-weight:400;line-height:1.45}
+.st-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.st-row .spacer{flex:1}
+.st-sep{padding-top:14px;border-top:1px solid var(--border)}
+.st-sub{font-size:11.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);padding-top:6px;border-top:1px solid var(--border)}
+.st-form-own{display:flex;flex-direction:column;gap:14px}
+.st-seg .fbtn{min-width:96px}
+.st-jump{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.st-jump a{height:32px;padding:0 13px;border-radius:var(--pill);display:inline-flex;align-items:center;font-size:13px;font-weight:600;color:var(--muted);background:var(--surface);box-shadow:var(--card-shadow);text-decoration:none}
+.st-jump a:hover{color:var(--text);background:var(--surface-2)}
+.st-bar{position:relative;bottom:16px;z-index:6;display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:18px;padding:10px 10px 10px 18px;border-radius:var(--pill);background:var(--surface);box-shadow:var(--shadow);transition:box-shadow .25s var(--ease),transform .25s var(--ease)}
+.st-bar .spacer{flex:1}
+.st-bar-t{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--muted)}
+.st-dot{width:8px;height:8px;border-radius:50%;background:var(--border-strong)}
+.st-msg-dirty,.st-bar .btn.ghost{display:none}
+.st-bar.dirty{position:sticky;box-shadow:0 0 0 2px var(--brand),var(--shadow);animation:v3In .35s var(--ease)}
+.st-bar.dirty .st-dot{background:var(--brand)}
+.st-bar.dirty .st-msg-dirty{display:inline;color:var(--text);font-weight:600}
+.st-bar.dirty .st-msg-clean{display:none}
+.st-bar.dirty .btn.ghost{display:inline-flex}
+@media(max-width:700px){.st-bar{border-radius:20px;bottom:10px}.st-bar-t{flex-basis:100%}}
 </style>
 </head>
 <body class="locked">
@@ -1271,9 +1305,6 @@ tbody tr:hover{background:var(--surface-2)}
       <span class="nav-spacer"></span>
       <div class="nav-tools">
         <div class="online-box" id="onlineBox" hidden></div>
-        <button class="icon-btn" onclick="openSettings()" title="Impostazioni" aria-label="Impostazioni">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        </button>
         <button class="icon-btn theme-btn" onclick="toggleTheme()" id="themeBtn" title="Tema chiaro/scuro" aria-label="Cambia tema">
           <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
           <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
@@ -1691,7 +1722,7 @@ function initGoogle(){
   }catch(e){console.error(e)}
 }
 function connectGoogle(force){
-  if(!state.config.googleClientId){openSettings();toast('Inserisci prima il Client ID Google','warn');return}
+  if(!state.config.googleClientId){openSettings('collegamenti');toast('Inserisci prima il Client ID Google','warn');return}
   if(!tokenClient) initGoogle();
   if(!tokenClient){toast('Google Identity non caricato, riprova','err');return}
   // force=true -> richiede di nuovo il consenso: serve quando si aggiungono nuovi permessi
@@ -1769,7 +1800,7 @@ async function loadSendAs(){
     state.sendAsErr='';
     renderConn();
     // se le Impostazioni sono aperte, aggiorno l'elenco dei mittenti
-    if(document.getElementById('set-gid')&&!_sendAsRedraw){_sendAsRedraw=true;try{openSettings()}finally{_sendAsRedraw=false}}
+    if(state.view==='impostazioni'&&st.tab==='collegamenti'&&!_sendAsRedraw){_sendAsRedraw=true;try{render()}finally{_sendAsRedraw=false}}
   }catch(e){
     console.warn('sendAs',e.message);
     const m=e.message||'';
@@ -2415,13 +2446,13 @@ async function resetAll(){
 }
 function showSupaSQL(){
   modal(`<div class="modal" onclick="event.stopPropagation()">
-    <div class="modal-h"><h3>SQL di setup Supabase</h3><div class="x" onclick="openSettings()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div>
+    <div class="modal-h"><h3>SQL di setup Supabase</h3><div class="x" onclick="openSettings('avanzate')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div>
     <div class="modal-b">
       <div class="helptip">Nel tuo progetto Supabase apri <b>SQL Editor → New query</b>, incolla ed esegui una volta. Crea la tabella <code>contacts</code> e attiva gli aggiornamenti in tempo reale.</div>
       <textarea class="body" style="min-height:240px;font-family:'JetBrains Mono',monospace;font-size:12px" readonly>${esc(SUPA_SQL)}</textarea>
       <button class="btn sm" onclick="copySupaSQL()">Copia SQL</button>
     </div>
-    <div class="modal-f"><button class="btn primary" onclick="openSettings()"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Torna alle impostazioni</button></div>
+    <div class="modal-f"><button class="btn primary" onclick="openSettings('avanzate')"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Torna alle impostazioni</button></div>
   </div>`);
 }
 
@@ -2461,7 +2492,7 @@ ${prevSent?`\nEmail già inviate in questo thread (NON ripeterti, costruisci sop
     body:JSON.stringify({model:MODEL,max_tokens:900,system:sys,messages:[{role:'user',content:ctx}]})
   });
   if(!r.ok){const t=await r.text();
-    if(/anthropic-workspace-id|not scoped to a workspace/i.test(t)) throw new Error('La chiave Anthropic non è legata a un workspace: inserisci il Workspace ID in Impostazioni → Generazione AI');
+    if(/anthropic-workspace-id|not scoped to a workspace/i.test(t)) throw new Error('La chiave Anthropic non è legata a un workspace: inserisci il Workspace ID in Impostazioni → Collegamenti');
     throw new Error('Anthropic '+r.status+': '+t.slice(0,200))}
   const data=await r.json();
   const u=data.usage||{};
@@ -2542,22 +2573,29 @@ function handleFile(file){
    RENDER
    ======================================================= */
 // FlowLine Suite: due aree, ciascuna con le sue pagine
+// FlowLine Suite: le aree del menu. Marketing e Amministrazione raccolgono più moduli
 const SECTIONS=[
   {id:'home',label:'Home',icon:'M3 11.5 12 4l9 7.5 M5 10v10h14V10 M10 20v-6h4v6'},
   {id:'outbound',label:'Outbound',icon:'M22 2 11 13 M22 2l-7 20-4-9-9-4 20-7z'},
-  {id:'newsletter',label:'Newsletter',icon:'M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z M22 6l-10 7L2 6'},
-  {id:'richieste',label:'Richieste',icon:'M22 12h-6l-2 3h-4l-2-3H2 M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z'},
-  {id:'contabilita',label:'Contabilità',icon:'M20 7H5a2 2 0 0 1 0-4h13v4 M3 5v14a2 2 0 0 0 2 2h15V7 M16 14h.01'},
+  {id:'marketing',label:'Marketing',icon:'M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1z M15.5 8.5a5 5 0 0 1 0 7 M18.5 5.5a9 9 0 0 1 0 13'},
   {id:'agenda',label:'Calendario',icon:'M3 4h18v18H3z M16 2v4 M8 2v4 M3 10h18 M8 14h2 M14 14h2'},
   {id:'progetti',label:'Progetti',icon:'M9 11l3 3L22 4 M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11'},
-  {id:'password',label:'Password',icon:'M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4'},
+  {id:'amministrazione',label:'Amministrazione',icon:'M3 7h18v13H3z M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2 M3 13h18'},
+  {id:'impostazioni',label:'Impostazioni',icon:'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z'},
 ];
-const SEC_NAME={home:'Home',outbound:'Outbound',newsletter:'Newsletter',richieste:'Richieste',contabilita:'Contabilità',agenda:'Calendario',progetti:'Progetti',password:'Password'};
+// nomi dei moduli (una pagina dell'app = un modulo)
+const SEC_NAME={home:'Home',outbound:'Outbound',newsletter:'Newsletter',richieste:'Richieste',contabilita:'Contabilità',agenda:'Calendario',progetti:'Progetti',password:'Password',impostazioni:'Impostazioni'};
+// area del menu di ogni modulo
+const AREA_NAME={home:'Home',outbound:'Outbound',marketing:'Marketing',agenda:'Calendario',progetti:'Progetti',amministrazione:'Amministrazione',impostazioni:'Impostazioni'};
+const AREA_MODS={marketing:['newsletter','richieste'],amministrazione:['contabilita','password']};
 const NL_PAGES=[{tab:'campagne',label:'Campagne'},{tab:'iscritti',label:'Iscritti'}];
-function sectionOf(v){return v==='home'||v==='newsletter'||v==='richieste'||v==='contabilita'||v==='agenda'||v==='progetti'||v==='password'?v:'outbound'}
+function sectionOf(v){return v==='home'||v==='newsletter'||v==='richieste'||v==='contabilita'||v==='agenda'||v==='progetti'||v==='password'||v==='impostazioni'?v:'outbound'}
+function areaOf(v){const m=sectionOf(v);for(const a in AREA_MODS)if(AREA_MODS[a].includes(m))return a;return m}
 function goSection(sec){
-  if(sec===sectionOf(state.view)){closeRail();return}
-  if(sec==='home'||sec==='newsletter'||sec==='richieste'||sec==='contabilita'||sec==='agenda'||sec==='progetti'||sec==='password') go(sec); else go(state.lastOutbound&&sectionOf(state.lastOutbound)==='outbound'?state.lastOutbound:'dashboard');
+  if(sec===areaOf(state.view)){closeRail();return}
+  if(sec==='outbound') go(state.lastOutbound&&sectionOf(state.lastOutbound)==='outbound'?state.lastOutbound:'dashboard');
+  else if(AREA_MODS[sec]){const last=(state.lastIn||{})[sec];go(AREA_MODS[sec].includes(last)?last:AREA_MODS[sec][0]);}
+  else go(sec);
 }
 function goNl(tab){nl.tab=tab;nl.edit=null;if(state.view!=='newsletter')go('newsletter');else{closeRail();render();window.scrollTo(0,0)}}
 const NAV=[
@@ -2578,42 +2616,43 @@ function renderNav(){
   const newRep=state.contacts.filter(c=>c.haRisposto&&c.replySeen===false).length;
   const ico=d=>`<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`;
   // livello 1: aree, con un pallino se nell'altra area c'è qualcosa che aspetta
+  const area=areaOf(state.view);
   const alertOut=late||todayN||newRep||ldBusy(), alertNl=!!nl.sending, alertRq=rq.loaded&&rqNew()>0, alertCt=ct.loaded&&!ct.missing&&ctPending().length>0, alertAg=ag.loaded&&!ag.missing&&agUnread()>0, alertHm=hm.loaded&&!hm.missing&&(hmUnreadMsgs()>0);
+  const AL={outbound:[alertOut,'ci sono attività in sospeso'],marketing:[alertNl||alertRq,alertRq?'ci sono richieste nuove':'una newsletter è in invio'],amministrazione:[alertCt,'ci sono movimenti da completare'],agenda:[alertAg,'ci sono notifiche da leggere'],home:[alertHm,'ci sono messaggi da leggere']};
   const sp=document.getElementById('spendPill');if(sp)sp.hidden=sec!=='outbound';
   document.getElementById('secSwitch').innerHTML=SECTIONS.map(x=>{
-    const on=x.id===sec, al=x.id==='outbound'?alertOut:(x.id==='newsletter'?alertNl:(x.id==='contabilita'?alertCt:(x.id==='agenda'?alertAg:(x.id==='home'?alertHm:(x.id==='password'||x.id==='progetti'?false:alertRq)))));
-    const dot=!on&&al?`<span class="dotb${x.id==='outbound'&&late?' late':''}" aria-label="${x.id==='richieste'?'ci sono richieste nuove':x.id==='contabilita'?'ci sono movimenti da completare':x.id==='agenda'?'ci sono notifiche da leggere':x.id==='home'?'ci sono messaggi da leggere':'ci sono attività in sospeso'}"></span>`:'';
+    const on=x.id===area, al=AL[x.id];
+    const dot=!on&&al&&al[0]?`<span class="dotb${x.id==='outbound'&&late?' late':''}" aria-label="${al[1]}"></span>`:'';
     return `<button type="button" aria-pressed="${on}" title="${x.label}" onclick="goSection('${x.id}')">${ico(x.icon)}<span>${x.label}</span>${dot}</button>`;
   }).join('');
-  // livello 2: pagine dell'area attiva
+  // livello 2: pagine dell'area attiva; nelle aree con più moduli le pagine sono raggruppate per modulo
   const nav=document.getElementById('nav');
-  nav.setAttribute('aria-label','Pagine di '+SEC_NAME[sec]);
+  nav.setAttribute('aria-label','Pagine di '+AREA_NAME[area]);
+  const btn=(on,click,label,badge='')=>`<button class="${on?'active':''}" ${on?'aria-current="page"':''} onclick="${click}"><span>${label}</span>${badge}</button>`;
+  const MOD={
+    newsletter:()=>NL_PAGES.map(pg=>{
+      const on=state.view==='newsletter'&&nl.tab===pg.tab;
+      const badge=pg.tab==='iscritti'&&nl.loaded?`<span class="badge plain">${nlActive().length}</span>`:(pg.tab==='campagne'&&nl.sending?'<span class="badge">invio</span>':'');
+      return btn(on,`goNl('${pg.tab}')`,pg.label,badge);}),
+    richieste:()=>{const n=rq.loaded?rqNew():0;return [btn(state.view==='richieste',"go('richieste')",'Dal sito',n?`<span class="badge">${n}</span>`:'')]},
+    contabilita:()=>CT_TABS.map(pg=>{const n=pg.tab==='movimenti'&&ct.loaded&&!ct.missing?ctPending().length:0;
+      return btn(state.view==='contabilita'&&ct.tab===pg.tab,`ctGoTab('${pg.tab}')`,pg.label,n?`<span class="badge">${n}</span>`:'');}),
+    password:()=>PW_TABS.map(pg=>btn(state.view==='password'&&pw.tab===pg.tab,`pwGoTab('${pg.tab}')`,pg.label)),
+  };
   let items;
   const sw=document.querySelector('.subnav-wrap');if(sw)sw.style.display=sec==='home'?'none':'';
   if(sec==='home'){
     items=[];
+  } else if(AREA_MODS[area]){
+    items=AREA_MODS[area].map((m,i)=>`${i?'<span class="nav-sep" aria-hidden="true"></span>':''}<span class="nav-grp">${SEC_NAME[m]}</span>`+MOD[m]().join(''));
+  } else if(sec==='impostazioni'){
+    items=ST_TABS.map(pg=>btn(st.tab===pg.tab,`stGoTab('${pg.tab}')`,pg.label));
   } else if(sec==='progetti'){
     items=PJ_TABS.map(pg=>{const on=pj.tab===pg.tab;return `<button class="${on?'active':''}" ${on?'aria-current="page"':''} onclick="pjGoTab('${pg.tab}')"><span>${pg.label}</span></button>`});
-  } else if(sec==='password'){
-    items=PW_TABS.map(pg=>{const on=pw.tab===pg.tab;return `<button class="${on?'active':''}" ${on?'aria-current="page"':''} onclick="pwGoTab('${pg.tab}')"><span>${pg.label}</span></button>`});
-  } else if(sec==='richieste'){
-    const n=rq.loaded?rqNew():0;
-    items=[`<button class="active" aria-current="page" onclick="go('richieste')"><span>Richieste dal sito</span>${n?`<span class="badge">${n}</span>`:''}</button>`];
   } else if(sec==='agenda'){
     items=AG_TABS.map(pg=>{
       const on=ag.tab===pg.tab, n=pg.tab==='notifiche'&&ag.loaded?agUnread():0;
       return `<button class="${on?'active':''}" ${on?'aria-current="page"':''} onclick="agGoTab('${pg.tab}')"><span>${pg.label}</span>${n?`<span class="badge">${n}</span>`:''}</button>`;
-    });
-  } else if(sec==='contabilita'){
-    items=CT_TABS.map(pg=>{
-      const on=ct.tab===pg.tab, n=pg.tab==='movimenti'&&ct.loaded&&!ct.missing?ctPending().length:0;
-      return `<button class="${on?'active':''}" ${on?'aria-current="page"':''} onclick="ctGoTab('${pg.tab}')"><span>${pg.label}</span>${n?`<span class="badge">${n}</span>`:''}</button>`;
-    });
-  } else if(sec==='newsletter'){
-    items=NL_PAGES.map(pg=>{
-      const on=nl.tab===pg.tab;
-      const badge=pg.tab==='iscritti'&&nl.loaded?`<span class="badge plain">${nlActive().length}</span>`:(pg.tab==='campagne'&&nl.sending?'<span class="badge">invio</span>':'');
-      return `<button class="${on?'active':''}" ${on?'aria-current="page"':''} onclick="goNl('${pg.tab}')"><span>${pg.label}</span>${badge}</button>`;
     });
   } else {
     items=NAV.map(n=>{
@@ -2626,7 +2665,7 @@ function renderNav(){
       return `<button class="${on?'active':''}" ${on?'aria-current="page"':''} onclick="go('${n.id}')">${ico(n.icon)}<span>${n.label}</span>${badge}</button>`;
     });
   }
-  nav.innerHTML=`<span class="nav-area" aria-hidden="true">${SEC_NAME[sec]}</span>`+items.join('');
+  nav.innerHTML=`<span class="nav-area" aria-hidden="true">${AREA_NAME[area]}</span>`+items.join('');
   agRenderUser();
   v3Pills();
 }
@@ -2678,7 +2717,7 @@ function renderConn(){
   if(stxt){stxt.textContent=supaReady()?'Database online':(supaConfigured()?'Database in connessione…':'Database locale');}
   document.getElementById('testBanner').style.display=state.config.testMode?'flex':'none';
 }
-function go(v){if(sectionOf(v)==='outbound')state.lastOutbound=v;state.view=v;state.search='';state.filter='tutti';closeRail();render();window.scrollTo(0,0)}
+function go(v){if(sectionOf(v)==='outbound')state.lastOutbound=v;if(AREA_MODS[areaOf(v)])(state.lastIn=state.lastIn||{})[areaOf(v)]=sectionOf(v);state.view=v;state.search='';state.filter='tutti';closeRail();render();window.scrollTo(0,0)}
 function heroCopy(){
   const n=state.contacts.length, pl=(k,s,p)=>k===1?s:p;
   const due=state.contacts.filter(dueToday).length, late=state.contacts.filter(isLate).length;
@@ -2691,6 +2730,7 @@ function heroCopy(){
   if(state.view==='agenda') return agHeroCopy();
   if(state.view==='progetti') return pjHeroCopy();
   if(state.view==='password') return pwHeroCopy();
+  if(state.view==='impostazioni') return stHeroCopy();
   if(state.view==='lead') return ldHeroCopy();
   if(state.view==='stats') return obHeroCopy();
   if(!n) return {t:'Benvenuto in Outbound.',l:'Importa una lista di contatti in CSV o Excel: le colonne vengono riconosciute in automatico.'};
@@ -2712,6 +2752,7 @@ function v3Key(){
   const v=state.view;
   if(v==='progetti')return v+'|'+pj.tab+'|'+(pj.open||'');
   if(v==='password')return v+'|'+pw.tab;
+  if(v==='impostazioni')return v+'|'+st.tab;
   if(v==='agenda')return v+'|'+ag.tab;
   if(v==='contabilita')return v+'|'+ct.tab;
   if(v==='newsletter')return v+'|'+nl.tab+'|'+(nl.edit?(nl.edit.id||'nuova'):'');
@@ -2797,11 +2838,12 @@ function render(){
   document.getElementById('viewTitle').textContent=hc.t;
   const vl=document.getElementById('viewLede');if(vl)vl.textContent=hc.l;
   const vd=document.getElementById('viewDate');if(vd)vd.textContent=today().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
-  const pageName=state.view==='home'?'Home':state.view==='progetti'?(pj.tab==='progetti'&&pj.open&&pjP(pj.open)?pjP(pj.open).nome:(PJ_TABS.find(x=>x.tab===pj.tab)||PJ_TABS[0]).label):state.view==='password'?(PW_TABS.find(x=>x.tab===pw.tab)||PW_TABS[0]).label:state.view==='agenda'?(AG_TABS.find(x=>x.tab===ag.tab)||AG_TABS[0]).label:state.view==='contabilita'?(CT_TABS.find(x=>x.tab===ct.tab)||CT_TABS[0]).label:state.view==='richieste'?'Richieste':state.view==='newsletter'?(nl.tab==='iscritti'?'Iscritti':'Campagne'):({dashboard:'Dashboard',pianifica:'Pianificazione',coda:'Coda invio',contatti:'Contatti',calendario:'Piano invii',risposte:'Risposte',lead:'Ricerca lead',stats:'Statistiche'}[state.view]||'Dashboard');
-  const secName=SEC_NAME[sectionOf(state.view)];
-  document.title=(pageName!==secName?pageName+' · ':'')+secName+' — FlowLine Suite';
+  const pageName=state.view==='home'?'Home':state.view==='impostazioni'?(ST_TABS.find(x=>x.tab===st.tab)||ST_TABS[0]).label:state.view==='progetti'?(pj.tab==='progetti'&&pj.open&&pjP(pj.open)?pjP(pj.open).nome:(PJ_TABS.find(x=>x.tab===pj.tab)||PJ_TABS[0]).label):state.view==='password'?(PW_TABS.find(x=>x.tab===pw.tab)||PW_TABS[0]).label:state.view==='agenda'?(AG_TABS.find(x=>x.tab===ag.tab)||AG_TABS[0]).label:state.view==='contabilita'?(CT_TABS.find(x=>x.tab===ct.tab)||CT_TABS[0]).label:state.view==='richieste'?'Richieste':state.view==='newsletter'?(nl.tab==='iscritti'?'Iscritti':'Campagne'):({dashboard:'Dashboard',pianifica:'Pianificazione',coda:'Coda invio',contatti:'Contatti',calendario:'Piano invii',risposte:'Risposte',lead:'Ricerca lead',stats:'Statistiche'}[state.view]||'Dashboard');
+  const secName=SEC_NAME[sectionOf(state.view)], areaName=AREA_NAME[areaOf(state.view)];
+  const crumbs=[areaName];if(secName!==areaName)crumbs.push(secName);if(pageName!==secName&&pageName!==areaName)crumbs.push(pageName);
+  document.title=crumbs.slice().reverse().join(' · ')+' — FlowLine Suite';
   agTitle();
-  const cr=document.getElementById('viewCrumb');if(cr)cr.textContent=secName+(pageName!==secName?' · '+pageName:'');
+  const cr=document.getElementById('viewCrumb');if(cr)cr.textContent=crumbs.join(' · ');
   const ta=document.getElementById('topActions');
   const I={
     refresh:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6 M1 20v-6h6 M3.51 9a9 9 0 0 1 14.85-3.36L23 10 M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>',
@@ -2830,6 +2872,7 @@ function render(){
   else if(state.view==='agenda'){ ta.innerHTML=agTopActions(); }
   else if(state.view==='progetti'){ ta.innerHTML=pjTopActions(); }
   else if(state.view==='password'){ ta.innerHTML=pwTopActions(); }
+  else if(state.view==='impostazioni'){ ta.innerHTML=''; }
   else if(state.view==='lead'){ ta.innerHTML=ldTopActions(); }
   else if(state.view==='stats'){ ta.innerHTML=`<button class="btn" onclick="obLoad(true)"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6 M1 20v-6h6 M3.51 9a9 9 0 0 1 14.85-3.36L23 10 M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg><span class="lbl">Aggiorna</span></button>`; }
   else ta.innerHTML=primary
@@ -2852,6 +2895,8 @@ function render(){
   else if(state.view==='progetti'){ if(!nl.inited) nlInit(); C.innerHTML=viewProgetti(); }
   else if(state.view==='password'){ if(!nl.inited) nlInit(); C.innerHTML=viewPassword(); }
   else if(state.view==='stats'){ C.innerHTML=viewStats(); }
+  else if(state.view==='impostazioni'){ const keep=st.dirty&&C.dataset.st===st.tab?stSnap(C):null; C.innerHTML=viewImpostazioni(); if(keep)stRestore(C,keep); }
+  C.dataset.st=state.view==='impostazioni'?st.tab:'';
   if(state.view==='coda')bindCodaInputs();
   if(state.view==='pianifica')bindPianifica();
   v3After();
@@ -3264,7 +3309,7 @@ async function regen(id,step){
 }
 async function generateAllDrafts(){
   const list=state.contacts.filter(c=>dueToday(c)||(_showLate&&isLate(c)));
-  if(!state.config.anthropicKey){toast('Manca la chiave Anthropic','warn');openSettings();return}
+  if(!state.config.anthropicKey){toast('Manca la chiave Anthropic','warn');openSettings('collegamenti');return}
   let done=0,batchCost=0;toast('Genero '+list.length+' bozze...','warn');
   for(const c of list){
     const na=nextAction(c);if(!na)continue;
@@ -3649,179 +3694,232 @@ async function deleteContact(id){
 }
 
 /* ---- settings ---- */
-function openSettings(){
-  const cf=state.config;
-  modal(`<div class="modal wide" onclick="event.stopPropagation()">
-    <div class="modal-h"><h3>Impostazioni</h3><div class="x" role="button" tabindex="0" aria-label="Chiudi" onclick="closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div>
-    <div class="modal-b">
-      <label class="toggle ${cf.testMode?'on':''}" id="set-test"><span class="sw"></span>
-        <span><b>Modalità test</b><br><span class="hint">Gli invii sono simulati: niente email reali. Disattiva per inviare davvero.</span></span></label>
+function saveGid(){
+  const v=document.getElementById('set-gid').value.trim();
+  state.config.googleClientId=v;persist();tokenClient=null;initGoogle();
+  setTimeout(()=>connectGoogle(),300);
+}
+/* =======================================================
+   IMPOSTAZIONI — una pagina con sottocategorie al posto delle due finestre
+   (Impostazioni e Cadenza & template). Gli stessi campi, ordinati per funzione.
+   ======================================================= */
+const ST_TABS=[
+  {tab:'generali',label:'Generali',lede:'Il tuo profilo, l\'aspetto della Suite e la modalità test degli invii.'},
+  {tab:'collegamenti',label:'Collegamenti',lede:'Gli account e le chiavi con cui la Suite parla con Google, il database e l\'AI.'},
+  {tab:'outbound',label:'Outbound',lede:'Quante email partono e quando, la sequenza di follow-up, la firma e i testi scritti dall\'AI.'},
+  {tab:'newsletter',label:'Newsletter',lede:'Le impostazioni delle newsletter inviate agli iscritti.'},
+  {tab:'avanzate',label:'Avanzate',lede:'Database, configurazione del team, spesa API e azzeramento. Da toccare solo se sai cosa fai.'},
+];
+const st={tab:'generali',dirty:false};
+const ST_X='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>';
+function openSettings(tab){
+  closeModal();
+  if(tab)st.tab=tab;else if(state.view!=='impostazioni'&&!st.visited)st.tab='generali';
+  st.visited=true;
+  if(state.view!=='impostazioni')go('impostazioni');else{closeRail();render();}
+}
+function openCadence(){openSettings('outbound')}
+function stGoTab(t){
+  if(st.dirty&&t!==st.tab&&!confirm('Hai modifiche non salvate in questa pagina. Vuoi lasciarle?'))return;
+  st.dirty=false;st.tab=t;st.visited=true;
+  if(state.view!=='impostazioni')go('impostazioni');else{closeRail();render();window.scrollTo(0,0)}
+}
+function stDirty(){if(st.dirty)return;st.dirty=true;const b=document.getElementById('st-bar');if(b)b.classList.add('dirty')}
+function stHeroCopy(){const t=ST_TABS.find(x=>x.tab===st.tab)||ST_TABS[0];return {t:t.label,l:t.lede}}
+function stTog(id,on,title,hint){return `<label class="toggle ${on?'on':''}" id="${id}" onclick="this.classList.toggle('on');stDirty()"><span class="sw"></span><span><b>${title}</b>${hint?`<br><span class="hint">${hint}</span>`:''}</span></label>`}
+function stCard(title,sub,body,id){return `<section class="tile st-card"${id?` id="${id}"`:''}><div class="st-card-h"><h3>${title}</h3>${sub?`<p>${sub}</p>`:''}</div><div class="st-card-b">${body}</div></section>`}
+function stBar(){return `<div class="st-bar ${st.dirty?'dirty':''}" id="st-bar"><span class="st-bar-t"><span class="st-dot"></span><span class="st-msg-clean">Le modifiche si salvano con il pulsante qui a destra.</span><span class="st-msg-dirty">Ci sono modifiche non salvate.</span></span><span class="spacer"></span><button class="btn ghost" onclick="stDiscard()">Annulla modifiche</button><button class="btn primary" onclick="stSave()">Salva</button></div>`}
+function stDiscard(){st.dirty=false;st.cadFresh=false;if(st.cadSaved)state.cadence=JSON.parse(st.cadSaved);render();toast('Modifiche annullate','ok')}
 
-      <div class="section-h" style="margin:4px 0 0"><h3 style="font-size:14px">Connessione Google</h3><div class="line"></div></div>
-      <div class="form-row"><label>Google OAuth Client ID</label>
-        <input id="set-gid" value="${escAttr(cf.googleClientId)}" placeholder="xxxxxx.apps.googleusercontent.com">
-        <span class="hint">Da Google Cloud Console → Credenziali → ID client OAuth (tipo: Web). Aggiungi l'origine del tuo sito GitHub Pages tra le origini JavaScript autorizzate.</span></div>
-      <div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap">
-        <button class="btn sm" onclick="saveGid()">${googleReady()?'Riconnetti':'Connetti Google'}</button>
-        ${googleReady()?`<button class="btn sm ghost" onclick="reauthGoogle()" title="Richiede di nuovo il consenso: serve dopo aver aggiunto nuovi permessi">Riautorizza permessi</button>
-        <button class="btn sm ghost danger" onclick="logoutGoogle()">Esci</button>`:''}
-        ${googleReady()?`<span class="chip reply"><span class="d"></span>${esc(state.google.email||'connesso')}</span>`:''}
-      </div>
-      <div class="helptip">Google serve solo per <b>inviare le email</b> e rilevare le risposte via Gmail. La sorgente dei contatti è Supabase (sotto).</div>
-      <div class="form-row"><label>Invia le email da <span class="hint">(alias "Invia come" del tuo account Gmail)</span></label>
-        ${googleReady()?`<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+function viewImpostazioni(){
+  if(!st.dirty)st.cadSaved=JSON.stringify(state.cadence); // copia per "Annulla modifiche"
+  const cf=state.config, tp=state.templates, cad=state.cadence;
+  const T=st.tab;
+  if(T==='generali'){
+    const me=ag.me, email=nl.session?.user?.email||'';
+    const dark=document.documentElement.getAttribute('data-theme')==='dark';
+    const prof=me?`<form class="st-form-own" onsubmit="agSaveProfile(event)">
+        <div class="two-col"><div class="form-row"><label for="ag-p-nome">Nome</label><input id="ag-p-nome" required value="${escAttr(me.nome)}"></div>
+        <div class="form-row"><label for="ag-p-col">Colore nel calendario</label><input id="ag-p-col" type="color" value="${escAttr(me.colore)}" style="height:44px;padding:4px"></div></div>
+        <div class="st-row"><span class="hint">Accesso come <b>${esc(email)}</b>. Nome e colore si vedono nel calendario, nei progetti e in chi è online.</span><span class="spacer"></span><button class="btn sm" type="submit">Salva profilo</button></div></form>`
+      :`<p class="helptip">Accesso come <b>${esc(email)}</b>. Questo account non è ancora nella squadra: il calendario si attiva dopo <code>team_aggiungi</code> (vedi README).</p>`;
+    return `<div class="st-grid">
+      ${stCard('Il mio profilo','Come ti vede il resto della squadra.',prof+`<div class="st-row st-sep"><span class="hint">Esci dalla Suite su questo browser.</span><span class="spacer"></span><button class="btn sm ghost danger" onclick="nlLogout()">Esci</button></div>`)}
+      ${stCard('Aspetto','Vale solo per questo browser e si applica subito.',`<div class="seg st-seg" role="group" aria-label="Tema">
+          <button class="fbtn ${dark?'':'on'}" onclick="${dark?'toggleTheme();setTimeout(render,700)':''}">Chiaro</button>
+          <button class="fbtn ${dark?'on':''}" onclick="${dark?'':'toggleTheme();setTimeout(render,700)'}">Scuro</button></div>`)}
+      ${stCard('Invii di prova','Vale per Outbound e Newsletter.',stTog('set-test',cf.testMode,'Modalità test','Gli invii sono simulati: niente email reali. Le prove inviate a te stesso dalla Newsletter partono comunque. Spegnila per inviare davvero.'))}
+    </div>${stBar()}`;
+  }
+  if(T==='collegamenti'){
+    if(googleReady()&&!state.sendAs.length&&!state.sendAsErr&&!_sendAsRedraw) setTimeout(loadSendAs,0);
+    const g=googleReady();
+    const sendAs=g?`<div class="st-row">
           <select id="set-from" onchange="setFrom(this.value)" style="flex:1;min-width:220px">
             ${(state.sendAs.length?state.sendAs:[{email:state.google.email||'',name:'',primary:true}]).filter(a=>a&&a.email).map(a=>{
               const cur=(state.fromAddr||state.google.email||'').toLowerCase()===a.email.toLowerCase();
               return `<option value="${escAttr(a.email)}" ${cur?'selected':''}>${esc((a.name?a.name+' — ':'')+a.email)}${a.primary?' (principale)':''}</option>`;
             }).join('')}
           </select>
-          <button class="btn sm ghost" onclick="loadSendAs().then(()=>{openSettings()})" title="Rileggi gli alias da Gmail">Aggiorna alias</button>
-        </div>
+          <button class="btn sm ghost" onclick="loadSendAs().then(()=>render())" title="Rileggi gli alias da Gmail">Aggiorna alias</button></div>
         ${state.sendAsErr?`<span class="hint" style="color:var(--late)">Non riesco a leggere gli alias da Gmail: ${esc(state.sendAsErr)}</span>`
           :(state.sendAs.length<=1?`<span class="hint">Gmail restituisce solo l'indirizzo principale. Aggiungi gli alias in Gmail → Impostazioni → Account → "Invia messaggio come" → Aggiungi un altro indirizzo email, poi premi "Aggiorna alias".</span>`
-          :`<span class="hint">${state.sendAs.length} indirizzi disponibili. Compaiono solo quelli <b>verificati</b> come "Invia come" in Gmail.</span>`)}`
-        :`<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-          <select disabled style="flex:1;min-width:220px"><option>${esc(state.fromAddr||'Connetti Google per scegliere il mittente')}</option></select>
-          <button class="btn sm" onclick="saveGid()">Connetti Google</button>
+          :`<span class="hint">${state.sendAs.length} indirizzi disponibili. Compaiono solo quelli <b>verificati</b> come "Invia come" in Gmail. Il cambio vale subito.</span>`)}`
+      :`<div class="st-row"><select disabled style="flex:1;min-width:220px"><option>${esc(state.fromAddr||'Connetti Google per scegliere il mittente')}</option></select></div>
+        <span class="hint">L'elenco degli alias si legge da Gmail: serve la connessione Google attiva.</span>`;
+    return `<div class="st-grid">
+      ${stCard('Google','Gmail per inviare e leggere le risposte, Fogli e Drive.',`
+        <div class="st-row">${g?`<span class="chip reply"><span class="d"></span>${esc(state.google.email||'connesso')}</span>`:`<span class="chip da"><span class="d"></span>${cf.googleClientId?'Da autorizzare':'Non connesso'}</span>`}<span class="spacer"></span>
+          <button class="btn sm" onclick="saveGid()">${g?'Riconnetti':'Connetti Google'}</button>
+          ${g?`<button class="btn sm ghost" onclick="reauthGoogle()" title="Richiede di nuovo il consenso: serve dopo aver aggiunto nuovi permessi">Riautorizza permessi</button><button class="btn sm ghost danger" onclick="logoutGoogle()">Esci da Google</button>`:''}</div>
+        <div class="form-row"><label for="set-from">Invia le email da <span class="hint">(alias "Invia come" del tuo account Gmail)</span></label>${sendAs}</div>
+        <div class="form-row"><label for="set-gid">Google OAuth Client ID</label>
+          <input id="set-gid" value="${escAttr(cf.googleClientId)}" placeholder="xxxxxx.apps.googleusercontent.com">
+          <span class="hint">Da Google Cloud Console → Credenziali → ID client OAuth (tipo: Web). L'origine del sito GitHub Pages va tra le origini JavaScript autorizzate.</span></div>
+        <div class="form-row"><label for="set-gapikey">Google API key <span class="hint">(facoltativa)</span></label>
+          <input id="set-gapikey" type="password" value="${escAttr(cf.googleApiKey||'')}" placeholder="AIza...">
+          <span class="hint">Serve solo per scegliere i file da Drive dentro Progetti e per il selettore di Fogli. Senza, i file si collegano incollando il link.</span></div>`)}
+      ${stCard('Intelligenza artificiale','Anthropic, per scrivere le bozze di Outbound. La chiave resta solo in questo browser.',`
+        <div class="form-row"><label for="set-akey">Chiave API Anthropic</label>
+          <input id="set-akey" type="password" value="${escAttr(cf.anthropicKey)}" placeholder="sk-ant-...">
+          <span class="hint">Usata per generare oggetto e corpo (modello ${MODEL}). È personale e a consumo.</span></div>
+        <div class="form-row"><label for="set-awsp">Workspace ID Anthropic <span class="hint">(facoltativo)</span></label>
+          <input id="set-awsp" value="${escAttr(cf.anthropicWorkspace||'')}" placeholder="wrkspc_...">
+          <span class="hint">Serve solo se la chiave non è legata a un workspace (errore "not scoped to a workspace"). Si trova in Claude Console → Settings → Workspaces.</span></div>`)}
+      ${stCard('Database','Supabase: contatti di Outbound condivisi in tempo reale con tutto il team.',`
+        <div class="st-row">${supaReady()?`<span class="chip reply"><span class="d"></span>Database connesso</span>`:`<span class="chip da"><span class="d"></span>Non connesso</span>`}<span class="spacer"></span>
+          <button class="btn sm" onclick="supaLoad()">Ricarica dal database</button>
+          ${cf.supabaseUrl?`<a class="btn sm ghost" href="${escAttr(cf.supabaseUrl)}" target="_blank" rel="noopener">Apri Supabase</a>`:''}</div>
+        <div class="two-col">
+          <div class="form-row"><label for="set-supaurl">Project URL</label><input id="set-supaurl" value="${escAttr(cf.supabaseUrl)}" placeholder="https://xxxx.supabase.co"></div>
+          <div class="form-row"><label for="set-supakey">Chiave pubblica (anon)</label><input id="set-supakey" type="password" value="${escAttr(cf.supabaseKey)}" placeholder="eyJhbGci..."></div>
         </div>
-        <span class="hint">L'elenco degli alias si legge da Gmail: serve la connessione Google attiva.</span>`}
-      </div>
-
-      <div class="section-h" style="margin:4px 0 0"><h3 style="font-size:14px">Database contatti — Supabase</h3><div class="line"></div></div>
-      <div class="helptip">Supabase è l'<b>unica sorgente</b>: contatti, stato e ricerche stanno online e condivisi in tempo reale con tutto il team. Per aggiungere lead, il team inserisce righe nella tabella <code>contacts</code> (Table Editor di Supabase) con almeno email e azienda: compaiono qui da soli come "da pianificare". In alternativa usa il pulsante <b>Importa</b> (CSV/XLSX).</div>
-      <div class="two-col">
-        <div class="form-row"><label>Project URL</label><input id="set-supaurl" value="${escAttr(cf.supabaseUrl)}" placeholder="https://xxxx.supabase.co"></div>
-        <div class="form-row"><label>anon public key</label><input id="set-supakey" type="password" value="${escAttr(cf.supabaseKey)}" placeholder="eyJhbGci..."></div>
-      </div>
-      <div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap">
-        ${supaReady()?`<span class="chip reply"><span class="d"></span>Database connesso</span>`:`<span class="chip da"><span class="d"></span>Non connesso</span>`}
-        <button class="btn sm" onclick="supaLoad()">Ricarica dal database</button>
-        <button class="btn sm ghost" onclick="showSupaSQL()">Mostra SQL di setup</button>
-        <button class="btn sm ghost" onclick="exportTeamConfig()" title="Genera il blocco da incollare nel file per il team">Configurazione team</button>
-        ${cf.supabaseUrl?`<button class="btn sm ghost" onclick="window.open('${escAttr(cf.supabaseUrl)}','_blank')">Apri Supabase</button>`:''}
-      </div>
-      <div class="form-row" style="margin-top:4px"><label>Migrazione una-tantum dal vecchio Google Sheet <span class="hint">(legge il foglio col tuo login Google e copia i contatti su Supabase; il foglio non resta collegato)</span></label>
-        <div style="display:flex;gap:8px">
-          <input id="mig-sheet" placeholder="https://docs.google.com/spreadsheets/d/...">
-          <button class="btn sm" id="mig-btn" onclick="migrateFromSheet()">Migra su Supabase</button>
-        </div></div>
-
-      <div class="section-h" style="margin:4px 0 0"><h3 style="font-size:14px">Generazione AI</h3><div class="line"></div></div>
-      <div class="form-row"><label>Chiave API Anthropic</label>
-        <input id="set-akey" type="password" value="${escAttr(cf.anthropicKey)}" placeholder="sk-ant-...">
-        <span class="hint">Usata per generare oggetto e corpo (modello ${MODEL}). Salvata solo nel browser.</span></div>
-      <div class="form-row"><label>Workspace ID Anthropic <span class="hint">(facoltativo)</span></label>
-        <input id="set-awsp" value="${escAttr(cf.anthropicWorkspace||'')}" placeholder="wrkspc_...">
-        <span class="hint">Serve solo se la chiave non è legata a un workspace (errore "not scoped to a workspace"). Si trova in Claude Console → Settings → Workspaces.</span></div>
-
-      <div class="section-h" style="margin:4px 0 0"><h3 style="font-size:14px">Regole di invio</h3><div class="line"></div></div>
-      <div class="two-col">
-        <div class="form-row"><label>Max email al giorno</label><input id="set-max" type="number" value="${cf.maxAlGiorno}"></div>
-        <div class="form-row"><label>Finestra oraria</label>
-          <div style="display:flex;gap:8px;align-items:center"><input id="set-oi" type="number" value="${cf.oraInizio}" style="width:70px">–<input id="set-of" type="number" value="${cf.oraFine}" style="width:70px"></div></div>
-      </div>
-      <label class="toggle ${cf.saltaWeekend?'on':''}" id="set-week"><span class="sw"></span><span>Salta sabato e domenica</span></label>
-      <label class="toggle ${cf.autoStopReply?'on':''}" id="set-stop"><span class="sw"></span><span>Ferma i follow-up quando il contatto risponde</span></label>
-    </div>
-    <div class="modal-f" style="justify-content:space-between">
-      <div style="display:flex;gap:9px">
-        <button class="btn sm ghost" onclick="openCadence()">Cadenza &amp; template<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
-        <button class="btn sm ghost danger" onclick="resetAll()">Resetta tutto</button>
-      </div>
-      <div style="display:flex;gap:9px">
-        <button class="btn" onclick="closeModal()">Annulla</button>
-        <button class="btn primary" onclick="saveSettings()">Salva</button>
-      </div>
-    </div>
-  </div>`);
-  document.querySelectorAll('#set-test,#set-week,#set-stop').forEach(el=>el.onclick=()=>el.classList.toggle('on'));
-  if(googleReady()&&!state.sendAs.length&&!state.sendAsErr&&!_sendAsRedraw) loadSendAs();
+        <span class="hint">Supabase è l'<b>unica sorgente</b> dei contatti: per aggiungere lead si inseriscono righe nella tabella <code>contacts</code> con almeno email e azienda, e compaiono qui come "da pianificare". SQL di setup e migrazione sono in Avanzate.</span>`)}
+    </div>${stBar()}`;
+  }
+  if(T==='outbound'){
+    return `<nav class="st-jump" aria-label="Sezioni di Outbound"><a href="#st-regole">Regole di invio</a><a href="#st-seq">Sequenza</a><a href="#st-firma">Firma e formato</a><a href="#st-ai">Testi AI</a></nav>
+    <div class="st-grid">
+      ${stCard('Regole di invio','Quante email al giorno e in quali orari.',`
+        <div class="two-col">
+          <div class="form-row"><label for="set-max">Max email al giorno</label><input id="set-max" type="number" min="1" value="${cf.maxAlGiorno}"></div>
+          <div class="form-row"><label for="set-oi">Finestra oraria</label>
+            <div style="display:flex;gap:8px;align-items:center"><input id="set-oi" type="number" min="0" max="23" value="${cf.oraInizio}" style="width:80px" aria-label="Dalle ore">–<input id="set-of" type="number" min="0" max="23" value="${cf.oraFine}" style="width:80px" aria-label="Alle ore"></div></div>
+        </div>
+        ${stTog('set-week',cf.saltaWeekend,'Salta sabato e domenica')}
+        ${stTog('set-stop',cf.autoStopReply,'Ferma i follow-up quando il contatto risponde')}`,'st-regole')}
+      ${stCard('Sequenza di follow-up','Giorni di distanza dalla prima email (giorno 0). I weekend vengono saltati se attivo.',`
+        <div id="cad-list">
+          ${cad.map((s,i)=>`<div class="cad-step">
+            <input value="${escAttr(s.nome)}" data-i="${i}" data-k="nome" placeholder="Nome step" aria-label="Nome dello step ${i+1}">
+            <input type="number" value="${s.offset}" data-i="${i}" data-k="offset" placeholder="giorno" aria-label="Giorno dello step ${i+1}">
+            <button class="x" onclick="stRmStep(${i})" ${i===0?'style="visibility:hidden"':''} aria-label="Rimuovi step">${ST_X}</button>
+          </div>`).join('')}
+        </div>
+        <button class="btn sm" style="align-self:flex-start" onclick="stAddStep()"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Aggiungi step</button>`,'st-seq')}
+      ${stCard('Firma e formato','Come appare l\'email a chi la riceve.',`
+        <div class="two-col">
+          <div class="form-row"><label for="tp-mit">Mittente (firma)</label><input id="tp-mit" value="${escAttr(tp.mittente)}"></div>
+          <div class="form-row"><label for="tp-az">Azienda</label><input id="tp-az" value="${escAttr(tp.azienda)}"></div>
+        </div>
+        <div class="form-row"><label for="tp-dis">Riga di disiscrizione</label><input id="tp-dis" value="${escAttr(tp.disiscrizione)}"></div>
+        ${stTog('tp-html',cf.formatoHtml,'Formato come Gmail (consigliato)','L\'email parte come se l\'avessi scritta in Gmail: testo normale che va a capo da solo, firma sempre visibile anche nei follow-up. Se lo spegni, parte in solo testo: Gmail spezza le righe a circa 76 caratteri e nei follow-up nasconde la firma.')}
+        <div class="form-row"><label for="tp-logo">URL del logo <span class="hint">(immagine pubblica, es. caricata sul tuo repo GitHub Pages)</span></label>
+          <input id="tp-logo" value="${escAttr(tp.logoUrl||'')}" placeholder="https://.../logo.png"></div>
+        <div class="form-row"><label for="tp-sightml">Firma — versione HTML <span class="hint">(usa <span class="kbd">{logo_block}</span> dove vuoi il logo)</span></label>
+          <textarea id="tp-sightml" style="min-height:130px;font-family:'JetBrains Mono',monospace;font-size:12px">${esc(tp.firmaHtml||'')}</textarea>
+          <button class="btn sm ghost" style="align-self:flex-start" onclick="previewSig()">Anteprima firma</button></div>
+        <div class="form-row"><label for="tp-sigtesto">Firma — versione testo <span class="hint">(usata se la versione HTML è vuota e nella parte di solo testo dell'email)</span></label>
+          <textarea id="tp-sigtesto" style="min-height:80px">${esc(tp.firmaTesto||'')}</textarea></div>
+        <div class="st-sub">Statistiche</div>
+        ${stTog('tp-obopen',cf.obTrackOpen,'Conta le aperture (in forma anonima)','Aggiunge un\'immagine invisibile di 1 pixel. Si sa quante email vengono aperte, non chi le apre. Se noti più email nello spam, spegnila.')}
+        ${stTog('tp-obclick',cf.obTrackClick,'Conta i clic sui link (in forma anonima)','I link passano da un indirizzo di conteggio e poi aprono la pagina giusta. Solo verso i domini ammessi (flowline.it, LinkedIn, Instagram, Calendly…).')}`,'st-firma')}
+      ${stCard('Testi scritti dall\'AI','Le istruzioni che l\'AI segue per scrivere oggetto e corpo.',`
+        <div class="form-row"><label for="tp-tono">Tono e stile</label><textarea id="tp-tono">${esc(tp.tono)}</textarea></div>
+        <div class="form-row"><label for="tp-prompt">Prompt di sistema</label>
+          <span class="hint">Segnaposto sostituiti in automatico: <span class="kbd">{azienda}</span> <span class="kbd">{mittente}</span> <span class="kbd">{tono}</span> <span class="kbd">{regole_oggetto}</span> <span class="kbd">{regole_corpo}</span></span>
+          <textarea id="tp-prompt" style="min-height:170px;font-family:'JetBrains Mono',monospace;font-size:12.5px">${esc(tp.promptSistema||'')}</textarea>
+          <button class="btn sm ghost" style="align-self:flex-start" onclick="document.getElementById('tp-prompt').value=PROMPT_SISTEMA_DEFAULT;stDirty()">Ripristina il prompt predefinito</button></div>
+        <div class="two-col">
+          <div class="form-row"><label for="tp-rogg">Regole per l'oggetto</label><textarea id="tp-rogg" style="min-height:80px">${esc(tp.regoleOggetto||'')}</textarea></div>
+          <div class="form-row"><label for="tp-rcorpo">Regole per il corpo</label><textarea id="tp-rcorpo" style="min-height:80px">${esc(tp.regoleCorpo||'')}</textarea></div>
+        </div>
+        <div class="st-sub">Angolo di ogni step</div>
+        ${cad.map((s,i)=>`<div class="form-row"><label for="tp-ang-${i}">${esc(s.nome)}</label><textarea id="tp-ang-${i}" data-ai="${i}" style="min-height:60px">${esc(s.angolo||'')}</textarea></div>`).join('')}`,'st-ai')}
+    </div>${stBar()}`;
+  }
+  if(T==='newsletter'){
+    return `<div class="st-grid">
+      ${stCard('Disiscrizione','Ogni newsletter ha in fondo un link per disiscriversi.',`
+        <div class="form-row"><label for="set-nlsite">Sito per il link di disiscrizione</label>
+          <input id="set-nlsite" value="${escAttr(nlSite())}" placeholder="${escAttr(NL.siteDefault)}">
+          <span class="hint">Il link porta a <b>${esc(nlSite())}/newsletter/disiscrizione/</b>. Si può cambiare anche dalla schermata di invio.</span></div>`)}
+      ${stCard('Mittente e modalità test','Sono in comune con Outbound.',`<p class="helptip">La newsletter parte dall'indirizzo scelto in <a href="#" onclick="event.preventDefault();stGoTab('collegamenti')">Collegamenti → Google</a>. La modalità test si trova in <a href="#" onclick="event.preventDefault();stGoTab('generali')">Generali</a>.</p>`)}
+    </div>${stBar()}`;
+  }
+  // avanzate
+  return `<div class="st-grid">
+    ${stCard('Database','Strumenti per chi gestisce Supabase.',`
+      <div class="st-row"><button class="btn sm" onclick="showSupaSQL()">Mostra SQL di setup</button>
+      <button class="btn sm" onclick="exportTeamConfig()" title="Genera il blocco da incollare nel file per il team">Configurazione per il team</button></div>
+      <div class="form-row"><label for="mig-sheet">Migrazione una tantum dal vecchio Google Sheet</label>
+        <div class="st-row"><input id="mig-sheet" placeholder="https://docs.google.com/spreadsheets/d/..." style="flex:1;min-width:220px">
+        <button class="btn sm" id="mig-btn" onclick="migrateFromSheet()">Migra su Supabase</button></div>
+        <span class="hint">Legge il foglio con il tuo login Google e copia i contatti su Supabase; il foglio non resta collegato.</span></div>`)}
+    ${stCard('Spesa API','Stima di quanto costano le bozze scritte dall\'AI.',`
+      <div class="st-row"><span class="hint">Finora: <b>≈ €${fmtMoney(costEUR(state.usage))}</b> per ${state.usage.gen} generazioni.</span><span class="spacer"></span>
+        <button class="btn sm" onclick="openSpend()">Dettagli</button><button class="btn sm ghost danger" onclick="resetUsage()">Azzera conteggio</button></div>
+      <div class="form-row"><label for="set-eur">Cambio USD → EUR</label><input id="set-eur" type="number" step="0.01" value="${state.config.eurRate}" style="max-width:160px">
+        <span class="hint">Stima indicativa. La fatturazione reale è in USD nella console Anthropic.</span></div>`)}
+    ${stCard('Azzera tutto','Cancella le impostazioni e i dati salvati in questo browser.',`
+      <div class="st-row"><span class="hint">I dati sul database non vengono toccati.</span><span class="spacer"></span><button class="btn sm ghost danger" onclick="resetAll()">Resetta tutto</button></div>`)}
+  </div>${stBar()}`;
 }
-function saveGid(){
-  const v=document.getElementById('set-gid').value.trim();
-  state.config.googleClientId=v;persist();tokenClient=null;initGoogle();
-  setTimeout(()=>connectGoogle(),300);
+// leggo i campi della sequenza nello stato (prima di aggiungere o togliere uno step)
+function stReadCadence(){
+  document.querySelectorAll('#cad-list [data-k]').forEach(el=>{const i=+el.dataset.i,k=el.dataset.k;if(state.cadence[i])state.cadence[i][k]=k==='offset'?(+el.value||0):el.value;});
+  document.querySelectorAll('[data-ai]').forEach(el=>{if(state.cadence[+el.dataset.ai])state.cadence[+el.dataset.ai].angolo=el.value});
 }
-function saveSettings(){
-  const cf=state.config;
-  const prevSupaUrl=cf.supabaseUrl, prevSupaKey=cf.supabaseKey;
-  cf.googleClientId=document.getElementById('set-gid').value.trim();
-  cf.anthropicKey=document.getElementById('set-akey').value.trim();
-  cf.anthropicWorkspace=(document.getElementById('set-awsp')?.value||'').trim();
-  cf.supabaseUrl=document.getElementById('set-supaurl').value.trim().replace(/\/$/,'');
-  cf.supabaseKey=document.getElementById('set-supakey').value.trim();
-  cf.maxAlGiorno=+document.getElementById('set-max').value||10;
-  cf.oraInizio=+document.getElementById('set-oi').value||9;
-  cf.oraFine=+document.getElementById('set-of').value||18;
-  cf.saltaWeekend=document.getElementById('set-week').classList.contains('on');
-  cf.autoStopReply=document.getElementById('set-stop').classList.contains('on');
-  cf.testMode=document.getElementById('set-test').classList.contains('on');
-  persist();closeModal();initGoogle();
+function stAddStep(){stReadCadence();st.cadFresh=true;state.cadence.push({nome:'Follow-up '+state.cadence.length,offset:(state.cadence.at(-1)?.offset||0)+7,angolo:''});st.dirty=true;render()}
+function stRmStep(i){stReadCadence();st.cadFresh=true;state.cadence.splice(i,1);st.dirty=true;render()}
+function stSave(){
+  const cf=state.config, tp=state.templates, el=id=>document.getElementById(id), has=id=>!!el(id);
+  const txt=id=>el(id).value, on=id=>el(id).classList.contains('on');
+  const prevSupaUrl=cf.supabaseUrl, prevSupaKey=cf.supabaseKey, prevGid=cf.googleClientId;
+  if(has('set-test'))cf.testMode=on('set-test');
+  if(has('set-gid'))cf.googleClientId=txt('set-gid').trim();
+  if(has('set-gapikey'))cf.googleApiKey=txt('set-gapikey').trim();
+  if(has('set-akey'))cf.anthropicKey=txt('set-akey').trim();
+  if(has('set-awsp'))cf.anthropicWorkspace=txt('set-awsp').trim();
+  if(has('set-supaurl'))cf.supabaseUrl=txt('set-supaurl').trim().replace(/\/$/,'');
+  if(has('set-supakey'))cf.supabaseKey=txt('set-supakey').trim();
+  if(has('set-max'))cf.maxAlGiorno=+txt('set-max')||10;
+  if(has('set-oi'))cf.oraInizio=+txt('set-oi')||9;
+  if(has('set-of'))cf.oraFine=+txt('set-of')||18;
+  if(has('set-week'))cf.saltaWeekend=on('set-week');
+  if(has('set-stop'))cf.autoStopReply=on('set-stop');
+  if(has('tp-html'))cf.formatoHtml=on('tp-html');
+  if(has('tp-obopen'))cf.obTrackOpen=on('tp-obopen');
+  if(has('tp-obclick'))cf.obTrackClick=on('tp-obclick');
+  if(has('set-nlsite'))cf.nlSite=txt('set-nlsite').trim()||NL.siteDefault;
+  if(has('set-eur'))cf.eurRate=+txt('set-eur')||EUR_DEFAULT;
+  if(has('cad-list'))stReadCadence();
+  [['tp-tono','tono'],['tp-mit','mittente'],['tp-az','azienda'],['tp-dis','disiscrizione'],['tp-sightml','firmaHtml'],['tp-sigtesto','firmaTesto'],['tp-prompt','promptSistema'],['tp-rogg','regoleOggetto'],['tp-rcorpo','regoleCorpo']].forEach(([id,k])=>{if(has(id))tp[k]=txt(id)});
+  if(has('tp-logo'))tp.logoUrl=txt('tp-logo').trim();
+  persist();st.dirty=false;
+  if(has('set-gid')&&cf.googleClientId!==prevGid)initGoogle();
   if(cf.supabaseUrl!==prevSupaUrl||cf.supabaseKey!==prevSupaKey){supa=null;initSupabase();}
   render();toast('Impostazioni salvate','ok');
 }
+// nomi vecchi: restano validi
+function saveSettings(){stSave()}
+function saveCadence(){stSave()}
+// se un ridisegno arriva mentre stai scrivendo, i campi non si perdono
+function stSnap(C){const o={};C.querySelectorAll('input[id],textarea[id],select[id]').forEach(e=>{if(e.type!=='file')o[e.id]=e.type==='checkbox'?e.checked:e.value});C.querySelectorAll('.toggle[id]').forEach(e=>{o['§'+e.id]=e.classList.contains('on')});C.querySelectorAll('#cad-list [data-k]').forEach(e=>{o['¶'+e.dataset.i+e.dataset.k]=e.value});C.querySelectorAll('[data-ai]').forEach(e=>{o['¶a'+e.dataset.ai]=e.value});return o}
+function stRestore(C,o){C.querySelectorAll('input[id],textarea[id],select[id]').forEach(e=>{if(e.id in o){if(e.type==='checkbox')e.checked=o[e.id];else e.value=o[e.id]}});C.querySelectorAll('.toggle[id]').forEach(e=>{if(('§'+e.id) in o)e.classList.toggle('on',o['§'+e.id])});if(st.cadFresh){st.cadFresh=false;return}C.querySelectorAll('#cad-list [data-k]').forEach(e=>{const k='¶'+e.dataset.i+e.dataset.k;if(k in o)e.value=o[k]});C.querySelectorAll('[data-ai]').forEach(e=>{const k='¶a'+e.dataset.ai;if(k in o)e.value=o[k]})}
+document.addEventListener('input',e=>{if(state.view==='impostazioni'&&e.target.closest('#content .st-card')&&!e.target.closest('.st-form-own')&&e.target.id!=='set-from'&&e.target.id!=='mig-sheet')stDirty()});
+window.addEventListener('beforeunload',e=>{if(st.dirty&&state.view==='impostazioni'){e.preventDefault();e.returnValue=''}});
 
-/* ---- cadence & templates ---- */
-function openCadence(){
-  const cad=state.cadence;const tp=state.templates;
-  modal(`<div class="modal wide" onclick="event.stopPropagation()">
-    <div class="modal-h"><h3>Cadenza & template</h3><div class="x" role="button" tabindex="0" aria-label="Chiudi" onclick="closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div>
-    <div class="modal-b">
-      <div class="field-lbl" style="margin:0">Sequenza di follow-up</div>
-      <div class="helptip">Giorni = scarto dalla prima email (giorno 0). I weekend vengono saltati se attivo.</div>
-      <div id="cad-list">
-        ${cad.map((s,i)=>`<div class="cad-step">
-          <input value="${escAttr(s.nome)}" data-i="${i}" data-k="nome" placeholder="Nome step">
-          <input type="number" value="${s.offset}" data-i="${i}" data-k="offset" placeholder="giorno">
-          <button class="x" onclick="rmStep(${i})" ${i===0?'style="visibility:hidden"':''} aria-label="Rimuovi step"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
-        </div>`).join('')}
-      </div>
-      <button class="btn sm" onclick="addStep()"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Aggiungi step</button>
-
-      <div class="section-h" style="margin:6px 0 0"><h3 style="font-size:14px">Tono & firma</h3><div class="line"></div></div>
-      <div class="form-row"><label>Tono / stile (istruzioni per l'AI)</label>
-        <textarea id="tp-tono">${esc(tp.tono)}</textarea></div>
-      <div class="two-col">
-        <div class="form-row"><label>Mittente (firma)</label><input id="tp-mit" value="${escAttr(tp.mittente)}"></div>
-        <div class="form-row"><label>Azienda</label><input id="tp-az" value="${escAttr(tp.azienda)}"></div>
-      </div>
-      <div class="form-row"><label>Riga di disiscrizione</label><input id="tp-dis" value="${escAttr(tp.disiscrizione)}"></div>
-
-      <div class="section-h" style="margin:6px 0 0"><h3 style="font-size:14px">Firma & formato email</h3><div class="line"></div></div>
-      <label class="toggle ${state.config.formatoHtml?'on':''}" id="tp-html" onclick="this.classList.toggle('on')"><span class="sw"></span>
-        <span><b>Formato come Gmail (consigliato)</b><br><span class="hint">L'email parte come se l'avessi scritta in Gmail: testo normale che va a capo da solo, firma sempre visibile anche nei follow-up. Se lo spegni, parte in solo testo: Gmail spezza le righe a circa 76 caratteri e nei follow-up nasconde la firma.</span></span></label>
-      <label class="toggle ${state.config.obTrackOpen?'on':''}" id="tp-obopen" onclick="this.classList.toggle('on')"><span class="sw"></span>
-        <span><b>Conta le aperture (in forma anonima)</b><br><span class="hint">Aggiunge un'immagine invisibile di 1 pixel. Si sa quante email vengono aperte, non chi le apre. Su alcune caselle aziendali un'immagine di tracciamento può pesare un po' sulla consegna: se noti più email nello spam, spegnila.</span></span></label>
-      <label class="toggle ${state.config.obTrackClick?'on':''}" id="tp-obclick" onclick="this.classList.toggle('on')"><span class="sw"></span>
-        <span><b>Conta i clic sui link (in forma anonima)</b><br><span class="hint">I link della firma e del testo passano da un indirizzo di conteggio e poi aprono la pagina giusta. Solo verso i domini ammessi (flowline.it, LinkedIn, Instagram, Calendly…).</span></span></label>
-      <div class="form-row"><label>URL del logo <span class="hint">(immagine pubblica, es. caricata sul tuo repo GitHub Pages)</span></label>
-        <input id="tp-logo" value="${escAttr(tp.logoUrl||'')}" placeholder="https://callforusit-aam.github.io/.../logo.png"></div>
-      <div class="form-row"><label>Firma — versione HTML <span class="hint">(usa <span class="kbd">{logo_block}</span> dove vuoi il logo)</span></label>
-        <textarea id="tp-sightml" style="min-height:130px;font-family:'JetBrains Mono',monospace;font-size:12px">${esc(tp.firmaHtml||'')}</textarea>
-        <button class="btn sm ghost" style="align-self:flex-start" onclick="previewSig()">Anteprima firma</button></div>
-      <div class="form-row"><label>Firma — versione testo <span class="hint">(usata se la versione HTML è vuota e nella parte di solo testo dell'email)</span></label>
-        <textarea id="tp-sigtesto" style="min-height:80px">${esc(tp.firmaTesto||'')}</textarea></div>
-
-      <div class="section-h" style="margin:6px 0 0"><h3 style="font-size:14px">Prompt di generazione AI</h3><div class="line"></div></div>
-      <div class="helptip">Questo è il prompt di sistema che guida l'AI. Puoi usare i segnaposto <span class="kbd">{azienda}</span> <span class="kbd">{mittente}</span> <span class="kbd">{tono}</span> <span class="kbd">{regole_oggetto}</span> <span class="kbd">{regole_corpo}</span>: vengono sostituiti automaticamente. Deve sempre chiedere una risposta in JSON con <span class="kbd">oggetto</span> e <span class="kbd">corpo</span>.</div>
-      <div class="form-row"><label>Prompt di sistema</label>
-        <textarea id="tp-prompt" style="min-height:170px;font-family:'JetBrains Mono',monospace;font-size:12.5px">${esc(tp.promptSistema||'')}</textarea>
-        <button class="btn sm ghost" style="align-self:flex-start" onclick="document.getElementById('tp-prompt').value=PROMPT_SISTEMA_DEFAULT">Ripristina default</button></div>
-      <div class="two-col">
-        <div class="form-row"><label>Regole per l'OGGETTO</label><textarea id="tp-rogg" style="min-height:80px">${esc(tp.regoleOggetto||'')}</textarea></div>
-        <div class="form-row"><label>Regole per il CORPO</label><textarea id="tp-rcorpo" style="min-height:80px">${esc(tp.regoleCorpo||'')}</textarea></div>
-      </div>
-
-      <div class="field-lbl" style="margin:0">Angolo per ogni step</div>
-      ${cad.map((s,i)=>`<div class="form-row"><label>${esc(s.nome)}</label><textarea data-ai="${i}" style="min-height:60px">${esc(s.angolo||'')}</textarea></div>`).join('')}
-    </div>
-    <div class="modal-f">
-      <button class="btn" onclick="openSettings()"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Indietro</button>
-      <button class="btn primary" onclick="saveCadence()">Salva</button>
-    </div>
-  </div>`);
-}
 function previewSig(){
   const url=(document.getElementById('tp-logo')?.value||'').trim();
   const html=(document.getElementById('tp-sightml')?.value||'');
@@ -3840,28 +3938,8 @@ function previewSig(){
   </div>`;
   document.body.appendChild(ov);
 }
-function addStep(){state.cadence.push({nome:'Follow-up '+state.cadence.length,offset:(state.cadence.at(-1)?.offset||0)+7,angolo:''});openCadence()}
-function rmStep(i){state.cadence.splice(i,1);openCadence()}
-function saveCadence(){
-  document.querySelectorAll('#cad-list [data-k]').forEach(el=>{
-    const i=+el.dataset.i,k=el.dataset.k;state.cadence[i][k]=k==='offset'?(+el.value||0):el.value;
-  });
-  document.querySelectorAll('[data-ai]').forEach(el=>{state.cadence[+el.dataset.ai].angolo=el.value});
-  state.templates.tono=document.getElementById('tp-tono').value;
-  state.templates.mittente=document.getElementById('tp-mit').value;
-  state.templates.azienda=document.getElementById('tp-az').value;
-  state.templates.disiscrizione=document.getElementById('tp-dis').value;
-  state.config.formatoHtml=document.getElementById('tp-html').classList.contains('on');
-  state.config.obTrackOpen=document.getElementById('tp-obopen').classList.contains('on');
-  state.config.obTrackClick=document.getElementById('tp-obclick').classList.contains('on');
-  state.templates.logoUrl=document.getElementById('tp-logo').value.trim();
-  state.templates.firmaHtml=document.getElementById('tp-sightml').value;
-  state.templates.firmaTesto=document.getElementById('tp-sigtesto').value;
-  state.templates.promptSistema=document.getElementById('tp-prompt').value;
-  state.templates.regoleOggetto=document.getElementById('tp-rogg').value;
-  state.templates.regoleCorpo=document.getElementById('tp-rcorpo').value;
-  persist();closeModal();render();toast('Cadenza salvata','ok');
-}
+function addStep(){stAddStep()}
+function rmStep(i){stRmStep(i)}
 
 /* =======================================================
    DEMO + UTIL
@@ -4206,7 +4284,7 @@ function nlAskSend(){
     <div class="modal-h"><h3>Inviare a ${n} ${n===1?'iscritto':'iscritti'}?</h3><div class="x" role="button" tabindex="0" aria-label="Chiudi" onclick="closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div>
     <div class="modal-b">
       <div class="form-row"><label>Oggetto</label><div>${esc(c.subject)}</div></div>
-      <div class="form-row"><label>Mittente</label><div>${esc(fromHeader())}</div><span class="hint">Si cambia in Impostazioni → "Invia le email da".</span></div>
+      <div class="form-row"><label>Mittente</label><div>${esc(fromHeader())}</div><span class="hint">Si cambia in Impostazioni → Collegamenti → "Invia le email da".</span></div>
       <div class="helptip">Le email partono una alla volta dalla casella Gmail collegata, ognuna con il suo link per disiscriversi. <b>Tieni aperta questa pagina finché l'invio non finisce</b>: se la chiudi, riprendi da dove si era fermato. Google limita gli invii giornalieri di ogni casella (circa 2.000 al giorno con Google Workspace): oltre il limite l'invio si ferma e lo riprendi il giorno dopo.</div>
     </div>
     <div class="modal-f"><button class="btn" onclick="closeModal()">Annulla</button><button class="btn primary" onclick="closeModal();nlRun()">Invia ora</button></div>
