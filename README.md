@@ -102,3 +102,12 @@ Per non riempire la posta, le email sulle **attività assegnate** non partono pi
 Database Supabase "Lead Flowline": `contacts`, `leads`, `lead_searches`, tabelle `newsletter_*`, `richieste_sito`, `conti`, `movimenti`, `team_members`, `eventi`, `evento_partecipanti`, `notifiche`, `messaggi`, `bacheca`, `credenziali`, `password_log`, `progetti`, `attivita`.
 Il form del sito scrive in `richieste_sito` solo con la funzione `richiesta_sito_invia`; Newsletter, Ricerca lead, Richieste e Contabilità si leggono dopo il login di un indirizzo presente in `newsletter_editors`; Calendario, Progetti e Password richiedono un utente in `team_members` (che viene aggiunto anche a `newsletter_editors`).
 Le migrazioni e la funzione `nl-track` sono in `supabase/`.
+
+## LinkedIn (10 novembre)
+
+Al posto del database Notion «Ricerca clienti LinkedIn». Sta nell'area **Outbound › LinkedIn**.
+
+- Tabella `linkedin_contatti` (migrazione `20261110190000_linkedin_contatti.sql`): nome, azienda, ruolo, chi se ne occupa, stato (da contattare, contattato, risposto, esito negativo), profilo, e-mail, data invito, data messaggio, testo inviato, risposta, descrizione, note. Tutta la squadra vede e modifica tutto.
+- Lista con ricerca, filtri per stato e per referente, ordinamento, cambio di stato direttamente dalla riga (passando a «Contattato» si segna in automatico la data del messaggio), link al profilo oppure ricerca su LinkedIn, copia del messaggio inviato.
+- **Aggiungi** per un contatto, **Incolla elenco** per molti insieme (una riga per contatto: `nome ; azienda ; ruolo ; profilo ; e-mail`, anche copiati da un foglio; i doppioni vengono saltati).
+- I dati di Notion si caricano con un file SQL a parte (`linkedin_import_notion.sql`). Contiene dati personali, quindi **non sta nel repository**.
