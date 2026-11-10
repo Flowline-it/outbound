@@ -25,6 +25,22 @@ Messa in funzione:
 
 Senza Vault o senza flusso non si rompe niente: la campanella funziona come prima e le notifiche restano «da_inviare».
 
+### Riepilogo delle attività (10 novembre)
+
+Per non riempire la posta, le email sulle **attività assegnate** non partono più una per volta: vanno «in_coda» e un flusso n8n orario, **«Suite: riepilogo email delle attività»** (ogni ora al minuto 5), manda **una sola email a persona** con tutte le attività nuove, divise per progetto. Le comunicazioni della **Bacheca** continuano a partire subito.
+
+- Ognuno sceglie come riceverle dal proprio profilo (clic sul nome in alto → «Il mio profilo»): riepilogo ogni 4 ore (predefinito), ogni 2 ore, uno al giorno la mattina, subito (una mail per attività) o nessuna. Colonna `team_members.avvisi_attivita`.
+- Regole in `riepilogo_attivita_prepara()`: si manda solo tra le 8 e le 20 (ora italiana), di notte si accumula; l'ultima attività in coda deve avere almeno 10 minuti (così una serie di assegnazioni finisce nella stessa mail); non si manda ciò che nel frattempo è stato letto, completato o cancellato. Se Gmail rifiuta, le notifiche passano a «errore» (`riepilogo_attivita_errore`).
+- Messa in funzione: eseguire `20261110180000_profilo_bacheca_riepilogo.sql`, poi **pubblicare** il flusso n8n (è creato spento). Il flusso «Suite: email di avviso» resta attivo per la Bacheca e per chi sceglie «subito».
+
+## Foto profilo, categorie e scadenza della Bacheca (10 novembre)
+
+- **Foto profilo**: dal profilo si carica un'immagine (JPG, PNG o WebP); la Suite la ritaglia in quadrato a 256 px e la salva nel bucket pubblico `avatars` di Supabase Storage, nella cartella con l'id della persona (`avatars/<id>/avatar.jpg`). Il link sta in `team_members.avatar_url`. Si vede ovunque ci sia l'iniziale colorata (calendario, progetti, Bacheca, Online).
+- **Bacheca in cima**: il riquadro è il primo della Home di tutti (la migrazione lo porta in cima anche a chi aveva già salvato la propria Home; «Personalizza» permette comunque di spostarlo).
+- **Scadenza**: «Visibile fino al» (facoltativa). Dal giorno dopo la comunicazione sparisce dalla Bacheca; l'autore la ritrova in «Scadute» per riproporla (cambiando la data) o eliminarla.
+- **Categorie**: Generale, Amministrazione, Progetti, Aggiornamenti, Clienti, Team e organizzazione, Marketing, Formazione. Elenco `HM_CATS` in `index.html` (una riga per aggiungerne). Sopra la Bacheca ci sono i filtri per categoria usate.
+- Senza la migrazione la Suite funziona come prima (niente foto, categorie né scadenza).
+
 ## Aree
 
 **Home**: la prima pagina dopo l'accesso, con scorciatoie a ciò che serve oggi.

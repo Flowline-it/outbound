@@ -679,6 +679,17 @@ input[type=checkbox]{width:18px;height:18px;cursor:pointer;accent-color:var(--in
 .ag-me:hover{filter:brightness(.97)}
 .ag-av{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;color:#fff;font-weight:800;font-size:13px;flex:0 0 auto}
 .ag-av.sm{width:22px;height:22px;font-size:11px}
+.ag-av{overflow:hidden}.ag-av img{width:100%;height:100%;object-fit:cover;display:block}
+.ag-p-top{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.ag-p-prev .ag-av{width:72px;height:72px;font-size:28px}
+.ag-p-btns{display:flex;gap:8px;flex-wrap:wrap}
+.hm-cats{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 14px}
+.hm-cat{border:0;background:var(--surface-2);color:var(--muted);font:inherit;font-size:12.5px;font-weight:700;padding:6px 12px;border-radius:var(--pill);cursor:pointer}
+.hm-cat:hover{filter:brightness(.97)}
+.hm-cat.on{background:var(--text);color:var(--surface)}
+.hm-catchip{display:inline-flex;align-items:center;font-size:11.5px;font-weight:800;padding:3px 10px;border-radius:var(--pill);background:color-mix(in srgb,var(--cc) 15%,transparent);color:var(--cc)}
+.hm-exp{font-size:12px;color:var(--muted);font-weight:600}
+.hm-post.expired{opacity:.6}
 .ag-week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px}
 .ag-day{background:var(--surface-2);border-radius:var(--r-md);padding:10px;display:flex;flex-direction:column;gap:8px;min-height:190px;min-width:0}
 .ag-day.today{background:var(--accent-soft)}
@@ -5623,7 +5634,8 @@ const agPerson=id=>ag.team.find(t=>t.id===id);
 const agParts=id=>ag.part[id]||[];
 const agUnread=()=>ag.notif.filter(n=>!n.letta_il).length;
 const agTipo=t=>AG_TIPI.find(x=>x.id===t)||AG_TIPI[3];
-function agAv(id,sm){const p=agPerson(id);if(!p)return '';return `<span class="ag-av${sm?' sm':''}" style="background:${escAttr(p.colore)}" title="${escAttr(p.nome)}">${esc((p.nome||'?').trim().charAt(0).toUpperCase())}</span>`}
+const agAvIn=(url,nome)=>url&&/^https:\/\//.test(url)?`<img src="${escAttr(url)}" alt="" loading="lazy" decoding="async">`:esc((nome||'?').trim().charAt(0).toUpperCase());
+function agAv(id,sm){const p=agPerson(id);if(!p)return '';return `<span class="ag-av${sm?' sm':''}" style="background:${escAttr(p.colore)}" title="${escAttr(p.nome)}">${agAvIn(p.avatar_url,p.nome)}</span>`}
 function agAvs(e){return agParts(e.id).map(u=>agAv(u,true)).join('')}
 function agWhen(e){
   const a=new Date(e.inizio),b=new Date(e.fine),same=isoD(a)===isoD(b);
@@ -5641,7 +5653,10 @@ async function agLoad(opts={}){
   if(!nlSupa||!nl.session)return;
   agInit(); ag.loading=true; if(state.view==='agenda'&&!opts.silent)render();
   try{
-    const {data:team,error:e0}=await nlSupa.from('team_members').select('id,nome,email,colore,attivo').order('nome');
+    let tm=await nlSupa.from('team_members').select('id,nome,email,colore,attivo,avatar_url,avvisi_attivita').order('nome');
+    // migrazione 20261110180000 non ancora eseguita: si va avanti senza foto e senza scelta delle email
+    if(tm.error&&/avatar_url|avvisi_attivita/.test(tm.error.message||''))tm=await nlSupa.from('team_members').select('id,nome,email,colore,attivo').order('nome');
+    const {data:team,error:e0}=tm;
     if(e0)throw e0;
     ag.team=team.filter(t=>t.attivo); ag.me=team.find(t=>t.id===nl.session.user.id)||null; ag.noMember=!ag.me;
     if(ag.me){
@@ -5700,14 +5715,57 @@ function agRenderUser(){
   b.innerHTML=`<button class="icon-btn ag-bell" id="agBell" onclick="agBellToggle(event)" aria-haspopup="true" aria-expanded="false" title="Notifiche" aria-label="Notifiche${n?': '+n+' da leggere':''}">${AG_I.bell}${n?`<span class="ag-bellb">${n>9?'9+':n}</span>`:''}</button>
     <button class="ag-me" onclick="agProfile()" title="${escAttr(email)}">${me?agAv(me.id):''}<span>${esc(me?me.nome:email.split('@')[0])}</span></button>`;
 }
+const AG_AVVISI=[{id:'ore_4',l:'Riepilogo ogni 4 ore (consigliato)'},{id:'ore_2',l:'Riepilogo ogni 2 ore'},{id:'giornaliero',l:'Un riepilogo al giorno, la mattina'},{id:'subito',l:'Subito, una email per attività'},{id:'mai',l:'Nessuna email'}];
+/* foto profilo: ritaglio quadrato 256 px in JPEG, salvato in Storage (bucket avatars, cartella = id della persona) */
+function agAvatarResize(file){
+  return new Promise((ok,ko)=>{
+    const img=new Image(),url=URL.createObjectURL(file);
+    img.onload=()=>{URL.revokeObjectURL(url);const n=Math.min(img.naturalWidth,img.naturalHeight),c=document.createElement('canvas');c.width=c.height=256;
+      c.getContext('2d').drawImage(img,(img.naturalWidth-n)/2,(img.naturalHeight-n)/2,n,n,0,0,256,256);
+      c.toBlob(b=>b?ok(b):ko(new Error('Immagine non elaborabile')),'image/jpeg',.86)};
+    img.onerror=()=>{URL.revokeObjectURL(url);ko(new Error('Il file non è un\'immagine valida'))};
+    img.src=url;
+  });
+}
+async function agAvatarSet(url){
+  const {error}=await nlSupa.from('team_members').update({avatar_url:url}).eq('id',ag.me.id);
+  if(error)throw error;
+  ag.me.avatar_url=url;const t=agPerson(ag.me.id);if(t)t.avatar_url=url;
+}
+async function agAvatarUpload(inp){
+  const f=inp.files&&inp.files[0];inp.value='';if(!f||!ag.me)return;
+  if(!/^image\/(jpeg|png|webp)$/.test(f.type)){toast('Scegli un\'immagine JPG, PNG o WebP','warn');return}
+  try{
+    const blob=await agAvatarResize(f),path=ag.me.id+'/avatar.jpg';
+    const up=await nlSupa.storage.from('avatars').upload(path,blob,{upsert:true,contentType:'image/jpeg',cacheControl:'3600'});
+    if(up.error)throw up.error;
+    const pub=nlSupa.storage.from('avatars').getPublicUrl(path).data.publicUrl;
+    await agAvatarSet(pub+'?v='+Date.now());
+    toast('Foto aggiornata','ok');agProfile();renderNav();render();
+  }catch(e){toast('Foto non caricata: '+(e.message||e)+(/bucket|not found|policy/i.test(e.message||'')?' (serve la migrazione 20261110180000)':''),'err')}
+}
+async function agAvatarRemove(){
+  if(!ag.me)return;
+  try{
+    await nlSupa.storage.from('avatars').remove([ag.me.id+'/avatar.jpg']);
+    await agAvatarSet(null);
+    toast('Foto tolta','ok');agProfile();renderNav();render();
+  }catch(e){toast(e.message||String(e),'err')}
+}
 function agProfile(){
   const me=ag.me,email=nl.session?.user?.email||'';
   modal(`<div class="modal" role="dialog" aria-modal="true" onclick="event.stopPropagation()">
     <div class="modal-h"><h3>Il mio profilo</h3><div class="x" role="button" tabindex="0" aria-label="Chiudi" onclick="closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div>
     <form onsubmit="agSaveProfile(event)"><div class="modal-b">
       <p class="helptip">Accesso come <b style="color:var(--text)">${esc(email)}</b>. Le notifiche che ricevi sono solo le tue.</p>
-      ${me?`<div class="ct-two"><div class="form-row"><label for="ag-p-nome">Nome</label><input id="ag-p-nome" required value="${escAttr(me.nome)}"></div>
-        <div class="form-row"><label for="ag-p-col">Colore nel calendario</label><input id="ag-p-col" type="color" value="${escAttr(me.colore)}" style="height:44px;padding:4px"></div></div>`
+      ${me?`<div class="ag-p-top"><span class="ag-p-prev" id="ag-p-prev">${agAv(me.id)}</span>
+        <div><div class="ag-p-btns"><button type="button" class="btn sm" onclick="document.getElementById('ag-p-file').click()">${me.avatar_url?'Cambia foto':'Carica foto'}</button>${me.avatar_url?'<button type="button" class="btn sm ghost danger" onclick="agAvatarRemove()">Togli foto</button>':''}</div>
+        <p class="helptip" style="margin-top:6px">JPG, PNG o WebP. La foto si ritaglia in quadrato e si vede a tutta la squadra.</p>
+        <input type="file" id="ag-p-file" accept="image/jpeg,image/png,image/webp" hidden onchange="agAvatarUpload(this)"></div></div>
+      <div class="ct-two"><div class="form-row"><label for="ag-p-nome">Nome</label><input id="ag-p-nome" required value="${escAttr(me.nome)}"></div>
+        <div class="form-row"><label for="ag-p-col">Colore nel calendario</label><input id="ag-p-col" type="color" value="${escAttr(me.colore)}" style="height:44px;padding:4px"></div></div>
+      ${me.avvisi_attivita!==undefined?`<div class="form-row"><label for="ag-p-av">Email sulle attività che ti assegnano</label><select id="ag-p-av">${AG_AVVISI.map(o=>`<option value="${o.id}" ${me.avvisi_attivita===o.id?'selected':''}>${o.l}</option>`).join('')}</select>
+        <p class="helptip" style="margin-top:6px">Il riepilogo mette insieme tutte le attività nuove in un'unica email, tra le 8 e le 20. Le comunicazioni della Bacheca arrivano sempre subito.</p></div>`:''}`
       :'<p class="helptip">Questo account non è ancora nella squadra: il calendario si attiva dopo <code>team_aggiungi</code> (vedi README).</p>'}
     </div><div class="modal-f" style="justify-content:space-between"><button type="button" class="btn sm ghost danger" onclick="closeModal();nlLogout()">Esci</button>
       <div style="display:flex;gap:9px"><button type="button" class="btn" onclick="closeModal()">Chiudi</button>${me?'<button class="btn primary" type="submit">Salva</button>':''}</div></div></form></div>`);
@@ -5716,9 +5774,11 @@ async function agSaveProfile(ev){
   ev.preventDefault();if(!ag.me)return;
   const nome=(document.getElementById('ag-p-nome').value||'').trim(),colore=document.getElementById('ag-p-col').value;
   if(!nome)return;
-  const {error}=await nlSupa.from('team_members').update({nome,colore}).eq('id',ag.me.id);
+  const upd={nome,colore},av=document.getElementById('ag-p-av');
+  if(av&&ag.me.avvisi_attivita!==undefined)upd.avvisi_attivita=av.value;
+  const {error}=await nlSupa.from('team_members').update(upd).eq('id',ag.me.id);
   if(error){toast(error.message,'err');return}
-  ag.me.nome=nome;ag.me.colore=colore;const t=agPerson(ag.me.id);if(t){t.nome=nome;t.colore=colore}
+  Object.assign(ag.me,upd);const t=agPerson(ag.me.id);if(t)Object.assign(t,upd);
   closeModal();render();toast('Profilo aggiornato','ok');
 }
 
@@ -5982,7 +6042,7 @@ async function agDelete(id){
 /* =====================================================================
    HOME — scorciatoie, messaggi tra collaboratori e bacheca comunicazioni
    ===================================================================== */
-const hm={msgs:[],posts:[],loaded:false,missing:false,ch:null,loadT:null,pollT:null,thread:null,allPosts:false,editing:null};
+const hm={cat:'tutte',showExp:false,v2:true,msgs:[],posts:[],loaded:false,missing:false,ch:null,loadT:null,pollT:null,thread:null,allPosts:false,editing:null};
 const HM_I={
   msg:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
   pin:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5 M9 3h6l-1 7 3 3H7l3-3z"/></svg>',
@@ -5996,9 +6056,15 @@ async function hmLoad(opts={}){
   try{
     const [a,b]=await Promise.all([
       nlSupa.from('messaggi').select('id,created_at,da_id,a_id,testo,letto_il').order('created_at',{ascending:false}).limit(500),
-      nlSupa.from('bacheca').select('id,created_at,updated_at,autore_id,titolo,testo,fissato').order('fissato',{ascending:false}).order('created_at',{ascending:false}).limit(100)
+      nlSupa.from('bacheca').select('id,created_at,updated_at,autore_id,titolo,testo,fissato,categoria,scade_il').order('fissato',{ascending:false}).order('created_at',{ascending:false}).limit(100)
     ]);
-    if(a.error)throw a.error;if(b.error)throw b.error;
+    if(a.error)throw a.error;
+    // senza la migrazione 20261110180000 la Bacheca funziona come prima (niente categorie né scadenza)
+    hm.v2=true;
+    if(b.error&&/categoria|scade_il/.test(b.error.message||'')){hm.v2=false;
+      const b2=await nlSupa.from('bacheca').select('id,created_at,updated_at,autore_id,titolo,testo,fissato').order('fissato',{ascending:false}).order('created_at',{ascending:false}).limit(100);
+      b.error=b2.error;b.data=b2.data}
+    if(b.error)throw b.error;
     hm.msgs=a.data;hm.posts=b.data;hm.missing=false;hm.loaded=true;hmSubscribe();
   }catch(e){
     if(hmMissing(e)){hm.missing=true;hm.loaded=true}
@@ -6105,14 +6171,44 @@ async function hmDelMsg(id){
 }
 
 /* ---- bacheca ---- */
+// categorie delle comunicazioni: per aggiungerne una basta una riga qui
+const HM_CATS=[
+  {id:'generale',l:'Generale',c:'#64748B'},
+  {id:'amministrazione',l:'Amministrazione',c:'#2563EB'},
+  {id:'progetti',l:'Progetti',c:'#7C3AED'},
+  {id:'aggiornamenti',l:'Aggiornamenti',c:'#059669'},
+  {id:'clienti',l:'Clienti',c:'#EA580C'},
+  {id:'team',l:'Team e organizzazione',c:'#DB2777'},
+  {id:'marketing',l:'Marketing',c:'#0891B2'},
+  {id:'formazione',l:'Formazione',c:'#D97706'},
+];
+const hmCat=id=>HM_CATS.find(c=>c.id===id)||HM_CATS[0];
+const hmToday=()=>isoD(new Date());
+const hmExpired=p=>!!p.scade_il&&p.scade_il<hmToday();
+// visibili: non scadute (le scadute le vede solo l'autore, in «Scadute»), filtrate per categoria
+function hmShownPosts(){
+  return hm.posts.filter(p=>(hm.showExp?hmExpired(p)&&ag.me&&p.autore_id===ag.me.id:!hmExpired(p))&&(hm.cat==='tutte'||(p.categoria||'generale')===hm.cat));
+}
+const hmMyExpired=()=>hm.posts.filter(p=>hmExpired(p)&&ag.me&&p.autore_id===ag.me.id);
+function hmCatBar(){
+  if(!hm.v2)return '';
+  const live=hm.posts.filter(p=>!hmExpired(p)),used=HM_CATS.filter(c=>live.some(p=>(p.categoria||'generale')===c.id)),ex=hmMyExpired().length;
+  if(!used.length&&!ex)return '';
+  return `<div class="hm-cats" role="group" aria-label="Categorie">`
+    +`<button class="hm-cat ${hm.cat==='tutte'&&!hm.showExp?'on':''}" onclick="hm.cat='tutte';hm.showExp=false;hm.allPosts=false;render()">Tutte</button>`
+    +used.map(c=>`<button class="hm-cat ${hm.cat===c.id&&!hm.showExp?'on':''}" onclick="hm.cat='${c.id}';hm.showExp=false;hm.allPosts=false;render()">${esc(c.l)}</button>`).join('')
+    +(ex?`<button class="hm-cat ${hm.showExp?'on':''}" onclick="hm.showExp=!hm.showExp;hm.cat='tutte';hm.allPosts=false;render()">Scadute (${ex})</button>`:'')+`</div>`;
+}
 function hmPostCard(p){
   const mine=ag.me&&p.autore_id===ag.me.id,au=agPerson(p.autore_id);
   const edited=new Date(p.updated_at)-new Date(p.created_at)>60000;
-  return `<article class="hm-post ${p.fissato?'pinned':''}">
+  const cat=hmCat(p.categoria),exp=hmExpired(p);
+  return `<article class="hm-post ${p.fissato?'pinned':''} ${exp?'expired':''}">
     <div class="hm-ph">${agAv(p.autore_id)}<div class="hm-pm"><b>${esc(au?au.nome:'Collega')}</b><span>${esc(nlFmt(p.created_at,true))}${edited?' · modificata':''}</span></div>
-      ${p.fissato?`<span class="chip da hm-pinchip"><span class="d"></span>In evidenza</span>`:''}<span style="flex:1"></span>
+      ${hm.v2?`<span class="hm-catchip" style="--cc:${cat.c}">${esc(cat.l)}</span>`:''}${p.fissato?`<span class="chip da hm-pinchip"><span class="d"></span>In evidenza</span>`:''}<span style="flex:1"></span>
       ${mine?`<button class="btn sm ghost" onclick="hmPostPin(${p.id})">${p.fissato?'Togli evidenza':'Metti in evidenza'}</button><button class="btn sm ghost" onclick="hmPostForm(${p.id})">Modifica</button><button class="btn sm ghost danger" onclick="hmPostDel(${p.id})">Elimina</button>`:''}</div>
-    ${p.titolo?`<h4 class="hm-pt">${esc(p.titolo)}</h4>`:''}<div class="hm-px">${esc(p.testo)}</div></article>`;
+    ${p.titolo?`<h4 class="hm-pt">${esc(p.titolo)}</h4>`:''}<div class="hm-px">${esc(p.testo)}</div>
+    ${p.scade_il?`<div class="hm-exp" style="margin-top:10px">${exp?'Scaduta il ':'Visibile fino al '}${esc(new Date(p.scade_il+'T12:00:00').toLocaleDateString('it-IT',{day:'numeric',month:'long',year:'numeric'}))}</div>`:''}</article>`;
 }
 function hmPostForm(id){
   if(!ag.me){toast('Account non collegato alla squadra','warn');return}
@@ -6123,6 +6219,9 @@ function hmPostForm(id){
       <p class="helptip">Compare nella bacheca della Home di tutti. Chi è nella squadra riceve una notifica.</p>
       <div class="form-row"><label for="hm-pt">Titolo (facoltativo)</label><input id="hm-pt" maxlength="160" value="${escAttr(p?p.titolo||'':'')}" placeholder="Per esempio: Ferie di agosto"></div>
       <div class="form-row"><label for="hm-px">Comunicazione</label><textarea id="hm-px" rows="6" maxlength="4000" required placeholder="Scrivi qui…">${esc(p?p.testo:'')}</textarea></div>
+      ${hm.v2?`<div class="ct-two"><div class="form-row"><label for="hm-pc">Categoria</label><select id="hm-pc">${HM_CATS.map(c=>`<option value="${c.id}" ${(p?p.categoria||'generale':'generale')===c.id?'selected':''}>${esc(c.l)}</option>`).join('')}</select></div>
+        <div class="form-row"><label for="hm-pe">Visibile fino al (facoltativo)</label><input type="date" id="hm-pe" min="${hmToday()}" value="${escAttr(p&&p.scade_il||'')}"></div></div>
+      <p class="helptip" style="margin-top:-6px">Dal giorno dopo la data scelta la comunicazione sparisce dalla Bacheca. Lasciando vuoto resta finché non la elimini.</p>`:''}
       <label class="ct-chk"><input type="checkbox" id="hm-pf" ${p&&p.fissato?'checked':''}> Metti in evidenza (resta in alto)</label>
     </div><div class="modal-f"><button type="button" class="btn" onclick="closeModal()">Annulla</button><button class="btn primary" id="hm-ps" type="submit">${p?'Salva':'Pubblica'}</button></div></form></div>`);
   setTimeout(()=>{const t=document.getElementById('hm-px');if(t)t.focus()},50);
@@ -6133,8 +6232,10 @@ async function hmPostSave(ev){
   if(!testo)return;
   const b=document.getElementById('hm-ps');if(b)b.disabled=true;
   const id=hm.editing;
-  const r=id?await nlSupa.from('bacheca').update({titolo,testo,fissato}).eq('id',id).select().single()
-            :await nlSupa.from('bacheca').insert({autore_id:ag.me.id,titolo,testo,fissato}).select().single();
+  const row={titolo,testo,fissato};
+  if(hm.v2){row.categoria=document.getElementById('hm-pc').value;row.scade_il=document.getElementById('hm-pe').value||null}
+  const r=id?await nlSupa.from('bacheca').update(row).eq('id',id).select().single()
+            :await nlSupa.from('bacheca').insert({autore_id:ag.me.id,...row}).select().single();
   if(r.error){if(b)b.disabled=false;toast(r.error.message,'err');return}
   closeModal();toast(id?'Comunicazione aggiornata':'Comunicazione pubblicata','ok');
   await hmLoad({silent:true});
@@ -6183,6 +6284,7 @@ function hmOpenCall(id){
 }
 /* ---- Home personalizzabile: ogni persona sceglie ordine, visibilità e dimensione dei riquadri ---- */
 const HM_TILES=[
+  {id:'bacheca',label:'Bacheca',size:12},
   {id:'calls',label:'Call di oggi',size:6},
   {id:'mail',label:'Email da inviare',size:3},
   {id:'saldo',label:'Saldo conto',size:3},
@@ -6191,7 +6293,6 @@ const HM_TILES=[
   {id:'attivita',label:'Le mie attività',size:6},
   {id:'messaggi',label:'Messaggi',size:8},
   {id:'online',label:'Online',size:4},
-  {id:'bacheca',label:'Bacheca',size:12},
 ];
 const HM_SIZES=[{n:3,l:'Piccolo'},{n:4,l:'Medio'},{n:6,l:'Grande'},{n:8,l:'Largo'},{n:12,l:'Riga intera'}];
 const hl={editing:false,draft:null,saved:null,db:null,key:null,drag:null};
@@ -6299,7 +6400,7 @@ function viewHome(){
       const url=hmCallUrl(e);
       return `<li class="hm-callrow"><button class="hm-call ${past?'past':''}" onclick="event.stopPropagation();hmOpenCall(${e.id})" title="${url?'Apri la call':'Nessun link: apro i dettagli'}"><span class="hm-ctime">${e.tutto_il_giorno?'Tutto il giorno':esc(agT(e.inizio))}</span><span class="hm-cname">${esc(e.cliente||e.titolo)}${e.cliente&&e.cliente!==e.titolo?`<small>${esc(e.titolo)}</small>`:''}</span><span class="ag-avs">${agAvs(e)}</span>${url?`<span class="hm-cjoin" aria-hidden="true">${PW_I.ext}</span>`:''}</button><button class="hm-cset" onclick="event.stopPropagation();hmGoEvent(${e.id})" title="Impostazioni della call" aria-label="Impostazioni della call">${HM_GEAR}</button></li>`}).join('')}</ul>`
     :`<p class="hm-empty">Nessuna call in programma oggi.</p>`;
-  const posts=hm.allPosts?hm.posts:hm.posts.slice(0,5);
+  const shown=hmShownPosts(),posts=hm.allPosts?shown:shown.slice(0,5);
   // ogni riquadro della Home: la persona sceglie ordine, visibilità e dimensione (Personalizza)
   const SP=id=>hmSpan(id);
   const TILES={
@@ -6343,8 +6444,8 @@ function viewHome(){
     bacheca:()=>`<section class="tile ${SP('bacheca')} hm-board" aria-label="Bacheca comunicazioni">
       <div class="tile-h"><h3>Bacheca</h3><span class="sub">comunicazioni per tutta la squadra</span><span class="spacer"></span><button class="btn sm primary" onclick="hmPostForm()">${AG_I.plus}Nuova comunicazione</button></div>
       ${hm.missing?`<p class="hm-empty">Messaggi e bacheca si attivano con la migrazione <code>20261104150000_messaggi_bacheca.sql</code>.</p>`
-      :posts.length?`<div class="hm-posts">${posts.map(hmPostCard).join('')}</div>${hm.posts.length>5?`<button class="btn sm" style="margin-top:12px" onclick="hm.allPosts=!hm.allPosts;render()">${hm.allPosts?'Mostra meno':'Mostra tutte ('+hm.posts.length+')'}</button>`:''}`
-      :`<p class="hm-empty">La bacheca è vuota. Pubblica una comunicazione per tutta la squadra.</p>`}
+      :`${hmCatBar()}${posts.length?`<div class="hm-posts">${posts.map(hmPostCard).join('')}</div>${shown.length>5?`<button class="btn sm" style="margin-top:12px" onclick="hm.allPosts=!hm.allPosts;render()">${hm.allPosts?'Mostra meno':'Mostra tutte ('+shown.length+')'}</button>`:''}`
+      :`<p class="hm-empty">${hm.showExp?'Non hai comunicazioni scadute.':hm.cat!=='tutte'?'Nessuna comunicazione in questa categoria.':'La bacheca è vuota. Pubblica una comunicazione per tutta la squadra.'}</p>`}`}
     </section>`,
   };
   return hmRenderTiles(TILES);
@@ -6391,13 +6492,13 @@ function onSync(){
   for(const [id,metas] of Object.entries(st)){
     const m=(metas||[]).slice().reverse().find(x=>x.stato==='attivo')||(metas||[])[metas.length-1]||{};
     const p=agPerson(id);
-    us.push({id,nome:p?p.nome:'Collega',colore:p?p.colore:'#999',sezione:String(m.sezione||''),stato:m.stato==='assente'?'assente':'attivo'});
+    us.push({id,nome:p?p.nome:'Collega',colore:p?p.colore:'#999',avatar_url:p?p.avatar_url:null,sezione:String(m.sezione||''),stato:m.stato==='assente'?'assente':'attivo'});
   }
   const me=ag.me&&ag.me.id;
   us.sort((a,b)=>(a.id===me?-1:b.id===me?1:0)||(a.stato===b.stato?0:a.stato==='attivo'?-1:1)||a.nome.localeCompare(b.nome));
   on.users=us;onPaint();
 }
-function onAv(u,sm){return `<span class="ag-av${sm?' sm':''}${u.stato==='assente'?' on-away':''}" style="background:${escAttr(u.colore)}" title="${escAttr(u.nome+(u.stato==='assente'?' (non attivo)':''))}">${esc((u.nome||'?').trim().charAt(0).toUpperCase())}</span>`}
+function onAv(u,sm){return `<span class="ag-av${sm?' sm':''}${u.stato==='assente'?' on-away':''}" style="background:${escAttr(u.colore)}" title="${escAttr(u.nome+(u.stato==='assente'?' (non attivo)':''))}">${agAvIn(u.avatar_url,u.nome)}</span>`}
 function onRows(){
   const me=ag.me&&ag.me.id;
   return on.users.map(u=>`<li class="on-row"><span class="on-ava">${onAv(u)}<i class="on-dot ${u.stato}" aria-hidden="true"></i></span><span class="on-name">${esc(u.nome)}${u.id===me?' <small>(tu)</small>':''}</span><span class="on-where">${u.stato==='assente'?'non attivo':esc(u.sezione||'')}</span></li>`).join('');
