@@ -20,6 +20,10 @@ values ('avatars', 'avatars', true, 1048576, array['image/jpeg','image/png','ima
 on conflict (id) do update set public = true, file_size_limit = 1048576,
   allowed_mime_types = array['image/jpeg','image/png','image/webp'];
 
+-- la sovrascrittura (upsert) di Storage richiede anche la lettura
+drop policy if exists avatars_select on storage.objects;
+create policy avatars_select on storage.objects for select to authenticated
+  using (bucket_id = 'avatars');
 drop policy if exists avatars_insert on storage.objects;
 create policy avatars_insert on storage.objects for insert to authenticated
   with check (bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text);
