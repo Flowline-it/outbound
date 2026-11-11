@@ -1398,6 +1398,128 @@ tbody tr:hover{background:var(--surface-2)}
 .ra-az b{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ra-az small,.ra-ch small{font-size:12px;color:var(--muted)}
 .ra-ch{display:flex;flex-direction:column;align-items:flex-end;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* ---- Home: togliere e rimettere i riquadri ---- */
+.chip.sb{background:transparent;color:var(--muted);box-shadow:inset 0 0 0 1.5px var(--border-strong)} .chip.sb .d{background:var(--faint)}
+.hm-x{width:28px;height:28px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;color:var(--faint);flex:0 0 auto;margin:-4px -6px -4px 2px;opacity:0;transition:opacity .15s var(--ease),background .15s var(--ease),color .15s var(--ease)}
+.hm-x svg{width:15px;height:15px}
+.bento.hm .tile:hover .hm-x,.bento.hm .tile:focus-within .hm-x{opacity:1}
+.hm-x:hover{background:var(--surface-2);color:var(--late)}
+.hm-x:focus-visible{opacity:1;outline:2px solid var(--focus)}
+.t-orange .hm-x:hover,.t-ink .hm-x:hover{background:rgba(255,255,255,.2)}
+@media (hover:none){.hm-x{opacity:.55}}
+.hm-tools b{font-size:13px;margin-left:2px}
+.hm-rm{color:var(--late)}.hm-rm:hover:not(:disabled){background:var(--late-soft);color:var(--late)}
+.hm-tray{flex:1 1 100%;display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding-top:10px;margin-top:2px;border-top:1px solid var(--border)}
+.hm-tray-l{font-size:13px;color:var(--muted);font-weight:600;margin-right:4px}
+.hm-add{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 13px 0 10px;border-radius:var(--pill);background:var(--surface-2);font-size:13px;font-weight:650;color:var(--text)}
+.hm-add:hover{background:var(--brand-soft);color:var(--accent)}
+.hm-add svg{width:14px;height:14px}
+
+/* ---- Bacheca: righe compatte ---- */
+.hm-board .tile-h{margin-bottom:12px}
+.hm-posts{display:flex;flex-direction:column;gap:6px}
+.hm-post{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:start;background:var(--surface-2);border-radius:16px;padding:12px 10px 12px 14px;box-shadow:none !important;position:relative}
+.hm-post .ag-av{width:30px;height:30px;font-size:12px;margin-top:1px}
+.hm-post.pinned{box-shadow:inset 3px 0 0 var(--brand) !important}
+.hm-post.can .hm-pbody{cursor:pointer}
+.hm-post.can:hover{background:var(--surface-3)}
+.hm-pbody{min-width:0;border-radius:8px}
+.hm-pbody:focus-visible{outline:2px solid var(--focus);outline-offset:4px}
+.hm-pline{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0}
+.hm-pline .hm-pt{font-size:14.5px;font-weight:650;margin:0;line-height:1.35;min-width:0}
+.hm-pin{display:inline-flex;color:var(--brand)}.hm-pin svg{width:15px;height:15px}
+.hm-new{font-size:11px;font-weight:800;color:var(--accent);background:var(--brand-soft);padding:2px 8px;border-radius:var(--pill)}
+.hm-post .hm-catchip{font-size:11px;padding:2px 9px}
+.hm-post .hm-px{font-size:14px;margin-top:3px;color:var(--muted);line-height:1.5}
+.hm-post.open .hm-px{color:var(--text)}
+.hm-px.clamp{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:normal}
+.hm-pmeta{display:flex;align-items:center;gap:10px;margin-top:6px;font-size:12.5px;color:var(--faint)}
+.hm-more{font-weight:700;color:var(--accent)}
+.hm-pmenu{position:relative}
+.hm-dots{width:30px;height:30px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;color:var(--faint)}
+.hm-dots:hover,.hm-dots[aria-expanded="true"]{background:var(--surface);color:var(--text)}
+.hm-dots svg{width:16px;height:16px}
+.hm-menu{position:absolute;right:0;top:34px;z-index:20;min-width:180px;padding:6px;border-radius:14px;background:var(--surface);box-shadow:var(--shadow),0 0 0 1px var(--border);display:flex;flex-direction:column}
+.hm-menu button{text-align:left;padding:9px 12px;border-radius:9px;font-size:13.5px;font-weight:600}
+.hm-menu button:hover,.hm-menu button:focus-visible{background:var(--surface-2);outline:none}
+.hm-menu .danger{color:var(--late)}
+.hm-board .pj-more{margin-top:8px}
+@media(max-width:700px){.hm-post{grid-template-columns:minmax(0,1fr) auto;padding:12px}.hm-post>.ag-av{display:none}}
+
+.pj-row .pj-stsel.da{background-color:var(--surface)}
+.pj-row .pj-stsel{min-width:104px}
+/* ---- Progetti e attività: una barra di filtri, un riquadro, gruppi richiudibili ---- */
+.pj-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.pj-tools .pj-who{margin:0}
+.pj-tools .spacer{flex:1}
+.pj-tools .pj-sel{height:34px;background:var(--surface);box-shadow:var(--card-shadow);max-width:220px}
+.pj-search{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 12px;border-radius:var(--pill);background:var(--surface);box-shadow:var(--card-shadow);color:var(--faint)}
+.pj-search .ico{width:15px;height:15px}
+.pj-search input{border:0;background:transparent;outline:none;width:160px;font-size:13.5px;color:var(--text);height:100%}
+.pj-search:focus-within{box-shadow:0 0 0 2px var(--focus)}
+.pj-segs{display:inline-flex;padding:3px;border-radius:var(--pill);background:var(--surface);box-shadow:var(--card-shadow)}
+.pj-segs button{height:28px;padding:0 12px;border-radius:var(--pill);font-size:12.5px;font-weight:650;color:var(--muted)}
+.pj-segs button.on{background:var(--ink);color:#fff}
+[data-theme="dark"] .pj-segs button.on{background:var(--text);color:var(--bg)}
+.pj-tasks .pj-quick{background:var(--surface-2);box-shadow:none;margin:0 0 8px}
+.pj-tasks .pj-quick input,.pj-tasks .pj-quick select{background:var(--surface)}
+.pj-sec{padding:4px 0}
+.pj-sec+.pj-sec{border-top:1px solid var(--border)}
+.pj-sech{display:flex;align-items:center;gap:8px}
+.pj-sect{flex:1;min-width:0;display:flex;align-items:center;gap:9px;padding:12px 4px;text-align:left;border-radius:10px}
+.pj-sect b{font-size:15px;font-weight:650;letter-spacing:-.015em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pj-sect small{font-size:12.5px;color:var(--faint);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.pj-sect .count{font-size:12px;font-weight:700;min-width:24px;height:22px;padding:0 7px;border-radius:var(--pill);background:var(--surface-2);display:inline-flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums;flex:0 0 auto}
+.pj-sect:hover b{color:var(--accent)}
+.pj-caret{width:16px;height:16px;color:var(--faint);flex:0 0 auto;transform:rotate(90deg);transition:transform .2s var(--ease)}
+.pj-sec.closed .pj-caret{transform:none}
+.pj-sdot{width:9px;height:9px;border-radius:50%;flex:0 0 auto;background:var(--faint)}
+.pj-sdot.seq{background:var(--brand)}.pj-sdot.wait{background:var(--wait)}.pj-sdot.reply{background:var(--ok)}.pj-sdot.plan{background:#B565B5}
+.pj-sdot.sb{background:transparent;box-shadow:inset 0 0 0 2px var(--faint)}.pj-sdot.da{background:var(--text)}.pj-sdot.done{background:var(--border-strong)}
+.pj-go{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:650;color:var(--muted);padding:6px 10px;border-radius:var(--pill);flex:0 0 auto}
+.pj-go:hover{background:var(--surface-2);color:var(--text)}.pj-go .ico{width:13px;height:13px}
+.pj-sec>.pj-list,.pj-sec>.pj-plist{margin-bottom:10px}
+.pj-row.sb .pj-main b{color:var(--muted)}
+.pj-none{padding:18px 4px;color:var(--muted);font-size:14.5px}
+.pj-hint{font-size:12.5px;color:var(--faint);margin:12px 4px 0}
+.pj-stsel{appearance:none;-webkit-appearance:none;border:0;cursor:pointer;font:inherit;font-size:12px;font-weight:650;padding:0 26px 0 12px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;background-size:12px}
+.pj-stsel:hover{filter:brightness(.96)}.pj-stsel:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+.pj-stsel.sb{background-color:transparent}
+.pj-plist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.pj-prow2{display:grid;grid-template-columns:minmax(0,2.2fr) 96px minmax(120px,1.3fr) 82px 112px;gap:14px;align-items:center;padding:10px 14px;border-radius:16px;background:var(--surface-2);cursor:pointer}
+.pj-prow2:hover{background:var(--surface-3)}.pj-prow2:focus-visible{outline:2px solid var(--focus)}
+.pj-prow2 .pj-bt small{color:var(--muted)}
+.pj-prow2 .pj-track{background:var(--surface)}.pj-prow2 .pj-track i{background:var(--text)}.pj-prow2 .pj-track.full i{background:var(--ok)}
+.pj-prow2 .pj-prog span:last-child{color:var(--muted)}
+.pj-prow2 .pj-open.z{color:var(--faint)}
+.pj-prow2 .chip{justify-self:end}
+.pj-head{margin-bottom:16px}
+.pj-head .pj-ph{margin-bottom:16px}
+.pj-head .pj-sel{height:34px}
+.pj-facts{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:flex-end}
+.pj-fact small{display:block;font-size:12px;font-weight:650;color:var(--faint);margin-bottom:4px}
+.pj-fact>div{font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px;min-height:30px}
+.pj-links{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+.pj-ppl{display:inline-flex;align-items:center;gap:8px;border-radius:var(--pill);padding:2px 10px 2px 2px;font-weight:600;font-size:14px}
+.pj-ppl:hover{background:var(--surface-2)}
+.pj-pn{white-space:nowrap}
+.pj-subs{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.pj-subs a{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:var(--pill);background:var(--surface-2);font-size:12.5px;font-weight:600;color:var(--text);text-decoration:none}
+.pj-subs a:hover{background:var(--surface-3)}.pj-subs .ico{width:14px;height:14px}
+.pj-pnote{margin:14px 0 0;font-size:13.5px;color:var(--muted);white-space:pre-wrap;line-height:1.5}
+.pj-seg{grid-template-columns:repeat(5,1fr)}
+.pj-seg .sb input:checked+span{background:var(--surface);color:var(--text);box-shadow:inset 0 0 0 2px var(--border-strong)}
+.pj-seg .seq input:checked+span{background:var(--brand-soft)}
+@media(max-width:1100px){.pj-prow2{grid-template-columns:minmax(0,1fr) minmax(100px,1fr) 112px}.pj-prow2 .pj-avs,.pj-prow2 .pj-open{display:none}}
+@media(max-width:700px){
+  .pj-tools .spacer{display:none}
+  .pj-tools .pj-sel,.pj-search{flex:1 1 140px;max-width:none}.pj-search input{width:100%}
+  .pj-prow2{grid-template-columns:minmax(0,1fr) auto;gap:10px;padding:10px 12px}.pj-prow2 .pj-prog{display:none}
+  .pj-seg{grid-template-columns:repeat(3,1fr)}
+  .pj-links{margin-left:0}
+  .pj-sect small{display:none}
+}
 </style>
 </head>
 <body class="locked">
@@ -6066,7 +6188,7 @@ async function agDelete(id){
 /* =====================================================================
    HOME — scorciatoie, messaggi tra collaboratori e bacheca comunicazioni
    ===================================================================== */
-const hm={cat:'tutte',showExp:false,v2:true,msgs:[],posts:[],loaded:false,missing:false,ch:null,loadT:null,pollT:null,thread:null,allPosts:false,editing:null};
+const hm={cat:'tutte',showExp:false,v2:true,msgs:[],posts:[],loaded:false,missing:false,ch:null,loadT:null,pollT:null,thread:null,allPosts:false,editing:null,openPost:null,menu:null};
 const HM_I={
   msg:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
   pin:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5 M9 3h6l-1 7 3 3H7l3-3z"/></svg>',
@@ -6217,23 +6339,46 @@ const hmMyExpired=()=>hm.posts.filter(p=>hmExpired(p)&&ag.me&&p.autore_id===ag.m
 function hmCatBar(){
   if(!hm.v2)return '';
   const live=hm.posts.filter(p=>!hmExpired(p)),used=HM_CATS.filter(c=>live.some(p=>(p.categoria||'generale')===c.id)),ex=hmMyExpired().length;
-  if(!used.length&&!ex)return '';
+  if(used.length<2&&!ex)return '';   // con una sola categoria i filtri non servono
   return `<div class="hm-cats" role="group" aria-label="Categorie">`
     +`<button class="hm-cat ${hm.cat==='tutte'&&!hm.showExp?'on':''}" onclick="hm.cat='tutte';hm.showExp=false;hm.allPosts=false;render()">Tutte</button>`
     +used.map(c=>`<button class="hm-cat ${hm.cat===c.id&&!hm.showExp?'on':''}" onclick="hm.cat='${c.id}';hm.showExp=false;hm.allPosts=false;render()">${esc(c.l)}</button>`).join('')
     +(ex?`<button class="hm-cat ${hm.showExp?'on':''}" onclick="hm.showExp=!hm.showExp;hm.cat='tutte';hm.allPosts=false;render()">Scadute (${ex})</button>`:'')+`</div>`;
 }
-function hmPostCard(p){
-  const mine=ag.me&&p.autore_id===ag.me.id,au=agPerson(p.autore_id);
-  const edited=new Date(p.updated_at)-new Date(p.created_at)>60000;
-  const cat=hmCat(p.categoria),exp=hmExpired(p);
-  return `<article class="hm-post ${p.fissato?'pinned':''} ${exp?'expired':''}">
-    <div class="hm-ph">${agAv(p.autore_id)}<div class="hm-pm"><b>${esc(au?au.nome:'Collega')}</b><span>${esc(nlFmt(p.created_at,true))}${edited?' · modificata':''}</span></div>
-      ${hm.v2?`<span class="hm-catchip" style="--cc:${cat.c}">${esc(cat.l)}</span>`:''}${p.fissato?`<span class="chip da hm-pinchip"><span class="d"></span>In evidenza</span>`:''}<span style="flex:1"></span>
-      ${mine?`<button class="btn sm ghost" onclick="hmPostPin(${p.id})">${p.fissato?'Togli evidenza':'Metti in evidenza'}</button><button class="btn sm ghost" onclick="hmPostForm(${p.id})">Modifica</button><button class="btn sm ghost danger" onclick="hmPostDel(${p.id})">Elimina</button>`:''}</div>
-    ${p.titolo?`<h4 class="hm-pt">${esc(p.titolo)}</h4>`:''}<div class="hm-px">${esc(p.testo)}</div>
-    ${p.scade_il?`<div class="hm-exp" style="margin-top:10px">${exp?'Scaduta il ':'Visibile fino al '}${esc(new Date(p.scade_il+'T12:00:00').toLocaleDateString('it-IT',{day:'numeric',month:'long',year:'numeric'}))}</div>`:''}</article>`;
+// data breve: «oggi 18:12», «ieri», «10 nov»
+function hmWhen(ts){
+  const d=new Date(ts),t=today(),k=new Date(d.getFullYear(),d.getMonth(),d.getDate()),n=Math.round((t-k)/864e5);
+  if(n===0)return 'oggi '+d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+  if(n===1)return 'ieri';
+  return d.toLocaleDateString('it-IT',{day:'numeric',month:'short',...(d.getFullYear()!==t.getFullYear()?{year:'numeric'}:{})});
 }
+const HM_PIN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16v6M8 3h8M9 3v6l-3 4v3h12v-3l-3-4V3"/></svg>';
+const HM_DOTS='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>';
+// una comunicazione = una riga compatta: titolo, anteprima di due righe, autore e data. Un clic la apre per intero.
+function hmPostCard(p){
+  const mine=ag.me&&p.autore_id===ag.me.id,au=agPerson(p.autore_id),nome=au?au.nome:'Collega';
+  const edited=new Date(p.updated_at)-new Date(p.created_at)>60000;
+  const cat=hmCat(p.categoria),exp=hmExpired(p),open=hm.openPost===p.id;
+  const testo=String(p.testo||''),lungo=testo.length>160||(testo.match(/\n/g)||[]).length>1;
+  const nuova=!mine&&Date.now()-new Date(p.created_at).getTime()<48*36e5;
+  const fino=p.scade_il?`${exp?'scaduta il':'fino al'} ${new Date(p.scade_il+'T12:00:00').toLocaleDateString('it-IT',{day:'numeric',month:'short'})}`:'';
+  const meta=[p.titolo?esc(nome):null,esc(hmWhen(p.created_at))+(edited?' · modificata':''),fino?esc(fino):null].filter(Boolean).join(' · ');
+  const tog=lungo||open?`onclick="hmPostToggle(${p.id})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();hmPostToggle(${p.id})}" role="button" tabindex="0" aria-expanded="${open}"`:'';
+  return `<article class="hm-post ${p.fissato?'pinned':''} ${exp?'expired':''} ${open?'open':''} ${tog?'can':''}">
+    ${agAv(p.autore_id)}
+    <div class="hm-pbody" ${tog}>
+      <div class="hm-pline">${p.fissato?`<span class="hm-pin" title="In evidenza" aria-label="In evidenza">${HM_PIN}</span>`:''}<b class="hm-pt">${esc(p.titolo||nome)}</b>${hm.v2?`<span class="hm-catchip" style="--cc:${cat.c}">${esc(cat.l)}</span>`:''}${nuova?'<span class="hm-new">Nuova</span>':''}</div>
+      <div class="hm-px ${open?'':'clamp'}">${esc(testo)}</div>
+      <div class="hm-pmeta"><span>${meta}</span>${lungo?`<span class="hm-more">${open?'Chiudi':'Leggi tutto'}</span>`:''}</div>
+    </div>
+    ${mine?`<div class="hm-pmenu"><button class="hm-dots" onclick="event.stopPropagation();hmMenu(${p.id})" aria-haspopup="menu" aria-expanded="${hm.menu===p.id}" aria-label="Azioni sulla comunicazione" title="Azioni">${HM_DOTS}</button>
+      ${hm.menu===p.id?`<div class="hm-menu" role="menu"><button role="menuitem" onclick="hm.menu=null;hmPostPin(${p.id})">${p.fissato?'Togli evidenza':'Metti in evidenza'}</button><button role="menuitem" onclick="hm.menu=null;hmPostForm(${p.id})">Modifica</button><button role="menuitem" class="danger" onclick="hm.menu=null;hmPostDel(${p.id})">Elimina</button></div>`:''}</div>`:''}
+  </article>`;
+}
+function hmPostToggle(id){hm.openPost=hm.openPost===id?null:id;hm.menu=null;render()}
+function hmMenu(id){hm.menu=hm.menu===id?null:id;render();if(hm.menu)setTimeout(()=>document.querySelector('.hm-menu button')?.focus(),0)}
+document.addEventListener('click',e=>{if(hm.menu&&!e.target.closest('.hm-pmenu')){hm.menu=null;render()}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&hm.menu){hm.menu=null;render()}});
 function hmPostForm(id){
   if(!ag.me){toast('Account non collegato alla squadra','warn');return}
   const p=id?hm.posts.find(x=>x.id===id):null;hm.editing=id||null;
@@ -6349,43 +6494,71 @@ const HM_ED_I={
   right:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>',
   eye:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
   off:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18 M10.6 5.1A10.6 10.6 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4.2 M6.6 6.6A17 17 0 0 0 2 12s3.5 7 10 7a9.8 9.8 0 0 0 5.4-1.6 M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>',
+  x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>',
+  plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>',
   edit:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>',
 };
+function hmTileLabel(id){return (HM_TILES.find(x=>x.id===id)||{}).label||id}
+// fuori dalla modifica: una piccola × nell'intestazione di ogni riquadro lo toglie dalla Home (con Annulla)
+function hmAddHide(h,id){
+  const lab=hmTileLabel(id),i=h.indexOf('class="tile-h"');if(i<0)return h;
+  const j=h.indexOf('</div>',i);if(j<0)return h;
+  const btn=`<button class="hm-x" onclick="event.stopPropagation();hmHide('${id}')" onkeydown="event.stopPropagation()" title="Togli dalla Home" aria-label="Togli ${escAttr(lab)} dalla Home">${HM_ED_I.x}</button>`;
+  return h.slice(0,j)+btn+h.slice(j);
+}
 function hmRenderTiles(T){
   const L=hmLayout(), ed=hl.editing;
-  const html=L.filter(t=>ed||t.show).map((t,i,arr)=>{
+  const vis=L.filter(t=>t.show);
+  const html=vis.map((t,i,arr)=>{
     let h=T[t.id]();
-    if(!ed)return h;
-    const lab=(HM_TILES.find(x=>x.id===t.id)||{}).label||t.id;
+    if(!ed)return hmAddHide(h,t.id);
+    const lab=hmTileLabel(t.id);
     const tools=`<div class="hm-tools">
-      <span class="hm-grip" title="Trascina per spostare ${escAttr(lab)}">${HM_ED_I.grip}</span><span class="spacer"></span>
+      <span class="hm-grip" title="Trascina per spostare ${escAttr(lab)}">${HM_ED_I.grip}</span><b>${esc(lab)}</b><span class="spacer"></span>
       <button class="hm-tb" onclick="hmMove('${t.id}',-1)" ${i===0?'disabled':''} aria-label="Sposta ${escAttr(lab)} prima">${HM_ED_I.left}</button>
       <button class="hm-tb" onclick="hmMove('${t.id}',1)" ${i===arr.length-1?'disabled':''} aria-label="Sposta ${escAttr(lab)} dopo">${HM_ED_I.right}</button>
       <select class="hm-size" onchange="hmSize('${t.id}',this.value)" aria-label="Dimensione di ${escAttr(lab)}">${HM_SIZES.map(z=>`<option value="${z.n}" ${z.n===t.size?'selected':''}>${z.l}</option>`).join('')}</select>
-      <button class="hm-tb hm-eye ${t.show?'':'off'}" onclick="hmToggle('${t.id}')" aria-pressed="${!t.show}" title="${t.show?'Nascondi':'Mostra'}" aria-label="${t.show?'Nascondi':'Mostra'} ${escAttr(lab)}">${t.show?HM_ED_I.eye:HM_ED_I.off}</button>
+      <button class="hm-tb hm-rm" onclick="hmToggle('${t.id}')" title="Togli dalla Home" aria-label="Togli ${escAttr(lab)} dalla Home">${HM_ED_I.x}</button>
     </div>`;
-    return h.replace(/<section\b([^>]*?)class="/, `<section data-tile="${t.id}" draggable="true"$1class="hm-ed ${t.show?'':'hm-off'} `).replace(/(<section\b[^>]*>)/, `$1${tools}`);
+    return h.replace(/<section\b([^>]*?)class="/, `<section data-tile="${t.id}" draggable="true"$1class="hm-ed `).replace(/(<section\b[^>]*>)/, `$1${tools}`);
   }).join('');
-  if(!ed)return `<div class="bento hm">${html}</div>`;
-  return `<div class="hm-editbar" role="region" aria-label="Personalizza la Home"><div class="hm-eb-t"><b>Personalizza la tua Home</b><span>Trascina i riquadri o usa le frecce per l'ordine, scegli la dimensione, nascondi quelli che non ti servono. Vale solo per te.</span></div><span class="spacer"></span>
-    <button class="btn ghost" onclick="hmEditReset()">Ripristina</button><button class="btn" onclick="hmEditCancel()">Annulla</button><button class="btn primary" onclick="hmEditSave()">Salva</button></div>
-    <div class="bento hm hm-editing" id="hmGrid">${html}</div>`;
+  if(!ed)return vis.length?`<div class="bento hm">${html}</div>`
+    :`<div class="empty"><h4>La Home è vuota</h4><p>Hai tolto tutti i riquadri. Rimettine qualcuno da «Personalizza».</p><button class="btn primary" style="margin-top:16px" onclick="hmEditStart()">${HM_ED_I.edit}Personalizza</button></div>`;
+  const off=L.filter(t=>!t.show);
+  const tray=`<div class="hm-tray" role="group" aria-label="Riquadri da aggiungere"><span class="hm-tray-l">${off.length?'Da aggiungere:':'Tutti i riquadri sono nella Home.'}</span>${off.map(t=>`<button class="hm-add" onclick="hmToggle('${t.id}')">${HM_ED_I.plus}${esc(hmTileLabel(t.id))}</button>`).join('')}</div>`;
+  return `<div class="hm-editbar" role="region" aria-label="Personalizza la Home"><div class="hm-eb-t"><b>Personalizza la tua Home</b><span>Togli i riquadri che non ti servono con la ×, trascinali per cambiare l'ordine e scegli la dimensione. Vale solo per te.</span></div><span class="spacer"></span>
+    <button class="btn ghost" onclick="hmEditReset()">Ripristina</button><button class="btn" onclick="hmEditCancel()">Annulla</button><button class="btn primary" onclick="hmEditSave()">Salva</button>${tray}</div>
+    <div class="bento hm hm-editing" id="hmGrid">${html||'<p class="hm-empty" style="grid-column:span 12">Nessun riquadro: aggiungine uno qui sopra.</p>'}</div>`;
 }
-function hmEditStart(){hl.draft=JSON.parse(JSON.stringify(hmLayout()));hl.editing=true;render()}
+function hmEditStart(){hm.openPost=null;hm.menu=null;hl.draft=JSON.parse(JSON.stringify(hmLayout()));hl.editing=true;render();window.scrollTo(0,0)}
 function hmEditCancel(){hl.editing=false;hl.draft=null;render()}
 function hmEditReset(){hl.draft=hmNormalize([]);render()}
-async function hmEditSave(){
-  const lay=hl.draft;hl.saved=lay;hl.editing=false;hl.draft=null;save(hmLayoutKey(),lay);render();
-  if(hl.db===false){toast('Home salvata in questo browser','ok');return}
-  const {error}=await nlSupa.from('team_members').update({home_layout:lay}).eq('id',ag.me.id);
-  if(error){hl.db=false;toast('Home salvata in questo browser','ok')}else toast('Home salvata','ok');
+// salva la disposizione: nel browser e, se c'è la colonna, sul database
+async function hmPersist(lay,msg){
+  hl.saved=lay;save(hmLayoutKey(),lay);render();
+  if(hl.db!==false){
+    const {error}=await nlSupa.from('team_members').update({home_layout:lay}).eq('id',ag.me.id);
+    if(error){hl.db=false;if(msg)msg+=' (in questo browser)'}
+  }else if(msg)msg+=' (in questo browser)';
+  if(msg)toast(msg,'ok');
 }
-function hmMove(id,d){const L=hl.draft,i=L.findIndex(x=>x.id===id);
-  // salto i riquadri nascosti? no: in modifica si vedono tutti, quindi lo spostamento è quello che vedi
-  const j=i+d;if(i<0||j<0||j>=L.length)return;[L[i],L[j]]=[L[j],L[i]];render();
+async function hmEditSave(){
+  const lay=hl.draft;hl.editing=false;hl.draft=null;await hmPersist(lay,'Home salvata');
+}
+async function hmHide(id){
+  const lay=hmLayout().map(x=>({...x})),t=lay.find(x=>x.id===id);if(!t)return;
+  t.show=false;await hmPersist(lay,null);
+  pjUndoToast(`«${hmTileLabel(id)}» tolto dalla Home. Lo rimetti da Personalizza.`,()=>{
+    const l2=hmLayout().map(x=>({...x})),u=l2.find(x=>x.id===id);if(u){u.show=true;hmPersist(l2,null)}});
+}
+// sposto tra i riquadri visibili (quelli nascosti stanno nella fila «Da aggiungere»)
+function hmMove(id,d){const L=hl.draft,i=L.findIndex(x=>x.id===id);if(i<0)return;
+  let j=i+d;while(j>=0&&j<L.length&&!L[j].show)j+=d;
+  if(j<0||j>=L.length)return;[L[i],L[j]]=[L[j],L[i]];render();
   setTimeout(()=>document.querySelector(`[data-tile="${id}"] .hm-tb[aria-label^="Sposta"]:not([disabled])`)?.focus(),0)}
 function hmSize(id,n){const t=hl.draft.find(x=>x.id===id);if(t){t.size=+n;render()}}
-function hmToggle(id){const t=hl.draft.find(x=>x.id===id);if(t){t.show=!t.show;render()}}
+function hmToggle(id){const L=hl.draft,i=L.findIndex(x=>x.id===id);if(i<0)return;const t=L[i];t.show=!t.show;
+  if(t.show){L.splice(i,1);L.push(t);render();setTimeout(()=>document.querySelector(`[data-tile="${id}"]`)?.scrollIntoView({behavior:'smooth',block:'center'}),50)}else render()}
 // trascinamento (mouse): sposto il riquadro dal vivo, alla fine leggo l'ordine
 document.addEventListener('dragstart',e=>{const t=e.target.closest&&e.target.closest('#hmGrid [data-tile]');if(!t)return;hl.drag=t;t.classList.add('hm-dragging');e.dataTransfer.effectAllowed='move';try{e.dataTransfer.setData('text/plain',t.dataset.tile)}catch(_){}});
 document.addEventListener('dragover',e=>{if(!hl.drag)return;const t=e.target.closest('#hmGrid [data-tile]');if(!t||t===hl.drag)return;e.preventDefault();
@@ -6394,7 +6567,7 @@ document.addEventListener('dragover',e=>{if(!hl.drag)return;const t=e.target.clo
 document.addEventListener('drop',e=>{if(hl.drag)e.preventDefault()});
 document.addEventListener('dragend',()=>{if(!hl.drag)return;hl.drag.classList.remove('hm-dragging');hl.drag=null;
   const ids=[...document.querySelectorAll('#hmGrid [data-tile]')].map(x=>x.dataset.tile);
-  hl.draft=ids.map(id=>hl.draft.find(x=>x.id===id)).filter(Boolean);render()});
+  hl.draft=ids.map(id=>hl.draft.find(x=>x.id===id)).filter(Boolean).concat(hl.draft.filter(x=>!x.show));render()});
 function hmLink(fn){if(hl.editing)return '';return `role="link" tabindex="0" onclick="${fn}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();${fn}}"`}
 function hmGreeting(){const h=new Date().getHours();return h<13?'Buongiorno':h<18?'Buon pomeriggio':'Buonasera'}
 function hmHeroCopy(){
@@ -6424,7 +6597,7 @@ function viewHome(){
       const url=hmCallUrl(e);
       return `<li class="hm-callrow"><button class="hm-call ${past?'past':''}" onclick="event.stopPropagation();hmOpenCall(${e.id})" title="${url?'Apri la call':'Nessun link: apro i dettagli'}"><span class="hm-ctime">${e.tutto_il_giorno?'Tutto il giorno':esc(agT(e.inizio))}</span><span class="hm-cname">${esc(e.cliente||e.titolo)}${e.cliente&&e.cliente!==e.titolo?`<small>${esc(e.titolo)}</small>`:''}</span><span class="ag-avs">${agAvs(e)}</span>${url?`<span class="hm-cjoin" aria-hidden="true">${PW_I.ext}</span>`:''}</button><button class="hm-cset" onclick="event.stopPropagation();hmGoEvent(${e.id})" title="Impostazioni della call" aria-label="Impostazioni della call">${HM_GEAR}</button></li>`}).join('')}</ul>`
     :`<p class="hm-empty">Nessuna call in programma oggi.</p>`;
-  const shown=hmShownPosts(),posts=hm.allPosts?shown:shown.slice(0,5);
+  const shown=hmShownPosts(),posts=hm.allPosts?shown:shown.slice(0,4);
   // ogni riquadro della Home: la persona sceglie ordine, visibilità e dimensione (Personalizza)
   const SP=id=>hmSpan(id);
   const TILES={
@@ -6466,9 +6639,9 @@ function viewHome(){
       <div id="on-tile-body">${onTileHtml()}</div>
     </section>`,
     bacheca:()=>`<section class="tile ${SP('bacheca')} hm-board" aria-label="Bacheca comunicazioni">
-      <div class="tile-h"><h3>Bacheca</h3><span class="sub">comunicazioni per tutta la squadra</span><span class="spacer"></span><button class="btn sm primary" onclick="hmPostForm()">${AG_I.plus}Nuova comunicazione</button></div>
+      <div class="tile-h"><h3>Bacheca</h3>${shown.length?`<span class="sub">${shown.length}</span>`:''}<span class="spacer"></span><button class="btn sm" onclick="event.stopPropagation();hmPostForm()">${AG_I.plus}Nuova</button></div>
       ${hm.missing?`<p class="hm-empty">Messaggi e bacheca si attivano con la migrazione <code>20261104150000_messaggi_bacheca.sql</code>.</p>`
-      :`${hmCatBar()}${posts.length?`<div class="hm-posts">${posts.map(hmPostCard).join('')}</div>${shown.length>5?`<button class="btn sm" style="margin-top:12px" onclick="hm.allPosts=!hm.allPosts;render()">${hm.allPosts?'Mostra meno':'Mostra tutte ('+shown.length+')'}</button>`:''}`
+      :`${hmCatBar()}${posts.length?`<div class="hm-posts">${posts.map(hmPostCard).join('')}</div>${shown.length>4?`<button class="pj-more" onclick="hm.allPosts=!hm.allPosts;render()">${hm.allPosts?'Mostra meno':'Mostra tutte ('+shown.length+')'}</button>`:''}`
       :`<p class="hm-empty">${hm.showExp?'Non hai comunicazioni scadute.':hm.cat!=='tutte'?'Nessuna comunicazione in questa categoria.':'La bacheca è vuota. Pubblica una comunicazione per tutta la squadra.'}</p>`}`}
     </section>`,
   };
@@ -6996,18 +7169,24 @@ async function liBulkSave(ev){
    Semplice di proposito: 4 stati per le attività, 5 per i progetti, un solo «Urgente», cartella Drive per progetto.
    Quando qualcuno ti aggiunge a un'attività il database crea una notifica (rif_tipo 'attivita').
    ======================================================= */
-const PJ_TABS=[{tab:'mie',label:'Le mie attività'},{tab:'progetti',label:'Progetti'}];
-const PJ_ST={demo:{l:'Demo',f:'plan'},attivo:{l:'Attivo',f:'reply'},assistenza:{l:'Assistenza',f:'wait'},pausa:{l:'In pausa',f:'plan'},chiuso:{l:'Chiuso',f:'done'}};
+const PJ_TABS=[{tab:'mie',label:'Attività'},{tab:'progetti',label:'Progetti'}];
+// stati dei progetti: nel database «pausa» resta com'è, nella Suite si chiama Stand-by
+const PJ_ST={demo:{l:'Demo',f:'plan',c:'plan'},attivo:{l:'Attivo',f:'reply',c:'reply'},assistenza:{l:'Assistenza',f:'wait',c:'wait'},pausa:{l:'Stand-by',f:'plan',c:'sb'},chiuso:{l:'Chiuso',f:'done',c:'done'}};
 const PJ_GROUPS={attivo:['attivo','assistenza'],demo:['demo'],pausa:['pausa'],chiuso:['chiuso']};
-const PJ_GLABEL={attivo:'Attivi',demo:'Demo',pausa:'In pausa',chiuso:'Chiusi'};
-const PJ_TS={da_fare:{l:'Da fare',c:'da'},in_corso:{l:'In corso',c:'seq'},in_attesa:{l:'In attesa',c:'wait'},fatto:{l:'Fatto',c:'reply'}};
-const PJ_NEXT={da_fare:'in_corso',in_corso:'in_attesa',in_attesa:'da_fare'};
+const PJ_GLABEL={attivo:'Attivi',demo:'Demo',pausa:'Stand-by',chiuso:'Chiusi'};
+// stati delle attività, nell'ordine in cui compaiono
+const PJ_TS={in_corso:{l:'In corso',c:'seq'},da_fare:{l:'Da fare',c:'da'},in_attesa:{l:'In attesa',c:'wait'},standby:{l:'Stand-by',c:'sb'},fatto:{l:'Fatto',c:'reply'}};
+const PJ_TORDER=['in_corso','da_fare','in_attesa','standby'];
+const PJ_TPICK=['da_fare','in_corso','in_attesa','standby','fatto'];   // ordine nel menu e nella scheda
+const PJ_THINT={in_attesa:'aspetti qualcun altro',standby:'ferme, da riprendere più avanti'};
+// gruppi chiusi all'apertura: Stand-by, fatte, progetti chiusi
+const PJ_FOLD_DEF={standby:true,fatto:true,gpausa:true,gchiuso:true};
 const PJ_PCOLS='id,nome,cliente,stato,urgente,inizio,link,persone,drive_id,drive_nome,drive_percorso,drive_cartelle,note,completate_notion,created_at,updated_at';
 const PJ_ACOLS='id,progetto_id,titolo,stato,urgente,scadenza,persone,note,file,fatto_il,creato_da,created_at,updated_at';
 const PJ_FOLDER='https://drive.google.com/drive/folders/';
 const PJ_ROOT_ID='1ttHvHsJrblvvfksUuj7J4klHaF9ZpT5X';   // Drive condiviso › Progetti
 const PJ_INTERNO='Flowline (interno)';
-const pj={pr:[],att:[],loaded:false,loading:false,missing:false,tab:'mie',ptab:'attivo',who:'',mine:false,open:null,showDone:false,
+const pj={pr:[],att:[],loaded:false,loading:false,missing:false,tab:'mie',who:'',mine:false,open:null,group:'stato',pf:'',q:'',fold:{},
   ch:null,loadT:null,pollT:null,edit:null,editP:null,files:[],lastP:null};
 const PJ_I={
   check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg>',
@@ -7025,6 +7204,7 @@ const PJ_I={
 const pjP=id=>pj.pr.find(p=>p.id===id);
 const pjA=id=>pj.att.find(a=>a.id===id);
 const pjOpenA=a=>a.stato!=='fatto';
+const pjActiveA=a=>a.stato!=='fatto'&&a.stato!=='standby';   // da guardare adesso: Stand-by escluso
 function pjWho(){return pj.who||(ag.me?ag.me.id:'tutti')}
 function pjMine(a){const w=pjWho();return w==='tutti'||(a.persone||[]).includes(w)}
 function pjStats(p){
@@ -7046,7 +7226,7 @@ function pjDriveId(u){u=String(u||'').trim();const m=u.match(/\/folders\/([A-Za-
 function pjSafeUrl(u){u=String(u||'').trim();return /^https?:\/\//i.test(u)?u:''}
 const pjAvs=ids=>`<span class="ag-avs pj-avs">${(ids||[]).map(u=>agAv(u,true)).join('')}</span>`;
 function pjGoTab(t){pj.tab=t;pj.open=null;if(state.view!=='progetti')go('progetti');else{closeRail();render();window.scrollTo(0,0)}}
-function pjOpen(id){pj.tab='progetti';pj.open=id;pj.showDone=false;if(state.view!=='progetti')go('progetti');else{closeRail();render();window.scrollTo(0,0)}}
+function pjOpen(id){pj.tab='progetti';pj.open=id;if(state.view!=='progetti')go('progetti');else{closeRail();render();window.scrollTo(0,0)}}
 
 /* ---- dati ---- */
 function pjStop(){
@@ -7101,10 +7281,10 @@ function pjHeroCopy(){
     return {t:'Progetti.',l:`${act.length} ${act.length===1?'progetto attivo':'progetti attivi'} · ${open} ${open===1?'attività aperta':'attività aperte'}`};
   }
   const my=pj.att.filter(a=>pjOpenA(a)&&pjMine(a));
-  const c=k=>my.filter(a=>a.stato===k).length,u=my.filter(a=>a.urgente).length;
+  const c=k=>my.filter(a=>a.stato===k).length,u=my.filter(a=>a.urgente&&a.stato!=='standby').length;
   const w=pjWho(),nm=w==='tutti'?'della squadra':(ag.me&&w===ag.me.id?'tue':'di '+((agPerson(w)||{}).nome||''));
   return {t:w==='tutti'?'Le attività della squadra.':(ag.me&&w===ag.me.id?'Le tue attività.':`Le attività ${nm}.`),
-    l:[`${c('in_corso')} in corso`,`${c('da_fare')} da fare`,`${c('in_attesa')} in attesa`,u?`${u} ${u===1?'urgente':'urgenti'}`:null].filter(Boolean).join(' · ')};
+    l:[`${c('in_corso')} in corso`,`${c('da_fare')} da fare`,`${c('in_attesa')} in attesa`,c('standby')?`${c('standby')} in stand-by`:null,u?`${u} ${u===1?'urgente':'urgenti'}`:null].filter(Boolean).join(' · ')};
 }
 function pjTopActions(){
   if(!nl.session||!ag.me||pj.missing||!pj.loaded)return '';
@@ -7115,36 +7295,64 @@ function pjTopActions(){
 }
 
 /* ---- riga attività ---- */
+const PJ_CARET='<svg class="pj-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>';
+function pjStSel(a){
+  return `<select class="pj-stsel chip ${PJ_TS[a.stato]?PJ_TS[a.stato].c:'da'}" onchange="pjSetTask(${a.id},this.value)" aria-label="Stato di ${escAttr(a.titolo)}" title="Cambia stato">${PJ_TPICK.map(k=>`<option value="${k}" ${a.stato===k?'selected':''}>${PJ_TS[k].l}</option>`).join('')}</select>`;
+}
 function pjRow(a,o={}){
-  const p=pjP(a.progetto_id),du=a.stato!=='fatto'?pjDue(a.scadenza):null,files=Array.isArray(a.file)?a.file.length:0;
+  const p=pjP(a.progetto_id),done=a.stato==='fatto',du=!done&&a.stato!=='standby'?pjDue(a.scadenza):null,files=Array.isArray(a.file)?a.file.length:0;
   const meta=[];
-  if(o.proj&&p)meta.push(`<button class="pj-ptag" onclick="event.stopPropagation();pjOpen(${p.id})">${esc(pjProjName(p))}</button>`);
+  if(o.proj&&p)meta.push(`<button class="pj-ptag" onclick="event.stopPropagation();pjOpen(${p.id})" title="Apri il progetto">${esc(p.nome)}</button>`);
   if(a.note)meta.push(`<span class="pj-m">${PJ_I.note}Note</span>`);
-  if(files)meta.push(`<span class="pj-m">${PJ_I.clip}${files} ${files===1?'file':'file'}</span>`);
-  if(a.stato==='fatto'&&a.fatto_il)meta.push(`<span class="pj-m">Fatta il ${esc(nlFmt(a.fatto_il))}</span>`);
-  return `<li class="pj-row ${a.stato==='fatto'?'done':''}">
-    <button class="pj-chk ${a.stato==='fatto'?'on':''}" onclick="pjDone(${a.id})" aria-label="${a.stato==='fatto'?'Riapri':'Segna come fatta'}: ${escAttr(a.titolo)}" title="${a.stato==='fatto'?'Riapri':'Segna come fatta'}">${a.stato==='fatto'?PJ_I.check:''}</button>
+  if(files)meta.push(`<span class="pj-m">${PJ_I.clip}${files} file</span>`);
+  if(done&&a.fatto_il)meta.push(`<span class="pj-m">Fatta ${esc(hmWhen(a.fatto_il))}</span>`);
+  return `<li class="pj-row ${done?'done':''} ${a.stato==='standby'?'sb':''}">
+    <button class="pj-chk ${done?'on':''}" onclick="pjDone(${a.id})" aria-label="${done?'Riapri':'Segna come fatta'}: ${escAttr(a.titolo)}" title="${done?'Riapri':'Segna come fatta'}">${done?PJ_I.check:''}</button>
     <div class="pj-main" role="button" tabindex="0" onclick="pjTaskForm(${a.id})" onkeydown="if(event.key==='Enter'){pjTaskForm(${a.id})}"><b>${esc(a.titolo)}</b>${meta.length?`<div class="pj-meta">${meta.join('')}</div>`:''}</div>
     <div class="pj-right">
-      ${a.urgente&&a.stato!=='fatto'?'<span class="chip late"><span class="d"></span>Urgente</span>':''}
+      ${a.urgente&&!done&&a.stato!=='standby'?'<span class="chip late"><span class="d"></span>Urgente</span>':''}
       ${du?`<span class="chip ${du.c}"><span class="d"></span>${esc(du.l)}</span>`:''}
-      ${a.stato!=='fatto'?`<button class="chip ${PJ_TS[a.stato].c} pj-st" onclick="pjCycle(${a.id})" title="Cambia stato: Da fare › In corso › In attesa"><span class="d"></span>${PJ_TS[a.stato].l}</button>`:''}
+      ${o.nost?'':pjStSel(a)}
       ${pjAvs(a.persone)}
     </div></li>`;
 }
-function pjGroupByProject(list){
-  const g={};list.forEach(a=>{(g[a.progetto_id]=g[a.progetto_id]||[]).push(a)});
-  const ids=Object.keys(g).map(Number).sort((x,y)=>{const a=pjP(x)||{},b=pjP(y)||{};return (b.urgente-a.urgente)||(g[y].length-g[x].length)});
-  return ids.map(id=>{const p=pjP(id);return `<div class="pj-grp"><button onclick="pjOpen(${id})">${esc(p?p.nome:'Progetto')}</button><span class="pj-gc">${esc(p&&p.cliente||'')}</span><span class="spacer"></span><span class="count">${g[id].length}</span></div><ul class="pj-list">${pjSort(g[id]).map(a=>pjRow(a)).join('')}</ul>`}).join('');
+function pjClosed(k){return k in pj.fold?pj.fold[k]:!!PJ_FOLD_DEF[k]}
+function pjFold(k){pj.fold[k]=!pjClosed(k);render()}
+// un gruppo richiudibile: intestazione con nome e numero, poi le righe
+function pjSec(k,head,n,body,o={}){
+  const cl=pjClosed(k);
+  return `<div class="pj-sec ${cl?'closed':''}"><div class="pj-sech"><button class="pj-sect" onclick="pjFold('${k}')" aria-expanded="${!cl}">${PJ_CARET}${o.dot?`<span class="pj-sdot ${o.dot}"></span>`:''}<b>${head}</b><span class="count">${n}</span>${o.hint?`<small>${esc(o.hint)}</small>`:''}</button>${o.extra||''}</div>${cl?'':body}</div>`;
 }
+const pjListHtml=(list,o)=>`<ul class="pj-list">${list.map(a=>pjRow(a,o)).join('')}</ul>`;
 function pjQuick(pid){
   const opts=pj.pr.filter(p=>p.stato!=='chiuso').sort((a,b)=>a.nome.localeCompare(b.nome,'it'));
   const mineP=opts.find(p=>PJ_GROUPS.attivo.includes(p.stato)&&ag.me&&(p.persone||[]).includes(ag.me.id));
-  const sel=pj.lastP&&opts.some(p=>p.id===pj.lastP)?pj.lastP:(mineP||opts[0]||{}).id;
+  const sel=pj.pf&&opts.some(p=>p.id===+pj.pf)?+pj.pf:pj.lastP&&opts.some(p=>p.id===pj.lastP)?pj.lastP:(mineP||opts[0]||{}).id;
   return `<form class="pj-quick" onsubmit="pjQuickAdd(event)" autocomplete="off">
-    <input id="pj-qt" maxlength="500" placeholder="Scrivi un'attività e premi Invio" aria-label="Nuova attività">
+    <input id="pj-qt" maxlength="500" placeholder="Nuova attività: scrivi e premi Invio" aria-label="Nuova attività">
     ${pid?`<input type="hidden" id="pj-qp" value="${pid}">`:`<select id="pj-qp" aria-label="Progetto">${opts.map(p=>`<option value="${p.id}" ${p.id===sel?'selected':''}>${esc(p.nome)}</option>`).join('')}</select>`}
     <button class="btn primary sm" type="submit">${AG_I.plus}<span class="lbl">Aggiungi</span></button></form>`;
+}
+// le attività aperte divise per stato (o per progetto) + le fatte di recente, tutto in un solo riquadro
+function pjTaskGroups(list,o={}){
+  const open=list.filter(a=>a.stato!=='fatto');
+  const week=Date.now()-7*864e5;
+  const done=list.filter(a=>a.stato==='fatto'&&(o.allDone||(a.fatto_il&&new Date(a.fatto_il).getTime()>week))).sort((a,b)=>String(b.fatto_il||'').localeCompare(String(a.fatto_il||'')));
+  let html='';
+  if(pj.group==='progetto'&&!o.inProject){
+    const g={};open.forEach(a=>{(g[a.progetto_id]=g[a.progetto_id]||[]).push(a)});
+    const ids=Object.keys(g).map(Number).sort((x,y)=>{const a=pjP(x)||{},b=pjP(y)||{};return (b.urgente-a.urgente)||(g[y].filter(pjActiveA).length-g[x].filter(pjActiveA).length)||String(a.nome).localeCompare(String(b.nome),'it')});
+    html=ids.map(id=>{const p=pjP(id)||{};
+      const order=x=>PJ_TORDER.indexOf(x.stato);
+      const rows=pjSort(g[id]).sort((a,b)=>order(a)-order(b));
+      return pjSec('p'+id,esc(p.nome||'Progetto'),rows.length,pjListHtml(rows,{}),{hint:p.cliente&&p.cliente!==p.nome?p.cliente:'',extra:`<button class="pj-go" onclick="pjOpen(${id})">Apri ${PJ_I.ext}</button>`})}).join('');
+  }else{
+    html=PJ_TORDER.map(k=>{const rows=pjSort(open.filter(a=>a.stato===k));
+      return rows.length?pjSec(k,PJ_TS[k].l,rows.length,pjListHtml(rows,{proj:!o.inProject,nost:false}),{dot:PJ_TS[k].c,hint:PJ_THINT[k]}):''}).join('');
+  }
+  if(!open.length)html=`<p class="pj-none">${o.empty||'Nessuna attività aperta.'}</p>`;
+  if(done.length)html+=pjSec('fatto',o.allDone?'Fatte':'Fatte negli ultimi 7 giorni',done.length,pjListHtml(done.slice(0,o.allDone?500:30),{proj:!o.inProject}),{dot:'reply',hint:o.doneHint||''});
+  return html;
 }
 
 /* ---- viste ---- */
@@ -7158,101 +7366,91 @@ function viewProgetti(){
   if(pj.tab==='progetti')return pj.open?pjViewProject(pj.open):pjViewList();
   return pjViewMine();
 }
+// ricerca: ridisegno e rimetto il cursore nella casella
+function pjSearch(v){pj.q=v;render();const e=document.getElementById('pj-q');if(e){e.focus();try{e.setSelectionRange(v.length,v.length)}catch(_){}}}
+const pjMatch=(txt)=>{const q=pj.q.trim().toLowerCase();return !q||txt.toLowerCase().includes(q)};
+function pjSearchBox(ph){return `<label class="pj-search"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="pj-q" type="search" value="${escAttr(pj.q)}" placeholder="${ph}" oninput="pjSearch(this.value)" aria-label="${ph}"></label>`}
 function pjViewMine(){
-  const w=pjWho(),my=pj.att.filter(pjMine);
-  const by=k=>my.filter(a=>a.stato===k);
-  const doing=by('in_corso'),todo=by('da_fare'),wait=by('in_attesa');
-  const week=Date.now()-7*864e5,recent=my.filter(a=>a.stato==='fatto'&&a.fatto_il&&new Date(a.fatto_il).getTime()>week).sort((a,b)=>String(b.fatto_il).localeCompare(String(a.fatto_il)));
+  const w=pjWho();
+  let list=pj.att.filter(pjMine);
+  if(pj.pf)list=list.filter(a=>a.progetto_id===+pj.pf);
+  if(pj.q.trim())list=list.filter(a=>{const p=pjP(a.progetto_id)||{};return pjMatch([a.titolo,a.note,p.nome,p.cliente].join(' '))});
   const chip=(id,l)=>`<button class="pw-chip ${w===id?'on':''}" aria-pressed="${w===id}" onclick="pj.who='${id}';render()">${l}</button>`;
-  const name=w==='tutti'?'la squadra':(agPerson(w)||{}).nome||'';
-  return `<div class="pj-who">${chip(ag.me.id,'Io')}${ag.team.filter(t=>t.id!==ag.me.id).map(t=>chip(t.id,esc(t.nome))).join('')}${chip('tutti','Tutti')}</div>
-    ${pjQuick()}
-    <section class="board pj-board" aria-label="In corso">
-      <div class="board-h"><span class="bt">In corso</span><span class="bsub">${esc(name)}</span><span class="spacer"></span><span class="clock">${doing.length}</span></div>
-      ${doing.length?`<div class="pj-brows">${pjSort(doing).map(a=>{const p=pjP(a.progetto_id);return `<div class="pj-brow" role="button" tabindex="0" onclick="pjTaskForm(${a.id})" onkeydown="if(event.key==='Enter'){pjTaskForm(${a.id})}">
-        <div class="pj-bt"><b>${esc(a.titolo)}</b><small>${esc(p?p.nome:'')}${p&&p.cliente?' · '+esc(p.cliente):''}</small></div>${pjAvs(a.persone)}
-        <span class="flap ${a.urgente?'late':'today'}">${a.urgente?'Urgente':'In corso'}</span></div>`}).join('')}</div>`
-      :`<p class="board-empty">Niente in corso. Tocca lo stato di un'attività qui sotto per spostarla qui.</p>`}
-      <div class="board-foot">Lo stato si cambia con un tocco: Da fare › In corso › In attesa. La casella a sinistra la segna come fatta.</div>
+  const projs=pj.pr.filter(p=>p.stato!=='chiuso'||p.id===+pj.pf).sort((a,b)=>a.nome.localeCompare(b.nome,'it'));
+  const seg=(k,l)=>`<button class="${pj.group===k?'on':''}" aria-pressed="${pj.group===k}" onclick="pj.group='${k}';render()">${l}</button>`;
+  return `<div class="pj-tools">
+      <div class="pj-who" role="group" aria-label="Di chi">${chip(ag.me.id,'Io')}${ag.team.filter(t=>t.id!==ag.me.id).map(t=>chip(t.id,esc(t.nome))).join('')}${chip('tutti','Tutti')}</div>
+      <span class="spacer"></span>
+      <select class="pj-sel" onchange="pj.pf=this.value;render()" aria-label="Progetto"><option value="">Tutti i progetti</option>${projs.map(p=>`<option value="${p.id}" ${+pj.pf===p.id?'selected':''}>${esc(p.nome)}</option>`).join('')}</select>
+      ${pjSearchBox('Cerca attività')}
+      <div class="pj-segs" role="group" aria-label="Raggruppa">${seg('stato','Per stato')}${seg('progetto','Per progetto')}</div>
+    </div>
+    <section class="tile pj-tile pj-tasks">
+      ${pjQuick()}
+      ${pjTaskGroups(list,{empty:pj.q||pj.pf?'Nessuna attività con questi filtri.':w===ag.me.id?'Non hai attività aperte. Aggiungine una qui sopra.':'Nessuna attività aperta.'})}
     </section>
-    <div class="section-h"><h3>Da fare</h3><span class="count">${todo.length}</span><div class="line"></div></div>
-    ${todo.length?`<section class="tile pj-tile">${pjGroupByProject(todo)}</section>`:`<p class="hm-empty">Nessuna attività da fare.</p>`}
-    <div class="section-h"><h3>In attesa di qualcuno</h3><span class="count">${wait.length}</span><div class="line"></div></div>
-    ${wait.length?`<section class="tile pj-tile">${pjGroupByProject(wait)}</section>`:`<p class="hm-empty">Non stai aspettando nessuno.</p>`}
-    ${recent.length?`<div class="section-h"><h3>Fatte negli ultimi 7 giorni</h3><span class="count">${recent.length}</span><div class="line"></div></div>
-    <section class="tile pj-tile"><ul class="pj-list">${recent.slice(0,12).map(a=>pjRow(a,{proj:true})).join('')}</ul></section>`:''}`;
+    <p class="pj-hint">La casella segna l'attività come fatta. Lo stato si cambia dal menu sulla destra; «Stand-by» tiene da parte le attività ferme.</p>`;
+}
+function pjProjRow(p){
+  const s=pjStats(p),pct=s.total?Math.round(s.done/s.total*100):0,st=PJ_ST[p.stato]||PJ_ST.attivo,urg=p.urgente&&p.stato!=='chiuso';
+  return `<li class="pj-prow2" role="button" tabindex="0" onclick="pjOpen(${p.id})" onkeydown="if(event.key==='Enter'){pjOpen(${p.id})}">
+    <div class="pj-bt"><b>${esc(p.nome)}</b><small>${esc(p.cliente||'Interno')}</small></div>
+    ${pjAvs(p.persone)}
+    <div class="pj-prog"><span class="pj-track ${s.total&&!s.open?'full':''}"><i style="width:${pct}%"></i></span><span>${s.total?s.done+'/'+s.total:'—'}</span></div>
+    <span class="pj-open ${s.open?'':'z'}">${s.open} ${s.open===1?'aperta':'aperte'}</span>
+    <span class="chip ${urg?'late':st.c}"><span class="d"></span>${urg?'Priorità':st.l}</span></li>`;
 }
 function pjViewList(){
-  const me=ag.me.id,base=pj.pr.filter(p=>!pj.mine||(p.persone||[]).includes(me));
-  const cnt=k=>base.filter(p=>PJ_GROUPS[k].includes(p.stato)).length;
-  const list=base.filter(p=>PJ_GROUPS[pj.ptab].includes(p.stato)).sort((a,b)=>(b.urgente-a.urgente)||(pjStats(b).open-pjStats(a).open)||a.nome.localeCompare(b.nome,'it'));
-  const tot=list.reduce((s,p)=>s+pjStats(p).open,0);
-  return `<div class="pw-bar pj-bar">
-      <div class="pw-chips" style="margin:0">${Object.keys(PJ_GROUPS).map(k=>`<button class="pw-chip ${pj.ptab===k?'on':''}" aria-pressed="${pj.ptab===k}" onclick="pj.ptab='${k}';render()">${PJ_GLABEL[k]} <span class="pj-cc">${cnt(k)}</span></button>`).join('')}</div>
+  const me=ag.me.id;
+  const base=pj.pr.filter(p=>(!pj.mine||(p.persone||[]).includes(me))&&pjMatch([p.nome,p.cliente,p.note].join(' ')));
+  const body=Object.keys(PJ_GROUPS).map(k=>{
+    const list=base.filter(p=>PJ_GROUPS[k].includes(p.stato)).sort((a,b)=>(b.urgente-a.urgente)||(pjStats(b).open-pjStats(a).open)||a.nome.localeCompare(b.nome,'it'));
+    return list.length?pjSec('g'+k,PJ_GLABEL[k],list.length,`<ul class="pj-plist">${list.map(pjProjRow).join('')}</ul>`,{dot:(PJ_ST[PJ_GROUPS[k][0]]||{}).c}):'';
+  }).join('');
+  return `<div class="pj-tools">
       <label class="toggle ${pj.mine?'on':''}" onclick="event.preventDefault();pj.mine=!pj.mine;render()"><span class="sw"></span><span>Solo i miei</span></label>
+      <span class="spacer"></span>${pjSearchBox('Cerca progetto o cliente')}
     </div>
-    <section class="board pj-board" aria-label="${escAttr(PJ_GLABEL[pj.ptab])}">
-      <div class="board-h"><span class="bt">Progetti <span class="lit">${esc(PJ_GLABEL[pj.ptab].toLowerCase())}</span></span><span class="spacer"></span><span class="bsub">${list.length} progetti · ${tot} attività aperte</span></div>
-      ${list.length?`<div class="pj-brows">${list.map(p=>{const s=pjStats(p),pct=s.total?Math.round(s.done/s.total*100):0,st=PJ_ST[p.stato],urg=p.urgente&&p.stato!=='chiuso';
-        return `<div class="pj-brow pj-prow" role="button" tabindex="0" onclick="pjOpen(${p.id})" onkeydown="if(event.key==='Enter'){pjOpen(${p.id})}">
-          <div class="pj-bt"><b>${esc(p.nome)}</b><small>${esc(p.cliente||'')}</small></div>
-          ${pjAvs(p.persone)}
-          <div class="pj-prog"><span class="pj-track ${s.total&&!s.open?'full':''}"><i style="width:${pct}%"></i></span><span>${s.total?s.done+'/'+s.total:'nessuna attività'}</span></div>
-          <span class="pj-open ${s.open?'':'z'}">${s.open} ${s.open===1?'aperta':'aperte'}</span>
-          <span class="flap ${urg?'late':st.f}">${urg?'Priorità':st.l}</span></div>`}).join('')}</div>`
-      :`<p class="board-empty">Nessun progetto in questa lista.</p>`}
-      <div class="board-foot">Avanzamento = attività fatte su totali, comprese quelle già chiuse in Notion.${pj.ptab==='attivo'?' «Priorità» segna i progetti urgenti.':''}<span class="spacer"></span><button class="btn sm" onclick="pjProjForm(null)">${AG_I.plus}Nuovo progetto</button></div>
-    </section>`;
+    <section class="tile pj-tile pj-tasks">${body||`<p class="pj-none">Nessun progetto${pj.q||pj.mine?' con questi filtri':''}.</p>`}</section>
+    <p class="pj-hint">Avanzamento = attività fatte su totali, comprese quelle chiuse in Notion. «Priorità» segna i progetti urgenti.</p>`;
 }
 function pjViewProject(id){
   const p=pjP(id);if(!p)return `<div class="empty"><h4>Progetto non trovato</h4><p>Forse è stato eliminato.</p><button class="btn" onclick="pjGoTab('progetti')">Tutti i progetti</button></div>`;
   const ts=pj.att.filter(a=>a.progetto_id===id),s=pjStats(p),pct=s.total?Math.round(s.done/s.total*100):0;
-  const sec=(k,l)=>{const a=pjSort(ts.filter(x=>x.stato===k));return a.length?`<div class="pj-grp"><span class="pj-gl">${l}</span><span class="spacer"></span><span class="count">${a.length}</span></div><ul class="pj-list">${a.map(x=>pjRow(x)).join('')}</ul>`:''};
-  const done=ts.filter(a=>a.stato==='fatto').sort((a,b)=>String(b.fatto_il||'').localeCompare(String(a.fatto_il||'')));
   const subs=Array.isArray(p.drive_cartelle)?p.drive_cartelle:[];
-  const drive=p.drive_id?`
-      <div class="pj-path">${esc(p.drive_percorso||'Google Drive')} › <b>${esc(p.drive_nome||'Cartella del progetto')}</b></div>
-      <div class="pj-dact"><a class="btn sm dark" href="${PJ_FOLDER+encodeURIComponent(p.drive_id)}" target="_blank" rel="noopener">${PJ_I.ext}Apri su Drive</a></div>
-      ${subs.length?`<ul class="pj-flist">${subs.map(f=>`<li><a href="${PJ_FOLDER+encodeURIComponent(f.id)}" target="_blank" rel="noopener">${PJ_I.folder}<span>${esc(f.n)}</span>${PJ_I.ext}</a></li>`).join('')}</ul>`:''}`
-    :`<p class="hm-empty">Nessuna cartella collegata.</p>
-      <div class="pj-dact"><a class="btn sm" href="${PJ_FOLDER+PJ_ROOT_ID}" target="_blank" rel="noopener">${PJ_I.ext}Apri Progetti su Drive</a><button class="btn sm dark" onclick="pjProjForm(${p.id},'drive')">${PJ_I.folder}Collega cartella</button></div>
-      <p class="helptip" style="margin-top:12px">Crea la cartella in Drive condiviso › Progetti, poi incolla qui il suo link.</p>`;
   const link=pjSafeUrl(p.link);
+  const fact=(l,v)=>`<div class="pj-fact"><small>${l}</small><div>${v}</div></div>`;
+  const people=(p.persone||[]).length?pjAvs(p.persone)+`<span class="pj-pn">${esc((p.persone||[]).map(u=>(agPerson(u)||{}).nome).filter(Boolean).join(', '))}</span>`:'<span class="pj-pn">Nessuno</span>';
+  const drive=p.drive_id?`<a class="btn sm" href="${PJ_FOLDER+encodeURIComponent(p.drive_id)}" target="_blank" rel="noopener">${PJ_I.folder}${esc(p.drive_nome||'Cartella Drive')}</a>`
+    :`<button class="btn sm" onclick="pjProjForm(${p.id},'drive')">${PJ_I.folder}Collega cartella</button>`;
+  const ndone=s.done?` (${s.done}${p.completate_notion?`, di cui ${p.completate_notion} chiuse in Notion`:''})`:'';
   return `<button class="pj-back" onclick="pjGoTab('progetti')">${PJ_I.back}Tutti i progetti</button>
-  <div class="bento pj-detail">
-    <div class="span-8 pj-col">
-      <section class="tile pj-tile">
-        <div class="pj-ph">
-          <div class="pj-prog lg"><span class="pj-track ${s.total&&!s.open?'full':''}"><i style="width:${pct}%"></i></span><span>${s.done} fatte su ${s.total}</span></div>
-          <select class="pj-sel" onchange="pjSetState(${p.id},this.value)" aria-label="Stato del progetto">${Object.entries(PJ_ST).map(([k,v])=>`<option value="${k}" ${p.stato===k?'selected':''}>${v.l}</option>`).join('')}</select>
-          <button class="btn sm ${p.urgente?'danger pj-urg':''}" onclick="pjToggleUrg(${p.id})">${p.urgente?'Priorità alta':'Segna prioritario'}</button>
-        </div>
-        ${pjQuick(p.id)}
-        ${s.open?sec('in_corso','In corso')+sec('da_fare','Da fare')+sec('in_attesa','In attesa'):`<p class="hm-empty" style="padding:18px 4px">Nessuna attività aperta. Aggiungine una qui sopra.</p>`}
-        ${s.done?`<button class="pj-more" onclick="pj.showDone=!pj.showDone;render()">${pj.showDone?'Nascondi':'Mostra'} le attività fatte (${s.done}${p.completate_notion?(p.completate_notion===s.done?', chiuse in Notion':`, di cui ${p.completate_notion} chiuse in Notion`):''})</button>`:''}
-        ${pj.showDone&&done.length?`<ul class="pj-list" style="margin-top:8px">${done.map(a=>pjRow(a)).join('')}</ul>`:''}
-        ${pj.showDone&&p.completate_notion?`<p class="helptip" style="margin-top:10px">Le ${p.completate_notion} attività chiuse in Notion sono state importate solo come conteggio.</p>`:''}
-      </section>
+  <section class="tile pj-tile pj-head">
+    <div class="pj-ph">
+      <div class="pj-prog lg"><span class="pj-track ${s.total&&!s.open?'full':''}"><i style="width:${pct}%"></i></span><span>${s.done} fatte su ${s.total}</span></div>
+      <select class="pj-sel" onchange="pjSetState(${p.id},this.value)" aria-label="Stato del progetto">${Object.entries(PJ_ST).map(([k,v])=>`<option value="${k}" ${p.stato===k?'selected':''}>${v.l}</option>`).join('')}</select>
+      <button class="btn sm ${p.urgente?'danger pj-urg':''}" onclick="pjToggleUrg(${p.id})">${p.urgente?'Prioritario':'Segna prioritario'}</button>
     </div>
-    <div class="span-4 pj-col">
-      <section class="tile t-peach pj-side"><div class="tile-h"><h3>Cartella Drive</h3></div>${drive}</section>
-      <section class="tile pj-side"><div class="tile-h"><h3>Scheda</h3><span class="spacer"></span><button class="pw-ib" onclick="pjProjForm(${p.id})" title="Modifica" aria-label="Modifica progetto">${PJ_I.edit}</button></div>
-        <dl class="pj-kv">
-          <dt>Cliente</dt><dd>${esc(p.cliente||'—')}</dd>
-          <dt>Persone</dt><dd><div class="pj-pp">${ag.team.map(t=>`<button class="pw-chip ${(p.persone||[]).includes(t.id)?'on':''}" aria-pressed="${(p.persone||[]).includes(t.id)}" onclick="pjTogglePerson(${p.id},'${t.id}')">${esc(t.nome)}</button>`).join('')}</div></dd>
-          <dt>Inizio</dt><dd>${p.inizio?esc(new Date(p.inizio+'T00:00:00').toLocaleDateString('it-IT',{day:'numeric',month:'long',year:'numeric'})):'—'}</dd>
-          ${link?`<dt>Link</dt><dd><a href="${escAttr(link)}" target="_blank" rel="noopener noreferrer">${esc(link.replace(/^https?:\/\//,'').replace(/\/$/,''))}</a></dd>`:''}
-          ${p.note?`<dt>Note</dt><dd style="white-space:pre-wrap">${esc(p.note)}</dd>`:''}
-        </dl></section>
+    <div class="pj-facts">
+      ${fact('Cliente',esc(p.cliente||'Interno'))}
+      ${fact('Persone',`<button class="pj-ppl" onclick="pjProjForm(${p.id})" title="Cambia le persone">${people}</button>`)}
+      ${p.inizio?fact('Inizio',esc(new Date(p.inizio+'T00:00:00').toLocaleDateString('it-IT',{day:'numeric',month:'short',year:'numeric'}))):''}
+      <div class="pj-fact pj-links">${drive}${link?`<a class="btn sm ghost" href="${escAttr(link)}" target="_blank" rel="noopener noreferrer">${PJ_I.ext}${esc(link.replace(/^https?:\/\//,'').replace(/\/$/,'').slice(0,40))}</a>`:''}</div>
     </div>
-  </div>`;
+    ${subs.length?`<div class="pj-subs">${subs.map(f=>`<a href="${PJ_FOLDER+encodeURIComponent(f.id)}" target="_blank" rel="noopener">${PJ_I.folder}${esc(f.n)}</a>`).join('')}</div>`:''}
+    ${p.note?`<p class="pj-pnote">${esc(p.note)}</p>`:''}
+  </section>
+  <section class="tile pj-tile pj-tasks">
+    ${pjQuick(p.id)}
+    ${pjTaskGroups(ts,{inProject:true,allDone:true,empty:'Nessuna attività aperta. Aggiungine una qui sopra.',doneHint:p.completate_notion?`${p.completate_notion} chiuse in Notion contano solo nel totale`:''})}
+  </section>`;
 }
 
 /* ---- azioni rapide ---- */
 async function pjPatchA(id,patch,okMsg){
   const a=pjA(id);if(!a)return false;const old={...a};Object.assign(a,patch);render();
   const {data,error}=await nlSupa.from('attivita').update(patch).eq('id',id).select(PJ_ACOLS).single();
-  if(error){Object.assign(a,old);render();toast(error.message,'err');return false}
+  if(error){Object.assign(a,old);render();toast(pjErr(error),'err');return false}
   Object.assign(a,data);if(okMsg)toast(okMsg,'ok');render();return true;
 }
 async function pjDone(id){
@@ -7269,13 +7467,16 @@ function pjUndoToast(msg,undo){
   const box=document.querySelector('#toasts .toast:last-child');
   if(box&&!box.querySelector('.pj-undo')){const b=document.createElement('button');b.className='pj-undo';b.textContent='Annulla';b.onclick=()=>{undo();b.remove()};box.appendChild(b)}
 }
-function pjCycle(id){const a=pjA(id);if(a)pjPatchA(id,{stato:PJ_NEXT[a.stato]||'da_fare'})}
+function pjSetTask(id,st){const a=pjA(id);if(!a||a.stato===st)return;if(st==='fatto'){pjDone(id);return}
+  pjPatchA(id,{stato:st},st==='standby'?'In stand-by':null)}
+// senza la migrazione 20261111100000 il database non conosce ancora «standby»
+function pjErr(e){const m=(e&&e.message)||String(e);return /stato_check|check constraint/i.test(m)?'Per usare Stand-by va eseguita la migrazione 20261111100000_attivita_standby.sql':m}
 async function pjQuickAdd(ev){
   ev.preventDefault();
   const t=document.getElementById('pj-qt'),pid=+document.getElementById('pj-qp').value,tit=(t.value||'').trim();
   if(!tit||!pid)return;
   pj.lastP=pid;t.disabled=true;
-  const w=pjWho(),persone=w==='tutti'||pj.open?[ag.me.id]:[w];
+  const w=pjWho(),persone=w==='tutti'||(pj.tab==='progetti'&&pj.open)?[ag.me.id]:[w];
   const {data,error}=await nlSupa.from('attivita').insert({progetto_id:pid,titolo:tit,persone}).select(PJ_ACOLS).single();
   t.disabled=false;
   if(error){toast(error.message,'err');return}
@@ -7306,7 +7507,7 @@ function pjTaskForm(id,preset){
     <div class="modal-h"><h3 id="pj-mt">${a?'Attività':'Nuova attività'}</h3><div class="x" role="button" tabindex="0" aria-label="Chiudi" onclick="closeModal()">${PJ_I.x}</div></div>
     <form onsubmit="pjTaskSave(event)" autocomplete="off"><div class="modal-b">
       <div class="form-row"><label for="pj-ft">Cosa c'è da fare</label><textarea id="pj-ft" rows="2" required maxlength="500" style="min-height:0">${esc(a?a.titolo:'')}</textarea></div>
-      <div class="form-row"><span class="pj-lab">Stato</span><div class="pj-seg" role="radiogroup">${Object.entries(PJ_TS).map(([k,v])=>`<label class="${v.c}"><input type="radio" name="pj-fs" value="${k}" ${st===k?'checked':''}><span>${v.l}</span></label>`).join('')}</div></div>
+      <div class="form-row"><span class="pj-lab">Stato</span><div class="pj-seg" role="radiogroup">${PJ_TPICK.map(k=>[k,PJ_TS[k]]).map(([k,v])=>`<label class="${v.c}"><input type="radio" name="pj-fs" value="${k}" ${st===k?'checked':''}><span>${v.l}</span></label>`).join('')}</div></div>
       <div class="form-row"><label for="pj-fp">Progetto</label><select id="pj-fp">${projs.map(p=>`<option value="${p.id}" ${p.id===pid?'selected':''}>${esc(p.nome)}${p.cliente?' — '+esc(p.cliente):''}</option>`).join('')}</select></div>
       <div class="form-row"><span class="pj-lab">Chi se ne occupa</span><div class="pj-pp">${ag.team.map(t=>`<label class="pj-pc"><input type="checkbox" name="pj-fw" value="${t.id}" ${who.includes(t.id)?'checked':''}>${agAv(t.id,true)}<span>${esc(t.nome)}</span></label>`).join('')}</div></div>
       <div class="pj-two">
@@ -7367,7 +7568,7 @@ async function pjTaskSave(ev){
   const id=pj.edit;
   const q=id?nlSupa.from('attivita').update(row).eq('id',id):nlSupa.from('attivita').insert(row);
   const {data,error}=await q.select(PJ_ACOLS).single();
-  if(error){if(b)b.disabled=false;toast(error.message,'err');return}
+  if(error){if(b)b.disabled=false;toast(pjErr(error),'err');return}
   if(id){const a=pjA(id);if(a)Object.assign(a,data)}else pj.att.push(data);
   pj.lastP=row.progetto_id;closeModal();toast(id?'Attività salvata':'Attività aggiunta','ok');render();
 }
@@ -7451,7 +7652,7 @@ async function pjProjDelete(id){
 function pjHomeTile(){
   if(!pj.loaded){if(!pj.loading&&ag.me)setTimeout(()=>pjLoad({silent:true}),0);return `<section class="tile span-6 hm-card" ${hmLink("pjGoTab('mie')")} aria-label="Le mie attività"><div class="tile-h"><h3>Le mie attività</h3></div><p class="hm-empty">Carico le attività…</p></section>`}
   if(pj.missing)return `<section class="tile span-6 hm-card" ${hmLink("pjGoTab('mie')")} aria-label="Le mie attività"><div class="tile-h"><h3>Le mie attività</h3></div><p class="hm-empty">Progetti e attività si attivano con la migrazione <code>20261107100000_progetti_attivita.sql</code>.</p></section>`;
-  const me=ag.me.id,my=pj.att.filter(a=>pjOpenA(a)&&(a.persone||[]).includes(me));
+  const me=ag.me.id,my=pj.att.filter(a=>pjActiveA(a)&&(a.persone||[]).includes(me));
   const c=k=>my.filter(a=>a.stato===k).length,urg=my.filter(a=>a.urgente||(a.scadenza&&a.scadenza<=isoD(today()))).length;
   const top=pjSort(my.filter(a=>a.stato==='in_corso'||a.urgente)).slice(0,3);
   return `<section class="tile span-6 hm-card pj-home ${urg?'hm-alert':''}" ${hmLink("pjGoTab('mie')")} aria-label="Le mie attività">
