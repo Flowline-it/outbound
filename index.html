@@ -1594,6 +1594,29 @@ tbody tr:hover{background:var(--surface-2)}
 .cr-copy{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:650;color:var(--accent);padding:2px 8px;border-radius:var(--pill)}
 .cr-copy:hover{background:var(--brand-soft)}.cr-copy .ico{width:12px;height:12px}
 .cr-iv{display:flex;flex-direction:column;gap:16px}
+.cr-evs{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.cr-ev{display:grid;grid-template-columns:34px minmax(0,1fr);gap:10px;padding:9px 8px;border-radius:14px}
+.cr-ev:hover{background:var(--surface-2)}
+.cr-ev.off{opacity:.55}.cr-ev.off .cr-evt b{text-decoration:line-through}
+.cr-evi{width:34px;height:34px;border-radius:11px;display:inline-flex;align-items:center;justify-content:center;background:var(--surface-2);color:var(--muted)}
+.cr-ev:hover .cr-evi{background:var(--surface)}
+.cr-evi .ico{width:16px;height:16px}
+.cr-evi.gmail{color:#C5221F;background:rgba(197,34,31,.09)}.cr-evi.calendario{color:#1A73E8;background:rgba(26,115,232,.09)}.cr-evi.drive{color:#188038;background:rgba(24,128,56,.09)}
+.cr-evb{min-width:0;display:flex;flex-direction:column;gap:3px;padding-top:1px}
+.cr-evt{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.cr-evt b{font-size:14px;font-weight:650;line-height:1.35}
+.cr-evt .cr-az{border:0;cursor:pointer}.cr-evt .cr-az:hover{color:var(--accent)}
+.cr-evb p{margin:0;font-size:13.5px;color:var(--muted);line-height:1.5}
+.cr-evm{display:flex;align-items:center;gap:4px 12px;flex-wrap:wrap;font-size:12.5px;color:var(--faint)}
+.cr-evm a{color:var(--accent);font-weight:650;text-decoration:none}.cr-evm a:hover{text-decoration:underline}
+.cr-evc{color:var(--muted);font-weight:600}
+.cr-und{font-size:12.5px;font-weight:650;color:var(--muted);padding:2px 9px;border-radius:var(--pill);background:var(--surface-2)}
+.cr-und:hover{color:var(--late);background:rgba(220,38,38,.08)}
+.cr-live{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:650;color:var(--muted)}
+.cr-live .d{width:7px;height:7px;border-radius:50%;background:#16A34A;box-shadow:0 0 0 3px rgba(22,163,74,.15)}
+.cr-news{margin-bottom:16px}
+.cr-evs-home{padding:2px 6px 6px}
+.cr-cal{display:inline-flex;color:var(--faint)}.cr-cal .ico{width:14px;height:14px}
 .cr-ck{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 13px 0 10px;border-radius:var(--pill);background:var(--surface-2);font-size:13px;font-weight:600;cursor:pointer}
 .cr-ck:has(input:checked){background:var(--ink);color:#fff}
 [data-theme="dark"] .cr-ck:has(input:checked){background:var(--text);color:var(--bg)}
@@ -7347,7 +7370,7 @@ const CR_FOLD_DEF={conclusi:true,negativi:true,pv_rifiutato:true,inc_passati_old
 const CR_SETTORI=['Marketing e comunicazione','Intermediazione','Lavorazioni meccaniche','Abbigliamento','Installazioni e manutenzioni','Contabilità','Immobiliare','Assistenza alle imprese','Alimentare','Artigianato','Insegnamento','Organizzazione eventi','Assicurazioni','Servizi alla persona','Ricerca e sviluppo'];
 const CR_PROV=['Sistema di outbound','LinkedIn','Sito web FlowLine','Contatti personali','Eventi vari','Intermediario'];
 const CR_RUOLI=['Titolare','Direttore','Partner','Ufficio acquisti','Amministrazione','Dipendente','Libero professionista'];
-const cr={az:[],ref:[],prev:[],inc:[],doc:[],el:[],loaded:false,loading:false,missing:false,tab:'aziende',open:null,
+const cr={az:[],ref:[],prev:[],inc:[],doc:[],el:[],reg:[],noReg:false,regAll:{},loaded:false,loading:false,missing:false,tab:'aziende',open:null,
   q:'',fase:'',settore:'',fold:{},pq:'',vq:'',iq:'',elQ:'',elCitta:'',elSort:'valore',elShow:'da_valutare',elLimit:60,incLimit:30,
   ch:null,loadT:null,pollT:null,edit:null};
 const CR_I={
@@ -7359,7 +7382,9 @@ const CR_I={
   euro:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 7a7 7 0 1 0 0 10 M4 10h10 M4 14h10"/></svg>',
   copy:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
   x:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>',
-  link:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7 M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>'
+  link:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7 M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>',
+  drive:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>',
+  spark:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v4 M12 17v4 M3 12h4 M17 12h4 M5.6 5.6l2.8 2.8 M15.6 15.6l2.8 2.8 M5.6 18.4l2.8-2.8 M15.6 8.4l2.8-2.8"/></svg>'
 };
 
 /* ---- piccole utilità ---- */
@@ -7394,7 +7419,7 @@ function crOpen(id){cr.tab='aziende';cr.open=id;if(state.view!=='crm')go('crm');
 function crStop(){
   try{if(cr.ch)nlSupa.removeChannel(cr.ch)}catch(e){}
   clearInterval(cr.pollT);clearTimeout(cr.loadT);
-  Object.assign(cr,{az:[],ref:[],prev:[],inc:[],doc:[],el:[],loaded:false,loading:false,missing:false,ch:null,open:null,edit:null});
+  Object.assign(cr,{az:[],ref:[],prev:[],inc:[],doc:[],el:[],reg:[],noReg:false,regAll:{},loaded:false,loading:false,missing:false,ch:null,open:null,edit:null});
 }
 async function crAll(t){
   const out=[];let from=0;
@@ -7408,23 +7433,90 @@ async function crLoad(opts={}){
     let az;
     try{az=await crAll('crm_aziende')}
     catch(e){if(/does not exist|schema cache|42P01|PGRST205/i.test((e.code||'')+' '+e.message)){cr.missing=true;cr.loaded=true;return}throw e}
-    const [ref,prev,inc,doc,el]=await Promise.all(['crm_referenti','crm_preventivi','crm_incontri','crm_documenti','crm_elenco'].map(crAll));
-    Object.assign(cr,{az,ref,prev,inc,doc,el,missing:false,loaded:true});
+    const [ref,prev,inc,doc,el,reg]=await Promise.all([...['crm_referenti','crm_preventivi','crm_incontri','crm_documenti','crm_elenco'].map(crAll),crRegLoad()]);
+    Object.assign(cr,{az,ref,prev,inc,doc,el,reg:reg||[],noReg:reg==null,missing:false,loaded:true});
     if(cr.open&&!crA(cr.open))cr.open=null;
     crSubscribe();
     if(!pj.loaded&&!pj.loading)pjLoad({silent:true});   // per i progetti collegati alle aziende
   }catch(e){toast('CRM: '+(e.message||e),'err');cr.loaded=true}
   finally{cr.loading=false;if(state.view==='crm')crKeep(render);else if(state.view==='progetti')render();else renderNav();if(gs.open)gsPaint()}
 }
+// cronologia degli aggiornamenti automatici (Gmail, Calendario, Drive): null se la migrazione non c'è ancora
+async function crRegLoad(){
+  const {data,error}=await nlSupa.from('crm_registro').select('*').order('created_at',{ascending:false}).limit(500);
+  if(error){if(/does not exist|schema cache|42P01|PGRST205/i.test((error.code||'')+' '+error.message))return null;throw error}
+  return data;
+}
 function crDeferLoad(){clearTimeout(cr.loadT);cr.loadT=setTimeout(()=>{if(!document.getElementById('modalRoot')?.firstChild)crLoad({silent:true});else crDeferLoad()},900)}
 function crSubscribe(){
   if(cr.ch||!ag.me)return;
   try{
     let ch=nlSupa.channel('suite-crm-'+ag.me.id);
-    ['crm_aziende','crm_referenti','crm_preventivi','crm_incontri','crm_documenti','crm_elenco'].forEach(t=>{ch=ch.on('postgres_changes',{event:'*',schema:'public',table:t},crDeferLoad)});
+    ['crm_aziende','crm_referenti','crm_preventivi','crm_incontri','crm_documenti','crm_elenco','crm_registro'].forEach(t=>{ch=ch.on('postgres_changes',{event:'*',schema:'public',table:t},t==='crm_registro'?crRegLive:crDeferLoad)});
     cr.ch=ch.subscribe();
   }catch(e){}
   clearInterval(cr.pollT);cr.pollT=setInterval(()=>{if(!document.hidden&&state.view==='crm')crLoad({silent:true})},180000);
+}
+
+// è arrivato un aggiornamento automatico: lo dico subito e ricarico
+function crRegLive(ev){
+  const r=ev&&ev.new;
+  if(ev&&ev.eventType==='INSERT'&&r&&r.titolo&&r.fonte!=='suite'){const a=crA(r.azienda_id);toast((a?a.nome+': ':'')+r.titolo,'ok')}
+  crDeferLoad();
+}
+
+/* ---- cronologia «Cosa è successo» ---- */
+const CR_FONTI={gmail:{l:'Gmail',v:'Apri la mail',i:'mail'},calendario:{l:'Calendario',v:"Apri l'evento",i:'cal'},drive:{l:'Drive',v:'Apri il file',i:'drive'},suite:{l:'Suite',v:'Apri',i:'spark'}};
+function crAgo(ts){
+  if(!ts)return '';const d=(Date.now()-new Date(ts).getTime())/6e4;
+  if(d<1)return 'adesso';if(d<60)return Math.round(d)+' min fa';if(d<60*6)return Math.round(d/60)+(Math.round(d/60)===1?' ora fa':' ore fa');
+  const x=new Date(ts),oggi=new Date();oggi.setHours(0,0,0,0);const ieri=new Date(oggi-864e5);
+  const ora=x.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+  if(x>=oggi)return 'oggi, '+ora;if(x>=ieri)return 'ieri, '+ora;return crWhen(ts);
+}
+// le modifiche fatte da un aggiornamento, in parole
+function crRegChanges(g){
+  const out=[];
+  for(const m of g.modifiche||[]){
+    if(m.t==='crm_aziende'&&m.campo==='stato')out.push('stato: '+(CR_ST[m.dopo]?CR_ST[m.dopo].l:m.dopo));
+    else if(m.t==='crm_preventivi'&&m.campo==='stato')out.push('preventivo '+(CR_PST[m.dopo]?CR_PST[m.dopo].l.toLowerCase():m.dopo));
+    else if(m.t==='crm_incontri'&&m.op==='insert')out.push('incontro aggiunto');
+    else if(m.t==='crm_incontri'&&m.campo==='verbale')out.push('verbale aggiunto');
+    else if(m.t==='crm_documenti')out.push('documento collegato');
+    else if(m.t==='attivita')out.push('attività creata');
+    else if(m.t==='crm_referenti')out.push('nuova persona');
+  }
+  const n={};out.forEach(x=>n[x]=(n[x]||0)+1);
+  return Object.entries(n).map(([k,v])=>v>1?k.replace('documento collegato',v+' documenti collegati').replace('attività creata',v+' attività create'):k);
+}
+function crRegItem(g,o={}){
+  const f=CR_FONTI[g.fonte]||CR_FONTI.suite,u=pwSafeUrl(g.fonte_url),a=o.az?crA(g.azienda_id):null;
+  const ch=crRegChanges(g),off=!!g.annullato_il;
+  const ico=f.i==='cal'?AG_I.cal:CR_I[f.i];
+  return `<li class="cr-ev ${off?'off':''}">
+    <span class="cr-evi ${g.fonte}" title="${escAttr(f.l)}">${ico}</span>
+    <div class="cr-evb">
+      <div class="cr-evt"><b>${esc(g.titolo)}</b>${a?`<button class="cr-az" onclick="crOpen(${a.id})" title="Apri l'azienda">${esc(a.nome)}</button>`:''}</div>
+      ${g.testo&&!o.short?`<p>${esc(g.testo)}</p>`:''}
+      <div class="cr-evm"><span>${esc(crAgo(g.created_at))} · ${esc(f.l)}</span>${ch.length&&!off?`<span class="cr-evc">${esc(ch.join(' · '))}</span>`:''}${off?`<span class="cr-evc">Annullato</span>`:''}
+        ${u?`<a href="${escAttr(u)}" target="_blank" rel="noopener noreferrer">${f.v}</a>`:''}
+        ${!off&&(g.modifiche||[]).length&&!o.short?`<button class="cr-und" onclick="crAnnulla(${g.id})" title="Rimette le cose com'erano prima di questo aggiornamento">Annulla</button>`:''}</div>
+    </div></li>`;
+}
+async function crAnnulla(id){
+  const g=cr.reg.find(x=>x.id===id);if(!g)return;
+  const {error}=await nlSupa.rpc('crm_annulla',{p_id:id});
+  if(error){toast('Non riesco ad annullare: '+error.message,'err');return}
+  g.annullato_il=new Date().toISOString();
+  toast('Aggiornamento annullato','ok');
+  crLoad({silent:true});
+}
+function crRegBox(id){
+  if(cr.noReg)return '';
+  const l=cr.reg.filter(g=>g.azienda_id===id),all=cr.regAll[id],show=all?l:l.slice(0,5);
+  const body=l.length?`<ul class="cr-evs">${show.map(g=>crRegItem(g)).join('')}</ul>${l.length>5?`<button class="pj-more" onclick="cr.regAll[${id}]=!cr.regAll[${id}];crKeep(render)">${all?'Mostra meno':'Mostra tutto ('+l.length+')'}</button>`:''}`
+    :`<p class="pj-none">Qui compare da solo quello che succede con l'azienda: mail importanti, incontri in calendario, file nuovi su Drive.</p>`;
+  return `<section class="tile pj-tile cr-box"><div class="cr-bh"><h3>Cosa è successo</h3>${l.length?`<span class="count">${l.length}</span>`:''}<span class="spacer"></span><span class="cr-live" title="Si aggiorna da solo da Gmail, Calendario e Drive"><span class="d"></span>Automatico</span></div>${body}</section>`;
 }
 
 /* ---- intestazione e azioni ---- */
@@ -7511,14 +7603,17 @@ function crViewAziende(){
   const n=k=>cr.az.filter(a=>CR_FASI.find(f=>f.k===k).st.includes(a.stato)).length;
   const chip=(k,l,c)=>`<button class="pw-chip ${cr.fase===k?'on':''}" aria-pressed="${cr.fase===k}" onclick="crSet('fase','${k}')">${l}${c!=null?` <span class="li-n">${c}</span>`:''}</button>`;
   const settori=[...new Set(cr.az.map(a=>a.settore).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'it'));
+  const g7=Date.now()-7*864e5,news=cr.noReg||cr.q||cr.fase||cr.settore?[]:cr.reg.filter(g=>!g.annullato_il&&g.azienda_id&&crA(g.azienda_id)&&new Date(g.created_at).getTime()>g7);
+  const newsBox=news.length?crSec('novita','Ultimi aggiornamenti',news.length,`<ul class="cr-evs cr-evs-home">${news.slice(0,cr.regAll.home?40:4).map(g=>crRegItem(g,{az:true,short:true})).join('')}</ul>${news.length>4?`<button class="pj-more" onclick="cr.regAll.home=!cr.regAll.home;crKeep(render)">${cr.regAll.home?'Mostra meno':'Mostra tutti ('+news.length+')'}</button>`:''}`,{dot:'reply',hint:'da Gmail, Calendario e Drive, ultimi 7 giorni'}):'';
   return `<div class="pj-tools">
       <div class="pj-who" role="group" aria-label="Fase">${chip('','Tutte',cr.az.length)}${CR_FASI.slice(0,4).map(f=>chip(f.k,f.l,n(f.k))).join('')}</div>
       <span class="spacer"></span>
       <select class="pj-sel" onchange="crSet('settore',this.value)" aria-label="Settore"><option value="">Tutti i settori</option>${settori.map(s=>`<option ${cr.settore===s?'selected':''}>${esc(s)}</option>`).join('')}</select>
       ${crSearchBox('cr-q',cr.q,'Cerca azienda, persona o nota','crSearchAz')}
     </div>
+    ${newsBox?`<section class="tile pj-tile pj-tasks cr-news">${newsBox}</section>`:''}
     <section class="tile pj-tile pj-tasks">${body||`<p class="pj-none">${cr.az.length?'Nessuna azienda con questi filtri.':'Ancora nessuna azienda. Aggiungi la prima con «Nuova azienda».'}</p>`}</section>
-    <p class="pj-hint">Un clic su un'azienda apre la sua pagina con persone, incontri, preventivi, progetti e documenti. Lo stato si cambia anche da qui.</p>`;
+    <p class="pj-hint">Un clic su un'azienda apre la sua pagina con persone, incontri, preventivi, progetti e documenti. Lo stato si cambia anche da qui.${cr.noReg?'':' Mail, incontri in calendario e file su Drive dei clienti si aggiungono da soli.'}</p>`;
 }
 function crSearchAz(v){cr.q=v;crKeep(render)}
 
@@ -7566,12 +7661,13 @@ function crViewAzienda(id){
       <span class="cr-ic">${pwSafeUrl(p.documento)?`<a class="pw-ib" href="${escAttr(p.documento)}" target="_blank" rel="noopener noreferrer" title="Apri il documento">${CR_I.doc}</a>`:''}<span class="chip ${CR_PST[p.stato].c}"><span class="d"></span>${CR_PST[p.stato].l}</span></span></li>`).join('')}</ul>`:`<p class="pj-none">Nessun preventivo.</p>`;
   const prHtml=(prj.length?`<ul class="cr-mini">${prj.map(p=>`<li><button class="cr-mn" onclick="pjOpen(${p.id})"><b>${esc(p.nome)}</b><small>${esc(PJ_ST[p.stato]?PJ_ST[p.stato].l:'')}</small></button><span class="cr-ic"><button class="pw-ib" onclick="crUnlinkProj(${p.id})" title="Scollega il progetto" aria-label="Scollega ${escAttr(p.nome)}">${CR_I.x}</button></span></li>`).join('')}</ul>`:`<p class="pj-none">${pj.noAz?'Per collegare i progetti serve la migrazione del CRM.':'Nessun progetto collegato.'}</p>`)
     +(pj.loaded&&!pj.noAz?`<button class="pj-more" onclick="crLinkProj(${id})">${CR_I.link}Collega un progetto</button>`:'');
-  const docHtml=docs.length?`<ul class="cr-mini">${docs.map(d=>{const u=pwSafeUrl(d.url);return `<li>${u?`<a class="cr-mn" href="${escAttr(u)}" target="_blank" rel="noopener noreferrer"><b>${esc(d.nome)}</b><small>${esc([d.data?crDay(d.data):'',d.progetto_id&&pjP(d.progetto_id)?pjP(d.progetto_id).nome:''].filter(Boolean).join(' · ')||'Apri')}</small></a>`:`<span class="cr-mn"><b>${esc(d.nome)}</b><small>Senza link</small></span>`}<span class="cr-ic"><button class="pw-ib" onclick="crDocForm(${d.id})" title="Modifica" aria-label="Modifica ${escAttr(d.nome)}">${PJ_I.edit}</button></span></li>`}).join('')}</ul>`:`<p class="pj-none">Nessun documento.</p>`;
+  const docHtml=docs.length?`<ul class="cr-mini">${docs.map(d=>{const u=pwSafeUrl(d.url);return `<li>${u?`<a class="cr-mn" href="${escAttr(u)}" target="_blank" rel="noopener noreferrer"><b>${esc(d.nome)}</b><small>${esc([d.data?crDay(d.data):'',d.progetto_id&&pjP(d.progetto_id)?pjP(d.progetto_id).nome:'',d.fonte==='drive'?'da Drive':d.fonte==='gmail'?'da Gmail':''].filter(Boolean).join(' · ')||'Apri')}</small></a>`:`<span class="cr-mn"><b>${esc(d.nome)}</b><small>Senza link</small></span>`}<span class="cr-ic"><button class="pw-ib" onclick="crDocForm(${d.id})" title="Modifica" aria-label="Modifica ${escAttr(d.nome)}">${PJ_I.edit}</button></span></li>`}).join('')}</ul>`:`<p class="pj-none">Nessun documento.</p>`;
   const box=(t,n,body,add)=>`<section class="tile pj-tile cr-box"><div class="cr-bh"><h3>${t}</h3>${n?`<span class="count">${n}</span>`:''}<span class="spacer"></span>${add||''}</div>${body}</section>`;
   return `<button class="pj-back" onclick="crGoTab('aziende')">${PJ_I.back}Tutte le aziende</button>
   ${head}
   <div class="cr-grid">
     <div class="cr-col">
+      ${crRegBox(id)}
       ${box('Incontri',incs.length,incHtml,`<button class="btn sm" onclick="crIncForm(null,${id})">${AG_I.plus}Nuovo</button>`)}
       ${notes?box('Note','',notes,`<button class="btn sm ghost" onclick="crAzForm(${id})">${PJ_I.edit}Modifica</button>`):''}
     </div>
@@ -7592,7 +7688,7 @@ function crIncItem(i,o={}){
   return `<li class="cr-ti ${o.future?'future':''}" role="button" tabindex="0" onclick="crIncView(${i.id})" onkeydown="if(event.key==='Enter')crIncView(${i.id})">
     <div class="cr-date">${d?`<b>${d.getDate()}</b><small>${d.toLocaleDateString('it-IT',{month:'short'}).replace('.','')}${d.getFullYear()!==new Date().getFullYear()?' '+String(d.getFullYear()).slice(2):''}</small>`:'<small>senza data</small>'}</div>
     <div class="cr-tb">
-      <div class="cr-tt"><b>${esc(i.titolo)}</b>${az?`<span class="cr-az">${az}</span>`:''}${o.future?'<span class="chip seq"><span class="d"></span>In programma</span>':''}</div>
+      <div class="cr-tt"><b>${esc(i.titolo)}</b>${az?`<span class="cr-az">${az}</span>`:''}${o.future?'<span class="chip seq"><span class="d"></span>In programma</span>':''}${i.evento_id?`<span class="cr-cal" title="Preso dal calendario">${AG_I.cal}</span>`:''}</div>
       ${who||ext?`<div class="cr-who">${who?`<span class="ag-avs">${who}</span>`:''}${ext?`<span>con ${ext}</span>`:''}</div>`:''}
       ${i.verbale?`<p class="cr-vb">${esc(i.verbale)}</p>`:''}
       ${i.prossimi_passi?`<p class="cr-ps"><b>Prossimi passi:</b> ${esc(i.prossimi_passi)}</p>`:''}
