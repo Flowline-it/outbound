@@ -1620,8 +1620,16 @@ tbody tr:hover{background:var(--surface-2)}
 .gs-btn:hover{color:var(--text)}.gs-btn .ico{width:17px;height:17px}
 .gs-btn:focus-visible{outline:2px solid var(--focus)}
 .gs-kbd,.gs-foot kbd,.gs-in kbd{font:600 11px/1 inherit;font-family:inherit;padding:5px 7px;border-radius:7px;background:var(--surface-2);color:var(--muted);white-space:nowrap}
-@media(max-width:1380px){.gs-btn .gs-kbd{display:none}.gs-btn{padding:0 14px}}
-@media(max-width:1240px){.gs-btn .gs-lbl{display:none}.gs-btn{width:40px;padding:0;justify-content:center}}
+/* barra in alto: la larghezza utile è fissa (1240 px), con CRM e Cerca deve starci tutto */
+.gs-btn .gs-kbd{display:none}.gs-btn{padding:0 15px 0 13px}
+@media(min-width:901px){
+  .topnav-in{gap:10px}
+  .sec-switch > button{padding:0 11px}
+  .ag-me span,.on-lbl{display:none}.ag-me{padding:0 5px}
+}
+/* tra 1300 e 1479 px le freccine del menu lasciano il posto alle etichette (il menu si apre lo stesso con un clic) */
+@media(max-width:1479px) and (min-width:1300px){.sec-switch > .sec-chev,.sec-switch > button .sec-chev{display:none}}
+@media(max-width:1299px) and (min-width:901px){.gs-btn .gs-lbl{display:none}.gs-btn{width:40px;padding:0;justify-content:center}}
 .gs-ov{position:fixed;inset:0;z-index:300;background:rgba(15,15,15,.32);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);display:flex;justify-content:center;align-items:flex-start;padding:10vh 16px 16px;animation:gsIn .14s ease-out}
 @keyframes gsIn{from{opacity:0}to{opacity:1}}
 .gs-box{width:min(680px,100%);max-height:72vh;display:flex;flex-direction:column;background:var(--surface);border-radius:22px;box-shadow:0 24px 70px rgba(0,0,0,.22),0 0 0 1px var(--border);overflow:hidden}
@@ -1670,7 +1678,7 @@ body.gs-on{overflow:hidden}
       <div class="sec-wrap"><span class="pill-ind" aria-hidden="true"></span><div class="sec-switch" id="secSwitch" role="group" aria-label="Area"></div></div>
       <span class="nav-spacer"></span>
       <div class="nav-tools">
-        <button class="gs-btn" type="button" onclick="gsOpen()" title="Cerca in tutta la Suite" aria-label="Cerca in tutta la Suite" aria-keyshortcuts="Control+K Meta+K"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span class="gs-lbl">Cerca</span><kbd class="gs-kbd" id="gsKbd">⌘K</kbd></button>
+        <button class="gs-btn" type="button" onclick="gsOpen()" title="Cerca in tutta la Suite (Ctrl K o ⌘K)" aria-label="Cerca in tutta la Suite" aria-keyshortcuts="Control+K Meta+K"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span class="gs-lbl">Cerca</span><kbd class="gs-kbd" id="gsKbd">⌘K</kbd></button>
         <div class="online-box" id="onlineBox" hidden></div>
         <button class="icon-btn theme-btn" onclick="toggleTheme()" id="themeBtn" title="Tema chiaro/scuro" aria-label="Cambia tema">
           <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
