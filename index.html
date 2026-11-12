@@ -1520,6 +1520,140 @@ tbody tr:hover{background:var(--surface-2)}
   .pj-links{margin-left:0}
   .pj-sect small{display:none}
 }
+
+/* ---- CRM ---- */
+.cr-list{list-style:none;margin:0 0 10px;padding:0;display:flex;flex-direction:column;gap:6px}
+.cr-row{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1.3fr) minmax(0,1.2fr) minmax(0,1.1fr) 190px;gap:14px;align-items:center;padding:11px 14px;border-radius:16px;background:var(--surface-2)}
+.cr-row[role="button"]{cursor:pointer}.cr-row[role="button"]:hover{background:var(--surface-3)}.cr-row:focus-visible{outline:2px solid var(--focus)}
+.cr-main{min-width:0;display:flex;flex-direction:column;gap:2px}
+.cr-main b{font-size:14.5px;font-weight:650;line-height:1.3;overflow:hidden;text-overflow:ellipsis}
+.cr-main small{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cr-ppl,.cr-when,.cr-money{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:7px;min-width:0}
+.cr-ppl span,.cr-when span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cr-ppl .ico{width:15px;height:15px;flex:0 0 auto;color:var(--faint)}
+.cr-ppl em{font-style:normal;color:var(--faint);font-weight:600}
+.cr-next{color:var(--accent);font-weight:650}
+.cr-money{justify-content:space-between}
+.cr-st{display:flex;justify-content:flex-end;align-items:center;gap:6px}
+.cr-st .pj-stsel{max-width:190px}
+.cr-prow{grid-template-columns:minmax(0,1.4fr) minmax(0,1.4fr) minmax(0,1.6fr)}
+.cr-vrow{grid-template-columns:minmax(0,2fr) minmax(0,1.3fr) 110px 210px}
+.cr-amt{font-weight:700;font-variant-numeric:tabular-nums;text-align:right}
+.cr-azs{display:flex;flex-wrap:wrap;gap:4px;min-width:0}
+.cr-contact{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;min-width:0}
+.cr-contact a{display:inline-flex;align-items:center;gap:6px;color:var(--text);text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.cr-contact a:hover{color:var(--accent)}.cr-contact .ico{width:14px;height:14px;color:var(--faint);flex:0 0 auto}
+.cr-erow{grid-template-columns:minmax(0,2.4fr) 90px 120px 100px 230px}
+.cr-erow.off{opacity:.55}
+.cr-num{display:flex;flex-direction:column;gap:1px;text-align:right}
+.cr-num small{font-size:11px;color:var(--faint);font-weight:650}
+.cr-num b{font-size:13.5px;font-variant-numeric:tabular-nums;font-weight:650}
+.cr-num b.neg{color:var(--late)}
+.cr-elh{font-size:13px;color:var(--muted);margin:2px 4px 12px}
+.cr-erow .cr-st button.chip{border:0;cursor:pointer}
+.cr-head{margin-bottom:16px}
+.cr-hrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.cr-hrow .pj-stsel{height:34px;font-size:13px;padding-left:14px}
+.cr-head .pj-fact>div a{color:var(--text)}
+.cr-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:16px;align-items:start}
+.cr-col{display:flex;flex-direction:column;gap:16px;min-width:0}
+.cr-box{padding:18px 18px 14px}
+.cr-bh{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.cr-bh h3{font-size:16px;font-weight:650;letter-spacing:-.015em;margin:0}
+.cr-bh .spacer{flex:1}
+.cr-box .pj-more{display:inline-flex;align-items:center;gap:6px;margin-top:6px}.cr-box .pj-more .ico{width:15px;height:15px}
+.cr-bh .count{font-size:12px;font-weight:700;min-width:24px;height:22px;padding:0 7px;border-radius:var(--pill);background:var(--surface-2);display:inline-flex;align-items:center;justify-content:center}
+.cr-box .pj-none{padding:8px 2px}
+.cr-mini{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+.cr-mini li{display:flex;align-items:center;gap:8px;padding:2px 0}
+.cr-mn{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;text-align:left;padding:8px 10px;border-radius:12px;color:var(--text);text-decoration:none}
+.cr-mn:hover{background:var(--surface-2)}
+.cr-mn b{font-size:14px;font-weight:650;line-height:1.3}
+.cr-mn small{font-size:12.5px;color:var(--muted)}
+.cr-ic{display:flex;align-items:center;gap:2px;flex:0 0 auto}
+.cr-ic .chip{margin-left:4px}
+.cr-tl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.cr-ti{display:grid;grid-template-columns:52px minmax(0,1fr);gap:12px;padding:10px 10px 10px 8px;border-radius:14px;cursor:pointer}
+.cr-ti:hover{background:var(--surface-2)}.cr-ti:focus-visible{outline:2px solid var(--focus)}
+.cr-date{display:flex;flex-direction:column;align-items:center;justify-content:center;height:52px;border-radius:12px;background:var(--surface-2);line-height:1.05}
+.cr-ti:hover .cr-date{background:var(--surface)}
+.cr-date b{font-size:19px;font-weight:700;letter-spacing:-.02em}
+.cr-date small{font-size:11px;font-weight:650;color:var(--muted);text-transform:uppercase;text-align:center}
+.cr-ti.future .cr-date{background:var(--brand-soft)}.cr-ti.future .cr-date b{color:var(--accent)}
+.cr-tb{min-width:0;display:flex;flex-direction:column;gap:4px;padding-top:2px}
+.cr-tt{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.cr-tt b{font-size:14.5px;font-weight:650}
+.cr-az{font-size:12.5px;font-weight:650;color:var(--muted);background:var(--surface-2);padding:2px 9px;border-radius:var(--pill)}
+.cr-who{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted)}
+.cr-vb{margin:0;font-size:13.5px;color:var(--muted);line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-line}
+.cr-ps{margin:0;font-size:13px;color:var(--text);line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cr-note{margin-top:4px}
+.cr-note+.cr-note{margin-top:14px}
+.cr-note small{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:650;color:var(--faint);margin-bottom:4px}
+.cr-note p{margin:0;font-size:14px;line-height:1.55;white-space:pre-wrap;color:var(--text)}
+.cr-copy{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:650;color:var(--accent);padding:2px 8px;border-radius:var(--pill)}
+.cr-copy:hover{background:var(--brand-soft)}.cr-copy .ico{width:12px;height:12px}
+.cr-iv{display:flex;flex-direction:column;gap:16px}
+.cr-ck{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 13px 0 10px;border-radius:var(--pill);background:var(--surface-2);font-size:13px;font-weight:600;cursor:pointer}
+.cr-ck:has(input:checked){background:var(--ink);color:#fff}
+[data-theme="dark"] .cr-ck:has(input:checked){background:var(--text);color:var(--bg)}
+.cr-ck input{accent-color:var(--brand);margin:0}
+.lbl-s{display:block;font-size:13px;font-weight:650;margin-bottom:8px}
+.cr-plink{font-size:14px}
+@media(max-width:1100px){
+  .cr-row{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) 180px}.cr-row .cr-ppl,.cr-row .cr-money{display:none}
+  .cr-prow{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.cr-prow .cr-contact{grid-column:1/-1}
+  .cr-vrow{grid-template-columns:minmax(0,1.6fr) 100px 200px}.cr-vrow .cr-azs{display:none}
+  .cr-erow{grid-template-columns:minmax(0,1.6fr) 110px 220px}.cr-erow .cr-num:nth-child(2),.cr-erow .cr-num:nth-child(4){display:none}
+  .cr-grid{grid-template-columns:1fr}
+}
+@media(max-width:700px){
+  .cr-row,.cr-vrow,.cr-erow{grid-template-columns:minmax(0,1fr) auto;gap:8px 10px}
+  .cr-row .cr-when{grid-column:1/-1;grid-row:2}.cr-row .cr-st{grid-column:2;grid-row:1}
+  .cr-vrow .cr-amt{grid-column:1;text-align:left}.cr-vrow .cr-st{grid-column:2;grid-row:1}
+  .cr-erow .cr-num{display:none}.cr-erow .cr-st{grid-column:1/-1;justify-content:flex-start}
+  .cr-hrow .spacer{display:none}
+}
+
+/* ---- Ricerca generale ---- */
+.gs-btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 8px 0 14px;border-radius:var(--pill);background:var(--surface);box-shadow:var(--card-shadow);color:var(--muted);font-size:14px;font-weight:600;flex:0 0 auto}
+.gs-btn:hover{color:var(--text)}.gs-btn .ico{width:17px;height:17px}
+.gs-btn:focus-visible{outline:2px solid var(--focus)}
+.gs-kbd,.gs-foot kbd,.gs-in kbd{font:600 11px/1 inherit;font-family:inherit;padding:5px 7px;border-radius:7px;background:var(--surface-2);color:var(--muted);white-space:nowrap}
+@media(max-width:1380px){.gs-btn .gs-kbd{display:none}.gs-btn{padding:0 14px}}
+@media(max-width:1240px){.gs-btn .gs-lbl{display:none}.gs-btn{width:40px;padding:0;justify-content:center}}
+.gs-ov{position:fixed;inset:0;z-index:300;background:rgba(15,15,15,.32);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);display:flex;justify-content:center;align-items:flex-start;padding:10vh 16px 16px;animation:gsIn .14s ease-out}
+@keyframes gsIn{from{opacity:0}to{opacity:1}}
+.gs-box{width:min(680px,100%);max-height:72vh;display:flex;flex-direction:column;background:var(--surface);border-radius:22px;box-shadow:0 24px 70px rgba(0,0,0,.22),0 0 0 1px var(--border);overflow:hidden}
+.gs-in{display:flex;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid var(--border)}
+.gs-in .ico{width:20px;height:20px;color:var(--faint);flex:0 0 auto}
+.gs-in input{flex:1;min-width:0;border:0;outline:none;background:transparent;font-size:17px;color:var(--text);font-family:inherit}
+.gs-in kbd{cursor:pointer}
+.gs-list{overflow-y:auto;padding:6px 8px 10px;flex:1}
+.gs-g{font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--faint);padding:12px 10px 6px}
+.gs-it{display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:12px;cursor:pointer}
+.gs-it.on{background:var(--surface-2)}
+.gs-it.done .gs-tx b{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--faint)}
+.gs-ico{width:30px;height:30px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;background:var(--surface-2);font-size:13px;font-weight:700;color:var(--muted)}
+.gs-it.on .gs-ico{background:var(--surface)}
+.gs-ico .ico{width:15px;height:15px}
+.gs-aziende{background:var(--brand-soft);color:var(--accent)}
+.gs-progetti,.gs-attivita{background:#E8F3EC;color:#22764A}
+.gs-persone,.gs-linkedin,.gs-outbound{background:#E8EEFB;color:#2F56B0}
+.gs-preventivi,.gs-incontri{background:#F3EAF6;color:#8A4FA0}
+[data-theme="dark"] .gs-progetti,[data-theme="dark"] .gs-attivita{background:rgba(34,118,74,.25);color:#7CCB9C}
+[data-theme="dark"] .gs-persone,[data-theme="dark"] .gs-linkedin,[data-theme="dark"] .gs-outbound{background:rgba(47,86,176,.3);color:#9DB6F0}
+[data-theme="dark"] .gs-preventivi,[data-theme="dark"] .gs-incontri{background:rgba(138,79,160,.3);color:#D2A6E2}
+.gs-tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.gs-tx b{font-size:14.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gs-tx small{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gs-tx mark{background:transparent;color:var(--accent);font-weight:750}
+.gs-enter{font-size:15px;color:var(--faint);flex:0 0 auto}
+.gs-none{padding:28px 12px;text-align:center;color:var(--muted);font-size:14.5px}
+.gs-foot{display:flex;gap:18px;flex-wrap:wrap;padding:10px 18px;border-top:1px solid var(--border);font-size:12px;color:var(--faint)}
+.gs-foot kbd{margin-right:3px}
+@media(max-width:700px){.gs-ov{padding:0}.gs-box{max-height:100%;height:100%;border-radius:0}.gs-foot{display:none}}
+body.gs-on{overflow:hidden}
 </style>
 </head>
 <body class="locked">
@@ -1536,6 +1670,7 @@ tbody tr:hover{background:var(--surface-2)}
       <div class="sec-wrap"><span class="pill-ind" aria-hidden="true"></span><div class="sec-switch" id="secSwitch" role="group" aria-label="Area"></div></div>
       <span class="nav-spacer"></span>
       <div class="nav-tools">
+        <button class="gs-btn" type="button" onclick="gsOpen()" title="Cerca in tutta la Suite" aria-label="Cerca in tutta la Suite" aria-keyshortcuts="Control+K Meta+K"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span class="gs-lbl">Cerca</span><kbd class="gs-kbd" id="gsKbd">⌘K</kbd></button>
         <div class="online-box" id="onlineBox" hidden></div>
         <button class="icon-btn theme-btn" onclick="toggleTheme()" id="themeBtn" title="Tema chiaro/scuro" aria-label="Cambia tema">
           <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -2906,6 +3041,7 @@ function handleFile(file){
 const SECTIONS=[
   {id:'home',label:'Home',icon:'M3 11.5 12 4l9 7.5 M5 10v10h14V10 M10 20v-6h4v6'},
   {id:'outbound',label:'Outbound',icon:'M22 2 11 13 M22 2l-7 20-4-9-9-4 20-7z'},
+  {id:'crm',label:'CRM',icon:'M3 5h18v14H3z M8.5 11.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4z M5 16.5a3.5 3.5 0 0 1 7 0 M14.5 9h4 M14.5 12.5h4'},
   {id:'marketing',label:'Marketing',icon:'M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1z M15.5 8.5a5 5 0 0 1 0 7 M18.5 5.5a9 9 0 0 1 0 13'},
   {id:'agenda',label:'Calendario',icon:'M3 4h18v18H3z M16 2v4 M8 2v4 M3 10h18 M8 14h2 M14 14h2'},
   {id:'progetti',label:'Progetti',icon:'M9 11l3 3L22 4 M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11'},
@@ -2913,12 +3049,12 @@ const SECTIONS=[
   {id:'impostazioni',label:'Impostazioni',icon:'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z'},
 ];
 // nomi dei moduli (una pagina dell'app = un modulo)
-const SEC_NAME={home:'Home',outbound:'Outbound',linkedin:'LinkedIn',newsletter:'Newsletter',richieste:'Richieste',contabilita:'Contabilità',agenda:'Calendario',progetti:'Progetti',password:'Password',impostazioni:'Impostazioni'};
+const SEC_NAME={home:'Home',outbound:'Outbound',crm:'CRM',linkedin:'LinkedIn',newsletter:'Newsletter',richieste:'Richieste',contabilita:'Contabilità',agenda:'Calendario',progetti:'Progetti',password:'Password',impostazioni:'Impostazioni'};
 // area del menu di ogni modulo
-const AREA_NAME={home:'Home',outbound:'Outbound',marketing:'Marketing',agenda:'Calendario',progetti:'Progetti',amministrazione:'Amministrazione',impostazioni:'Impostazioni'};
+const AREA_NAME={home:'Home',outbound:'Outbound',crm:'CRM',marketing:'Marketing',agenda:'Calendario',progetti:'Progetti',amministrazione:'Amministrazione',impostazioni:'Impostazioni'};
 const AREA_MODS={outbound:['outbound','linkedin'],marketing:['newsletter','richieste'],amministrazione:['contabilita','password']};
 const NL_PAGES=[{tab:'campagne',label:'Campagne'},{tab:'iscritti',label:'Iscritti'}];
-function sectionOf(v){return v==='home'||v==='linkedin'||v==='newsletter'||v==='richieste'||v==='contabilita'||v==='agenda'||v==='progetti'||v==='password'||v==='impostazioni'?v:'outbound'}
+function sectionOf(v){return v==='home'||v==='crm'||v==='linkedin'||v==='newsletter'||v==='richieste'||v==='contabilita'||v==='agenda'||v==='progetti'||v==='password'||v==='impostazioni'?v:'outbound'}
 function areaOf(v){const m=sectionOf(v);for(const a in AREA_MODS)if(AREA_MODS[a].includes(m))return a;return m}
 function goSection(sec){
   if(sec===areaOf(state.view)){closeRail();return}
@@ -2970,6 +3106,7 @@ function renderNav(){
 // pagine di ogni modulo, con il loro stato (attiva, contatori)
 const MOD_INFO={
   outbound:{icon:'M22 2 11 13 M22 2l-7 20-4-9-9-4 20-7z',desc:'Campagne email a freddo'},
+  crm:{icon:'M3 5h18v14H3z M8.5 11.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4z M5 16.5a3.5 3.5 0 0 1 7 0 M14.5 9h4 M14.5 12.5h4',desc:'Clienti, trattative e contatti'},
   linkedin:{icon:'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2 M9 7a4 4 0 1 0 0 8 4 4 0 0 0 0-8z M23 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75',desc:'Ricerca clienti su LinkedIn'},
   newsletter:{icon:'M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z M22 6l-10 7L2 6',desc:'Campagne e iscritti'},
   richieste:{icon:'M22 12h-6l-2 3h-4l-2-3H2 M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z',desc:'Contatti arrivati da flowline.it'},
@@ -2986,6 +3123,7 @@ function navPages(mod){
     return NAV.map(n=>({label:n.label,icon:n.icon,on:v===n.id,click:`go('${n.id}')`,
       badge:n.id==='coda'&&(todayN||late)?B(todayN||late,late?'late':''):n.id==='risposte'&&newRep?B(newRep,'ok'):n.id==='pianifica'&&backlog?B(backlog,'plain'):n.id==='lead'&&ldBusy()?B('in corso'):''}));
   }
+  if(mod==='crm')return CR_TABS.map(pg=>({label:pg.label,on:v==='crm'&&cr.tab===pg.tab&&!(pg.tab!=='aziende'&&cr.open),click:`crGoTab('${pg.tab}')`,badge:pg.tab==='preventivi'&&cr.loaded&&!cr.missing?B(cr.prev.filter(x=>x.stato==='inviato').length,'plain'):''}));
   if(mod==='linkedin')return [{label:'Contatti',on:v==='linkedin',click:"go('linkedin')",badge:li.loaded&&!li.missing&&liCount('da_contattare')?B(li.rows.filter(r=>r.stato==='da_contattare').length,'plain'):''}];
   if(mod==='newsletter')return NL_PAGES.map(pg=>({label:pg.label,on:v==='newsletter'&&nl.tab===pg.tab,click:`goNl('${pg.tab}')`,
       badge:pg.tab==='iscritti'&&nl.loaded?B(nlActive().length,'plain'):(pg.tab==='campagne'&&nl.sending?B('invio'):'')}));
@@ -3100,6 +3238,7 @@ function heroCopy(){
   if(state.view==='newsletter') return nlHeroCopy();
   if(state.view==='richieste') return rqHeroCopy();
   if(state.view==='linkedin') return liHeroCopy();
+  if(state.view==='crm') return crHeroCopy();
   if(state.view==='contabilita') return ctHeroCopy();
   if(state.view==='agenda') return agHeroCopy();
   if(state.view==='progetti') return pjHeroCopy();
@@ -3125,6 +3264,7 @@ function v3Calm(){return window.matchMedia&&matchMedia('(prefers-reduced-motion:
 function v3Key(){
   const v=state.view;
   if(v==='progetti')return v+'|'+pj.tab+'|'+(pj.open||'');
+  if(v==='crm')return v+'|'+cr.tab+'|'+(cr.open||'');
   if(v==='password')return v+'|'+pw.tab;
   if(v==='impostazioni')return v+'|'+st.tab;
   if(v==='agenda')return v+'|'+ag.tab;
@@ -3212,12 +3352,12 @@ function render(){
   document.getElementById('viewTitle').textContent=hc.t;
   const vl=document.getElementById('viewLede');if(vl)vl.textContent=hc.l;
   const vd=document.getElementById('viewDate');if(vd)vd.textContent=today().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
-  const pageName=state.view==='home'?'Home':state.view==='impostazioni'?(ST_TABS.find(x=>x.tab===st.tab)||ST_TABS[0]).label:state.view==='progetti'?(pj.tab==='progetti'&&pj.open&&pjP(pj.open)?pjP(pj.open).nome:(PJ_TABS.find(x=>x.tab===pj.tab)||PJ_TABS[0]).label):state.view==='password'?(PW_TABS.find(x=>x.tab===pw.tab)||PW_TABS[0]).label:state.view==='agenda'?(AG_TABS.find(x=>x.tab===ag.tab)||AG_TABS[0]).label:state.view==='contabilita'?(CT_TABS.find(x=>x.tab===ct.tab)||CT_TABS[0]).label:state.view==='richieste'?'Richieste':state.view==='linkedin'?'LinkedIn':state.view==='newsletter'?(nl.tab==='iscritti'?'Iscritti':'Campagne'):({dashboard:'Dashboard',pianifica:'Pianificazione',coda:'Coda invio',contatti:'Contatti',calendario:'Piano invii',risposte:'Risposte',lead:'Ricerca lead',stats:'Statistiche'}[state.view]||'Dashboard');
+  const pageName=state.view==='home'?'Home':state.view==='crm'?(cr.open&&crA(cr.open)?crA(cr.open).nome:(CR_TABS.find(x=>x.tab===cr.tab)||CR_TABS[0]).label):state.view==='impostazioni'?(ST_TABS.find(x=>x.tab===st.tab)||ST_TABS[0]).label:state.view==='progetti'?(pj.tab==='progetti'&&pj.open&&pjP(pj.open)?pjP(pj.open).nome:(PJ_TABS.find(x=>x.tab===pj.tab)||PJ_TABS[0]).label):state.view==='password'?(PW_TABS.find(x=>x.tab===pw.tab)||PW_TABS[0]).label:state.view==='agenda'?(AG_TABS.find(x=>x.tab===ag.tab)||AG_TABS[0]).label:state.view==='contabilita'?(CT_TABS.find(x=>x.tab===ct.tab)||CT_TABS[0]).label:state.view==='richieste'?'Richieste':state.view==='linkedin'?'LinkedIn':state.view==='newsletter'?(nl.tab==='iscritti'?'Iscritti':'Campagne'):({dashboard:'Dashboard',pianifica:'Pianificazione',coda:'Coda invio',contatti:'Contatti',calendario:'Piano invii',risposte:'Risposte',lead:'Ricerca lead',stats:'Statistiche'}[state.view]||'Dashboard');
   const secName=SEC_NAME[sectionOf(state.view)], areaName=AREA_NAME[areaOf(state.view)];
   const crumbs=[areaName];if(secName!==areaName)crumbs.push(secName);if(pageName!==secName&&pageName!==areaName)crumbs.push(pageName);
   document.title=crumbs.slice().reverse().join(' · ')+' — FlowLine Suite';
   agTitle();
-  const cr=document.getElementById('viewCrumb');if(cr)cr.textContent=crumbs.join(' · ');
+  const crumbEl=document.getElementById('viewCrumb');if(crumbEl)crumbEl.textContent=crumbs.join(' · ');
   const ta=document.getElementById('topActions');
   const I={
     refresh:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6 M1 20v-6h6 M3.51 9a9 9 0 0 1 14.85-3.36L23 10 M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>',
@@ -3243,6 +3383,7 @@ function render(){
   else if(state.view==='newsletter'){ ta.innerHTML=nlTopActions(); }
   else if(state.view==='richieste'){ ta.innerHTML=rqTopActions(); }
   else if(state.view==='linkedin'){ ta.innerHTML=liTopActions(); }
+  else if(state.view==='crm'){ ta.innerHTML=crTopActions(); }
   else if(state.view==='contabilita'){ ta.innerHTML=ctTopActions(); }
   else if(state.view==='agenda'){ ta.innerHTML=agTopActions(); }
   else if(state.view==='progetti'){ ta.innerHTML=pjTopActions(); }
@@ -3266,6 +3407,7 @@ function render(){
   else if(state.view==='lead'){ if(!nl.inited) nlInit(); C.innerHTML=viewLead(); }
   else if(state.view==='richieste'){ if(!nl.inited) nlInit(); C.innerHTML=viewRichieste(); }
   else if(state.view==='linkedin'){ if(!nl.inited) nlInit(); C.innerHTML=viewLinkedin(); }
+  else if(state.view==='crm'){ if(!nl.inited) nlInit(); C.innerHTML=viewCrm(); }
   else if(state.view==='contabilita'){ if(!nl.inited) nlInit(); C.innerHTML=viewContabilita(); }
   else if(state.view==='agenda'){ if(!nl.inited) nlInit(); C.innerHTML=viewAgenda(); }
   else if(state.view==='progetti'){ if(!nl.inited) nlInit(); C.innerHTML=viewProgetti(); }
@@ -4414,7 +4556,7 @@ function nlSleep(ms){return new Promise(r=>setTimeout(r,ms))}
 function nlActive(){return nl.subs.filter(s=>!s.unsubscribed_at)}
 
 /* ---- connessione e accesso (condiviso con Ricerca lead) ---- */
-function nlAuthView(){return state.view==='home'||state.view==='newsletter'||state.view==='lead'||state.view==='richieste'||state.view==='linkedin'||state.view==='contabilita'||state.view==='agenda'||state.view==='progetti'||state.view==='password'}
+function nlAuthView(){return state.view==='home'||state.view==='crm'||state.view==='newsletter'||state.view==='lead'||state.view==='richieste'||state.view==='linkedin'||state.view==='contabilita'||state.view==='agenda'||state.view==='progetti'||state.view==='password'}
 /* ---- accesso unico alla suite ---- */
 function gateBrand(){return `<div class="gate-brand"><div class="logo" aria-hidden="true">${document.querySelector('.brand .logo')?.innerHTML||''}</div><h1>FlowLine <span class="suite">Suite</span></h1></div>`}
 function gateMode(){
@@ -4455,7 +4597,7 @@ async function nlInit(){
     if(!nl.ready)return;                       // la sessione iniziale la gestisce getSession qui sotto
     const was=nl.session&&nl.session.user&&nl.session.user.id;
     nl.session=session;
-    if(ev==='SIGNED_OUT'){nl.editor=null;nl.loaded=false;nl.subs=[];nl.camps=[];nl.edit=null;ld.loaded=false;ld.searches=[];ld.leads=[];ld.sel.clear();clearTimeout(ld.pollT);rq.loaded=false;rq.rows=[];clearTimeout(rq.pollT);ct.loaded=false;ct.conti=[];ct.mov=[];ct.missing=false;agStop();hmStop();onStop();pwStop();pjStop();liStop();nl.editor=null;render();}
+    if(ev==='SIGNED_OUT'){nl.editor=null;nl.loaded=false;nl.subs=[];nl.camps=[];nl.edit=null;ld.loaded=false;ld.searches=[];ld.leads=[];ld.sel.clear();clearTimeout(ld.pollT);rq.loaded=false;rq.rows=[];clearTimeout(rq.pollT);ct.loaded=false;ct.conti=[];ct.mov=[];ct.missing=false;agStop();hmStop();onStop();pwStop();pjStop();liStop();crStop();nl.editor=null;render();}
     else if(ev==='SIGNED_IN' && session && was!==session.user.id){nl.editor=null;render();setTimeout(nlAfterLogin,0);}
   });
   const {data}=await nlSupa.auth.getSession();
@@ -7164,6 +7306,796 @@ async function liBulkSave(ev){
 }
 
 /* =======================================================
+   CRM — al posto di Notion › Flowline - Dashboard › CRM
+   Database: crm_aziende, crm_referenti, crm_preventivi, crm_incontri, crm_documenti, crm_elenco
+   (migrazione 20261112100000_crm.sql). Tutta la squadra vede e modifica tutto.
+   Al centro c'è l'azienda: dalla sua pagina si vedono persone, incontri, preventivi, progetti e documenti.
+   Gli stati sono quelli di Notion, raggruppati in poche fasi (Trattative, Da sviluppare, Clienti…).
+   ======================================================= */
+const CR_TABS=[{tab:'aziende',label:'Aziende'},{tab:'persone',label:'Persone'},{tab:'preventivi',label:'Preventivi'},{tab:'incontri',label:'Incontri'},{tab:'elenchi',label:'Elenchi'}];
+const CR_ST={
+  da_contattare:{l:'Da contattare',c:'da'},
+  contattato:{l:'Contattato',c:'wait'},
+  programmato:{l:'Programmato',c:'wait'},
+  trattativa:{l:'In trattativa',c:'seq'},
+  preventivo:{l:'Preventivo inviato',c:'seq'},
+  progetto:{l:'Creazione progetto',c:'reply'},
+  assistenza:{l:'Supporto post-vendita',c:'reply'},
+  concluso:{l:'Progetto concluso',c:'done'},
+  rete:{l:'Contatto acquisito',c:'plan'},
+  negativo:{l:'Negativo',c:'stop'}
+};
+// fasi: come si raggruppano gli stati nella lista delle aziende
+const CR_FASI=[
+  {k:'trattative',l:'Trattative',st:['trattativa','preventivo'],dot:'seq',hint:'da portare a casa'},
+  {k:'sviluppo',l:'Da sviluppare',st:['da_contattare','contattato','programmato'],dot:'wait',hint:'contatti da far crescere'},
+  {k:'clienti',l:'Clienti',st:['progetto','assistenza'],dot:'reply',hint:'progetti in corso e assistenza'},
+  {k:'rete',l:'Rete e partner',st:['rete'],dot:'plan',hint:'contatti acquisiti e collaborazioni'},
+  {k:'conclusi',l:'Progetti conclusi',st:['concluso'],dot:'done'},
+  {k:'negativi',l:'Esito negativo',st:['negativo'],dot:'stop'}
+];
+const CR_PST={in_lavorazione:{l:'In lavorazione',c:'wait'},da_preparare:{l:'Da preparare',c:'da'},inviato:{l:'Inviato',c:'seq'},accettato:{l:'Accettato',c:'reply'},rifiutato:{l:'Rifiutato',c:'stop'}};
+const CR_FOLD_DEF={conclusi:true,negativi:true,pv_rifiutato:true,inc_passati_old:true};
+const CR_SETTORI=['Marketing e comunicazione','Intermediazione','Lavorazioni meccaniche','Abbigliamento','Installazioni e manutenzioni','Contabilità','Immobiliare','Assistenza alle imprese','Alimentare','Artigianato','Insegnamento','Organizzazione eventi','Assicurazioni','Servizi alla persona','Ricerca e sviluppo'];
+const CR_PROV=['Sistema di outbound','LinkedIn','Sito web FlowLine','Contatti personali','Eventi vari','Intermediario'];
+const CR_RUOLI=['Titolare','Direttore','Partner','Ufficio acquisti','Amministrazione','Dipendente','Libero professionista'];
+const cr={az:[],ref:[],prev:[],inc:[],doc:[],el:[],loaded:false,loading:false,missing:false,tab:'aziende',open:null,
+  q:'',fase:'',settore:'',fold:{},pq:'',vq:'',iq:'',elQ:'',elCitta:'',elSort:'valore',elShow:'da_valutare',elLimit:60,incLimit:30,
+  ch:null,loadT:null,pollT:null,edit:null};
+const CR_I={
+  brief:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h18v13H3z M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2 M3 13h18"/></svg>',
+  mail:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z M21 7l-9 6-9-6"/></svg>',
+  tel:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>',
+  doc:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z M14 2v6h6 M8 13h8 M8 17h5"/></svg>',
+  chat:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
+  euro:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 7a7 7 0 1 0 0 10 M4 10h10 M4 14h10"/></svg>',
+  copy:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
+  x:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>',
+  link:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7 M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>'
+};
+
+/* ---- piccole utilità ---- */
+const crA=id=>cr.az.find(a=>a.id===id);
+const crR=id=>cr.ref.find(r=>r.id===id);
+const crOf=(list,id)=>list.filter(x=>(x.aziende||[]).includes(id));
+const crFase=st=>CR_FASI.find(f=>f.st.includes(st))||CR_FASI[1];
+const crPl=(n,s,p)=>n===1?s:p;
+function crNorm(s){return String(s??'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase()}
+// tutte le parole cercate devono comparire (in qualunque campo)
+function crMatch(q,...vals){const w=crNorm(q).split(/\s+/).filter(Boolean);if(!w.length)return true;const h=crNorm(vals.flat().join(' \u0001 '));return w.every(x=>h.includes(x))}
+function crEuro(n){if(n==null||n==='')return '';const v=Number(n),neg=v<0,a=Math.abs(v),int=Math.floor(a).toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.'),dec=a%1?','+a.toFixed(2).split('.')[1]:'';return (neg?'−':'')+int+dec+'\u00a0€'}
+function crDay(d){if(!d)return '';const x=new Date(String(d).length===10?d+'T12:00:00':d);if(isNaN(x))return '';return x.toLocaleDateString('it-IT',{day:'numeric',month:'short',year:x.getFullYear()===new Date().getFullYear()?undefined:'numeric'})}
+function crWhen(ts){if(!ts)return '';const x=new Date(ts);const t=x.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});return crDay(ts)+(t!=='12:00'&&t!=='00:00'?', '+t:'')}
+function crMail(e){const m=String(e||'').match(/[^\s@:<>,;]+@[^\s@<>,;]+\.[a-z]{2,}/i);return m?m[0]:''}
+function crTel(t){const d=String(t||'').replace(/[^\d+]/g,'');return d.length>=6?d:''}
+function crUrl(u){u=String(u||'').trim();if(!u)return '';if(!/^https?:\/\//i.test(u)&&/^[\w.-]+\.[a-z]{2,}(\/|$)/i.test(u))u='https://'+u;return /^https?:\/\//i.test(u)?u:''}
+function crAzNames(ids){return (ids||[]).map(crA).filter(Boolean)}
+function crAzLinks(ids){const l=crAzNames(ids);return l.length?l.map(a=>`<button class="pj-ptag" onclick="event.stopPropagation();crOpen(${a.id})" title="Apri l'azienda">${esc(a.nome)}</button>`).join(''):'<span class="pw-none">Nessuna azienda</span>'}
+// ultimo e prossimo incontro di un'azienda
+function crIncOf(id){return crOf(cr.inc,id).slice().sort((a,b)=>String(b.data||'').localeCompare(String(a.data||'')))}
+function crLastInc(id){const now=new Date().toISOString();return crIncOf(id).find(i=>i.data&&i.data<=now)}
+function crNextInc(id){const now=new Date().toISOString();return crIncOf(id).filter(i=>i.data&&i.data>now).pop()}
+function crActivity(a){const l=crLastInc(a.id);return [l&&l.data,a.updated_at,a.primo_contatto_il].filter(Boolean).sort().pop()||''}
+function crProjects(id){return (pj.pr||[]).filter(p=>p.azienda_id===id)}
+// mantiene il focus nella casella di ricerca quando la pagina si ridisegna
+function crKeep(fn){const a=document.activeElement,id=a&&a.id,pos=a&&typeof a.selectionStart==='number'?a.selectionStart:null;fn();if(id){const n=document.getElementById(id);if(n&&n!==document.activeElement){n.focus();if(pos!=null)try{n.setSelectionRange(pos,pos)}catch(_){}}}}
+function crGoTab(t){cr.tab=t;cr.open=null;if(state.view!=='crm')go('crm');else{closeRail();render();window.scrollTo(0,0)}}
+function crOpen(id){cr.tab='aziende';cr.open=id;if(state.view!=='crm')go('crm');else{closeRail();render();window.scrollTo(0,0)}}
+
+/* ---- dati ---- */
+function crStop(){
+  try{if(cr.ch)nlSupa.removeChannel(cr.ch)}catch(e){}
+  clearInterval(cr.pollT);clearTimeout(cr.loadT);
+  Object.assign(cr,{az:[],ref:[],prev:[],inc:[],doc:[],el:[],loaded:false,loading:false,missing:false,ch:null,open:null,edit:null});
+}
+async function crAll(t){
+  const out=[];let from=0;
+  for(;;){const {data,error}=await nlSupa.from(t).select('*').order('id').range(from,from+999);if(error)throw error;out.push(...data);if(data.length<1000)break;from+=1000}
+  return out;
+}
+async function crLoad(opts={}){
+  if(!nlSupa||!nl.session||cr.loading)return;
+  cr.loading=true;if(state.view==='crm'&&!opts.silent)render();
+  try{
+    let az;
+    try{az=await crAll('crm_aziende')}
+    catch(e){if(/does not exist|schema cache|42P01|PGRST205/i.test((e.code||'')+' '+e.message)){cr.missing=true;cr.loaded=true;return}throw e}
+    const [ref,prev,inc,doc,el]=await Promise.all(['crm_referenti','crm_preventivi','crm_incontri','crm_documenti','crm_elenco'].map(crAll));
+    Object.assign(cr,{az,ref,prev,inc,doc,el,missing:false,loaded:true});
+    if(cr.open&&!crA(cr.open))cr.open=null;
+    crSubscribe();
+    if(!pj.loaded&&!pj.loading)pjLoad({silent:true});   // per i progetti collegati alle aziende
+  }catch(e){toast('CRM: '+(e.message||e),'err');cr.loaded=true}
+  finally{cr.loading=false;if(state.view==='crm')crKeep(render);else if(state.view==='progetti')render();else renderNav();if(gs.open)gsPaint()}
+}
+function crDeferLoad(){clearTimeout(cr.loadT);cr.loadT=setTimeout(()=>{if(!document.getElementById('modalRoot')?.firstChild)crLoad({silent:true});else crDeferLoad()},900)}
+function crSubscribe(){
+  if(cr.ch||!ag.me)return;
+  try{
+    let ch=nlSupa.channel('suite-crm-'+ag.me.id);
+    ['crm_aziende','crm_referenti','crm_preventivi','crm_incontri','crm_documenti','crm_elenco'].forEach(t=>{ch=ch.on('postgres_changes',{event:'*',schema:'public',table:t},crDeferLoad)});
+    cr.ch=ch.subscribe();
+  }catch(e){}
+  clearInterval(cr.pollT);cr.pollT=setInterval(()=>{if(!document.hidden&&state.view==='crm')crLoad({silent:true})},180000);
+}
+
+/* ---- intestazione e azioni ---- */
+function crHeroCopy(){
+  if(!nl.session)return {t:'CRM.',l:'Accedi con il tuo account per vedere clienti e contatti di Flowline.'};
+  if(cr.missing)return {t:'CRM.',l:'La sezione si attiva con la migrazione del database.'};
+  if(!cr.loaded||!ag.loaded)return {t:'CRM.',l:'Carico aziende e contatti…'};
+  const cnt=k=>cr.az.filter(a=>(CR_FASI.find(f=>f.k===k)||{st:[]}).st.includes(a.stato)).length;
+  if(cr.open){
+    const a=crA(cr.open);if(!a)return {t:'CRM.',l:''};
+    return {t:/[.!?]$/.test(a.nome.trim())?a.nome.trim():a.nome.trim()+'.',l:[CR_ST[a.stato]?CR_ST[a.stato].l:'',a.settore,a.provenienza].filter(Boolean).join(' · ')};
+  }
+  if(cr.tab==='persone')return {t:'Persone.',l:`${cr.ref.length} ${crPl(cr.ref.length,'persona','persone')} in ${cr.az.length} aziende`};
+  if(cr.tab==='preventivi'){
+    const s=k=>cr.prev.filter(p=>p.stato===k),sum=l=>l.reduce((t,p)=>t+(Number(p.importo)||0),0);
+    const inv=s('inviato'),acc=s('accettato');
+    return {t:'Preventivi.',l:[`${inv.length} in attesa di risposta${sum(inv)?' ('+crEuro(sum(inv))+')':''}`,`${acc.length} ${crPl(acc.length,'accettato','accettati')}${sum(acc)?' ('+crEuro(sum(acc))+')':''}`].join(' · ')};
+  }
+  if(cr.tab==='incontri'){
+    const now=new Date().toISOString(),m30=new Date(Date.now()-30*864e5).toISOString();
+    const nx=cr.inc.filter(i=>i.data&&i.data>now).length,rc=cr.inc.filter(i=>i.data&&i.data<=now&&i.data>=m30).length;
+    return {t:'Incontri.',l:`${nx} in programma · ${rc} negli ultimi 30 giorni`};
+  }
+  if(cr.tab==='elenchi'){const k=cr.el.filter(e=>!e.azienda_id&&!e.scartata).length,p=cr.el.filter(e=>e.azienda_id).length;return {t:'Elenchi.',l:`${k} aziende da valutare · ${p} già nel CRM`}}
+  return {t:'CRM.',l:`${cr.az.length} aziende · ${cnt('trattative')} ${crPl(cnt('trattative'),'trattativa','trattative')} · ${cnt('clienti')} ${crPl(cnt('clienti'),'cliente','clienti')} · ${cnt('sviluppo')} da sviluppare`};
+}
+function crTopActions(){
+  if(!nl.session||!ag.me||cr.missing||!cr.loaded)return '';
+  const up=`<button class="btn" onclick="crLoad()">${AG_I.refresh}<span class="lbl">Aggiorna</span></button>`;
+  if(cr.open)return `<button class="btn primary" onclick="crIncForm(null,${cr.open})">${AG_I.plus}Nuovo incontro</button><button class="btn" onclick="crAzForm(${cr.open})">${PJ_I.edit}<span class="lbl">Modifica azienda</span></button>`+up;
+  const P={aziende:['crAzForm()','Nuova azienda'],persone:['crRefForm()','Nuova persona'],preventivi:['crPrevForm()','Nuovo preventivo'],incontri:['crIncForm()','Nuovo incontro']}[cr.tab];
+  return (P?`<button class="btn primary" onclick="${P[0]}">${AG_I.plus}${P[1]}</button>`:'')+up;
+}
+
+/* ---- gruppi richiudibili (come in Progetti) ---- */
+function crClosed(k){return k in cr.fold?cr.fold[k]:!!CR_FOLD_DEF[k]}
+function crFold(k){cr.fold[k]=!crClosed(k);crKeep(render)}
+function crSec(k,head,n,body,o={}){
+  const cl=crClosed(k);
+  return `<div class="pj-sec ${cl?'closed':''}"><div class="pj-sech"><button class="pj-sect" onclick="crFold('${k}')" aria-expanded="${!cl}">${PJ_CARET}${o.dot?`<span class="pj-sdot ${o.dot}"></span>`:''}<b>${head}</b><span class="count">${n}</span>${o.hint?`<small>${esc(o.hint)}</small>`:''}</button>${o.extra||''}</div>${cl?'':body}</div>`;
+}
+function crSearchBox(id,val,ph,fn){return `<label class="pj-search"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="${id}" type="search" value="${escAttr(val)}" placeholder="${ph}" oninput="${fn}(this.value)" aria-label="${ph}" autocomplete="off"></label>`}
+function crSet(k,v){cr[k]=v;crKeep(render)}
+function crStSel(a){return `<select class="pj-stsel chip ${(CR_ST[a.stato]||CR_ST.da_contattare).c}" onclick="event.stopPropagation()" onkeydown="event.stopPropagation()" onchange="crSetStato(${a.id},this.value)" aria-label="Stato di ${escAttr(a.nome)}" title="Cambia stato">${CR_FASI.map(f=>`<optgroup label="${escAttr(f.l)}">${f.st.map(k=>`<option value="${k}" ${a.stato===k?'selected':''}>${CR_ST[k].l}</option>`).join('')}</optgroup>`).join('')}</select>`}
+
+/* ---- vista principale ---- */
+function viewCrm(){
+  if(!nl.ready)return `<div class="empty"><span class="spinner"></span></div>`;
+  if(!nl.session)return nlLoginView('home');
+  if(nl.editor===null||!ag.loaded)return `<div class="empty"><span class="spinner"></span><p style="margin-top:14px">Un attimo…</p></div>`;
+  if(!ag.me)return `<div class="empty">${CR_I.brief}<h4>Il tuo account non è ancora nella squadra</h4><p>Il CRM è riservato alle persone della squadra.</p></div>`;
+  if(!cr.loaded){if(!cr.loading)setTimeout(()=>crLoad({silent:true}),0);return `<div class="empty"><span class="spinner"></span><p style="margin-top:14px">Carico aziende e contatti…</p></div>`}
+  if(cr.missing)return `<div class="empty">${CR_I.brief}<h4>Il CRM non è ancora attivo</h4><p>Esegui nel SQL Editor di Supabase la migrazione <code>20261112100000_crm.sql</code>, poi il file con i dati di Notion (<code>crm_import_notion.sql</code>), quindi premi Aggiorna.</p><button class="btn" style="margin-top:16px" onclick="crLoad()">${AG_I.refresh}Aggiorna</button></div>`;
+  if(cr.open)return crViewAzienda(cr.open);
+  if(cr.tab==='persone')return crViewPersone();
+  if(cr.tab==='preventivi')return crViewPreventivi();
+  if(cr.tab==='incontri')return crViewIncontri();
+  if(cr.tab==='elenchi')return crViewElenchi();
+  return crViewAziende();
+}
+
+/* ---- Aziende ---- */
+function crAzRow(a){
+  const refs=crOf(cr.ref,a.id),last=crLastInc(a.id),next=crNextInc(a.id);
+  const pv=crOf(cr.prev,a.id).filter(p=>p.stato!=='rifiutato');
+  const pvTot=pv.reduce((t,p)=>t+(Number(p.importo)||0),0);
+  const segue=a.segue?agPerson(a.segue):null;
+  const sub=[a.settore,a.citta].filter(Boolean).map(esc).join(' · ');
+  return `<li class="cr-row" role="button" tabindex="0" onclick="crOpen(${a.id})" onkeydown="if(event.key==='Enter'&&event.target===this)crOpen(${a.id})">
+    <div class="cr-main"><b>${esc(a.nome)}</b>${sub?`<small>${sub}</small>`:''}</div>
+    <div class="cr-ppl">${refs.length?`${LI_I.user}<span>${esc(refs[0].nome)}${refs.length>1?` <em>+${refs.length-1}</em>`:''}</span>`:'<span class="pw-none">Nessun referente</span>'}</div>
+    <div class="cr-when">${next?`<span class="cr-next">Incontro ${esc(crDay(next.data))}</span>`:last?`<span>Ultimo incontro ${esc(crDay(last.data))}</span>`:'<span class="pw-none">Nessun incontro</span>'}</div>
+    <div class="cr-money">${pv.length?`<span>${pv.length} ${crPl(pv.length,'preventivo','preventivi')}${pvTot?' · '+esc(crEuro(pvTot)):''}</span>`:''}${segue?agAv(segue.id,true):''}</div>
+    <div class="cr-st">${crStSel(a)}</div>
+  </li>`;
+}
+function crViewAziende(){
+  const list=cr.az.filter(a=>(!cr.settore||a.settore===cr.settore)&&crMatch(cr.q,a.nome,a.settore,a.provenienza,a.citta,a.email,a.note,a.primo_contatto,a.fatturazione,crOf(cr.ref,a.id).map(r=>r.nome+' '+(r.email||''))));
+  const fasi=CR_FASI.filter(f=>!cr.fase||f.k===cr.fase);
+  const body=fasi.map(f=>{
+    const rows=list.filter(a=>f.st.includes(a.stato)).sort((x,y)=>crActivity(y).localeCompare(crActivity(x))||x.nome.localeCompare(y.nome,'it'));
+    return rows.length?crSec(f.k,f.l,rows.length,`<ul class="cr-list">${rows.map(crAzRow).join('')}</ul>`,{dot:f.dot,hint:f.hint}):'';
+  }).join('');
+  const n=k=>cr.az.filter(a=>CR_FASI.find(f=>f.k===k).st.includes(a.stato)).length;
+  const chip=(k,l,c)=>`<button class="pw-chip ${cr.fase===k?'on':''}" aria-pressed="${cr.fase===k}" onclick="crSet('fase','${k}')">${l}${c!=null?` <span class="li-n">${c}</span>`:''}</button>`;
+  const settori=[...new Set(cr.az.map(a=>a.settore).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'it'));
+  return `<div class="pj-tools">
+      <div class="pj-who" role="group" aria-label="Fase">${chip('','Tutte',cr.az.length)}${CR_FASI.slice(0,4).map(f=>chip(f.k,f.l,n(f.k))).join('')}</div>
+      <span class="spacer"></span>
+      <select class="pj-sel" onchange="crSet('settore',this.value)" aria-label="Settore"><option value="">Tutti i settori</option>${settori.map(s=>`<option ${cr.settore===s?'selected':''}>${esc(s)}</option>`).join('')}</select>
+      ${crSearchBox('cr-q',cr.q,'Cerca azienda, persona o nota','crSearchAz')}
+    </div>
+    <section class="tile pj-tile pj-tasks">${body||`<p class="pj-none">${cr.az.length?'Nessuna azienda con questi filtri.':'Ancora nessuna azienda. Aggiungi la prima con «Nuova azienda».'}</p>`}</section>
+    <p class="pj-hint">Un clic su un'azienda apre la sua pagina con persone, incontri, preventivi, progetti e documenti. Lo stato si cambia anche da qui.</p>`;
+}
+function crSearchAz(v){cr.q=v;crKeep(render)}
+
+/* ---- Pagina dell'azienda ---- */
+function crViewAzienda(id){
+  const a=crA(id);
+  if(!a)return `<div class="empty"><h4>Azienda non trovata</h4><p>Forse è stata eliminata.</p><button class="btn" onclick="crGoTab('aziende')">Tutte le aziende</button></div>`;
+  const refs=crOf(cr.ref,id).sort((x,y)=>x.nome.localeCompare(y.nome,'it'));
+  const incs=crIncOf(id),pvs=crOf(cr.prev,id).sort((x,y)=>String(y.inviato_il||y.created_at).localeCompare(String(x.inviato_il||x.created_at)));
+  const docs=crOf(cr.doc,id).sort((x,y)=>String(y.data||'').localeCompare(String(x.data||''))||x.nome.localeCompare(y.nome,'it'));
+  const prj=crProjects(id);
+  const fact=(l,v)=>v?`<div class="pj-fact"><small>${l}</small><div>${v}</div></div>`:'';
+  const mail=crMail(a.email),tel=crTel(a.telefono),site=crUrl(a.sito);
+  const segue=a.segue?agPerson(a.segue):null;
+  const head=`<section class="tile pj-tile cr-head">
+    <div class="cr-hrow">
+      ${crStSel(a)}
+      <span class="spacer"></span>
+      <button class="btn sm" onclick="crRefForm(null,${id})">${AG_I.plus}Persona</button>
+      <button class="btn sm" onclick="crPrevForm(null,${id})">${AG_I.plus}Preventivo</button>
+      <button class="btn sm" onclick="crDocForm(null,${id})">${AG_I.plus}Documento</button>
+    </div>
+    <div class="pj-facts">
+      ${fact('Settore',esc(a.settore||''))}
+      ${fact('Provenienza',esc(a.provenienza||''))}
+      ${fact('Primo contatto',esc(crDay(a.primo_contatto_il)))}
+      ${fact('Se ne occupa',segue?`${agAv(segue.id,true)}<span>${esc(segue.nome)}</span>`:'')}
+      ${fact('Città',esc(a.citta||''))}
+      ${fact('E-mail',a.email?(mail?`<a href="mailto:${escAttr(mail)}">${esc(a.email)}</a>`:esc(a.email)):'')}
+      ${fact('Telefono',tel?`<a href="tel:${escAttr(tel)}">${esc(a.telefono)}</a>`:esc(a.telefono||''))}
+      ${fact('Sito',site?`<a href="${escAttr(site)}" target="_blank" rel="noopener noreferrer">${esc(String(a.sito).replace(/^https?:\/\//,'').replace(/\/$/,''))}</a>`:'')}
+    </div>
+  </section>`;
+  // incontri: dal più recente
+  const now=new Date().toISOString();
+  const incHtml=incs.length?`<ul class="cr-tl">${incs.map(i=>crIncItem(i,{noAz:true,future:i.data&&i.data>now})).join('')}</ul>`:`<p class="pj-none">Nessun incontro registrato.</p>`;
+  const notes=[a.primo_contatto?`<div class="cr-note"><small>Come è nato il contatto</small><p>${esc(a.primo_contatto)}</p></div>`:'',
+    a.note?`<div class="cr-note"><small>Note</small><p>${esc(a.note)}</p></div>`:'',
+    a.fatturazione?`<div class="cr-note"><small>Dati di fatturazione <button class="cr-copy" onclick="crCopy(${a.id})" title="Copia i dati di fatturazione">${CR_I.copy}Copia</button></small><p>${esc(a.fatturazione)}</p></div>`:''].filter(Boolean).join('');
+  const refHtml=refs.length?`<ul class="cr-mini">${refs.map(r=>{
+      const m=crMail(r.email),t=crTel(r.telefono);
+      return `<li><button class="cr-mn" onclick="crRefForm(${r.id})"><b>${esc(r.nome)}</b><small>${esc([r.ruolo,(r.canale||[]).length?'preferisce '+r.canale.map(c=>c==='telefono'?'telefono':'e-mail').join(' e '):''].filter(Boolean).join(' · '))}</small></button>
+        <span class="cr-ic">${t?`<a class="pw-ib" href="tel:${escAttr(t)}" title="Chiama ${escAttr(r.telefono)}" aria-label="Chiama ${escAttr(r.nome)}">${CR_I.tel}</a>`:''}${m?`<a class="pw-ib" href="mailto:${escAttr(m)}" title="Scrivi a ${escAttr(m)}" aria-label="Scrivi a ${escAttr(r.nome)}">${CR_I.mail}</a>`:''}${pwSafeUrl(r.linkedin)?`<a class="pw-ib" href="${escAttr(r.linkedin)}" target="_blank" rel="noopener noreferrer" title="Profilo LinkedIn">${LI_I.ext}</a>`:''}</span></li>`}).join('')}</ul>`:`<p class="pj-none">Nessuna persona.</p>`;
+  const pvHtml=pvs.length?`<ul class="cr-mini">${pvs.map(p=>`<li><button class="cr-mn" onclick="crPrevForm(${p.id})"><b>${esc(p.nome)}</b><small>${esc([p.importo!=null?crEuro(p.importo):'',p.inviato_il?'inviato il '+crDay(p.inviato_il):''].filter(Boolean).join(' · '))}</small></button>
+      <span class="cr-ic">${pwSafeUrl(p.documento)?`<a class="pw-ib" href="${escAttr(p.documento)}" target="_blank" rel="noopener noreferrer" title="Apri il documento">${CR_I.doc}</a>`:''}<span class="chip ${CR_PST[p.stato].c}"><span class="d"></span>${CR_PST[p.stato].l}</span></span></li>`).join('')}</ul>`:`<p class="pj-none">Nessun preventivo.</p>`;
+  const prHtml=(prj.length?`<ul class="cr-mini">${prj.map(p=>`<li><button class="cr-mn" onclick="pjOpen(${p.id})"><b>${esc(p.nome)}</b><small>${esc(PJ_ST[p.stato]?PJ_ST[p.stato].l:'')}</small></button><span class="cr-ic"><button class="pw-ib" onclick="crUnlinkProj(${p.id})" title="Scollega il progetto" aria-label="Scollega ${escAttr(p.nome)}">${CR_I.x}</button></span></li>`).join('')}</ul>`:`<p class="pj-none">${pj.noAz?'Per collegare i progetti serve la migrazione del CRM.':'Nessun progetto collegato.'}</p>`)
+    +(pj.loaded&&!pj.noAz?`<button class="pj-more" onclick="crLinkProj(${id})">${CR_I.link}Collega un progetto</button>`:'');
+  const docHtml=docs.length?`<ul class="cr-mini">${docs.map(d=>{const u=pwSafeUrl(d.url);return `<li>${u?`<a class="cr-mn" href="${escAttr(u)}" target="_blank" rel="noopener noreferrer"><b>${esc(d.nome)}</b><small>${esc([d.data?crDay(d.data):'',d.progetto_id&&pjP(d.progetto_id)?pjP(d.progetto_id).nome:''].filter(Boolean).join(' · ')||'Apri')}</small></a>`:`<span class="cr-mn"><b>${esc(d.nome)}</b><small>Senza link</small></span>`}<span class="cr-ic"><button class="pw-ib" onclick="crDocForm(${d.id})" title="Modifica" aria-label="Modifica ${escAttr(d.nome)}">${PJ_I.edit}</button></span></li>`}).join('')}</ul>`:`<p class="pj-none">Nessun documento.</p>`;
+  const box=(t,n,body,add)=>`<section class="tile pj-tile cr-box"><div class="cr-bh"><h3>${t}</h3>${n?`<span class="count">${n}</span>`:''}<span class="spacer"></span>${add||''}</div>${body}</section>`;
+  return `<button class="pj-back" onclick="crGoTab('aziende')">${PJ_I.back}Tutte le aziende</button>
+  ${head}
+  <div class="cr-grid">
+    <div class="cr-col">
+      ${box('Incontri',incs.length,incHtml,`<button class="btn sm" onclick="crIncForm(null,${id})">${AG_I.plus}Nuovo</button>`)}
+      ${notes?box('Note','',notes,`<button class="btn sm ghost" onclick="crAzForm(${id})">${PJ_I.edit}Modifica</button>`):''}
+    </div>
+    <div class="cr-col">
+      ${box('Persone',refs.length,refHtml,`<button class="btn sm ghost" onclick="crRefForm(null,${id})">${AG_I.plus}Aggiungi</button>`)}
+      ${box('Preventivi',pvs.length,pvHtml,`<button class="btn sm ghost" onclick="crPrevForm(null,${id})">${AG_I.plus}Aggiungi</button>`)}
+      ${box('Progetti',prj.length,prHtml)}
+      ${box('Documenti',docs.length,docHtml,`<button class="btn sm ghost" onclick="crDocForm(null,${id})">${AG_I.plus}Aggiungi</button>`)}
+    </div>
+  </div>`;
+}
+// un incontro nella cronologia
+function crIncItem(i,o={}){
+  const d=i.data?new Date(i.data):null;
+  const who=(i.persone||[]).map(u=>agAv(u,true)).join('');
+  const ext=(i.referenti||[]).map(crR).filter(Boolean).map(r=>esc(r.nome)).join(', ');
+  const az=o.noAz?'':crAzNames(i.aziende).map(a=>esc(a.nome)).join(', ');
+  return `<li class="cr-ti ${o.future?'future':''}" role="button" tabindex="0" onclick="crIncView(${i.id})" onkeydown="if(event.key==='Enter')crIncView(${i.id})">
+    <div class="cr-date">${d?`<b>${d.getDate()}</b><small>${d.toLocaleDateString('it-IT',{month:'short'}).replace('.','')}${d.getFullYear()!==new Date().getFullYear()?' '+String(d.getFullYear()).slice(2):''}</small>`:'<small>senza data</small>'}</div>
+    <div class="cr-tb">
+      <div class="cr-tt"><b>${esc(i.titolo)}</b>${az?`<span class="cr-az">${az}</span>`:''}${o.future?'<span class="chip seq"><span class="d"></span>In programma</span>':''}</div>
+      ${who||ext?`<div class="cr-who">${who?`<span class="ag-avs">${who}</span>`:''}${ext?`<span>con ${ext}</span>`:''}</div>`:''}
+      ${i.verbale?`<p class="cr-vb">${esc(i.verbale)}</p>`:''}
+      ${i.prossimi_passi?`<p class="cr-ps"><b>Prossimi passi:</b> ${esc(i.prossimi_passi)}</p>`:''}
+    </div></li>`;
+}
+
+/* ---- Persone ---- */
+function crViewPersone(){
+  const rows=cr.ref.filter(r=>crMatch(cr.pq,r.nome,r.ruolo,r.email,r.telefono,r.note,crAzNames(r.aziende).map(a=>a.nome))).sort((a,b)=>a.nome.localeCompare(b.nome,'it'));
+  return `<div class="pj-tools"><span class="spacer"></span>${crSearchBox('cr-pq',cr.pq,'Cerca nome, azienda, e-mail o telefono','crSearchP')}</div>
+  <section class="tile pj-tile pj-tasks">${rows.length?`<ul class="cr-list">${rows.map(r=>{
+    const m=crMail(r.email),t=crTel(r.telefono);
+    return `<li class="cr-row cr-prow" role="button" tabindex="0" onclick="crRefForm(${r.id})" onkeydown="if(event.key==='Enter'&&event.target===this)crRefForm(${r.id})">
+      <div class="cr-main"><b>${esc(r.nome)}</b>${r.ruolo?`<small>${esc(r.ruolo)}</small>`:''}</div>
+      <div class="cr-azs">${crAzLinks(r.aziende)}</div>
+      <div class="cr-contact">${t?`<a href="tel:${escAttr(t)}" onclick="event.stopPropagation()">${CR_I.tel}${esc(r.telefono)}</a>`:''}${m?`<a href="mailto:${escAttr(m)}" onclick="event.stopPropagation()">${CR_I.mail}${esc(m)}</a>`:''}${!t&&!m?'<span class="pw-none">Nessun recapito</span>':''}</div>
+    </li>`}).join('')}</ul>`:`<p class="pj-none">${cr.ref.length?'Nessuna persona con questa ricerca.':'Ancora nessuna persona.'}</p>`}</section>`;
+}
+function crSearchP(v){cr.pq=v;crKeep(render)}
+
+/* ---- Preventivi ---- */
+function crViewPreventivi(){
+  const rows=cr.prev.filter(p=>crMatch(cr.vq,p.nome,p.note,crAzNames(p.aziende).map(a=>a.nome)));
+  const body=Object.keys(CR_PST).map(k=>{
+    const l=rows.filter(p=>p.stato===k).sort((a,b)=>String(b.inviato_il||b.created_at).localeCompare(String(a.inviato_il||a.created_at)));
+    if(!l.length)return '';
+    const tot=l.reduce((t,p)=>t+(Number(p.importo)||0),0);
+    return crSec('pv_'+k,CR_PST[k].l,l.length,`<ul class="cr-list">${l.map(p=>`<li class="cr-row cr-vrow" role="button" tabindex="0" onclick="crPrevForm(${p.id})" onkeydown="if(event.key==='Enter'&&event.target===this)crPrevForm(${p.id})">
+        <div class="cr-main"><b>${esc(p.nome)}</b>${p.inviato_il?`<small>Inviato il ${esc(crDay(p.inviato_il))}</small>`:''}</div>
+        <div class="cr-azs">${crAzLinks(p.aziende)}</div>
+        <div class="cr-amt">${p.importo!=null?esc(crEuro(p.importo)):'<span class="pw-none">—</span>'}</div>
+        <div class="cr-st">${pwSafeUrl(p.documento)?`<a class="pw-ib" href="${escAttr(p.documento)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" title="Apri il documento" aria-label="Apri il documento">${CR_I.doc}</a>`:''}<select class="pj-stsel chip ${CR_PST[p.stato].c}" onclick="event.stopPropagation()" onkeydown="event.stopPropagation()" onchange="crSetPrev(${p.id},this.value)" aria-label="Stato del preventivo">${Object.keys(CR_PST).map(s=>`<option value="${s}" ${s===p.stato?'selected':''}>${CR_PST[s].l}</option>`).join('')}</select></div>
+      </li>`).join('')}</ul>`,{dot:CR_PST[k].c,hint:tot?crEuro(tot):''});
+  }).join('');
+  return `<div class="pj-tools"><span class="spacer"></span>${crSearchBox('cr-vq',cr.vq,'Cerca preventivo o azienda','crSearchV')}</div>
+  <section class="tile pj-tile pj-tasks">${body||`<p class="pj-none">${cr.prev.length?'Nessun preventivo con questa ricerca.':'Ancora nessun preventivo.'}</p>`}</section>`;
+}
+function crSearchV(v){cr.vq=v;crKeep(render)}
+
+/* ---- Incontri ---- */
+function crViewIncontri(){
+  const now=new Date().toISOString();
+  const rows=cr.inc.filter(i=>crMatch(cr.iq,i.titolo,i.verbale,i.prossimi_passi,crAzNames(i.aziende).map(a=>a.nome),(i.referenti||[]).map(crR).filter(Boolean).map(r=>r.nome)));
+  const fut=rows.filter(i=>i.data&&i.data>now).sort((a,b)=>a.data.localeCompare(b.data));
+  const past=rows.filter(i=>i.data&&i.data<=now).sort((a,b)=>b.data.localeCompare(a.data));
+  const nod=rows.filter(i=>!i.data);
+  const shown=past.slice(0,cr.incLimit);
+  const body=(fut.length?crSec('inc_futuri','In programma',fut.length,`<ul class="cr-tl">${fut.map(i=>crIncItem(i,{future:true})).join('')}</ul>`,{dot:'seq'}):'')
+    +(past.length?crSec('inc_passati','Passati',past.length,`<ul class="cr-tl">${shown.map(i=>crIncItem(i)).join('')}</ul>${past.length>shown.length?`<button class="pj-more" onclick="cr.incLimit+=30;crKeep(render)">Mostra altri (${past.length-shown.length})</button>`:''}`,{dot:'done'}):'')
+    +(nod.length?crSec('inc_nodata','Senza data',nod.length,`<ul class="cr-tl">${nod.map(i=>crIncItem(i)).join('')}</ul>`,{dot:'da',hint:'da Notion, senza giorno'}):'');
+  return `<div class="pj-tools"><span class="spacer"></span>${crSearchBox('cr-iq',cr.iq,'Cerca nei verbali, aziende, persone','crSearchI')}</div>
+  <section class="tile pj-tile pj-tasks">${body||`<p class="pj-none">${cr.inc.length?'Nessun incontro con questa ricerca.':'Ancora nessun incontro.'}</p>`}</section>`;
+}
+function crSearchI(v){cr.iq=v;cr.incLimit=30;crKeep(render)}
+
+/* ---- Elenchi (aziende da valutare) ---- */
+function crElFiltered(){
+  let l=cr.el.filter(e=>(cr.elShow==='tutte'||(cr.elShow==='da_valutare'?!e.azienda_id&&!e.scartata:cr.elShow==='crm'?!!e.azienda_id:e.scartata&&!e.azienda_id))
+    &&(!cr.elCitta||e.citta===cr.elCitta)&&crMatch(cr.elQ,e.nome,e.citta,e.descrizione));
+  const S={valore:(a,b)=>(Number(b.valore_produzione)||0)-(Number(a.valore_produzione)||0),dipendenti:(a,b)=>(b.dipendenti||0)-(a.dipendenti||0),nome:(a,b)=>a.nome.localeCompare(b.nome,'it'),posizione:(a,b)=>(a.posizione||1e9)-(b.posizione||1e9)};
+  return l.sort(S[cr.elSort]||S.valore);
+}
+function crNum(n,d=0){return n==null?'—':Number(n).toLocaleString('de-DE',{maximumFractionDigits:d})}   // come l'italiano, ma con il punto anche nelle migliaia a 4 cifre
+function crTidy(s){s=String(s||'').trim();return s===s.toUpperCase()?s.toLowerCase().replace(/(^|[\s'(.\-&/])([a-zàèéìòù])/g,(m,p,c)=>p+c.toUpperCase()).replace(/\b(S\.?r\.?l\.?s?|S\.?p\.?a\.?|S\.?n\.?c\.?|S\.?a\.?s\.?)(?=\s|$|\b)/gi,m=>m.toUpperCase()):s}
+function crViewElenchi(){
+  if(!cr.el.length)return `<section class="tile pj-tile"><p class="pj-none">Nessun elenco. Gli elenchi di aziende da valutare (per esempio «Veneto Orientale» da Notion) arrivano con il file di importazione.</p></section>`;
+  const rows=crElFiltered(),shown=rows.slice(0,cr.elLimit);
+  const citta=[...new Set(cr.el.map(e=>e.citta).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'it'));
+  const cnt=k=>cr.el.filter(e=>k==='da_valutare'?!e.azienda_id&&!e.scartata:k==='crm'?!!e.azienda_id:k==='scartate'?e.scartata&&!e.azienda_id:true).length;
+  const chip=(k,l)=>`<button class="pw-chip ${cr.elShow===k?'on':''}" aria-pressed="${cr.elShow===k}" onclick="cr.elShow='${k}';cr.elLimit=60;crKeep(render)">${l} <span class="li-n">${cnt(k)}</span></button>`;
+  const liste=[...new Set(cr.el.map(e=>e.lista))];
+  return `<div class="pj-tools">
+      <div class="pj-who" role="group" aria-label="Quali">${chip('da_valutare','Da valutare')}${chip('crm','Nel CRM')}${chip('scartate','Scartate')}${chip('tutte','Tutte')}</div>
+      <span class="spacer"></span>
+      <select class="pj-sel" onchange="cr.elCitta=this.value;cr.elLimit=60;crKeep(render)" aria-label="Città"><option value="">Tutte le città</option>${citta.map(c=>`<option ${cr.elCitta===c?'selected':''}>${esc(c)}</option>`).join('')}</select>
+      <select class="pj-sel" onchange="cr.elSort=this.value;crKeep(render)" aria-label="Ordina">${[['valore','Valore produzione'],['dipendenti','Dipendenti'],['nome','Nome'],['posizione','Ordine dell\'elenco']].map(([k,l])=>`<option value="${k}" ${cr.elSort===k?'selected':''}>${l}</option>`).join('')}</select>
+      ${crSearchBox('cr-elq',cr.elQ,'Cerca azienda, città o attività','crSearchEl')}
+    </div>
+    <section class="tile pj-tile pj-tasks">
+      <p class="cr-elh">${esc(liste.join(', '))} · ${rows.length} ${crPl(rows.length,'azienda','aziende')}. «Porta nel CRM» la aggiunge tra le aziende da contattare; «Scarta» la toglie da questo elenco.</p>
+      ${rows.length?`<ul class="cr-list">${shown.map(e=>{const az=e.azienda_id?crA(e.azienda_id):null;return `<li class="cr-row cr-erow ${e.scartata&&!az?'off':''}">
+        <div class="cr-main"><b>${esc(crTidy(e.nome))}</b><small>${esc([e.citta?crTidy(e.citta):'',e.descrizione?e.descrizione.charAt(0)+e.descrizione.slice(1).toLowerCase():''].filter(Boolean).join(' · '))}</small></div>
+        <div class="cr-num"><small>Dipendenti</small><b>${crNum(e.dipendenti)}</b></div>
+        <div class="cr-num"><small>Val. produzione</small><b>${crNum(e.valore_produzione,3)}</b></div>
+        <div class="cr-num"><small>Utile</small><b class="${Number(e.utile)<0?'neg':''}">${crNum(e.utile,3)}</b></div>
+        <div class="cr-st">${az?`<button class="chip reply" onclick="crOpen(${az.id})"><span class="d"></span>Nel CRM</button>`:e.scartata?`<button class="btn sm ghost" onclick="crElScarta(${e.id},false)">Ripristina</button>`:`<button class="btn sm ghost" onclick="crElScarta(${e.id},true)">Scarta</button><button class="btn sm" onclick="crElPromote(${e.id})">Porta nel CRM</button>`}</div>
+      </li>`}).join('')}</ul>${rows.length>shown.length?`<button class="pj-more" onclick="cr.elLimit+=60;crKeep(render)">Mostra altre (${rows.length-shown.length})</button>`:''}`:`<p class="pj-none">Nessuna azienda con questi filtri.</p>`}
+    </section>
+    <p class="pj-hint">I numeri sono quelli dell'elenco di Notion, nella stessa unità.</p>`;
+}
+function crSearchEl(v){cr.elQ=v;cr.elLimit=60;crKeep(render)}
+
+/* ---- azioni rapide ---- */
+async function crSetStato(id,st){
+  const a=crA(id);if(!a||a.stato===st)return;
+  const old=a.stato;a.stato=st;crKeep(render);
+  const {error}=await nlSupa.from('crm_aziende').update({stato:st}).eq('id',id);
+  if(error){a.stato=old;crKeep(render);toast(error.message,'err');return}
+  toast(`${a.nome}: ${CR_ST[st].l}`,'ok');
+}
+async function crSetPrev(id,st){
+  const p=cr.prev.find(x=>x.id===id);if(!p||p.stato===st)return;
+  const old={stato:p.stato,inviato_il:p.inviato_il};const patch={stato:st};
+  if(st==='inviato'&&!p.inviato_il)patch.inviato_il=liToday();
+  Object.assign(p,patch);crKeep(render);
+  const {error}=await nlSupa.from('crm_preventivi').update(patch).eq('id',id);
+  if(error){Object.assign(p,old);crKeep(render);toast(error.message,'err')}
+}
+async function crCopy(id){const a=crA(id);if(!a||!a.fatturazione)return;try{await navigator.clipboard.writeText(a.fatturazione);toast('Dati di fatturazione copiati','ok')}catch(e){toast('Non riesco a copiare: il browser non lo permette','warn')}}
+async function crElScarta(id,v){
+  const e=cr.el.find(x=>x.id===id);if(!e)return;e.scartata=v;crKeep(render);
+  const {error}=await nlSupa.from('crm_elenco').update({scartata:v}).eq('id',id);
+  if(error){e.scartata=!v;crKeep(render);toast(error.message,'err')}
+}
+async function crElPromote(id){
+  const e=cr.el.find(x=>x.id===id);if(!e||e.azienda_id)return;
+  const note=[e.descrizione?'Attività: '+e.descrizione.charAt(0)+e.descrizione.slice(1).toLowerCase():'',e.dipendenti!=null?'Dipendenti: '+crNum(e.dipendenti):'',e.valore_produzione!=null?'Valore produzione: '+crNum(e.valore_produzione,3):'',e.utile!=null?'Utile: '+crNum(e.utile,3):''].filter(Boolean).join('\n');
+  const {data,error}=await nlSupa.from('crm_aziende').insert({nome:crTidy(e.nome),stato:'da_contattare',provenienza:'Elenco '+e.lista,citta:e.citta?crTidy(e.citta):null,note:note||null,segue:ag.me?ag.me.id:null}).select().single();
+  if(error){toast(error.message,'err');return}
+  cr.az.push(data);e.azienda_id=data.id;crKeep(render);
+  const r=await nlSupa.from('crm_elenco').update({azienda_id:data.id}).eq('id',id);
+  if(r.error)toast(r.error.message,'err');
+  pjUndoToast(`${data.nome} è nel CRM, tra le aziende da contattare.`,()=>crOpen(data.id),'Apri');
+}
+async function crLinkProj(azId){
+  const a=crA(azId);if(!a)return;
+  const free=pj.pr.filter(p=>p.azienda_id!==azId).sort((x,y)=>(!!x.azienda_id-!!y.azienda_id)||x.nome.localeCompare(y.nome,'it'));
+  modal(`<div class="modal" role="dialog" aria-modal="true" onclick="event.stopPropagation()">
+    <div class="modal-h"><h3>Collega un progetto a ${esc(a.nome)}</h3>${crX()}</div>
+    <form onsubmit="crLinkProjSave(event,${azId})"><div class="modal-b" style="display:flex;flex-direction:column;gap:14px">
+      <div class="form-row"><label for="cr-lp">Progetto</label><select id="cr-lp" required>${free.map(p=>`<option value="${p.id}">${esc(p.nome)}${p.azienda_id&&crA(p.azienda_id)?' (ora: '+esc(crA(p.azienda_id).nome)+')':p.cliente?' · '+esc(p.cliente):''}</option>`).join('')}</select></div>
+    </div><div class="modal-f"><button type="button" class="btn" onclick="closeModal()">Annulla</button><button class="btn primary" type="submit">Collega</button></div></form></div>`);
+}
+async function crLinkProjSave(ev,azId){
+  ev.preventDefault();const pid=+document.getElementById('cr-lp').value;if(!pid)return;
+  const {error}=await nlSupa.from('progetti').update({azienda_id:azId}).eq('id',pid);
+  if(error){toast(error.message,'err');return}
+  const p=pjP(pid);if(p)p.azienda_id=azId;closeModal();crKeep(render);toast('Progetto collegato','ok');
+}
+async function crUnlinkProj(pid){
+  const p=pjP(pid);if(!p)return;const old=p.azienda_id;p.azienda_id=null;crKeep(render);
+  const {error}=await nlSupa.from('progetti').update({azienda_id:null}).eq('id',pid);
+  if(error){p.azienda_id=old;crKeep(render);toast(error.message,'err');return}
+  pjUndoToast(`«${p.nome}» scollegato.`,async()=>{p.azienda_id=old;crKeep(render);await nlSupa.from('progetti').update({azienda_id:old}).eq('id',pid)});
+}
+
+/* ---- schede di modifica ---- */
+const crX=()=>`<div class="x" role="button" tabindex="0" aria-label="Chiudi" onclick="closeModal()" onkeydown="if(event.key==='Enter')closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></div>`;
+const crG=i=>(document.getElementById(i)?.value||'').trim();
+function crAzOptions(sel,none){return (none?`<option value="">${none}</option>`:'')+cr.az.slice().sort((a,b)=>a.nome.localeCompare(b.nome,'it')).map(a=>`<option value="${a.id}" ${a.id===sel?'selected':''}>${esc(a.nome)}</option>`).join('')}
+// l'azienda scelta diventa la prima; le altre aziende già collegate restano
+function crAzArr(old,sel){const rest=(old||[]).slice(1);return sel?[sel,...rest.filter(x=>x!==sel)]:rest}
+async function crSaveRow(table,id,row,okMsg){
+  const b=document.getElementById('cr-fb');if(b)b.disabled=true;
+  const {data,error}=id?await nlSupa.from(table).update(row).eq('id',id).select().single():await nlSupa.from(table).insert(row).select().single();
+  if(error){if(b)b.disabled=false;toast(error.message,'err');return null}
+  closeModal();toast(okMsg,'ok');await crLoad({silent:true});return data;
+}
+async function crDelRow(table,id,label){
+  if(!confirm(`Eliminare «${label}»? Non si può annullare.`))return false;
+  const {error}=await nlSupa.from(table).delete().eq('id',id);
+  if(error){toast(error.message,'err');return false}
+  closeModal();toast('Eliminato','ok');await crLoad({silent:true});return true;
+}
+const crFoot=(del,isNew,lab)=>`<div class="modal-f">${del?`<button type="button" class="btn danger" style="margin-right:auto" onclick="${del}">Elimina</button>`:''}<button type="button" class="btn" onclick="closeModal()">Annulla</button><button class="btn primary" id="cr-fb" type="submit">${isNew?lab||'Aggiungi':'Salva'}</button></div>`;
+const crDl=(id,list)=>`<datalist id="${id}">${list.map(x=>`<option value="${escAttr(x)}">`).join('')}</datalist>`;
+
+function crAzForm(id){
+  if(!ag.me){toast('Account non collegato alla squadra','warn');return}
+  const a=id?crA(id):null;cr.edit=id||null;
+  const v=k=>escAttr(a?(a[k]??''):'');
+  const settori=[...new Set([...CR_SETTORI,...cr.az.map(x=>x.settore).filter(Boolean)])];
+  const prov=[...new Set([...CR_PROV,...cr.az.map(x=>x.provenienza).filter(Boolean)])];
+  modal(`<div class="modal" role="dialog" aria-modal="true" onclick="event.stopPropagation()">
+    <div class="modal-h"><h3>${a?'Azienda':'Nuova azienda'}</h3>${crX()}</div>
+    <form onsubmit="crAzSave(event)" autocomplete="off"><div class="modal-b" style="display:flex;flex-direction:column;gap:14px">
+      <div class="form-row"><label for="cr-an">Nome dell'azienda</label><input id="cr-an" required maxlength="300" value="${v('nome')}"></div>
+      <div class="li-grid">
+        <div class="form-row"><label for="cr-as">Stato</label><select id="cr-as">${CR_FASI.map(f=>`<optgroup label="${escAttr(f.l)}">${f.st.map(k=>`<option value="${k}" ${(a?a.stato:'da_contattare')===k?'selected':''}>${CR_ST[k].l}</option>`).join('')}</optgroup>`).join('')}</select></div>
+        <div class="form-row"><label for="cr-aw">Se ne occupa</label><select id="cr-aw"><option value="">Nessuno</option>${ag.team.map(t=>`<option value="${t.id}" ${(a?a.segue:ag.me.id)===t.id?'selected':''}>${esc(t.nome)}</option>`).join('')}</select></div>
+        <div class="form-row"><label for="cr-ase">Settore</label><input id="cr-ase" list="cr-dls" maxlength="120" value="${v('settore')}">${crDl('cr-dls',settori)}</div>
+        <div class="form-row"><label for="cr-ap">Provenienza</label><input id="cr-ap" list="cr-dlp" maxlength="120" value="${v('provenienza')}">${crDl('cr-dlp',prov)}</div>
+        <div class="form-row"><label for="cr-ad">Data del primo contatto</label><input id="cr-ad" type="date" value="${v('primo_contatto_il')}"></div>
+        <div class="form-row"><label for="cr-ac">Città</label><input id="cr-ac" maxlength="120" value="${v('citta')}"></div>
+        <div class="form-row"><label for="cr-ae">E-mail</label><input id="cr-ae" maxlength="300" value="${v('email')}"></div>
+        <div class="form-row"><label for="cr-at">Telefono</label><input id="cr-at" maxlength="60" value="${v('telefono')}"></div>
+      </div>
+      <div class="form-row"><label for="cr-aweb">Sito</label><input id="cr-aweb" maxlength="300" value="${v('sito')}" placeholder="www.azienda.it"></div>
+      <div class="form-row"><label for="cr-apc">Come è nato il contatto</label><textarea id="cr-apc" rows="4" maxlength="8000" placeholder="Chi ci ha messo in contatto, che cosa hanno chiesto…">${esc(a?a.primo_contatto||'':'')}</textarea></div>
+      <div class="form-row"><label for="cr-ano">Note</label><textarea id="cr-ano" rows="3" maxlength="8000">${esc(a?a.note||'':'')}</textarea></div>
+      <div class="form-row"><label for="cr-af">Dati di fatturazione</label><textarea id="cr-af" rows="3" maxlength="2000" placeholder="Ragione sociale, indirizzo, P. IVA, codice destinatario">${esc(a?a.fatturazione||'':'')}</textarea></div>
+    </div>${crFoot(a?`crAzDel(${a.id})`:'',!a)}</form></div>`);
+  setTimeout(()=>{if(!a)document.getElementById('cr-an')?.focus()},50);
+}
+async function crAzSave(ev){
+  ev.preventDefault();const id=cr.edit;
+  const row={nome:crG('cr-an'),stato:crG('cr-as')||'da_contattare',segue:crG('cr-aw')||null,settore:crG('cr-ase')||null,provenienza:crG('cr-ap')||null,
+    primo_contatto_il:crG('cr-ad')||null,citta:crG('cr-ac')||null,email:crG('cr-ae')||null,telefono:crG('cr-at')||null,sito:crG('cr-aweb')||null,
+    primo_contatto:crG('cr-apc')||null,note:crG('cr-ano')||null,fatturazione:crG('cr-af')||null};
+  if(!row.nome){toast('Scrivi il nome dell\'azienda','warn');return}
+  const d=await crSaveRow('crm_aziende',id,row,id?'Azienda aggiornata':'Azienda aggiunta');
+  if(d&&!id)crOpen(d.id);
+}
+async function crAzDel(id){
+  const a=crA(id);if(!a)return;
+  const n=crOf(cr.ref,id).length+crOf(cr.inc,id).length+crOf(cr.prev,id).length;
+  if(n&&!confirm(`${a.nome} ha ${n} tra persone, incontri e preventivi collegati: resteranno, ma senza azienda. Continuare?`))return;
+  if(await crDelRow('crm_aziende',id,a.nome)){cr.open=null;render()}
+}
+
+function crRefForm(id,azId){
+  if(!ag.me){toast('Account non collegato alla squadra','warn');return}
+  const r=id?crR(id):null;cr.edit=id||null;
+  const v=k=>escAttr(r?(r[k]??''):'');
+  const sel=r?(r.aziende||[])[0]:azId;const can=r?r.canale||[]:[];
+  const other=r?crAzNames((r.aziende||[]).slice(1)):[];
+  modal(`<div class="modal" role="dialog" aria-modal="true" onclick="event.stopPropagation()">
+    <div class="modal-h"><h3>${r?esc(r.nome):'Nuova persona'}</h3>${crX()}</div>
+    <form onsubmit="crRefSave(event)" autocomplete="off"><div class="modal-b" style="display:flex;flex-direction:column;gap:14px">
+      <div class="li-grid">
+        <div class="form-row"><label for="cr-rn">Nome e cognome</label><input id="cr-rn" required maxlength="200" value="${v('nome')}"></div>
+        <div class="form-row"><label for="cr-rr">Ruolo</label><input id="cr-rr" list="cr-dlr" maxlength="120" value="${v('ruolo')}">${crDl('cr-dlr',CR_RUOLI)}</div>
+      </div>
+      <div class="form-row"><label for="cr-ra">Azienda</label><select id="cr-ra">${crAzOptions(sel,'Nessuna')}</select>${other.length?`<small class="helptip">Anche in: ${other.map(a=>esc(a.nome)).join(', ')}</small>`:''}</div>
+      <div class="li-grid">
+        <div class="form-row"><label for="cr-re">E-mail</label><input id="cr-re" maxlength="300" value="${v('email')}"></div>
+        <div class="form-row"><label for="cr-rt">Telefono</label><input id="cr-rt" maxlength="60" value="${v('telefono')}"></div>
+        <div class="form-row"><label for="cr-rl">Profilo LinkedIn</label><input id="cr-rl" type="url" maxlength="400" value="${v('linkedin')}" placeholder="https://www.linkedin.com/in/…"></div>
+        <div class="form-row"><label for="cr-ru">Ultimo contatto</label><input id="cr-ru" type="date" value="${v('ultimo_contatto')}"></div>
+      </div>
+      <div class="form-row"><span class="lbl-s">Preferisce essere contattato per</span><div class="pw-chips" style="margin:0"><label class="cr-ck"><input type="checkbox" id="cr-rct" ${can.includes('telefono')?'checked':''}> Telefono</label><label class="cr-ck"><input type="checkbox" id="cr-rce" ${can.includes('email')?'checked':''}> E-mail</label></div></div>
+      <div class="form-row"><label for="cr-rno">Note</label><textarea id="cr-rno" rows="3" maxlength="5000">${esc(r?r.note||'':'')}</textarea></div>
+    </div>${crFoot(r?`crRefDel(${r.id})`:'',!r)}</form></div>`);
+  setTimeout(()=>{if(!r)document.getElementById('cr-rn')?.focus()},50);
+}
+async function crRefSave(ev){
+  ev.preventDefault();const id=cr.edit,old=id?crR(id):null;
+  const sel=+crG('cr-ra')||null;
+  const canale=[document.getElementById('cr-rct')?.checked?'telefono':null,document.getElementById('cr-rce')?.checked?'email':null].filter(Boolean);
+  const row={nome:crG('cr-rn'),ruolo:crG('cr-rr')||null,aziende:crAzArr(old?old.aziende:[],sel),email:crG('cr-re')||null,telefono:crG('cr-rt')||null,
+    linkedin:crG('cr-rl')||null,ultimo_contatto:crG('cr-ru')||null,canale,note:crG('cr-rno')||null};
+  if(!row.nome){toast('Scrivi il nome','warn');return}
+  await crSaveRow('crm_referenti',id,row,id?'Persona aggiornata':'Persona aggiunta');
+}
+async function crRefDel(id){const r=crR(id);if(r)await crDelRow('crm_referenti',id,r.nome)}
+
+function crPrevForm(id,azId){
+  if(!ag.me){toast('Account non collegato alla squadra','warn');return}
+  const p=id?cr.prev.find(x=>x.id===id):null;cr.edit=id||null;
+  const v=k=>escAttr(p?(p[k]??''):'');const sel=p?(p.aziende||[])[0]:azId;
+  modal(`<div class="modal" role="dialog" aria-modal="true" onclick="event.stopPropagation()">
+    <div class="modal-h"><h3>${p?'Preventivo':'Nuovo preventivo'}</h3>${crX()}</div>
+    <form onsubmit="crPrevSave(event)" autocomplete="off"><div class="modal-b" style="display:flex;flex-direction:column;gap:14px">
+      <div class="form-row"><label for="cr-vn">Nome del preventivo</label><input id="cr-vn" required maxlength="300" value="${v('nome')}" placeholder="Per esempio: Preventivo gestionale magazzino"></div>
+      <div class="li-grid">
+        <div class="form-row"><label for="cr-va">Azienda</label><select id="cr-va">${crAzOptions(sel,'Nessuna')}</select></div>
+        <div class="form-row"><label for="cr-vs">Stato</label><select id="cr-vs">${Object.keys(CR_PST).map(k=>`<option value="${k}" ${(p?p.stato:'da_preparare')===k?'selected':''}>${CR_PST[k].l}</option>`).join('')}</select></div>
+        <div class="form-row"><label for="cr-vi">Importo (€, senza IVA)</label><input id="cr-vi" type="number" step="0.01" min="0" value="${v('importo')}"></div>
+        <div class="form-row"><label for="cr-vd">Inviato il</label><input id="cr-vd" type="date" value="${v('inviato_il')}"></div>
+      </div>
+      <div class="form-row"><label for="cr-vu">Link al documento</label><input id="cr-vu" type="url" maxlength="1000" value="${v('documento')}" placeholder="https://docs.google.com/…"></div>
+      <div class="form-row"><label for="cr-vno">Note</label><textarea id="cr-vno" rows="3" maxlength="5000">${esc(p?p.note||'':'')}</textarea></div>
+    </div>${crFoot(p?`crPrevDel(${p.id})`:'',!p)}</form></div>`);
+  setTimeout(()=>{if(!p)document.getElementById('cr-vn')?.focus()},50);
+}
+async function crPrevSave(ev){
+  ev.preventDefault();const id=cr.edit,old=id?cr.prev.find(x=>x.id===id):null;
+  const imp=crG('cr-vi');const st=crG('cr-vs')||'da_preparare';
+  const row={nome:crG('cr-vn'),aziende:crAzArr(old?old.aziende:[],+crG('cr-va')||null),stato:st,importo:imp===''?null:Number(imp),
+    inviato_il:crG('cr-vd')||(st==='inviato'&&!(old&&old.inviato_il)?liToday():null),documento:crG('cr-vu')||null,note:crG('cr-vno')||null};
+  if(!row.nome){toast('Scrivi il nome del preventivo','warn');return}
+  await crSaveRow('crm_preventivi',id,row,id?'Preventivo aggiornato':'Preventivo aggiunto');
+}
+async function crPrevDel(id){const p=cr.prev.find(x=>x.id===id);if(p)await crDelRow('crm_preventivi',id,p.nome)}
+
+function crIncView(id){
+  const i=cr.inc.find(x=>x.id===id);if(!i)return;
+  const who=(i.persone||[]).map(agPerson).filter(Boolean);
+  const ext=(i.referenti||[]).map(crR).filter(Boolean);
+  modal(`<div class="modal" role="dialog" aria-modal="true" onclick="event.stopPropagation()">
+    <div class="modal-h"><h3>${esc(i.titolo)}</h3>${crX()}</div>
+    <div class="modal-b cr-iv">
+      <div class="pj-facts">
+        <div class="pj-fact"><small>Quando</small><div>${i.data?esc(crWhen(i.data)):'Senza data'}</div></div>
+        <div class="pj-fact"><small>Azienda</small><div>${crAzLinks(i.aziende).replace(/crOpen\(/g,'closeModal();crOpen(')}</div></div>
+        ${who.length?`<div class="pj-fact"><small>Per Flowline</small><div>${who.map(p=>`${agAv(p.id,true)}<span>${esc(p.nome)}</span>`).join(' ')}</div></div>`:''}
+        ${ext.length?`<div class="pj-fact"><small>Per l'azienda</small><div>${ext.map(r=>esc(r.nome)).join(', ')}</div></div>`:''}
+      </div>
+      ${i.verbale?`<div class="cr-note"><small>Verbale</small><p>${esc(i.verbale)}</p></div>`:'<p class="pj-none">Nessun verbale.</p>'}
+      ${i.prossimi_passi?`<div class="cr-note"><small>Prossimi passi</small><p>${esc(i.prossimi_passi)}</p></div>`:''}
+    </div>
+    <div class="modal-f"><button type="button" class="btn" onclick="closeModal()">Chiudi</button><button type="button" class="btn primary" onclick="crIncForm(${i.id})">${PJ_I.edit}Modifica</button></div></div>`);
+}
+function crIncForm(id,azId){
+  if(!ag.me){toast('Account non collegato alla squadra','warn');return}
+  const i=id?cr.inc.find(x=>x.id===id):null;cr.edit=id||null;
+  const sel=i?(i.aziende||[])[0]:azId;
+  const when=i&&i.data?agDtl(i.data):'';
+  const pers=i?i.persone||[]:[ag.me.id];
+  modal(`<div class="modal" role="dialog" aria-modal="true" onclick="event.stopPropagation()">
+    <div class="modal-h"><h3>${i?'Incontro':'Nuovo incontro'}</h3>${crX()}</div>
+    <form onsubmit="crIncSave(event)" autocomplete="off"><div class="modal-b" style="display:flex;flex-direction:column;gap:14px">
+      <div class="li-grid">
+        <div class="form-row"><label for="cr-it">Titolo</label><input id="cr-it" required maxlength="300" value="${escAttr(i?i.titolo:'')}" placeholder="Per esempio: Primo incontro" list="cr-dli">${crDl('cr-dli',['Primo incontro','Secondo incontro','Terzo incontro','Dimostrazione demo','Incontro di allineamento','Sopralluogo','Call conoscitiva'])}</div>
+        <div class="form-row"><label for="cr-id">Quando</label><input id="cr-id" type="datetime-local" value="${escAttr(when)}"></div>
+      </div>
+      <div class="form-row"><label for="cr-ia">Azienda</label><select id="cr-ia" onchange="crIncRefs(+this.value)">${crAzOptions(sel,'Nessuna')}</select></div>
+      <div class="form-row"><span class="lbl-s">Per Flowline</span><div class="pw-chips" style="margin:0">${ag.team.map(t=>`<label class="cr-ck"><input type="checkbox" name="cr-ip" value="${t.id}" ${pers.includes(t.id)?'checked':''}> ${agAv(t.id,true)} ${esc(t.nome)}</label>`).join('')}</div></div>
+      <div class="form-row"><span class="lbl-s">Per l'azienda</span><div class="pw-chips" style="margin:0" id="cr-irefs">${crIncRefsHtml(sel,i?i.referenti||[]:[])}</div></div>
+      <div class="form-row"><label for="cr-iv">Verbale</label><textarea id="cr-iv" rows="7" maxlength="20000" placeholder="Di cosa si è parlato, cosa hanno chiesto, cosa abbiamo promesso">${esc(i?i.verbale||'':'')}</textarea></div>
+      <div class="form-row"><label for="cr-ins">Prossimi passi</label><textarea id="cr-ins" rows="3" maxlength="5000">${esc(i?i.prossimi_passi||'':'')}</textarea></div>
+    </div>${crFoot(i?`crIncDel(${i.id})`:'',!i)}</form></div>`);
+  setTimeout(()=>{if(!i)document.getElementById('cr-it')?.focus()},50);
+}
+function crIncRefsHtml(azId,sel){
+  const refs=azId?crOf(cr.ref,azId):[];
+  const extra=(sel||[]).map(crR).filter(r=>r&&!refs.includes(r));
+  const all=[...refs,...extra];
+  return all.length?all.map(r=>`<label class="cr-ck"><input type="checkbox" name="cr-ir" value="${r.id}" ${(sel||[]).includes(r.id)?'checked':''}> ${esc(r.nome)}</label>`).join(''):'<span class="pw-none">Nessuna persona per questa azienda</span>';
+}
+function crIncRefs(azId){const box=document.getElementById('cr-irefs');if(!box)return;const keep=[...box.querySelectorAll('input:checked')].map(x=>+x.value);box.innerHTML=crIncRefsHtml(azId,keep)}
+async function crIncSave(ev){
+  ev.preventDefault();const id=cr.edit,old=id?cr.inc.find(x=>x.id===id):null;
+  const d=crG('cr-id');
+  const row={titolo:crG('cr-it'),data:d?new Date(d).toISOString():null,aziende:crAzArr(old?old.aziende:[],+crG('cr-ia')||null),
+    persone:[...document.querySelectorAll('input[name="cr-ip"]:checked')].map(x=>x.value),
+    referenti:[...document.querySelectorAll('input[name="cr-ir"]:checked')].map(x=>+x.value),
+    verbale:crG('cr-iv')||null,prossimi_passi:crG('cr-ins')||null};
+  if(!row.titolo){toast('Scrivi un titolo','warn');return}
+  await crSaveRow('crm_incontri',id,row,id?'Incontro aggiornato':'Incontro aggiunto');
+}
+async function crIncDel(id){const i=cr.inc.find(x=>x.id===id);if(i)await crDelRow('crm_incontri',id,i.titolo)}
+
+function crDocForm(id,azId){
+  if(!ag.me){toast('Account non collegato alla squadra','warn');return}
+  const d=id?cr.doc.find(x=>x.id===id):null;cr.edit=id||null;
+  const sel=d?(d.aziende||[])[0]:azId;
+  const prj=(pj.pr||[]).slice().sort((a,b)=>(b.azienda_id===sel)-(a.azienda_id===sel)||a.nome.localeCompare(b.nome,'it'));
+  modal(`<div class="modal" role="dialog" aria-modal="true" onclick="event.stopPropagation()">
+    <div class="modal-h"><h3>${d?'Documento':'Nuovo documento'}</h3>${crX()}</div>
+    <form onsubmit="crDocSave(event)" autocomplete="off"><div class="modal-b" style="display:flex;flex-direction:column;gap:14px">
+      <div class="form-row"><label for="cr-dn">Nome</label><input id="cr-dn" required maxlength="300" value="${escAttr(d?d.nome:'')}"></div>
+      <div class="form-row"><label for="cr-du">Link (Drive o altro)</label><input id="cr-du" type="url" maxlength="1000" value="${escAttr(d?d.url||'':'')}" placeholder="https://drive.google.com/…"></div>
+      <div class="li-grid">
+        <div class="form-row"><label for="cr-da">Azienda</label><select id="cr-da">${crAzOptions(sel,'Nessuna')}</select></div>
+        <div class="form-row"><label for="cr-dd">Data</label><input id="cr-dd" type="date" value="${escAttr(d?d.data||'':'')}"></div>
+      </div>
+      <div class="form-row"><label for="cr-dp">Progetto</label><select id="cr-dp"><option value="">Nessuno</option>${prj.map(p=>`<option value="${p.id}" ${d&&d.progetto_id===p.id?'selected':''}>${esc(p.nome)}</option>`).join('')}</select></div>
+    </div>${crFoot(d?`crDocDel(${d.id})`:'',!d)}</form></div>`);
+  setTimeout(()=>{if(!d)document.getElementById('cr-dn')?.focus()},50);
+}
+async function crDocSave(ev){
+  ev.preventDefault();const id=cr.edit,old=id?cr.doc.find(x=>x.id===id):null;
+  const row={nome:crG('cr-dn'),url:crG('cr-du')||null,aziende:crAzArr(old?old.aziende:[],+crG('cr-da')||null),data:crG('cr-dd')||null,progetto_id:+crG('cr-dp')||null};
+  if(!row.nome){toast('Scrivi il nome del documento','warn');return}
+  await crSaveRow('crm_documenti',id,row,id?'Documento aggiornato':'Documento aggiunto');
+}
+async function crDocDel(id){const d=cr.doc.find(x=>x.id===id);if(d)await crDelRow('crm_documenti',id,d.nome)}
+
+/* =======================================================
+   RICERCA GENERALE — tasto «Cerca» in alto, Ctrl/⌘+K oppure «/»
+   Cerca tra pagine della Suite, aziende e persone del CRM, progetti, attività, preventivi, incontri,
+   comunicazioni della Bacheca, eventi del Calendario, contatti LinkedIn e di Outbound.
+   Lavora sui dati già caricati nel browser; all'apertura carica quelli che mancano.
+   ======================================================= */
+const gs={open:false,q:'',sel:0,items:[],ret:null};
+const GS_GROUPS=[
+  ['azioni','Azioni'],['pagine','Pagine'],['aziende','Aziende'],['progetti','Progetti'],['attivita','Attività'],['persone','Persone'],
+  ['preventivi','Preventivi'],['incontri','Incontri'],['eventi','Calendario'],['bacheca','Bacheca'],['linkedin','Contatti LinkedIn'],
+  ['outbound','Contatti Outbound'],['elenco','Elenchi']];
+const GS_MAX={azioni:3,pagine:5,aziende:6,progetti:5,attivita:6,persone:5,preventivi:4,incontri:4,eventi:4,bacheca:3,linkedin:4,outbound:4,elenco:3};
+const GS_I={
+  search:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>',
+  page:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
+  plus:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>'
+};
+{const k=document.getElementById('gsKbd');if(k)k.textContent=/Mac|iPhone|iPad/.test(navigator.platform||navigator.userAgent||'')?'⌘K':'Ctrl K'}
+function gsIsMac(){return /Mac|iPhone|iPad/.test(navigator.platform||navigator.userAgent||'')}
+function gsKeyHint(){return gsIsMac()?'⌘K':'Ctrl K'}
+// tutte le voci in cui si può cercare
+function gsCandidates(){
+  const L=[],add=(g,t,s,run,extra,ico)=>L.push({g,t:String(t||''),s:String(s||''),run,x:extra||'',ico});
+  const loggedIn=nl.session&&ag.me;
+  // azioni
+  if(loggedIn){
+    add('azioni','Nuova attività','Progetti',()=>{pjGoTab('mie');setTimeout(()=>pjTaskForm(null),250)},'aggiungi task crea attivita',GS_I.plus);
+    add('azioni','Nuova azienda','CRM',()=>{crGoTab('aziende');setTimeout(()=>crAzForm(),250)},'aggiungi cliente crea azienda crm',GS_I.plus);
+    add('azioni','Nuovo incontro','CRM',()=>{crGoTab('incontri');setTimeout(()=>crIncForm(),250)},'aggiungi riunione call verbale',GS_I.plus);
+    add('azioni','Nuova comunicazione in Bacheca','Home',()=>{go('home');setTimeout(()=>hmPostForm(),250)},'aggiungi annuncio bacheca post',GS_I.plus);
+    add('azioni','Nuovo evento in Calendario','Calendario',()=>{go('agenda');setTimeout(()=>agOpen(null),250)},'aggiungi call appuntamento evento',GS_I.plus);
+  }
+  // pagine: tutte le voci del menu
+  add('pagine','Home','Bacheca, messaggi, riepilogo',()=>goSection('home'),'',GS_I.page);
+  SECTIONS.forEach(sec=>{
+    if(sec.id==='home')return;
+    areaMods(sec.id).forEach(mod=>{
+      let pages=[];try{pages=navPages(mod)}catch(e){}
+      const where=AREA_NAME[sec.id]+(SEC_NAME[mod]&&SEC_NAME[mod]!==AREA_NAME[sec.id]?' › '+SEC_NAME[mod]:'');
+      if(!pages.length)add('pagine',SEC_NAME[mod]||sec.label,AREA_NAME[sec.id],()=>goSection(sec.id),(MOD_INFO[mod]||{}).desc||'',GS_I.page);
+      pages.forEach((p,pi)=>add('pagine',p.label,where,()=>{try{(new Function(p.click))()}catch(e){goSection(sec.id)}},((MOD_INFO[mod]||{}).desc||'')+' '+(SEC_NAME[mod]||''),GS_I.page));
+      if(pages.length)L[L.length-pages.length].first=true;
+    });
+  });
+  if(!loggedIn)return L;
+  // CRM
+  if(cr.loaded&&!cr.missing){
+    cr.az.forEach(a=>add('aziende',a.nome,[CR_ST[a.stato]?CR_ST[a.stato].l:'',a.settore,a.citta].filter(Boolean).join(' · '),()=>crOpen(a.id),[a.email,a.provenienza,a.note,a.primo_contatto,a.fatturazione].join(' ')));
+    cr.ref.forEach(r=>{const az=crAzNames(r.aziende);add('persone',r.nome,[r.ruolo,az.map(a=>a.nome).join(', ')].filter(Boolean).join(' · '),()=>{if(az[0])crOpen(az[0].id);else crGoTab('persone');setTimeout(()=>crRefForm(r.id),200)},[r.email,r.telefono,r.note].join(' '))});
+    cr.prev.forEach(p=>{const az=crAzNames(p.aziende);add('preventivi',p.nome,[CR_PST[p.stato]?CR_PST[p.stato].l:'',p.importo!=null?crEuro(p.importo):'',az.map(a=>a.nome).join(', ')].filter(Boolean).join(' · '),()=>{if(az[0])crOpen(az[0].id);else crGoTab('preventivi');setTimeout(()=>crPrevForm(p.id),200)},az.map(a=>a.nome).join(' ')+' '+(p.note||''))});
+    cr.inc.forEach(i=>{const az=crAzNames(i.aziende);add('incontri',(az[0]?az[0].nome+' — ':'')+i.titolo,[i.data?crWhen(i.data):'senza data'].join(''),()=>{if(az[0])crOpen(az[0].id);else crGoTab('incontri');setTimeout(()=>crIncView(i.id),200)},[i.verbale,i.prossimi_passi].join(' '))});
+    cr.el.forEach(e=>add('elenco',crTidy(e.nome),[e.citta?crTidy(e.citta):'',e.lista].filter(Boolean).join(' · '),()=>{cr.elQ=crTidy(e.nome);cr.elShow='tutte';crGoTab('elenchi')},e.descrizione));
+  }
+  // Progetti e attività
+  if(pj.loaded&&!pj.missing){
+    pj.pr.forEach(p=>add('progetti',p.nome,[p.cliente,PJ_ST[p.stato]?PJ_ST[p.stato].l:''].filter(Boolean).join(' · '),()=>pjOpen(p.id),p.note));
+    pj.att.forEach(a=>{const p=pjP(a.progetto_id);add('attivita',a.titolo,[p?p.nome:'',PJ_TS[a.stato]?PJ_TS[a.stato].l:'',(a.persone||[]).map(u=>(agPerson(u)||{}).nome).filter(Boolean).join(', ')].filter(Boolean).join(' · '),()=>pjOpenTask(a.id),a.note,null,a.stato==='fatto')});
+  }
+  // Bacheca, Calendario, LinkedIn, Outbound
+  (hm.posts||[]).forEach(p=>add('bacheca',p.titolo||String(p.testo||'').slice(0,80),[(agPerson(p.autore_id)||{}).nome,hmWhen(p.created_at)].filter(Boolean).join(' · '),()=>{hm.openPost=p.id;go('home');setTimeout(()=>document.querySelector('.hm-board')?.scrollIntoView({behavior:'smooth',block:'start'}),300)},p.testo));
+  (ag.ev||[]).forEach(e=>add('eventi',e.titolo||'Evento',e.inizio?crWhen(e.inizio):'',()=>{agShowEvent(e.id);setTimeout(()=>agOpen(e.id),250)},[e.luogo,e.note,e.descrizione].join(' ')));
+  if(li.loaded&&!li.missing)li.rows.forEach(r=>add('linkedin',r.nome||r.azienda,[r.azienda,r.ruolo,LI_ST[r.stato]?LI_ST[r.stato].l:''].filter(Boolean).join(' · '),()=>{li.q=r.nome||r.azienda||'';li.stato='tutti';go('linkedin')},[r.email,r.note].join(' ')));
+  (state.contacts||[]).forEach(c=>add('outbound',c.azienda||c.email,[c.referente||c.nome,c.email,c.sede].filter(Boolean).join(' · '),()=>{go('contatti');setTimeout(()=>openContact(c.id),150)},''));
+  return L;
+}
+// punteggio: meglio se il titolo inizia con la ricerca, poi se una parola del titolo inizia così, poi se la contiene
+function gsScore(it,words){
+  const t=crNorm(it.t),all=t+' '+crNorm(it.s)+' '+crNorm(it.x);
+  if(!words.every(w=>all.includes(w)))return -1;
+  const q=words.join(' ');let s=0;
+  if(t===q)s+=100;else if(t.startsWith(q))s+=60;else if(t.split(/[\s'’(.\-/]+/).some(p=>p.startsWith(words[0])))s+=35;else if(t.includes(words[0]))s+=20;
+  s+=words.filter(w=>t.includes(w)).length*5;
+  if(it.done)s-=15;
+  return s;
+}
+function gsSearch(q){
+  const words=crNorm(q).split(/\s+/).filter(Boolean);
+  const C=gsCandidates();
+  if(!words.length)return C.filter(it=>it.g==='pagine'&&(it.first||it.t==='Home'));
+  const by={};
+  C.forEach(it=>{const sc=gsScore(it,words);if(sc>=0)(by[it.g]=by[it.g]||[]).push(Object.assign(it,{sc}))});
+  const out=[];
+  GS_GROUPS.forEach(([g])=>{if(by[g])out.push(...by[g].sort((a,b)=>b.sc-a.sc).slice(0,GS_MAX[g]))});
+  // le azioni compaiono solo se si cercano parole come «nuovo», «aggiungi»
+  return out.filter(it=>it.g!=='azioni'||/^(nuov|aggiung|crea)/.test(words[0]));
+}
+function gsEnsureData(){
+  if(!nl.session||!ag.me)return;
+  if(!pj.loaded&&!pj.loading)pjLoad({silent:true}).then(()=>gs.open&&gsPaint());
+  if(!cr.loaded&&!cr.loading)crLoad({silent:true}).then(()=>gs.open&&gsPaint());
+  if(!li.loaded&&!li.loading)liLoad({silent:true}).then(()=>gs.open&&gsPaint());
+}
+function gsOpen(){
+  let root=document.getElementById('gsRoot');
+  if(!root){root=document.createElement('div');root.id='gsRoot';document.body.appendChild(root)}
+  gs.ret=document.activeElement;gs.open=true;gs.q='';gs.sel=0;closeRail&&closeRail();
+  root.innerHTML=`<div class="gs-ov" onclick="if(event.target===this)gsClose()">
+    <div class="gs-box" role="dialog" aria-modal="true" aria-label="Cerca nella Suite">
+      <div class="gs-in">${GS_I.search}<input id="gsQ" type="text" placeholder="Cerca pagine, aziende, persone, progetti, attività…" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="true" aria-controls="gsList" aria-autocomplete="list" oninput="gs.q=this.value;gs.sel=0;gsPaint()" onkeydown="gsKey(event)"><kbd onclick="gsClose()" title="Chiudi">Esc</kbd></div>
+      <div class="gs-list" id="gsList" role="listbox"></div>
+      <div class="gs-foot"><span><kbd>↑</kbd><kbd>↓</kbd> per muoverti</span><span><kbd>Invio</kbd> per aprire</span><span><kbd>${gsKeyHint()}</kbd> per aprire la ricerca da ogni pagina</span></div>
+    </div></div>`;
+  document.body.classList.add('gs-on');
+  gsEnsureData();gsPaint();
+  setTimeout(()=>document.getElementById('gsQ')?.focus(),10);
+}
+function gsClose(){
+  gs.open=false;const root=document.getElementById('gsRoot');if(root)root.innerHTML='';document.body.classList.remove('gs-on');
+  if(gs.ret&&gs.ret.focus&&document.contains(gs.ret))try{gs.ret.focus()}catch(_){}
+}
+function gsHl(text,q){
+  const t=String(text||''),words=crNorm(q).split(/\s+/).filter(Boolean);if(!words.length)return esc(t);
+  const n=crNorm(t);let marks=new Array(t.length).fill(false);
+  words.forEach(w=>{let i=n.indexOf(w);while(i>=0){for(let k=i;k<i+w.length&&k<t.length;k++)marks[k]=true;i=n.indexOf(w,i+w.length)}});
+  let out='',on=false;for(let i=0;i<t.length;i++){if(marks[i]&&!on){out+='<mark>';on=true}if(!marks[i]&&on){out+='</mark>';on=false}out+=esc(t[i])}
+  return out+(on?'</mark>':'');
+}
+function gsPaint(){
+  const box=document.getElementById('gsList');if(!box)return;
+  gs.items=gsSearch(gs.q);
+  if(gs.sel>=gs.items.length)gs.sel=Math.max(0,gs.items.length-1);
+  if(!gs.items.length){
+    const loading=(nl.session&&ag.me)&&((!pj.loaded)||(!cr.loaded)||cr.loading||pj.loading);
+    box.innerHTML=`<p class="gs-none">${loading?'Carico i dati…':`Nessun risultato per «${esc(gs.q)}».`}</p>`;return;
+  }
+  let html='',last='';
+  gs.items.forEach((it,i)=>{
+    if(it.g!==last){last=it.g;html+=`<div class="gs-g" role="presentation">${esc((GS_GROUPS.find(g=>g[0]===it.g)||[0,''])[1])}${!gs.q.trim()&&it.g==='pagine'?' · scrivi per cercare ovunque':''}</div>`}
+    html+=`<div class="gs-it ${i===gs.sel?'on':''} ${it.done?'done':''}" role="option" id="gs-o${i}" aria-selected="${i===gs.sel}" onmousemove="gsHover(${i})" onclick="gsGo(${i})">
+      <span class="gs-ico gs-${it.g}">${it.ico||esc((it.t||'?').trim().charAt(0).toUpperCase())}</span>
+      <span class="gs-tx"><b>${gsHl(it.t,gs.q)}</b>${it.s?`<small>${gsHl(it.s,gs.q)}</small>`:''}</span>
+      ${i===gs.sel?'<span class="gs-enter" aria-hidden="true">↵</span>':''}
+    </div>`;
+  });
+  box.innerHTML=html;
+  const q=document.getElementById('gsQ');if(q)q.setAttribute('aria-activedescendant','gs-o'+gs.sel);
+  document.getElementById('gs-o'+gs.sel)?.scrollIntoView({block:'nearest'});
+}
+function gsHover(i){if(gs.sel===i)return;gs.sel=i;document.querySelectorAll('.gs-it').forEach((el,k)=>{el.classList.toggle('on',k===i);el.setAttribute('aria-selected',k===i)});const q=document.getElementById('gsQ');if(q)q.setAttribute('aria-activedescendant','gs-o'+i)}
+function gsKey(e){
+  if(e.key==='ArrowDown'){e.preventDefault();if(gs.items.length){gs.sel=(gs.sel+1)%gs.items.length;gsPaint()}}
+  else if(e.key==='ArrowUp'){e.preventDefault();if(gs.items.length){gs.sel=(gs.sel-1+gs.items.length)%gs.items.length;gsPaint()}}
+  else if(e.key==='Enter'){e.preventDefault();gsGo(gs.sel)}
+  else if(e.key==='Escape'){e.preventDefault();gsClose()}
+}
+function gsGo(i){const it=gs.items[i];if(!it)return;gs.ret=null;gsClose();closeModal();try{it.run()}catch(e){toast('Non riesco ad aprirlo: '+(e.message||e),'err')}}
+document.addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey)&&!e.altKey&&(e.key==='k'||e.key==='K')){e.preventDefault();gs.open?gsClose():gsOpen();return}
+  if(e.key==='/'&&!gs.open&&!e.ctrlKey&&!e.metaKey&&!(e.target&&e.target.matches&&e.target.matches('input,textarea,select,[contenteditable="true"]'))&&!document.getElementById('modalRoot')?.firstChild){e.preventDefault();gsOpen()}
+},true);
+
+/* =======================================================
    PROGETTI E ATTIVITÀ — al posto di Notion › Progetti › Project Tracker
    Database: progetti, attivita (migrazione 20261107100000_progetti_attivita.sql), stessi permessi per tutta la squadra.
    Semplice di proposito: 4 stati per le attività, 5 per i progetti, un solo «Urgente», cartella Drive per progetto.
@@ -7238,7 +8170,8 @@ async function pjLoad(opts={}){
   if(!nlSupa||!nl.session||pj.loading)return;
   pj.loading=true;if(state.view==='progetti'&&!opts.silent)render();
   try{
-    const a=await nlSupa.from('progetti').select(PJ_PCOLS).order('nome');
+    let a=await nlSupa.from('progetti').select(pj.noAz?PJ_PCOLS:PJ_PCOLS+',azienda_id').order('nome');
+    if(a.error&&!pj.noAz&&/azienda_id|42703/i.test((a.error.code||'')+' '+a.error.message)){pj.noAz=true;a=await nlSupa.from('progetti').select(PJ_PCOLS).order('nome')}
     if(a.error){
       if(/does not exist|schema cache|42P01|PGRST205/i.test((a.error.code||'')+' '+a.error.message)){pj.missing=true;pj.loaded=true;pj.pr=[];pj.att=[];return}
       throw a.error;
@@ -7415,7 +8348,8 @@ function pjViewList(){
     <p class="pj-hint">Avanzamento = attività fatte su totali, comprese quelle chiuse in Notion. «Priorità» segna i progetti urgenti.</p>`;
 }
 function pjViewProject(id){
-  const p=pjP(id);if(!p)return `<div class="empty"><h4>Progetto non trovato</h4><p>Forse è stato eliminato.</p><button class="btn" onclick="pjGoTab('progetti')">Tutti i progetti</button></div>`;
+  const p=pjP(id);
+  if(p&&p.azienda_id&&!cr.loaded&&!cr.loading)setTimeout(()=>crLoad({silent:true}),0);if(!p)return `<div class="empty"><h4>Progetto non trovato</h4><p>Forse è stato eliminato.</p><button class="btn" onclick="pjGoTab('progetti')">Tutti i progetti</button></div>`;
   const ts=pj.att.filter(a=>a.progetto_id===id),s=pjStats(p),pct=s.total?Math.round(s.done/s.total*100):0;
   const subs=Array.isArray(p.drive_cartelle)?p.drive_cartelle:[];
   const link=pjSafeUrl(p.link);
@@ -7432,7 +8366,7 @@ function pjViewProject(id){
       <button class="btn sm ${p.urgente?'danger pj-urg':''}" onclick="pjToggleUrg(${p.id})">${p.urgente?'Prioritario':'Segna prioritario'}</button>
     </div>
     <div class="pj-facts">
-      ${fact('Cliente',esc(p.cliente||'Interno'))}
+      ${fact('Cliente',p.azienda_id&&cr.loaded&&crA(p.azienda_id)?`<button class="pj-ptag cr-plink" onclick="crOpen(${p.azienda_id})" title="Apri l'azienda nel CRM">${esc(crA(p.azienda_id).nome)}</button>`:esc(p.cliente||'Interno'))}
       ${fact('Persone',`<button class="pj-ppl" onclick="pjProjForm(${p.id})" title="Cambia le persone">${people}</button>`)}
       ${p.inizio?fact('Inizio',esc(new Date(p.inizio+'T00:00:00').toLocaleDateString('it-IT',{day:'numeric',month:'short',year:'numeric'}))):''}
       <div class="pj-fact pj-links">${drive}${link?`<a class="btn sm ghost" href="${escAttr(link)}" target="_blank" rel="noopener noreferrer">${PJ_I.ext}${esc(link.replace(/^https?:\/\//,'').replace(/\/$/,'').slice(0,40))}</a>`:''}</div>
@@ -7462,10 +8396,10 @@ async function pjDone(id){
     pjUndoToast('Fatta: '+t,()=>pjPatchA(id,{stato:prev}));
   }
 }
-function pjUndoToast(msg,undo){
+function pjUndoToast(msg,undo,label){
   toast(msg,'ok');
   const box=document.querySelector('#toasts .toast:last-child');
-  if(box&&!box.querySelector('.pj-undo')){const b=document.createElement('button');b.className='pj-undo';b.textContent='Annulla';b.onclick=()=>{undo();b.remove()};box.appendChild(b)}
+  if(box&&!box.querySelector('.pj-undo')){const b=document.createElement('button');b.className='pj-undo';b.textContent=label||'Annulla';b.onclick=()=>{undo();b.remove()};box.appendChild(b)}
 }
 function pjSetTask(id,st){const a=pjA(id);if(!a||a.stato===st)return;if(st==='fatto'){pjDone(id);return}
   pjPatchA(id,{stato:st},st==='standby'?'In stand-by':null)}
