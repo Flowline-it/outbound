@@ -3,8 +3,8 @@
 --  * Modifiche: un trigger su ogni tabella principale scrive chi ha fatto cosa (crea / modifica / elimina),
 --    con i campi cambiati (prima → dopo). Chi = la persona collegata (auth.uid()); se manca è un flusso
 --    o una funzione automatica. Un flusso può firmarsi con set_config('suite.flusso', 'Nome flusso', true).
---  * Esecuzioni: il flusso n8n «Suite: registro delle esecuzioni» legge ogni 15 minuti le esecuzioni dei
---    flussi della Suite e le passa a suite_registra_esecuzioni().
+--  * Esecuzioni: il flusso n8n «Suite: registro delle esecuzioni» (lun-ven ogni 3 ore, weekend ogni 12) legge le
+--    esecuzioni dei flussi della Suite e le passa a suite_registra_esecuzioni().
 --  * Un flusso può anche scrivere una riga a mano con suite_registra({flusso, titolo, testo, area, esito, link}).
 -- Il registro non blocca mai il salvataggio: se qualcosa va storto nel trigger, la modifica passa lo stesso.
 -- Si può rieseguire.
