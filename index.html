@@ -884,6 +884,9 @@ body.locked #gate{display:flex}
 .li-reply{grid-column:1/-1;font-size:13px;color:var(--muted);white-space:pre-wrap;word-break:break-word}.li-reply b{color:var(--text)}
 .li-n{opacity:.65;font-variant-numeric:tabular-nums;margin-left:2px}
 .li-sort{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.cr-in{margin-left:8px;height:22px;padding:0 9px;border-radius:var(--pill);background:var(--ok-soft);color:var(--ok);font-size:11.5px;font-weight:750;vertical-align:2px}
+.cr-in:hover{filter:brightness(.95)}
+.btn.busy{opacity:.6;pointer-events:none}
 .li-sort select{height:40px;border:0;border-radius:var(--pill);background:var(--surface);box-shadow:var(--card-shadow);padding:0 14px;font:inherit;color:var(--text)}
 .li-total{font-size:13px;color:var(--muted);margin-left:auto}
 .li-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
@@ -1454,6 +1457,44 @@ tbody tr:hover{background:var(--surface-2)}
 .pj-tools .pj-who{margin:0}
 .pj-tools .spacer{flex:1}
 .pj-tools .pj-sel{height:34px;background:var(--surface);box-shadow:var(--card-shadow);max-width:220px}
+.rg-tile{padding:14px 18px 18px}
+.rg-day{font-size:13px;font-weight:800;letter-spacing:.01em;color:var(--muted);margin:16px 6px 8px;text-transform:none}
+.rg-day:first-child{margin-top:4px}
+.rg-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+.rg-row{display:grid;grid-template-columns:44px 30px minmax(0,1fr);gap:10px;align-items:start;padding:9px 12px;border-radius:16px;background:var(--surface-2);transition:background .6s var(--ease)}
+.rg-row.fresh{background:var(--accent-soft)}
+.rg-row.del .rg-tit{text-decoration:line-through;text-decoration-color:var(--border-strong)}
+.rg-row.err{box-shadow:inset 3px 0 0 var(--late)}
+.rg-time{font-size:12.5px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums;padding-top:5px}
+.rg-who .ag-av{width:28px;height:28px;font-size:12px}
+.rg-ic{width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:var(--surface);color:var(--muted);box-shadow:inset 0 0 0 1.5px var(--border)}
+.rg-ic svg{width:15px;height:15px}
+.rg-ic.flow{color:var(--accent)}
+.rg-ic.claude{color:#C15F3C}
+.rg-main{min-width:0}
+.rg-line{font-size:14px;line-height:1.45;padding-top:3px;display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px}
+.rg-line .chip{height:22px;font-size:11.5px;padding:0 9px 0 8px}
+.rg-tit{font-weight:650;text-align:left;color:var(--text)}
+button.rg-tit:hover{color:var(--accent);text-decoration:underline}
+.rg-tit.off{color:var(--muted)}
+.rg-sub{display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:2px;font-size:12.5px;color:var(--muted)}
+.rg-ctx{font-weight:700}
+.rg-n8n{display:inline-flex;align-items:center;gap:4px;color:var(--accent)}.rg-n8n .ico{width:12px;height:12px}
+.rg-txt{flex-basis:100%}
+.rg-chs{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.rg-ch{font-size:12px;background:var(--surface);border-radius:var(--pill);padding:3px 10px;color:var(--muted)}
+.rg-ch b{color:var(--text);font-weight:700;margin-right:3px}
+.rg-flows{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+.rg-flow{display:grid;grid-template-columns:30px minmax(0,1fr) auto auto;gap:12px;align-items:center;padding:10px 12px;border-radius:16px;background:var(--surface-2)}
+.rg-flow.bad{box-shadow:inset 3px 0 0 var(--late)}
+.rg-fmain b{display:block;font-weight:700;font-size:14.5px}
+.rg-fmain small{display:block;color:var(--muted);font-size:12.5px}
+.rg-fn{font-size:12.5px;font-weight:650;color:var(--muted);white-space:nowrap}
+@media (max-width:700px){.rg-row{grid-template-columns:38px minmax(0,1fr)}.rg-who{display:none}.rg-flow{grid-template-columns:minmax(0,1fr) auto}.rg-flow .rg-ic,.rg-flow .rg-fn{display:none}}
+.pj-dtools{margin-top:-4px}
+.pj-dlab{font-size:12.5px;font-weight:700;color:var(--muted);margin-right:2px}
+.pj-tools .pj-dsel.on{background:var(--text);color:var(--bg)}
+.pj-cr{color:var(--muted)}
 .pj-search{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 12px;border-radius:var(--pill);background:var(--surface);box-shadow:var(--card-shadow);color:var(--faint)}
 .pj-search .ico{width:15px;height:15px}
 .pj-search input{border:0;background:transparent;outline:none;width:160px;font-size:13.5px;color:var(--text);height:100%}
@@ -2642,6 +2683,7 @@ function contactFromRow(r){
   c.drafts=d.drafts||{}; c.history=d.history||[];
   c.disiscrizione=d.disiscrizione||state.templates.disiscrizione; c.fermato=!!d.fermato; c.n=d.n||'';
   c.reply=d.reply||null; c.replySeen=d.replySeen!==false;
+  c.crmId=r.crm_azienda_id||null;   // azienda del CRM collegata (la scrive solo crm_porta_contatto)
   return c;
 }
 // mappa contatto app -> RIGA (colonne Supabase)
@@ -3080,12 +3122,12 @@ const SECTIONS=[
   {id:'impostazioni',label:'Impostazioni',icon:'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z'},
 ];
 // nomi dei moduli (una pagina dell'app = un modulo)
-const SEC_NAME={home:'Home',outbound:'Outbound',crm:'CRM',linkedin:'LinkedIn',newsletter:'Newsletter',richieste:'Richieste',contabilita:'Contabilità',agenda:'Calendario',progetti:'Progetti',password:'Password',impostazioni:'Impostazioni'};
+const SEC_NAME={home:'Home',outbound:'Outbound',crm:'CRM',linkedin:'LinkedIn',newsletter:'Newsletter',richieste:'Richieste',contabilita:'Contabilità',agenda:'Calendario',progetti:'Progetti',password:'Password',registro:'Registro',impostazioni:'Impostazioni'};
 // area del menu di ogni modulo
 const AREA_NAME={home:'Home',outbound:'Outbound',crm:'CRM',marketing:'Marketing',agenda:'Calendario',progetti:'Progetti',amministrazione:'Amministrazione',impostazioni:'Impostazioni'};
-const AREA_MODS={outbound:['outbound','linkedin'],marketing:['newsletter','richieste'],amministrazione:['contabilita','password']};
+const AREA_MODS={outbound:['outbound','linkedin'],marketing:['newsletter','richieste'],amministrazione:['contabilita','password','registro']};
 const NL_PAGES=[{tab:'campagne',label:'Campagne'},{tab:'iscritti',label:'Iscritti'}];
-function sectionOf(v){return v==='home'||v==='crm'||v==='linkedin'||v==='newsletter'||v==='richieste'||v==='contabilita'||v==='agenda'||v==='progetti'||v==='password'||v==='impostazioni'?v:'outbound'}
+function sectionOf(v){return v==='home'||v==='crm'||v==='linkedin'||v==='newsletter'||v==='richieste'||v==='contabilita'||v==='agenda'||v==='progetti'||v==='password'||v==='registro'||v==='impostazioni'?v:'outbound'}
 function areaOf(v){const m=sectionOf(v);for(const a in AREA_MODS)if(AREA_MODS[a].includes(m))return a;return m}
 function goSection(sec){
   if(sec===areaOf(state.view)){closeRail();return}
@@ -3114,7 +3156,7 @@ function renderNav(){
   // livello 1: aree, con un pallino se nell'altra area c'è qualcosa che aspetta
   const area=areaOf(state.view);
   const alertOut=late||todayN||newRep||ldBusy(), alertNl=!!nl.sending, alertRq=rq.loaded&&rqNew()>0, alertCt=ct.loaded&&!ct.missing&&ctPending().length>0, alertAg=ag.loaded&&!ag.missing&&agUnread()>0, alertHm=hm.loaded&&!hm.missing&&(hmUnreadMsgs()>0);
-  const AL={outbound:[alertOut,'ci sono attività in sospeso'],marketing:[alertNl||alertRq,alertRq?'ci sono richieste nuove':'una newsletter è in invio'],amministrazione:[alertCt,'ci sono movimenti da completare'],agenda:[alertAg,'ci sono notifiche da leggere'],home:[alertHm,'ci sono messaggi da leggere']};
+  const AL={outbound:[alertOut,'ci sono attività in sospeso'],marketing:[alertNl||alertRq,alertRq?'ci sono richieste nuove':'una newsletter è in invio'],amministrazione:[alertCt||rgErr24(),alertCt?'ci sono movimenti da completare':'un flusso ha dato errore nelle ultime 24 ore'],agenda:[alertAg,'ci sono notifiche da leggere'],home:[alertHm,'ci sono messaggi da leggere']};
   const sp=document.getElementById('spendPill');if(sp)sp.hidden=sec!=='outbound';
   document.getElementById('secSwitch').innerHTML=SECTIONS.map(x=>{
     const on=x.id===area, al=AL[x.id];
@@ -3143,6 +3185,7 @@ const MOD_INFO={
   richieste:{icon:'M22 12h-6l-2 3h-4l-2-3H2 M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z',desc:'Contatti arrivati da flowline.it'},
   contabilita:{icon:'M20 7H5a2 2 0 0 1 0-4h13v4 M3 5v14a2 2 0 0 0 2 2h15V7 M16 14h.01',desc:'Conti, movimenti e report'},
   password:{icon:'M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4',desc:'Credenziali della squadra'},
+  registro:{icon:'M12 8v4l3 2 M3.05 11a9 9 0 1 1 .5 4 M3 4v5h5',desc:'Chi ha cambiato cosa, ed esecuzioni dei flussi'},
   agenda:{icon:'M3 4h18v18H3z M16 2v4 M8 2v4 M3 10h18',desc:'Agenda condivisa'},
   progetti:{icon:'M9 11l3 3L22 4 M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11',desc:'Progetti e attività'},
   impostazioni:{icon:'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z',desc:'Profilo, collegamenti, invii'},
@@ -3161,6 +3204,7 @@ function navPages(mod){
   if(mod==='richieste')return [{label:'Dal sito',on:v==='richieste',click:"go('richieste')",badge:B(rq.loaded?rqNew():0)}];
   if(mod==='contabilita')return CT_TABS.map(pg=>({label:pg.label,on:v==='contabilita'&&ct.tab===pg.tab,click:`ctGoTab('${pg.tab}')`,badge:pg.tab==='movimenti'&&ct.loaded&&!ct.missing?B(ctPending().length):''}));
   if(mod==='password')return PW_TABS.map(pg=>({label:pg.label,on:v==='password'&&pw.tab===pg.tab,click:`pwGoTab('${pg.tab}')`}));
+  if(mod==='registro')return RG_TABS.map(pg=>({label:pg.label,on:v==='registro'&&rg.tab===pg.tab,click:`rgGoTab('${pg.tab}')`,badge:pg.tab==='esecuzioni'&&rgErr24()?B('errori','late'):''}));
   if(mod==='agenda')return AG_TABS.map(pg=>({label:pg.label,on:v==='agenda'&&ag.tab===pg.tab,click:`agGoTab('${pg.tab}')`,badge:pg.tab==='notifiche'&&ag.loaded?B(agUnread()):''}));
   if(mod==='progetti')return PJ_TABS.map(pg=>({label:pg.label,on:v==='progetti'&&pj.tab===pg.tab,click:`pjGoTab('${pg.tab}')`}));
   if(mod==='impostazioni')return ST_TABS.map(pg=>({label:pg.label,on:v==='impostazioni'&&st.tab===pg.tab,click:`stGoTab('${pg.tab}')`}));
@@ -3274,6 +3318,7 @@ function heroCopy(){
   if(state.view==='agenda') return agHeroCopy();
   if(state.view==='progetti') return pjHeroCopy();
   if(state.view==='password') return pwHeroCopy();
+  if(state.view==='registro') return rgHeroCopy();
   if(state.view==='impostazioni') return stHeroCopy();
   if(state.view==='lead') return ldHeroCopy();
   if(state.view==='stats') return obHeroCopy();
@@ -3297,6 +3342,7 @@ function v3Key(){
   if(v==='progetti')return v+'|'+pj.tab+'|'+(pj.open||'');
   if(v==='crm')return v+'|'+cr.tab+'|'+(cr.open||'');
   if(v==='password')return v+'|'+pw.tab;
+  if(v==='registro')return v+'|'+rg.tab;
   if(v==='impostazioni')return v+'|'+st.tab;
   if(v==='agenda')return v+'|'+ag.tab;
   if(v==='contabilita')return v+'|'+ct.tab;
@@ -3383,7 +3429,7 @@ function render(){
   document.getElementById('viewTitle').textContent=hc.t;
   const vl=document.getElementById('viewLede');if(vl)vl.textContent=hc.l;
   const vd=document.getElementById('viewDate');if(vd)vd.textContent=today().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
-  const pageName=state.view==='home'?'Home':state.view==='crm'?(cr.open&&crA(cr.open)?crA(cr.open).nome:(CR_TABS.find(x=>x.tab===cr.tab)||CR_TABS[0]).label):state.view==='impostazioni'?(ST_TABS.find(x=>x.tab===st.tab)||ST_TABS[0]).label:state.view==='progetti'?(pj.tab==='progetti'&&pj.open&&pjP(pj.open)?pjP(pj.open).nome:(PJ_TABS.find(x=>x.tab===pj.tab)||PJ_TABS[0]).label):state.view==='password'?(PW_TABS.find(x=>x.tab===pw.tab)||PW_TABS[0]).label:state.view==='agenda'?(AG_TABS.find(x=>x.tab===ag.tab)||AG_TABS[0]).label:state.view==='contabilita'?(CT_TABS.find(x=>x.tab===ct.tab)||CT_TABS[0]).label:state.view==='richieste'?'Richieste':state.view==='linkedin'?'LinkedIn':state.view==='newsletter'?(nl.tab==='iscritti'?'Iscritti':'Campagne'):({dashboard:'Dashboard',pianifica:'Pianificazione',coda:'Coda invio',contatti:'Contatti',calendario:'Piano invii',risposte:'Risposte',lead:'Ricerca lead',stats:'Statistiche'}[state.view]||'Dashboard');
+  const pageName=state.view==='home'?'Home':state.view==='crm'?(cr.open&&crA(cr.open)?crA(cr.open).nome:(CR_TABS.find(x=>x.tab===cr.tab)||CR_TABS[0]).label):state.view==='impostazioni'?(ST_TABS.find(x=>x.tab===st.tab)||ST_TABS[0]).label:state.view==='progetti'?(pj.tab==='progetti'&&pj.open&&pjP(pj.open)?pjP(pj.open).nome:(PJ_TABS.find(x=>x.tab===pj.tab)||PJ_TABS[0]).label):state.view==='password'?(PW_TABS.find(x=>x.tab===pw.tab)||PW_TABS[0]).label:state.view==='registro'?(RG_TABS.find(x=>x.tab===rg.tab)||RG_TABS[0]).label:state.view==='agenda'?(AG_TABS.find(x=>x.tab===ag.tab)||AG_TABS[0]).label:state.view==='contabilita'?(CT_TABS.find(x=>x.tab===ct.tab)||CT_TABS[0]).label:state.view==='richieste'?'Richieste':state.view==='linkedin'?'LinkedIn':state.view==='newsletter'?(nl.tab==='iscritti'?'Iscritti':'Campagne'):({dashboard:'Dashboard',pianifica:'Pianificazione',coda:'Coda invio',contatti:'Contatti',calendario:'Piano invii',risposte:'Risposte',lead:'Ricerca lead',stats:'Statistiche'}[state.view]||'Dashboard');
   const secName=SEC_NAME[sectionOf(state.view)], areaName=AREA_NAME[areaOf(state.view)];
   const crumbs=[areaName];if(secName!==areaName)crumbs.push(secName);if(pageName!==secName&&pageName!==areaName)crumbs.push(pageName);
   document.title=crumbs.slice().reverse().join(' · ')+' — FlowLine Suite';
@@ -3419,6 +3465,7 @@ function render(){
   else if(state.view==='agenda'){ ta.innerHTML=agTopActions(); }
   else if(state.view==='progetti'){ ta.innerHTML=pjTopActions(); }
   else if(state.view==='password'){ ta.innerHTML=pwTopActions(); }
+  else if(state.view==='registro'){ ta.innerHTML=rgTopActions(); }
   else if(state.view==='impostazioni'){ ta.innerHTML=''; }
   else if(state.view==='lead'){ ta.innerHTML=ldTopActions(); }
   else if(state.view==='stats'){ ta.innerHTML=`<button class="btn" onclick="obLoad(true)"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6 M1 20v-6h6 M3.51 9a9 9 0 0 1 14.85-3.36L23 10 M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg><span class="lbl">Aggiorna</span></button>`; }
@@ -3443,6 +3490,7 @@ function render(){
   else if(state.view==='agenda'){ if(!nl.inited) nlInit(); C.innerHTML=viewAgenda(); }
   else if(state.view==='progetti'){ if(!nl.inited) nlInit(); C.innerHTML=viewProgetti(); }
   else if(state.view==='password'){ if(!nl.inited) nlInit(); C.innerHTML=viewPassword(); }
+  else if(state.view==='registro'){ if(!nl.inited) nlInit(); C.innerHTML=viewRegistro(); }
   else if(state.view==='stats'){ C.innerHTML=viewStats(); }
   else if(state.view==='impostazioni'){ const keep=st.dirty&&C.dataset.st===st.tab?stSnap(C):null; C.innerHTML=viewImpostazioni(); if(keep)stRestore(C,keep); }
   C.dataset.st=state.view==='impostazioni'?st.tab:'';
@@ -3476,6 +3524,7 @@ function viewRisposte(){
       <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
         <a class="btn sm" href="${gmailLink(r)}" target="_blank" rel="noopener">Apri in Gmail</a>
         <button class="btn sm ghost" onclick="openContact('${c.id}')">Dettagli contatto</button>
+        ${isAuto?'':crPortaBtn('outbound',c.id,c.crmId,true)}
         ${isAuto?`<button class="btn sm ghost" onclick="markReply('${c.id}',true)">È una risposta vera</button>`
                 :`<button class="btn sm ghost" onclick="markReply('${c.id}',false)" title="Per esempio una risposta automatica: riprende la sequenza">Non è una risposta</button>`}
       </div></div>`;};
@@ -4167,7 +4216,7 @@ function openContact(id){
         <button class="btn sm" onclick="toggleReplied('${id}')">${c.haRisposto?'Segna non risposto':'Segna come risposto'}</button>
         <button class="btn sm" onclick="resetSeq('${id}')">Reset sequenza</button>
       </div>
-      <button class="btn primary" onclick="closeModal()">Chiudi</button>
+      <div style="display:flex;gap:8px">${crPortaBtn('outbound',id,c.crmId)}<button class="btn primary" onclick="closeModal()">Chiudi</button></div>
     </div>
   </div>`);
 }
@@ -4587,7 +4636,7 @@ function nlSleep(ms){return new Promise(r=>setTimeout(r,ms))}
 function nlActive(){return nl.subs.filter(s=>!s.unsubscribed_at)}
 
 /* ---- connessione e accesso (condiviso con Ricerca lead) ---- */
-function nlAuthView(){return state.view==='home'||state.view==='crm'||state.view==='newsletter'||state.view==='lead'||state.view==='richieste'||state.view==='linkedin'||state.view==='contabilita'||state.view==='agenda'||state.view==='progetti'||state.view==='password'}
+function nlAuthView(){return state.view==='home'||state.view==='crm'||state.view==='newsletter'||state.view==='lead'||state.view==='richieste'||state.view==='linkedin'||state.view==='contabilita'||state.view==='agenda'||state.view==='progetti'||state.view==='password'||state.view==='registro'}
 /* ---- accesso unico alla suite ---- */
 function gateBrand(){return `<div class="gate-brand"><div class="logo" aria-hidden="true">${document.querySelector('.brand .logo')?.innerHTML||''}</div><h1>FlowLine <span class="suite">Suite</span></h1></div>`}
 function gateMode(){
@@ -4628,7 +4677,7 @@ async function nlInit(){
     if(!nl.ready)return;                       // la sessione iniziale la gestisce getSession qui sotto
     const was=nl.session&&nl.session.user&&nl.session.user.id;
     nl.session=session;
-    if(ev==='SIGNED_OUT'){nl.editor=null;nl.loaded=false;nl.subs=[];nl.camps=[];nl.edit=null;ld.loaded=false;ld.searches=[];ld.leads=[];ld.sel.clear();clearTimeout(ld.pollT);rq.loaded=false;rq.rows=[];clearTimeout(rq.pollT);ct.loaded=false;ct.conti=[];ct.mov=[];ct.missing=false;agStop();hmStop();onStop();pwStop();pjStop();liStop();crStop();nl.editor=null;render();}
+    if(ev==='SIGNED_OUT'){nl.editor=null;nl.loaded=false;nl.subs=[];nl.camps=[];nl.edit=null;ld.loaded=false;ld.searches=[];ld.leads=[];ld.sel.clear();clearTimeout(ld.pollT);rq.loaded=false;rq.rows=[];clearTimeout(rq.pollT);ct.loaded=false;ct.conti=[];ct.mov=[];ct.missing=false;agStop();hmStop();onStop();pwStop();pjStop();liStop();crStop();rgStop();nl.editor=null;render();}
     else if(ev==='SIGNED_IN' && session && was!==session.user.id){nl.editor=null;render();setTimeout(nlAfterLogin,0);}
   });
   const {data}=await nlSupa.auth.getSession();
@@ -7101,6 +7150,7 @@ const LI_ST={
   esito_negativo:{l:'Esito negativo',c:'stop'}
 };
 const LI_COLS='id,created_at,updated_at,nome,azienda,ruolo,competenza_di,stato,url_profilo,email,invito_il,messaggio_il,messaggio,risposta,descrizione,note,creato_da';
+const LI_COLS_CRM=LI_COLS+',crm_azienda_id';   // dopo la migrazione 20261116100500_crm_da_contatti.sql
 const li={rows:[],loaded:false,loading:false,missing:false,q:'',stato:'tutti',who:'tutti',sort:'recenti',limit:60,
   ch:null,loadT:null,pollT:null,editing:null};
 const LI_I={
@@ -7112,6 +7162,32 @@ const LI_I={
   user:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2 M9 7a4 4 0 1 0 0 8 4 4 0 0 0 0-8z M23 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75"/></svg>'
 };
 const liPl=(k,s,p)=>k===1?s:p;
+
+/* ---- «Porta nel CRM»: da un contatto di Outbound o di LinkedIn all'azienda del CRM ----
+   Lo fa il database (crm_porta_contatto): trova l'azienda se c'è già (email, dominio, sito o nome), altrimenti la crea,
+   aggiunge la persona come referente e scrive nella cronologia dell'azienda. Da quel momento i flussi Gmail, Drive
+   e Calendario riconoscono l'azienda e la tengono aggiornata da soli. */
+const CRP_I='<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h18v14H3z M8.5 11.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4z M5 16.5a3.5 3.5 0 0 1 7 0 M15 9h4 M17 7v4"/></svg>';
+function crPortaBtn(fonte,id,azId,sm){
+  const cls='btn '+(sm?'sm ghost':'sm');
+  if(azId)return `<button type="button" class="${cls}" onclick="closeModal();crOpen(${+azId})">${CRP_I}Apri nel CRM</button>`;
+  return `<button type="button" class="${cls}" onclick="crPorta('${fonte}','${escAttr(String(id))}',this)" title="Crea l'azienda nel CRM (o la collega se c'è già) con i dati del contatto">${CRP_I}Porta nel CRM</button>`;
+}
+async function crPorta(fonte,id,btn){
+  if(!nlSupa||!nl.session){toast('Per usare il CRM accedi con il tuo account della squadra','warn');return}
+  if(btn){btn.disabled=true;btn.classList.add('busy')}
+  const {data,error}=await nlSupa.rpc('crm_porta_contatto',{p_fonte:fonte,p_id:String(id)});
+  if(btn){btn.disabled=false;btn.classList.remove('busy')}
+  if(error){toast(/crm_porta_contatto|PGRST202|42883/i.test((error.code||'')+' '+error.message)?'Per usare «Porta nel CRM» va eseguita la migrazione 20261116100500_crm_da_contatti.sql':error.message,'err');return}
+  const az=data&&data.azienda_id;if(!az)return;
+  if(fonte==='linkedin'){const r=li.rows.find(x=>x.id===+id);if(r)r.crm_azienda_id=az;if(state.view==='linkedin')liPaintList()}
+  else{const c=state.contacts.find(x=>x.id===id);if(c)c.crmId=az}
+  if(cr.loaded)crLoad({silent:true});
+  const nome=data.nome||'L\'azienda';
+  pjUndoToast(data.gia?`${nome} è già nel CRM`:data.nuova?`${nome} aggiunta al CRM`:`Collegata a ${nome}, già nel CRM`,()=>{closeModal();crOpen(az)},'Apri');
+  // se la scheda è aperta, il pulsante diventa «Apri nel CRM»
+  if(btn&&btn.isConnected){btn.outerHTML=crPortaBtn(fonte,id,az,btn.classList.contains('ghost'))}
+}
 function liToday(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 function liD(d){if(!d)return '';const x=new Date(String(d).slice(0,10)+'T00:00:00');return isNaN(x)?'':x.toLocaleDateString('it-IT',{day:'numeric',month:'short',year:x.getFullYear()===new Date().getFullYear()?undefined:'numeric'})}
 function liSearchUrl(r){return 'https://www.linkedin.com/search/results/people/?keywords='+encodeURIComponent([r.nome,r.azienda].filter(Boolean).join(' '))}
@@ -7128,7 +7204,8 @@ async function liLoad(opts={}){
   try{
     const rows=[];let from=0;
     for(;;){
-      const {data,error}=await nlSupa.from('linkedin_contatti').select(LI_COLS).order('id').range(from,from+999);
+      let {data,error}=await nlSupa.from('linkedin_contatti').select(li.noCrm?LI_COLS:LI_COLS_CRM).order('id').range(from,from+999);
+      if(error&&!li.noCrm&&/crm_azienda_id|42703/i.test((error.code||'')+' '+error.message)){li.noCrm=true;({data,error}=await nlSupa.from('linkedin_contatti').select(LI_COLS).order('id').range(from,from+999))}
       if(error){
         if(/does not exist|schema cache|42P01|PGRST205/i.test((error.code||'')+' '+error.message)){li.missing=true;li.loaded=true;li.rows=[];return}
         throw error;
@@ -7187,7 +7264,7 @@ function liRowHtml(r){
   const opts=Object.keys(LI_ST).map(k=>`<option value="${k}"${k===r.stato?' selected':''}>${LI_ST[k].l}</option>`).join('');
   return `<li class="li-row" data-id="${r.id}">
     <div class="li-main">
-      <div class="li-name">${esc(r.nome||r.azienda||'Senza nome')}${r.email?`<a class="pw-ext" href="mailto:${escAttr(r.email)}" title="${escAttr(r.email)}" aria-label="Scrivi a ${escAttr(r.nome||r.azienda)}">@</a>`:''}</div>
+      <div class="li-name">${esc(r.nome||r.azienda||'Senza nome')}${r.crm_azienda_id?`<button class="cr-in" onclick="crOpen(${r.crm_azienda_id})" title="Apri l'azienda nel CRM">Nel CRM</button>`:''}${r.email?`<a class="pw-ext" href="mailto:${escAttr(r.email)}" title="${escAttr(r.email)}" aria-label="Scrivi a ${escAttr(r.nome||r.azienda)}">@</a>`:''}</div>
       ${sub&&r.nome?`<div class="li-sub">${sub}</div>`:''}
     </div>
     <div class="li-who">${p?`${agAv(p.id,true)}<span>${esc(p.nome)}</span>`:'<span class="pw-none">Nessuno</span>'}</div>
@@ -7196,6 +7273,7 @@ function liRowHtml(r){
       ${url?`<a class="pw-ib" href="${escAttr(url)}" target="_blank" rel="noopener noreferrer" title="Apri il profilo LinkedIn" aria-label="Apri il profilo LinkedIn di ${escAttr(r.nome||r.azienda)}">${LI_I.ext}</a>`
            :`<a class="pw-ib" href="${escAttr(liSearchUrl(r))}" target="_blank" rel="noopener noreferrer" title="Cerca su LinkedIn" aria-label="Cerca ${escAttr(r.nome||r.azienda)} su LinkedIn">${LI_I.find}</a>`}
       ${r.messaggio?`<button class="pw-ib" onclick="liCopy(${r.id})" title="Copia il messaggio inviato" aria-label="Copia il messaggio inviato">${LI_I.copy}</button>`:''}
+      ${r.crm_azienda_id?'':`<button class="pw-ib" onclick="crPorta('linkedin',${r.id},this)" title="Porta nel CRM" aria-label="Porta ${escAttr(r.nome||r.azienda)} nel CRM">${CRP_I}</button>`}
       <button class="pw-ib" onclick="liForm(${r.id})" title="Apri e modifica" aria-label="Modifica ${escAttr(r.nome||r.azienda)}">${LI_I.edit}</button>
     </div>
     ${r.risposta?`<div class="li-reply"><b>Risposta:</b> ${esc(r.risposta)}</div>`:''}
@@ -7275,7 +7353,7 @@ function liForm(id){
       <div class="form-row"><label for="li-fp">Risposta ricevuta</label><textarea id="li-fp" rows="3" maxlength="5000">${esc(r?r.risposta||'':'')}</textarea></div>
       <div class="form-row"><label for="li-fd">Che cosa fa l'azienda</label><textarea id="li-fd" rows="2" maxlength="2000">${esc(r?r.descrizione||'':'')}</textarea></div>
       <div class="form-row"><label for="li-fo">Note</label><textarea id="li-fo" rows="2" maxlength="2000">${esc(r?r.note||'':'')}</textarea></div>
-    </div><div class="modal-f">${r?`<button type="button" class="btn danger" style="margin-right:auto" onclick="liDelete(${r.id})">Elimina</button>`:''}<button type="button" class="btn" onclick="closeModal()">Annulla</button><button class="btn primary" id="li-fb" type="submit">${r?'Salva':'Aggiungi'}</button></div></form></div>`);
+    </div><div class="modal-f">${r?`<button type="button" class="btn danger" style="margin-right:auto" onclick="liDelete(${r.id})">Elimina</button>${crPortaBtn('linkedin',r.id,r.crm_azienda_id)}`:''}<button type="button" class="btn" onclick="closeModal()">Annulla</button><button class="btn primary" id="li-fb" type="submit">${r?'Salva':'Aggiungi'}</button></div></form></div>`);
   setTimeout(()=>{const t=document.getElementById('li-fn');if(t&&!r)t.focus()},50);
 }
 async function liSave(ev){
@@ -8200,6 +8278,255 @@ document.addEventListener('keydown',e=>{
 },true);
 
 /* =======================================================
+   REGISTRO — chi ha cambiato cosa nella Suite, e che cosa hanno fatto i flussi
+   Database: suite_registro (migrazione 20261116100000_suite_registro.sql). Lo scrivono solo il database
+   (un trigger su ogni tabella principale) e il flusso n8n «Suite: registro delle esecuzioni». Qui si legge e basta.
+   ======================================================= */
+const RG_TABS=[{tab:'modifiche',label:'Modifiche'},{tab:'esecuzioni',label:'Esecuzioni dei flussi'}];
+const RG_AREE={progetti:'Progetti',crm:'CRM',calendario:'Calendario',home:'Bacheca',contabilita:'Contabilità',password:'Password',linkedin:'LinkedIn',richieste:'Richieste',newsletter:'Newsletter',flussi:'Flussi'};
+// che cosa è la riga, con l'articolo: «ha creato l'attività …»
+const RG_COSA={attivita:"l'attività",progetti:'il progetto',crm_aziende:"l'azienda",crm_referenti:'la persona',crm_preventivi:'il preventivo',crm_incontri:"l'incontro",crm_documenti:'il documento',crm_elenco:"la voce dell'elenco",
+  eventi:"l'evento",bacheca:'la comunicazione',movimenti:'il movimento',conti:'il conto',credenziali:'la credenziale',linkedin_contatti:'il contatto LinkedIn',richieste_sito:'la richiesta dal sito',newsletter_campaigns:'la campagna'};
+const RG_CAMPI={stato:'Stato',titolo:'Titolo',nome:'Nome',persone:'Persone',scadenza:'Scadenza',urgente:'Urgente',note:'Note',progetto_id:'Progetto',file:'File',cliente:'Cliente',inizio:'Inizio',fine:'Fine',
+  link:'Link',drive_id:'Cartella Drive',drive_nome:'Cartella Drive',drive_cartelle:'Sottocartelle',azienda_id:'Azienda',aziende:'Azienda',settore:'Settore',provenienza:'Provenienza',email:'E-mail',telefono:'Telefono',
+  sito:'Sito',citta:'Città',segue:'Se ne occupa',primo_contatto:'Primo contatto',primo_contatto_il:'Data primo contatto',fatturazione:'Fatturazione',ruolo:'Ruolo',linkedin:'LinkedIn',canale:'Canale',
+  ultimo_contatto:'Ultimo contatto',importo:'Importo',inviato_il:'Inviato il',documento:'Documento',data:'Data',verbale:'Verbale',prossimi_passi:'Prossimi passi',referenti:'Referenti',url:'Link',
+  descrizione:'Descrizione',luogo:'Luogo',link_call:'Link della call',tipo:'Tipo',calendario:'Calendario',ospiti:'Ospiti',tutto_il_giorno:'Tutto il giorno',testo:'Testo',fissato:'In evidenza',
+  categoria:'Categoria',scade_il:'Scadenza',importo_:'Importo',da_conto:'Dal conto',a_conto:'Al conto',riferimento:'Riferimento',apertura:'Apertura',servizio:'Servizio',username:'Utente',
+  competenza_di:'Se ne occupa',url_profilo:'Profilo',invito_il:'Invito',messaggio_il:'Messaggio inviato il',messaggio:'Messaggio',risposta:'Risposta',crm_azienda_id:'Collegato al CRM',
+  completate_notion:'Fatte in Notion',scartata:'Scartata',lista:'Elenco',subject:'Oggetto',body:'Testo',status:'Stato',preheader:'Anteprima',evento_id:'Evento',origine:'Origine',google_id:'Google'};
+const RG_LUNGHI=['note','testo','verbale','prossimi_passi','primo_contatto','fatturazione','descrizione','messaggio','risposta','body','corpo','file','drive_cartelle'];
+const RG_I={
+  bot:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="8" width="16" height="12" rx="3"/><path d="M12 4v4 M9 13h.01 M15 13h.01 M9 17h6"/></svg>',
+  flow:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="6" r="2.5"/><circle cx="19" cy="6" r="2.5"/><circle cx="12" cy="18" r="2.5"/><path d="M7.5 6h9 M6.3 8.2l4.4 7.6 M17.7 8.2l-4.4 7.6"/></svg>',
+  spark:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v4 M12 17v4 M3 12h4 M17 12h4 M6 6l2.5 2.5 M15.5 15.5 18 18 M6 18l2.5-2.5 M15.5 8.5 18 6"/></svg>',
+  log:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8v4l3 2 M3.05 11a9 9 0 1 1 .5 4 M3 4v5h5"/></svg>',
+  ext:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6 M15 3h6v6 M10 14 21 3"/></svg>'
+};
+const RG_PAGE=300;
+const rg={rows:[],ex:[],loaded:false,loading:false,missing:false,tab:'modifiche',chi:'tutti',area:'',q:'',soloErr:false,more:false,ch:null,loadT:null,pollT:null,fresh:new Set()};
+
+function rgGoTab(t){rg.tab=t;if(state.view!=='registro')go('registro');else{closeRail();render();window.scrollTo(0,0)}}
+function rgStop(){
+  try{if(rg.ch)nlSupa.removeChannel(rg.ch)}catch(e){}
+  clearInterval(rg.pollT);clearTimeout(rg.loadT);
+  Object.assign(rg,{rows:[],ex:[],loaded:false,loading:false,missing:false,ch:null,more:false});
+}
+const RG_COLS='id,created_at,chi,fonte,flusso,area,tabella,azione,rif_id,titolo,contesto,modifiche,testo,esito,esecuzione_id,workflow_id,durata_ms,link';
+async function rgLoad(opts={}){
+  if(!nlSupa||!nl.session||rg.loading)return;
+  rg.loading=true;if(state.view==='registro'&&!opts.silent)render();
+  try{
+    const since=new Date(Date.now()-14*864e5).toISOString();
+    const [a,b]=await Promise.all([
+      nlSupa.from('suite_registro').select(RG_COLS).neq('azione','esecuzione').order('created_at',{ascending:false}).order('id',{ascending:false}).limit(RG_PAGE),
+      nlSupa.from('suite_registro').select(RG_COLS).eq('azione','esecuzione').gte('created_at',since).order('created_at',{ascending:false}).limit(2000)
+    ]);
+    const err=a.error||b.error;
+    if(err){
+      if(/does not exist|schema cache|42P01|PGRST205/i.test((err.code||'')+' '+err.message)){rg.missing=true;rg.loaded=true;rg.rows=[];rg.ex=[];return}
+      throw err;
+    }
+    rg.rows=a.data||[];rg.ex=b.data||[];rg.more=rg.rows.length===RG_PAGE;rg.missing=false;rg.loaded=true;
+    rgSubscribe();
+  }catch(e){toast('Registro: '+(e.message||e),'err');rg.loaded=true}
+  finally{rg.loading=false;if(state.view==='registro')render();else renderNav()}
+}
+async function rgMore(btn){
+  const last=rg.rows[rg.rows.length-1];if(!last)return;
+  if(btn)btn.disabled=true;
+  const {data,error}=await nlSupa.from('suite_registro').select(RG_COLS).neq('azione','esecuzione').lt('created_at',last.created_at).order('created_at',{ascending:false}).order('id',{ascending:false}).limit(RG_PAGE);
+  if(btn)btn.disabled=false;
+  if(error){toast(error.message,'err');return}
+  const have=new Set(rg.rows.map(r=>r.id));
+  rg.rows.push(...(data||[]).filter(r=>!have.has(r.id)));rg.more=(data||[]).length===RG_PAGE;render();
+}
+// arrivi in tempo reale: le righe nuove compaiono in cima (evidenziate per qualche secondo)
+function rgLive(p){
+  const r=p&&p.new;if(!r||!r.id)return;
+  const list=r.azione==='esecuzione'?rg.ex:rg.rows,i=list.findIndex(x=>x.id===r.id);
+  if(i>=0)list[i]=r;else{list.unshift(r);rg.fresh.add(r.id);setTimeout(()=>rg.fresh.delete(r.id),6000)}
+  clearTimeout(rg.loadT);rg.loadT=setTimeout(()=>{if(state.view==='registro'&&!document.getElementById('modalRoot')?.firstChild)render()},400);
+}
+function rgSubscribe(){
+  if(rg.ch||!ag.me)return;
+  try{rg.ch=nlSupa.channel('suite-registro-'+ag.me.id).on('postgres_changes',{event:'*',schema:'public',table:'suite_registro'},rgLive).subscribe()}catch(e){}
+  clearInterval(rg.pollT);rg.pollT=setInterval(()=>{if(!document.hidden&&state.view==='registro')rgLoad({silent:true})},180000);
+}
+
+/* ---- come si racconta una riga ---- */
+function rgWho(r){
+  if(r.chi){const p=agPerson(r.chi);return {av:agAv(r.chi,true)||`<span class="rg-ic">${RG_I.spark}</span>`,n:p?p.nome:'Qualcuno della squadra',k:'p'}}
+  if(r.fonte==='claude')return {av:`<span class="rg-ic claude">${RG_I.bot}</span>`,n:'Claude',k:'c'};
+  if(r.fonte==='flusso')return {av:`<span class="rg-ic flow">${RG_I.flow}</span>`,n:r.flusso||'Un flusso',k:'f'};
+  return {av:`<span class="rg-ic">${RG_I.spark}</span>`,n:'In automatico',k:'s'};
+}
+function rgStateLabel(t,v){
+  const m=t==='attivita'?PJ_TS:t==='progetti'?PJ_ST:t==='crm_aziende'?CR_ST:t==='crm_preventivi'?CR_PST:t==='linkedin_contatti'?LI_ST:null;
+  return m&&m[v]?m[v].l:v;
+}
+function rgVal(t,k,v){
+  if(v===null||v===undefined||v===''||(Array.isArray(v)&&!v.length))return '—';
+  if(k==='stato')return rgStateLabel(t,v);
+  if(typeof v==='boolean')return v?'Sì':'No';
+  if(k==='persone'||k==='segue'||k==='competenza_di'||k==='ospiti'){const ids=Array.isArray(v)?v:[v];return ids.map(u=>(agPerson(u)||{}).nome||'?').join(', ')}
+  if(k==='progetto_id'){const p=pjP(+v);return p?p.nome:'#'+v}
+  if((k==='azienda_id'||k==='crm_azienda_id')&&typeof crA==='function'){const a=cr.loaded?crA(+v):null;return a?a.nome:'sì'}
+  if(typeof v==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(v))return new Date(v+'T00:00:00').toLocaleDateString('it-IT',{day:'numeric',month:'short',year:'numeric'});
+  if(typeof v==='string'&&/^\d{4}-\d{2}-\d{2}T/.test(v))return new Date(v).toLocaleString('it-IT',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+  if(typeof v==='object')return Array.isArray(v)?v.length+' elementi':'…';
+  const s=String(v);return s.length>60?s.slice(0,58)+'…':s;
+}
+function rgChanges(r){
+  const m=r.modifiche||{},keys=Object.keys(m);if(!keys.length)return '';
+  const out=keys.slice(0,4).map(k=>{
+    const lab=RG_CAMPI[k]||k.replace(/_/g,' '),[a,b]=m[k]||[];
+    if(r.tabella==='credenziali'&&a===null&&b===null)return `<span class="rg-ch"><b>${esc(lab)}</b> cambiato</span>`;
+    if(RG_LUNGHI.includes(k))return `<span class="rg-ch"><b>${esc(lab)}</b> ${a==null||a===''?'aggiunte':b==null||b===''?'tolte':'modificate'}</span>`;
+    if(k==='crm_azienda_id')return `<span class="rg-ch"><b>Collegato al CRM</b></span>`;
+    return `<span class="rg-ch"><b>${esc(lab)}</b> ${esc(rgVal(r.tabella,k,a))} → ${esc(rgVal(r.tabella,k,b))}</span>`;
+  });
+  if(keys.length>4)out.push(`<span class="rg-ch">e altri ${keys.length-4}</span>`);
+  return `<div class="rg-chs">${out.join('')}</div>`;
+}
+function rgVerb(r){
+  const m=r.modifiche||{},ks=Object.keys(m);
+  if(r.azione==='crea')return r.tabella==='bacheca'?'ha pubblicato':'ha creato';
+  if(r.azione==='elimina')return 'ha eliminato';
+  if(r.azione==='nota')return '';
+  if(ks.length===1&&ks[0]==='stato'&&r.tabella==='attivita'){const d=m.stato[1];return d==='fatto'?'ha segnato come fatta':m.stato[0]==='fatto'?'ha riaperto':'ha spostato'}
+  if(ks.length===1&&ks[0]==='crm_azienda_id')return 'ha portato nel CRM';
+  return 'ha modificato';
+}
+function rgCanOpen(r){return r.azione!=='elimina'&&r.azione!=='esecuzione'&&!!(r.tabella||r.link)}
+function rgOpen(id){
+  const r=rg.rows.find(x=>x.id===id);if(!r)return;
+  const n=+r.rif_id;
+  switch(r.tabella){
+    case 'attivita':pjOpenTask(n);return;
+    case 'progetti':pjOpen(n);return;
+    case 'crm_aziende':crOpen(n);return;
+    case 'crm_referenti':crGoTab('persone');return;
+    case 'crm_preventivi':crGoTab('preventivi');return;
+    case 'crm_incontri':crGoTab('incontri');return;
+    case 'crm_documenti':case 'crm_elenco':crGoTab(r.tabella==='crm_elenco'?'elenchi':'aziende');return;
+    case 'eventi':go('agenda');return;
+    case 'bacheca':go('home');return;
+    case 'movimenti':case 'conti':go('contabilita');return;
+    case 'credenziali':go('password');return;
+    case 'linkedin_contatti':go('linkedin');return;
+    case 'richieste_sito':go('richieste');return;
+    case 'newsletter_campaigns':goNl('campagne');return;
+  }
+  if(pwSafeUrl(r.link))window.open(r.link,'_blank','noopener');
+}
+function rgTime(ts){return new Date(ts).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'})}
+function rgDay(ts){
+  const d=new Date(ts),k=new Date(d.getFullYear(),d.getMonth(),d.getDate()),n=Math.round((today()-k)/864e5);
+  if(n===0)return 'Oggi';if(n===1)return 'Ieri';
+  const s=d.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',...(d.getFullYear()!==today().getFullYear()?{year:'numeric'}:{})});
+  return s.charAt(0).toUpperCase()+s.slice(1);
+}
+function rgRow(r){
+  const w=rgWho(r),verb=rgVerb(r),cosa=RG_COSA[r.tabella]||'',open=rgCanOpen(r);
+  const err=r.esito==='errore'?'<span class="chip late"><span class="d"></span>Errore</span>':r.esito==='avviso'?'<span class="chip wait"><span class="d"></span>Avviso</span>':'';
+  const tit=r.titolo?`«${esc(r.titolo)}»`:'';
+  const line=r.azione==='nota'?`<b>${esc(w.n)}</b> · ${esc(r.titolo||'')}`
+    :`<b>${esc(w.n)}</b> ${esc(verb)}${cosa?' '+esc(cosa):''} ${open?`<button class="rg-tit" onclick="rgOpen(${r.id})">${tit}</button>`:`<span class="rg-tit off">${tit}</span>`}`;
+  const sub=[r.contesto?`<span class="rg-ctx">${esc(r.contesto)}</span>`:'',`<span class="rg-area">${esc(RG_AREE[r.area]||r.area)}</span>`,
+    r.testo&&r.azione==='nota'?`<span class="rg-txt">${esc(r.testo.slice(0,180))}</span>`:''].filter(Boolean).join('');
+  return `<li class="rg-row ${rg.fresh.has(r.id)?'fresh':''} ${r.azione==='elimina'?'del':''}">
+    <span class="rg-time">${rgTime(r.created_at)}</span>
+    <span class="rg-who">${w.av}</span>
+    <div class="rg-main"><div class="rg-line">${line} ${err}</div>${sub?`<div class="rg-sub">${sub}</div>`:''}${rgChanges(r)}</div>
+  </li>`;
+}
+function rgFiltered(){
+  const q=rg.q.trim().toLowerCase();
+  return rg.rows.filter(r=>{
+    if(rg.area&&r.area!==rg.area)return false;
+    if(rg.chi==='persone'&&!r.chi)return false;
+    if(rg.chi==='auto'&&r.chi)return false;
+    if(rg.chi==='claude'&&r.fonte!=='claude')return false;
+    if(rg.chi.length>20&&r.chi!==rg.chi)return false;    // una persona (uuid)
+    if(q&&![r.titolo,r.contesto,r.flusso,r.testo,(agPerson(r.chi)||{}).nome,RG_COSA[r.tabella]].join(' ').toLowerCase().includes(q))return false;
+    return true;
+  });
+}
+function rgSearch(v){rg.q=v;const e=document.getElementById('rg-list');if(e)e.innerHTML=rgListHtml();}
+function rgListHtml(){
+  const rows=rgFiltered();
+  if(!rows.length)return `<p class="pj-none">${rg.rows.length?'Nessuna modifica con questi filtri.':'Ancora niente nel registro: compare qui tutto quello che cambia nella Suite da quando è attivo.'}</p>`;
+  let html='',day='';
+  rows.forEach(r=>{const d=rgDay(r.created_at);if(d!==day){if(day)html+='</ul>';day=d;html+=`<h4 class="rg-day">${esc(d)}</h4><ul class="rg-list">`}html+=rgRow(r)});
+  html+='</ul>';
+  if(rg.more)html+=`<div style="text-align:center;margin-top:16px"><button class="btn" onclick="rgMore(this)">Mostra le precedenti</button></div>`;
+  return html;
+}
+function rgViewModifiche(){
+  const chip=(v,l)=>`<button class="pw-chip ${rg.chi===v?'on':''}" aria-pressed="${rg.chi===v}" onclick="rg.chi='${v}';render()">${l}</button>`;
+  const aree=[...new Set(rg.rows.map(r=>r.area))].filter(a=>a!=='flussi').sort((a,b)=>(RG_AREE[a]||a).localeCompare(RG_AREE[b]||b,'it'));
+  return `<div class="pj-tools">
+      <div class="pj-who" role="group" aria-label="Chi">${chip('tutti','Tutti')}${chip('persone','Persone')}${ag.team.map(t=>chip(t.id,esc(t.nome))).join('')}${chip('claude','Claude')}${chip('auto','Flussi e automatici')}</div>
+      <span class="spacer"></span>
+      <select class="pj-sel" onchange="rg.area=this.value;render()" aria-label="Sezione"><option value="">Tutte le sezioni</option>${aree.map(a=>`<option value="${a}" ${rg.area===a?'selected':''}>${esc(RG_AREE[a]||a)}</option>`).join('')}</select>
+      <label class="pj-search"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" value="${escAttr(rg.q)}" placeholder="Cerca nel registro" oninput="rgSearch(this.value)" aria-label="Cerca nel registro"></label>
+    </div>
+    <section class="tile pj-tile rg-tile" id="rg-list">${rgListHtml()}</section>
+    <p class="pj-hint">Ogni creazione, modifica ed eliminazione nella Suite, con chi l'ha fatta. «In automatico» sono i flussi (Gmail, Drive, Calendario…) e le funzioni del database. Le password non compaiono mai.</p>`;
+}
+/* ---- esecuzioni dei flussi ---- */
+function rgDur(ms){if(ms==null)return '';if(ms<1000)return ms+' ms';const s=Math.round(ms/1000);return s<60?s+' s':Math.floor(s/60)+' min '+(s%60?s%60+' s':'')}
+function rgViewEsecuzioni(){
+  const ex=rg.ex;
+  if(!ex.length)return `<section class="tile pj-tile"><p class="pj-none">Nessuna esecuzione registrata negli ultimi 14 giorni. Le scrive il flusso n8n «Suite: registro delle esecuzioni» ogni 15 minuti: se è appena stato acceso, aspetta il primo giro.</p></section>`;
+  const by={};ex.forEach(x=>{(by[x.flusso]=by[x.flusso]||[]).push(x)});
+  const day=Date.now()-864e5;
+  const cards=Object.keys(by).map(n=>{const l=by[n],last=l[0],errs=l.filter(x=>x.esito==='errore'),err24=errs.filter(x=>new Date(x.created_at).getTime()>day).length;
+    return {n,l,last,errs,err24}}).sort((a,b)=>(b.err24-a.err24)||String(b.last.created_at).localeCompare(String(a.last.created_at)));
+  const card=c=>`<li class="rg-flow ${c.last.esito==='errore'?'bad':''}">
+      <span class="rg-ic flow">${RG_I.flow}</span>
+      <div class="rg-fmain"><b>${esc(c.n)}</b><small>Ultima ${esc(hmWhen(c.last.created_at))}${c.last.durata_ms!=null?' · '+esc(rgDur(c.last.durata_ms)):''}</small></div>
+      <span class="rg-fn">${c.l.length} ${c.l.length===1?'esecuzione':'esecuzioni'}</span>
+      ${c.errs.length?`<span class="chip late"><span class="d"></span>${c.errs.length} ${c.errs.length===1?'errore':'errori'}</span>`:'<span class="chip reply"><span class="d"></span>Tutto ok</span>'}
+    </li>`;
+  const list=(rg.soloErr?ex.filter(x=>x.esito!=='ok'):ex).slice(0,300);
+  const exRow=x=>`<li class="rg-row ${x.esito==='errore'?'err':''}">
+      <span class="rg-time">${esc(hmWhen(x.created_at).replace(/^oggi /,''))}</span>
+      <span class="rg-who"><span class="rg-ic flow">${RG_I.flow}</span></span>
+      <div class="rg-main"><div class="rg-line"><b>${esc(x.flusso)}</b> ${x.esito==='errore'?'<span class="chip late"><span class="d"></span>Errore</span>':x.esito==='in_corso'?'<span class="chip wait"><span class="d"></span>In corso</span>':x.esito==='avviso'?'<span class="chip wait"><span class="d"></span>Fermato</span>':'<span class="chip reply"><span class="d"></span>Ok</span>'}</div>
+      <div class="rg-sub">${x.durata_ms!=null?`<span class="rg-area">${esc(rgDur(x.durata_ms))}</span>`:''}${pwSafeUrl(x.link)?`<a class="rg-ctx rg-n8n" href="${escAttr(x.link)}" target="_blank" rel="noopener noreferrer">Apri in n8n ${RG_I.ext}</a>`:''}</div></div>
+    </li>`;
+  return `<section class="tile pj-tile rg-tile"><h4 class="rg-day" style="margin-top:0">Flussi negli ultimi 14 giorni</h4><ul class="rg-flows">${cards.map(card).join('')}</ul></section>
+    <div class="pj-tools" style="margin-top:18px"><div class="pj-who" role="group"><button class="pw-chip ${rg.soloErr?'':'on'}" onclick="rg.soloErr=false;render()">Tutte</button><button class="pw-chip ${rg.soloErr?'on':''}" onclick="rg.soloErr=true;render()">Solo errori</button></div></div>
+    <section class="tile pj-tile rg-tile">${list.length?`<ul class="rg-list">${list.map(exRow).join('')}</ul>`:'<p class="pj-none">Nessun errore negli ultimi 14 giorni.</p>'}</section>
+    <p class="pj-hint">Le esecuzioni andate bene restano 60 giorni, gli errori più a lungo. «Apri in n8n» mostra il dettaglio nodo per nodo (serve l'accesso a n8n).</p>`;
+}
+function viewRegistro(){
+  if(!nl.ready)return `<div class="empty"><span class="spinner"></span></div>`;
+  if(!nl.session)return nlLoginView('home');
+  if(nl.editor===null||!ag.loaded)return `<div class="empty"><span class="spinner"></span><p style="margin-top:14px">Un attimo…</p></div>`;
+  if(!ag.me)return `<div class="empty">${RG_I.log}<h4>Il tuo account non è ancora nella squadra</h4><p>Il registro è riservato alle persone della squadra.</p></div>`;
+  if(!rg.loaded){if(!rg.loading)setTimeout(()=>rgLoad({silent:true}),0);return `<div class="empty"><span class="spinner"></span><p style="margin-top:14px">Apro il registro…</p></div>`}
+  if(rg.missing)return `<div class="empty">${RG_I.log}<h4>Il registro non è ancora attivo</h4><p>Esegui nel SQL Editor di Supabase la migrazione <code>20261116100000_suite_registro.sql</code>, poi premi Aggiorna.</p><button class="btn" style="margin-top:16px" onclick="rgLoad()">${AG_I.refresh}Aggiorna</button></div>`;
+  if(!pj.loaded&&!pj.loading)setTimeout(()=>pjLoad({silent:true}),0);   // per i nomi dei progetti nelle modifiche
+  return rg.tab==='esecuzioni'?rgViewEsecuzioni():rgViewModifiche();
+}
+function rgHeroCopy(){
+  if(!nl.session)return {t:'Registro.',l:'Accedi con il tuo account per vedere chi ha cambiato cosa nella Suite.'};
+  if(rg.missing)return {t:'Registro.',l:'Il registro si attiva con la migrazione del database.'};
+  if(!rg.loaded)return {t:'Registro.',l:'Apro il registro…'};
+  const t0=today().getTime(),oggi=x=>new Date(x.created_at).getTime()>=t0;
+  const m=rg.rows.filter(oggi).length,e=rg.ex.filter(oggi),er=e.filter(x=>x.esito==='errore').length;
+  return {t:'Registro.',l:`Oggi ${m} ${m===1?'modifica':'modifiche'} e ${e.length} ${e.length===1?'esecuzione':'esecuzioni'} dei flussi${er?`, ${er} con errori`:''}.`};
+}
+function rgTopActions(){
+  if(!nl.session||!ag.me||rg.missing)return '';
+  return `<button class="btn" onclick="rgLoad()">${AG_I.refresh}<span class="lbl">Aggiorna</span></button>`;
+}
+function rgErr24(){try{return rg.loaded&&!rg.missing&&rg.ex.some(x=>x.esito==='errore'&&Date.now()-new Date(x.created_at).getTime()<864e5)}catch(e){return false}}
+
+/* =======================================================
    PROGETTI E ATTIVITÀ — al posto di Notion › Progetti › Project Tracker
    Database: progetti, attivita (migrazione 20261107100000_progetti_attivita.sql), stessi permessi per tutta la squadra.
    Semplice di proposito: 4 stati per le attività, 5 per i progetti, un solo «Urgente», cartella Drive per progetto.
@@ -8223,6 +8550,7 @@ const PJ_FOLDER='https://drive.google.com/drive/folders/';
 const PJ_ROOT_ID='1ttHvHsJrblvvfksUuj7J4klHaF9ZpT5X';   // Drive condiviso › Progetti
 const PJ_INTERNO='Flowline (interno)';
 const pj={pr:[],att:[],loaded:false,loading:false,missing:false,tab:'mie',who:'',mine:false,open:null,group:'stato',pf:'',q:'',fold:{},
+  cord:pjPref('cord',''),cdate:pjPref('cdate',''),
   ch:null,loadT:null,pollT:null,edit:null,editP:null,files:[],lastP:null};
 const PJ_I={
   check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg>',
@@ -8237,6 +8565,25 @@ const PJ_I={
 };
 
 /* ---- piccole utilità ---- */
+// ordine e filtro per data di creazione: restano scelti anche dopo aver chiuso la Suite (solo in questo browser)
+function pjPref(k,d){try{const v=localStorage.getItem('flo_pj_'+k);return v==null?d:v}catch(e){return d}}
+function pjSetPref(k,v){pj[k]=v;try{localStorage.setItem('flo_pj_'+k,v)}catch(e){}render()}
+const PJ_CORD=[['','Priorità e scadenza'],['recenti','Più recenti'],['vecchie','Meno recenti']];
+const PJ_CDATE=[['','Create in qualsiasi data'],['oggi','Create oggi'],['ieri','Create da ieri'],['7','Ultimi 7 giorni'],['30','Ultimi 30 giorni'],['90','Ultimi 3 mesi']];
+function pjCreatedOk(a){
+  if(!pj.cdate)return true;
+  const t=new Date(a.created_at).getTime();if(isNaN(t))return true;
+  const d0=today().getTime(),days=pj.cdate==='oggi'?0:pj.cdate==='ieri'?1:+pj.cdate;
+  return t>=d0-days*864e5;
+}
+const pjDateMode=()=>!!(pj.cord||pj.cdate);
+function pjCreated(ts){if(!ts)return '';const d=new Date(ts),n=Math.round((today()-new Date(d.getFullYear(),d.getMonth(),d.getDate()))/864e5);
+  return n===0?'oggi '+d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}):n===1?'ieri':d.toLocaleDateString('it-IT',{day:'numeric',month:'short',...(d.getFullYear()!==today().getFullYear()?{year:'numeric'}:{})})}
+function pjDateTools(){
+  const opt=(list,v)=>list.map(([k,l])=>`<option value="${k}" ${v===k?'selected':''}>${l}</option>`).join('');
+  return `<select class="pj-sel pj-dsel ${pj.cord?'on':''}" onchange="pjSetPref('cord',this.value)" aria-label="Ordina le attività" title="Ordine delle attività">${opt(PJ_CORD,pj.cord)}</select>
+    <select class="pj-sel pj-dsel ${pj.cdate?'on':''}" onchange="pjSetPref('cdate',this.value)" aria-label="Data di creazione" title="Filtra per data di creazione">${opt(PJ_CDATE,pj.cdate)}</select>`;
+}
 const pjP=id=>pj.pr.find(p=>p.id===id);
 const pjA=id=>pj.att.find(a=>a.id===id);
 const pjOpenA=a=>a.stato!=='fatto';
@@ -8247,7 +8594,11 @@ function pjStats(p){
   const ts=pj.att.filter(a=>a.progetto_id===p.id),open=ts.filter(pjOpenA).length,done=(p.completate_notion||0)+ts.length-open;
   return {open,done,total:open+done};
 }
-function pjSort(list){return list.slice().sort((a,b)=>(b.urgente-a.urgente)||String(a.scadenza||'9999').localeCompare(String(b.scadenza||'9999'))||(a.id-b.id))}
+function pjSort(list,ord=pj.cord){
+  if(ord==='recenti')return list.slice().sort((a,b)=>String(b.created_at||'').localeCompare(String(a.created_at||''))||(b.id-a.id));
+  if(ord==='vecchie')return list.slice().sort((a,b)=>String(a.created_at||'').localeCompare(String(b.created_at||''))||(a.id-b.id));
+  return list.slice().sort((a,b)=>(b.urgente-a.urgente)||String(a.scadenza||'9999').localeCompare(String(b.scadenza||'9999'))||(a.id-b.id));
+}
 function pjProjName(p){return p?(p.cliente&&p.cliente!==PJ_INTERNO?p.cliente:p.nome):'—'}
 function pjDue(d){
   if(!d)return null;
@@ -8343,6 +8694,7 @@ function pjRow(a,o={}){
   if(a.note)meta.push(`<span class="pj-m">${PJ_I.note}Note</span>`);
   if(files)meta.push(`<span class="pj-m">${PJ_I.clip}${files} file</span>`);
   if(done&&a.fatto_il)meta.push(`<span class="pj-m">Fatta ${esc(hmWhen(a.fatto_il))}</span>`);
+  else if(pjDateMode()&&a.created_at)meta.push(`<span class="pj-m pj-cr" title="Creata il ${escAttr(new Date(a.created_at).toLocaleString('it-IT'))}">Creata ${esc(pjCreated(a.created_at))}</span>`);
   return `<li class="pj-row ${done?'done':''} ${a.stato==='standby'?'sb':''}">
     <button class="pj-chk ${done?'on':''}" onclick="pjDone(${a.id})" aria-label="${done?'Riapri':'Segna come fatta'}: ${escAttr(a.titolo)}" title="${done?'Riapri':'Segna come fatta'}">${done?PJ_I.check:''}</button>
     <div class="pj-main" role="button" tabindex="0" onclick="pjTaskForm(${a.id})" onkeydown="if(event.key==='Enter'){pjTaskForm(${a.id})}"><b>${esc(a.titolo)}</b>${meta.length?`<div class="pj-meta">${meta.join('')}</div>`:''}</div>
@@ -8374,7 +8726,8 @@ function pjQuick(pid){
 function pjTaskGroups(list,o={}){
   const open=list.filter(a=>a.stato!=='fatto');
   const week=Date.now()-7*864e5;
-  const done=list.filter(a=>a.stato==='fatto'&&(o.allDone||(a.fatto_il&&new Date(a.fatto_il).getTime()>week))).sort((a,b)=>String(b.fatto_il||'').localeCompare(String(a.fatto_il||'')));
+  let done=list.filter(a=>a.stato==='fatto'&&(o.allDone||pj.cdate||(a.fatto_il&&new Date(a.fatto_il).getTime()>week))).sort((a,b)=>String(b.fatto_il||'').localeCompare(String(a.fatto_il||'')));
+  if(pj.cord)done=pjSort(done);
   let html='';
   if(pj.group==='progetto'&&!o.inProject){
     const g={};open.forEach(a=>{(g[a.progetto_id]=g[a.progetto_id]||[]).push(a)});
@@ -8388,7 +8741,7 @@ function pjTaskGroups(list,o={}){
       return rows.length?pjSec(k,PJ_TS[k].l,rows.length,pjListHtml(rows,{proj:!o.inProject,nost:false}),{dot:PJ_TS[k].c,hint:PJ_THINT[k]}):''}).join('');
   }
   if(!open.length)html=`<p class="pj-none">${o.empty||'Nessuna attività aperta.'}</p>`;
-  if(done.length)html+=pjSec('fatto',o.allDone?'Fatte':'Fatte negli ultimi 7 giorni',done.length,pjListHtml(done.slice(0,o.allDone?500:30),{proj:!o.inProject}),{dot:'reply',hint:o.doneHint||''});
+  if(done.length)html+=pjSec('fatto',o.allDone||pj.cdate?'Fatte':'Fatte negli ultimi 7 giorni',done.length,pjListHtml(done.slice(0,o.allDone?500:30),{proj:!o.inProject}),{dot:'reply',hint:o.doneHint||''});
   return html;
 }
 
@@ -8412,6 +8765,7 @@ function pjViewMine(){
   let list=pj.att.filter(pjMine);
   if(pj.pf)list=list.filter(a=>a.progetto_id===+pj.pf);
   if(pj.q.trim())list=list.filter(a=>{const p=pjP(a.progetto_id)||{};return pjMatch([a.titolo,a.note,p.nome,p.cliente].join(' '))});
+  if(pj.cdate)list=list.filter(pjCreatedOk);
   const chip=(id,l)=>`<button class="pw-chip ${w===id?'on':''}" aria-pressed="${w===id}" onclick="pj.who='${id}';render()">${l}</button>`;
   const projs=pj.pr.filter(p=>p.stato!=='chiuso'||p.id===+pj.pf).sort((a,b)=>a.nome.localeCompare(b.nome,'it'));
   const seg=(k,l)=>`<button class="${pj.group===k?'on':''}" aria-pressed="${pj.group===k}" onclick="pj.group='${k}';render()">${l}</button>`;
@@ -8422,9 +8776,10 @@ function pjViewMine(){
       ${pjSearchBox('Cerca attività')}
       <div class="pj-segs" role="group" aria-label="Raggruppa">${seg('stato','Per stato')}${seg('progetto','Per progetto')}</div>
     </div>
+    <div class="pj-tools pj-dtools"><span class="pj-dlab">Data di creazione</span>${pjDateTools()}${pjDateMode()?`<button class="btn sm ghost" onclick="pj.cord='';pj.cdate='';pjSetPref('cord','');pjSetPref('cdate','')">Togli</button>`:''}</div>
     <section class="tile pj-tile pj-tasks">
       ${pjQuick()}
-      ${pjTaskGroups(list,{empty:pj.q||pj.pf?'Nessuna attività con questi filtri.':w===ag.me.id?'Non hai attività aperte. Aggiungine una qui sopra.':'Nessuna attività aperta.'})}
+      ${pjTaskGroups(list,{empty:pj.q||pj.pf||pj.cdate?'Nessuna attività con questi filtri.':w===ag.me.id?'Non hai attività aperte. Aggiungine una qui sopra.':'Nessuna attività aperta.'})}
     </section>
     <p class="pj-hint">La casella segna l'attività come fatta. Lo stato si cambia dal menu sulla destra; «Stand-by» tiene da parte le attività ferme.</p>`;
 }
@@ -8454,7 +8809,7 @@ function pjViewList(){
 function pjViewProject(id){
   const p=pjP(id);
   if(p&&p.azienda_id&&!cr.loaded&&!cr.loading)setTimeout(()=>crLoad({silent:true}),0);if(!p)return `<div class="empty"><h4>Progetto non trovato</h4><p>Forse è stato eliminato.</p><button class="btn" onclick="pjGoTab('progetti')">Tutti i progetti</button></div>`;
-  const ts=pj.att.filter(a=>a.progetto_id===id),s=pjStats(p),pct=s.total?Math.round(s.done/s.total*100):0;
+  const ts=pj.att.filter(a=>a.progetto_id===id&&pjCreatedOk(a)),s=pjStats(p),pct=s.total?Math.round(s.done/s.total*100):0;
   const subs=Array.isArray(p.drive_cartelle)?p.drive_cartelle:[];
   const link=pjSafeUrl(p.link);
   const fact=(l,v)=>`<div class="pj-fact"><small>${l}</small><div>${v}</div></div>`;
@@ -8478,9 +8833,10 @@ function pjViewProject(id){
     ${subs.length?`<div class="pj-subs">${subs.map(f=>`<a href="${PJ_FOLDER+encodeURIComponent(f.id)}" target="_blank" rel="noopener">${PJ_I.folder}${esc(f.n)}</a>`).join('')}</div>`:''}
     ${p.note?`<p class="pj-pnote">${esc(p.note)}</p>`:''}
   </section>
+  <div class="pj-tools pj-dtools"><span class="pj-dlab">Attività per data di creazione</span>${pjDateTools()}${pjDateMode()?`<button class="btn sm ghost" onclick="pj.cord='';pj.cdate='';pjSetPref('cord','');pjSetPref('cdate','')">Togli</button>`:''}</div>
   <section class="tile pj-tile pj-tasks">
     ${pjQuick(p.id)}
-    ${pjTaskGroups(ts,{inProject:true,allDone:true,empty:'Nessuna attività aperta. Aggiungine una qui sopra.',doneHint:p.completate_notion?`${p.completate_notion} chiuse in Notion contano solo nel totale`:''})}
+    ${pjTaskGroups(ts,{inProject:true,allDone:true,empty:pj.cdate?'Nessuna attività aperta creata in questo periodo.':'Nessuna attività aperta. Aggiungine una qui sopra.',doneHint:p.completate_notion?`${p.completate_notion} chiuse in Notion contano solo nel totale`:''})}
   </section>`;
 }
 
@@ -8692,7 +9048,7 @@ function pjHomeTile(){
   if(pj.missing)return `<section class="tile span-6 hm-card" ${hmLink("pjGoTab('mie')")} aria-label="Le mie attività"><div class="tile-h"><h3>Le mie attività</h3></div><p class="hm-empty">Progetti e attività si attivano con la migrazione <code>20261107100000_progetti_attivita.sql</code>.</p></section>`;
   const me=ag.me.id,my=pj.att.filter(a=>pjActiveA(a)&&(a.persone||[]).includes(me));
   const c=k=>my.filter(a=>a.stato===k).length,urg=my.filter(a=>a.urgente||(a.scadenza&&a.scadenza<=isoD(today()))).length;
-  const top=pjSort(my.filter(a=>a.stato==='in_corso'||a.urgente)).slice(0,3);
+  const top=pjSort(my.filter(a=>a.stato==='in_corso'||a.urgente),'').slice(0,3);
   return `<section class="tile span-6 hm-card pj-home ${urg?'hm-alert':''}" ${hmLink("pjGoTab('mie')")} aria-label="Le mie attività">
     <div class="tile-h"><h3>Le mie attività</h3><span class="spacer"></span><span class="sub">${my.length} aperte</span></div>
     <ul class="hm-split pj-hsplit"><li><span>In corso</span><b>${c('in_corso')}</b></li><li><span>Da fare</span><b>${c('da_fare')}</b></li><li><span>In attesa</span><b>${c('in_attesa')}</b></li></ul>
