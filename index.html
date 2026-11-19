@@ -3122,12 +3122,12 @@ const SECTIONS=[
   {id:'impostazioni',label:'Impostazioni',icon:'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z'},
 ];
 // nomi dei moduli (una pagina dell'app = un modulo)
-const SEC_NAME={home:'Home',outbound:'Outbound',crm:'CRM',linkedin:'LinkedIn',newsletter:'Newsletter',richieste:'Richieste',contabilita:'Contabilità',agenda:'Calendario',progetti:'Progetti',password:'Password',registro:'Registro',impostazioni:'Impostazioni'};
+const SEC_NAME={home:'Home',outbound:'Outbound',crm:'CRM',linkedin:'LinkedIn',newsletter:'Newsletter',social:'Social',richieste:'Richieste',contabilita:'Contabilità',agenda:'Calendario',progetti:'Progetti',password:'Password',registro:'Registro',impostazioni:'Impostazioni'};
 // area del menu di ogni modulo
 const AREA_NAME={home:'Home',outbound:'Outbound',crm:'CRM',marketing:'Marketing',agenda:'Calendario',progetti:'Progetti',amministrazione:'Amministrazione',impostazioni:'Impostazioni'};
-const AREA_MODS={outbound:['outbound','linkedin'],marketing:['newsletter','richieste'],amministrazione:['contabilita','password','registro']};
+const AREA_MODS={outbound:['outbound','linkedin'],marketing:['newsletter','social','richieste'],amministrazione:['contabilita','password','registro']};
 const NL_PAGES=[{tab:'campagne',label:'Campagne'},{tab:'iscritti',label:'Iscritti'}];
-function sectionOf(v){return v==='home'||v==='crm'||v==='linkedin'||v==='newsletter'||v==='richieste'||v==='contabilita'||v==='agenda'||v==='progetti'||v==='password'||v==='registro'||v==='impostazioni'?v:'outbound'}
+function sectionOf(v){return v==='home'||v==='crm'||v==='linkedin'||v==='newsletter'||v==='social'||v==='richieste'||v==='contabilita'||v==='agenda'||v==='progetti'||v==='password'||v==='registro'||v==='impostazioni'?v:'outbound'}
 function areaOf(v){const m=sectionOf(v);for(const a in AREA_MODS)if(AREA_MODS[a].includes(m))return a;return m}
 function goSection(sec){
   if(sec===areaOf(state.view)){closeRail();return}
@@ -3155,8 +3155,8 @@ function renderNav(){
   const ico=d=>`<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`;
   // livello 1: aree, con un pallino se nell'altra area c'è qualcosa che aspetta
   const area=areaOf(state.view);
-  const alertOut=late||todayN||newRep||ldBusy(), alertNl=!!nl.sending, alertRq=rq.loaded&&rqNew()>0, alertCt=ct.loaded&&!ct.missing&&ctPending().length>0, alertAg=ag.loaded&&!ag.missing&&agUnread()>0, alertHm=hm.loaded&&!hm.missing&&(hmUnreadMsgs()>0);
-  const AL={outbound:[alertOut,'ci sono attività in sospeso'],marketing:[alertNl||alertRq,alertRq?'ci sono richieste nuove':'una newsletter è in invio'],amministrazione:[alertCt||rgErr24(),alertCt?'ci sono movimenti da completare':'un flusso ha dato errore nelle ultime 24 ore'],agenda:[alertAg,'ci sono notifiche da leggere'],home:[alertHm,'ci sono messaggi da leggere']};
+  const alertOut=late||todayN||newRep||ldBusy(), alertNl=!!nl.sending, alertRq=rq.loaded&&rqNew()>0, alertSc=sc.loaded&&scToApprove().length>0, alertCt=ct.loaded&&!ct.missing&&ctPending().length>0, alertAg=ag.loaded&&!ag.missing&&agUnread()>0, alertHm=hm.loaded&&!hm.missing&&(hmUnreadMsgs()>0);
+  const AL={outbound:[alertOut,'ci sono attività in sospeso'],marketing:[alertNl||alertRq||alertSc,alertSc?'ci sono post social da approvare':alertRq?'ci sono richieste nuove':'una newsletter è in invio'],amministrazione:[alertCt||rgErr24(),alertCt?'ci sono movimenti da completare':'un flusso ha dato errore nelle ultime 24 ore'],agenda:[alertAg,'ci sono notifiche da leggere'],home:[alertHm,'ci sono messaggi da leggere']};
   const sp=document.getElementById('spendPill');if(sp)sp.hidden=sec!=='outbound';
   document.getElementById('secSwitch').innerHTML=SECTIONS.map(x=>{
     const on=x.id===area, al=AL[x.id];
@@ -3182,6 +3182,7 @@ const MOD_INFO={
   crm:{icon:'M3 5h18v14H3z M8.5 11.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4z M5 16.5a3.5 3.5 0 0 1 7 0 M14.5 9h4 M14.5 12.5h4',desc:'Clienti, trattative e contatti'},
   linkedin:{icon:'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2 M9 7a4 4 0 1 0 0 8 4 4 0 0 0 0-8z M23 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75',desc:'Ricerca clienti su LinkedIn'},
   newsletter:{icon:'M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z M22 6l-10 7L2 6',desc:'Campagne e iscritti'},
+  social:{icon:'M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z M8 9h8 M8 13h5',desc:'Post LinkedIn e Instagram: calendario e approvazione'},
   richieste:{icon:'M22 12h-6l-2 3h-4l-2-3H2 M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z',desc:'Contatti arrivati da flowline.it'},
   contabilita:{icon:'M20 7H5a2 2 0 0 1 0-4h13v4 M3 5v14a2 2 0 0 0 2 2h15V7 M16 14h.01',desc:'Conti, movimenti e report'},
   password:{icon:'M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4',desc:'Credenziali della squadra'},
@@ -3201,6 +3202,7 @@ function navPages(mod){
   if(mod==='linkedin')return [{label:'Contatti',on:v==='linkedin',click:"go('linkedin')",badge:li.loaded&&!li.missing&&liCount('da_contattare')?B(li.rows.filter(r=>r.stato==='da_contattare').length,'plain'):''}];
   if(mod==='newsletter')return NL_PAGES.map(pg=>({label:pg.label,on:v==='newsletter'&&nl.tab===pg.tab,click:`goNl('${pg.tab}')`,
       badge:pg.tab==='iscritti'&&nl.loaded?B(nlActive().length,'plain'):(pg.tab==='campagne'&&nl.sending?B('invio'):'')}));
+  if(mod==='social')return SC_TABS.map(pg=>({label:pg.label,on:v==='social'&&sc.tab===pg.tab,click:`scGoTab('${pg.tab}')`,badge:pg.tab==='approva'&&sc.loaded?B(scToApprove().length):''}));
   if(mod==='richieste')return [{label:'Dal sito',on:v==='richieste',click:"go('richieste')",badge:B(rq.loaded?rqNew():0)}];
   if(mod==='contabilita')return CT_TABS.map(pg=>({label:pg.label,on:v==='contabilita'&&ct.tab===pg.tab,click:`ctGoTab('${pg.tab}')`,badge:pg.tab==='movimenti'&&ct.loaded&&!ct.missing?B(ctPending().length):''}));
   if(mod==='password')return PW_TABS.map(pg=>({label:pg.label,on:v==='password'&&pw.tab===pg.tab,click:`pwGoTab('${pg.tab}')`}));
@@ -3311,6 +3313,7 @@ function heroCopy(){
   const backlog=state.contacts.filter(isUnplanned).length;
   if(state.view==='home') return hmHeroCopy();
   if(state.view==='newsletter') return nlHeroCopy();
+  if(state.view==='social') return scHeroCopy();
   if(state.view==='richieste') return rqHeroCopy();
   if(state.view==='linkedin') return liHeroCopy();
   if(state.view==='crm') return crHeroCopy();
@@ -3429,7 +3432,7 @@ function render(){
   document.getElementById('viewTitle').textContent=hc.t;
   const vl=document.getElementById('viewLede');if(vl)vl.textContent=hc.l;
   const vd=document.getElementById('viewDate');if(vd)vd.textContent=today().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
-  const pageName=state.view==='home'?'Home':state.view==='crm'?(cr.open&&crA(cr.open)?crA(cr.open).nome:(CR_TABS.find(x=>x.tab===cr.tab)||CR_TABS[0]).label):state.view==='impostazioni'?(ST_TABS.find(x=>x.tab===st.tab)||ST_TABS[0]).label:state.view==='progetti'?(pj.tab==='progetti'&&pj.open&&pjP(pj.open)?pjP(pj.open).nome:(PJ_TABS.find(x=>x.tab===pj.tab)||PJ_TABS[0]).label):state.view==='password'?(PW_TABS.find(x=>x.tab===pw.tab)||PW_TABS[0]).label:state.view==='registro'?(RG_TABS.find(x=>x.tab===rg.tab)||RG_TABS[0]).label:state.view==='agenda'?(AG_TABS.find(x=>x.tab===ag.tab)||AG_TABS[0]).label:state.view==='contabilita'?(CT_TABS.find(x=>x.tab===ct.tab)||CT_TABS[0]).label:state.view==='richieste'?'Richieste':state.view==='linkedin'?'LinkedIn':state.view==='newsletter'?(nl.tab==='iscritti'?'Iscritti':'Campagne'):({dashboard:'Dashboard',pianifica:'Pianificazione',coda:'Coda invio',contatti:'Contatti',calendario:'Piano invii',risposte:'Risposte',lead:'Ricerca lead',stats:'Statistiche'}[state.view]||'Dashboard');
+  const pageName=state.view==='home'?'Home':state.view==='crm'?(cr.open&&crA(cr.open)?crA(cr.open).nome:(CR_TABS.find(x=>x.tab===cr.tab)||CR_TABS[0]).label):state.view==='impostazioni'?(ST_TABS.find(x=>x.tab===st.tab)||ST_TABS[0]).label:state.view==='progetti'?(pj.tab==='progetti'&&pj.open&&pjP(pj.open)?pjP(pj.open).nome:(PJ_TABS.find(x=>x.tab===pj.tab)||PJ_TABS[0]).label):state.view==='password'?(PW_TABS.find(x=>x.tab===pw.tab)||PW_TABS[0]).label:state.view==='registro'?(RG_TABS.find(x=>x.tab===rg.tab)||RG_TABS[0]).label:state.view==='agenda'?(AG_TABS.find(x=>x.tab===ag.tab)||AG_TABS[0]).label:state.view==='contabilita'?(CT_TABS.find(x=>x.tab===ct.tab)||CT_TABS[0]).label:state.view==='social'?(SC_TABS.find(x=>x.tab===sc.tab)||SC_TABS[0]).label:state.view==='richieste'?'Richieste':state.view==='linkedin'?'LinkedIn':state.view==='newsletter'?(nl.tab==='iscritti'?'Iscritti':'Campagne'):({dashboard:'Dashboard',pianifica:'Pianificazione',coda:'Coda invio',contatti:'Contatti',calendario:'Piano invii',risposte:'Risposte',lead:'Ricerca lead',stats:'Statistiche'}[state.view]||'Dashboard');
   const secName=SEC_NAME[sectionOf(state.view)], areaName=AREA_NAME[areaOf(state.view)];
   const crumbs=[areaName];if(secName!==areaName)crumbs.push(secName);if(pageName!==secName&&pageName!==areaName)crumbs.push(pageName);
   document.title=crumbs.slice().reverse().join(' · ')+' — FlowLine Suite';
@@ -3458,6 +3461,7 @@ function render(){
   } else { primary=`<button class="btn primary" onclick="pickFile()">${I.plus}Importa contatti</button>`; importPrimary=true; }
   if(state.view==='home'){ ta.innerHTML=hmTopActions(); }
   else if(state.view==='newsletter'){ ta.innerHTML=nlTopActions(); }
+  else if(state.view==='social'){ ta.innerHTML=scTopActions(); }
   else if(state.view==='richieste'){ ta.innerHTML=rqTopActions(); }
   else if(state.view==='linkedin'){ ta.innerHTML=liTopActions(); }
   else if(state.view==='crm'){ ta.innerHTML=crTopActions(); }
@@ -3483,6 +3487,7 @@ function render(){
   else if(state.view==='risposte')C.innerHTML=viewRisposte();
   else if(state.view==='newsletter'){ if(!nl.inited) nlInit(); C.innerHTML=viewNewsletter(); }
   else if(state.view==='lead'){ if(!nl.inited) nlInit(); C.innerHTML=viewLead(); }
+  else if(state.view==='social'){ if(!nl.inited) nlInit(); C.innerHTML=viewSocial(); }
   else if(state.view==='richieste'){ if(!nl.inited) nlInit(); C.innerHTML=viewRichieste(); }
   else if(state.view==='linkedin'){ if(!nl.inited) nlInit(); C.innerHTML=viewLinkedin(); }
   else if(state.view==='crm'){ if(!nl.inited) nlInit(); C.innerHTML=viewCrm(); }
@@ -3870,7 +3875,62 @@ function codaCard(c,idx,cap){
 function previewEmail(id,step){
   const c=state.contacts.find(x=>x.id===id);if(!c)return;
   const d=getDraft(c,step), mail=composeEmail(c,d.corpo||'');
-  const doc=`<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0;padding:22px 24px;font-family:Arial,Helvetica,sans-serif;font-size:small;color:#222;background:#fff}</style></head><body>${mail.html}</body></html>`;
+  const doc=`<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0;padding:22px 24px;font-family:Arial,Helvetica,sans-serif;font-size:small;color:#222;background:#fff}/* Social */
+.sc-list{display:flex;flex-direction:column;gap:14px}
+.sc-card.tile{display:grid;grid-template-columns:148px minmax(0,1fr);gap:20px;padding:18px}
+.sc-thumb{width:148px;aspect-ratio:4/5;border-radius:var(--r-md);overflow:hidden;background:var(--surface-2);padding:0;cursor:pointer;display:block}
+.sc-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.sc-main{display:flex;flex-direction:column;gap:9px;min-width:0}
+.sc-meta{font-size:13px;color:var(--muted);font-weight:600}
+.sc-meta b{color:var(--accent);font-weight:700}
+.sc-title{font-size:20px;font-weight:800;font-stretch:108%;letter-spacing:-.03em;line-height:1.2}
+.sc-chips{display:flex;gap:8px;flex-wrap:wrap}
+.sc-text{font-size:14px;line-height:1.5;color:var(--muted);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.sc-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:4px}
+.sc-opened{font-size:12.5px;color:var(--faint)}
+.sc-late{color:var(--late);font-weight:650;font-size:13px}
+.sc-rows{background:var(--surface);border-radius:var(--r-xl);padding:4px 20px}
+.sc-row{display:grid;grid-template-columns:76px minmax(0,1fr) auto;gap:16px;align-items:center;padding:14px 0;border-bottom:1px solid var(--border);cursor:pointer}
+.sc-row:last-child{border-bottom:0}
+.sc-rt{display:flex;flex-direction:column;font-variant-numeric:tabular-nums;line-height:1.25}
+.sc-rt b{font-size:17px}.sc-rt span{font-size:12.5px;color:var(--muted)}
+.sc-rtitle{font-weight:650}
+.sc-calbar{justify-content:space-between}
+.sc-nav{display:flex;align-items:center;gap:8px}
+.sc-navt{min-width:180px;text-align:center;font-size:15px}
+.sc-cal{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.sc-day{background:var(--surface);border-radius:var(--r-lg);padding:12px;min-height:150px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.sc-cal.month .sc-day{min-height:104px;padding:10px}
+.sc-day.today{box-shadow:inset 0 0 0 2px var(--brand)}
+.sc-day.off{opacity:.45}
+.sc-dh{display:flex;align-items:baseline;justify-content:space-between;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.sc-dh b{font-size:20px;letter-spacing:-.02em;color:var(--text);font-variant-numeric:tabular-nums}
+.sc-none{color:var(--faint);font-size:13px}
+.sc-item{display:flex;flex-direction:column;gap:3px;text-align:left;width:100%;padding:9px 10px;border-radius:var(--r-sm);background:var(--surface-2);cursor:pointer;min-width:0}
+.sc-item:hover{background:var(--border)}
+.sc-item.plan{background:transparent;border:1.5px dashed var(--border-strong);cursor:default}
+.sc-it-top{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.sc-time{font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--muted)}
+.sc-it-t{font-size:13.5px;font-weight:650;line-height:1.25;overflow-wrap:anywhere}
+.sc-it-s{font-size:12px;color:var(--muted)}.sc-it-s b{color:var(--accent)}
+.sc-tags{display:inline-flex;gap:4px}
+.sc-pl{display:inline-flex;font-size:10.5px;font-weight:700;letter-spacing:.03em;padding:2px 7px;border-radius:var(--pill);background:var(--surface-2);color:var(--muted)}
+.sc-pl.pl-today{background:var(--brand-soft);color:var(--accent)}
+.sc-pl.pl-wait{background:var(--wait-soft);color:var(--wait)}
+.sc-pl.pl-reply{background:var(--ok-soft);color:var(--ok)}
+.sc-pl.pl-late{background:var(--late-soft);color:var(--late)}
+.sc-pl.pl-stop{background:var(--surface-2);color:var(--faint)}
+.sc-lab{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.sc-cover img{width:min(300px,100%);border-radius:var(--r-md);display:block;margin-bottom:12px}
+.sc-slides{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:12px}
+.sc-slides img{width:100%;border-radius:var(--r-sm);display:block}
+.sc-copy{background:var(--surface-2);border-radius:var(--r-md);padding:14px 16px;white-space:pre-wrap;font-size:14.5px;line-height:1.6;overflow-wrap:anywhere}
+.sc-hm{list-style:none;display:flex;flex-direction:column;gap:10px;margin:6px 0 10px;padding:0}
+.sc-hm li{display:grid;grid-template-columns:46px minmax(0,1fr) auto;gap:10px;align-items:center;font-size:14px}
+.sc-hm li b{font-variant-numeric:tabular-nums}
+@media(max-width:900px){.sc-cal{grid-template-columns:1fr}.sc-cal.month{grid-template-columns:repeat(2,minmax(0,1fr))}.sc-day{min-height:0}}
+@media(max-width:600px){.sc-card.tile{grid-template-columns:1fr}.sc-thumb{width:120px}.sc-row{grid-template-columns:60px minmax(0,1fr)}.sc-row .sc-chips{grid-column:2}.sc-navt{min-width:0}.sc-slides{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style></head><body>${mail.html}</body></html>`;
   modal(`<div class="modal" onclick="event.stopPropagation()" style="max-width:760px" role="dialog" aria-modal="true" aria-labelledby="pv-t">
     <div class="modal-h"><h3 id="pv-t">Anteprima email</h3><div class="x" role="button" tabindex="0" aria-label="Chiudi" onclick="closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div>
     <div class="modal-b">
@@ -4636,7 +4696,7 @@ function nlSleep(ms){return new Promise(r=>setTimeout(r,ms))}
 function nlActive(){return nl.subs.filter(s=>!s.unsubscribed_at)}
 
 /* ---- connessione e accesso (condiviso con Ricerca lead) ---- */
-function nlAuthView(){return state.view==='home'||state.view==='crm'||state.view==='newsletter'||state.view==='lead'||state.view==='richieste'||state.view==='linkedin'||state.view==='contabilita'||state.view==='agenda'||state.view==='progetti'||state.view==='password'||state.view==='registro'}
+function nlAuthView(){return state.view==='home'||state.view==='crm'||state.view==='newsletter'||state.view==='lead'||state.view==='richieste'||state.view==='social'||state.view==='linkedin'||state.view==='contabilita'||state.view==='agenda'||state.view==='progetti'||state.view==='password'||state.view==='registro'}
 /* ---- accesso unico alla suite ---- */
 function gateBrand(){return `<div class="gate-brand"><div class="logo" aria-hidden="true">${document.querySelector('.brand .logo')?.innerHTML||''}</div><h1>FlowLine <span class="suite">Suite</span></h1></div>`}
 function gateMode(){
@@ -4677,7 +4737,7 @@ async function nlInit(){
     if(!nl.ready)return;                       // la sessione iniziale la gestisce getSession qui sotto
     const was=nl.session&&nl.session.user&&nl.session.user.id;
     nl.session=session;
-    if(ev==='SIGNED_OUT'){nl.editor=null;nl.loaded=false;nl.subs=[];nl.camps=[];nl.edit=null;ld.loaded=false;ld.searches=[];ld.leads=[];ld.sel.clear();clearTimeout(ld.pollT);rq.loaded=false;rq.rows=[];clearTimeout(rq.pollT);ct.loaded=false;ct.conti=[];ct.mov=[];ct.missing=false;agStop();hmStop();onStop();pwStop();pjStop();liStop();crStop();rgStop();nl.editor=null;render();}
+    if(ev==='SIGNED_OUT'){nl.editor=null;nl.loaded=false;nl.subs=[];nl.camps=[];nl.edit=null;ld.loaded=false;ld.searches=[];ld.leads=[];ld.sel.clear();clearTimeout(ld.pollT);rq.loaded=false;rq.rows=[];clearTimeout(rq.pollT);sc.loaded=false;sc.rows=[];sc.temi=[];sc.err='';clearTimeout(sc.pollT);ct.loaded=false;ct.conti=[];ct.mov=[];ct.missing=false;agStop();hmStop();onStop();pwStop();pjStop();liStop();crStop();rgStop();nl.editor=null;render();}
     else if(ev==='SIGNED_IN' && session && was!==session.user.id){nl.editor=null;render();setTimeout(nlAfterLogin,0);}
   });
   const {data}=await nlSupa.auth.getSession();
@@ -4691,7 +4751,7 @@ async function nlAfterLogin(){
   hmLoad({silent:true});
   const {data,error}=await nlSupa.rpc('newsletter_is_editor');
   nl.editor=(!error&&data===true)||!!ag.me;
-  if(nl.editor){ ldLoad({silent:state.view!=='lead'}); rqLoad({silent:state.view!=='richieste'}); ctLoad({silent:state.view!=='contabilita'}); await nlLoad(); } else render();
+  if(nl.editor){ ldLoad({silent:state.view!=='lead'}); rqLoad({silent:state.view!=='richieste'}); scLoad({silent:state.view!=='social'}); ctLoad({silent:state.view!=='contabilita'}); await nlLoad(); } else render();
   render();
   suiteLinkGo();
 }
@@ -5106,7 +5166,7 @@ function viewNewsletter(){
   return nl.tab==='iscritti'?nlSubsView():nlCampsView();
 }
 function nlLoginView(mode){
-  const t={home:'Accedi alla Home',lead:'Accedi per cercare i lead',richieste:'Accedi alle richieste',contabilita:'Accedi alla contabilità',agenda:'Accedi al calendario'}[mode]||'Accedi alla newsletter';
+  const t={home:'Accedi alla Home',lead:'Accedi per cercare i lead',richieste:'Accedi alle richieste',social:'Accedi ai social',contabilita:'Accedi alla contabilità',agenda:'Accedi al calendario'}[mode]||'Accedi alla newsletter';
   return `<div class="tile nl-login">
     <div class="tile-h"><h3>${t}</h3></div>
     <p class="helptip" style="margin-bottom:18px">Ogni persona del team entra con il proprio account: lo stesso accesso vale per tutta la FlowLine Suite (Home, Outbound, Newsletter, Richieste, Contabilità e Calendario). Gli account si creano in Supabase → Authentication → Users e si collegano alla squadra una volta sola (vedi README).</p>
@@ -6712,6 +6772,7 @@ const HM_TILES=[
   {id:'attivita',label:'Le mie attività',size:6},
   {id:'messaggi',label:'Messaggi',size:8},
   {id:'online',label:'Online',size:4},
+  {id:'social',label:'Social di oggi',size:6},
 ];
 const HM_SIZES=[{n:3,l:'Piccolo'},{n:4,l:'Medio'},{n:6,l:'Grande'},{n:8,l:'Largo'},{n:12,l:'Riga intera'}];
 const hl={editing:false,draft:null,saved:null,db:null,key:null,drag:null};
@@ -6884,6 +6945,7 @@ function viewHome(){
       ${hm.missing?`<p class="hm-empty">Messaggi e bacheca si attivano con la migrazione <code>20261104150000_messaggi_bacheca.sql</code>.</p>`
       :convos.length?`<div class="hm-convs">${convos.slice(0,5).map(hmConvoCard).join('')}</div>`:`<p class="hm-empty">Nessun messaggio. Scrivi a un collega con «Nuovo».</p>`}
     </section>`,
+    social:()=>scHomeTile(SP('social')),
     online:()=>`<section class="tile ${SP('online')} hm-online" aria-label="Online adesso">
       <div class="tile-h"><h3>Online</h3><span class="spacer"></span><span class="on-dot attivo" aria-hidden="true"></span></div>
       <div id="on-tile-body">${onTileHtml()}</div>
@@ -9439,6 +9501,305 @@ function ldResultsView(){
   <div class="ld-selbar" id="ld-selbar" ${ld.sel.size?'':'hidden'}><span class="plan-sel-info"><b id="ld-sel-n">${ld.sel.size}</b> <span id="ld-sel-t">${ld.sel.size===1?'lead scelto':'lead scelti'}</span></span><span class="spacer"></span><button class="btn sm ghost" onclick="ld.sel.clear();render()">Annulla</button><button class="btn" onclick="ldExportCsv()">${LD_I.ext}Esporta in CSV</button><button class="btn primary" onclick="ldImport()">${LD_I.plus}Aggiungi ai contatti</button></div>`
   :`<div class="empty">${LD_I.search}<h4>${ld.leads.length?'Nessun lead con questi filtri':'Ancora nessun lead'}</h4><p>${ld.leads.length?'Prova a togliere un filtro o a cambiare ricerca.':'Avvia la prima ricerca qui sopra: i risultati compaiono qui appena n8n ha finito.'}</p></div>`}
   <p class="helptip" style="margin-top:12px">Aggiungendo un lead ai contatti entra in Outbound come “da pianificare”, con descrizione e sito per scrivere l'email. I lead senza email restano qui: puoi chiamarli o cercare l'indirizzo sul sito.</p>`;
+}
+
+/* =======================================================
+   SOCIAL — post LinkedIn e Instagram (Marketing › Social)
+   I post vivono nel progetto Supabase FLOWLINE JOURNAL (tabella social_posts, scritta dalle attività di Claude e dal flusso n8n
+   delle foto). La Suite li legge con la funzione suite-social, che controlla l'accesso. Qui si legge e si apre l'approvazione:
+   l'approvazione vera e propria resta su Creads (pagina creads.studio/mcp/approve/<id>), come nelle email.
+   ======================================================= */
+const SC_FN='https://dwsdrhqsqofublntmyma.supabase.co/functions/v1/suite-social';
+const SC_APPROVE='https://creads.studio/mcp/approve/';
+const SC_TABS=[{tab:'approva',label:'Da approvare'},{tab:'calendario',label:'Calendario'},{tab:'archivio',label:'Archivio'}];
+const SC_DOW=['domenica','lunedì','martedì','mercoledì','giovedì','venerdì','sabato'];
+const SC_MON=['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
+const sc={tab:'approva',rows:[],temi:[],loaded:false,loading:false,err:'',at:0,pollT:null,cal:'settimana',ref:null,filter:'tutti',opened:load('flo_sc_opened',{})};
+const SC_I={
+  refresh:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6 M1 20v-6h6 M3.51 9a9 9 0 0 1 14.85-3.36L23 10 M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>',
+  ext:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7 M8 7h9v9"/></svg>',
+  prev:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>',
+  next:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>',
+  x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>',
+  cal:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 4h18v18H3z M16 2v4 M8 2v4 M3 10h18"/></svg>',
+};
+// date: tutto in ora locale (la squadra è in Italia); i giorni dei post sono stringhe AAAA-MM-GG
+function scIso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function scDate(iso){const [y,m,d]=iso.split('-').map(Number);return new Date(y,m-1,d)}
+function scAddDays(d,n){const x=new Date(d);x.setDate(x.getDate()+n);return x}
+function scMonday(d){const x=new Date(d);x.setHours(0,0,0,0);x.setDate(x.getDate()-((x.getDay()+6)%7));return x}
+function scCap(s){return s.charAt(0).toUpperCase()+s.slice(1)}
+function scWhen(iso){
+  const t=today();
+  if(iso===scIso(t))return 'Oggi';
+  if(iso===scIso(scAddDays(t,1)))return 'Domani';
+  if(iso===scIso(scAddDays(t,-1)))return 'Ieri';
+  const d=scDate(iso);return scCap(SC_DOW[d.getDay()])+' '+d.getDate()+' '+SC_MON[d.getMonth()].slice(0,3);
+}
+function scShort(s,n){s=String(s||'').replace(/\s+/g,' ').trim();return s.length>n?s.slice(0,n-1).trimEnd()+'…':s}
+function scTipo(r){return r.tipo==='servizio'?'Servizio':'Articolo'}
+// stato di ogni piattaforma → etichetta e colore del chip (arancione = "da fare")
+const SC_ST={in_approvazione:['Da approvare','today','pl-today'],programmato:['Programmato','wait','pl-wait'],pubblicato:['Pubblicato','reply','pl-reply'],saltato:['Saltato','stop','pl-stop'],errore:['Errore','late','pl-late']};
+const SC_PREP={foto_da_generare:['In preparazione','da','pl-stop'],foto_in_generazione:['In preparazione','da','pl-stop'],foto_pronta:['Foto pronta','plan','pl-stop'],post_in_approvazione:['In approvazione','today','pl-today'],errore:['Errore','late','pl-late'],saltato:['Saltato','stop','pl-stop'],programmato:['Programmato','wait','pl-wait'],pubblicato:['Pubblicato','reply','pl-reply']};
+function scIgOff(r){return r.instagram_stato==='saltato'&&r.orario==='18:00'}   // le 18:00 escono solo su LinkedIn: non è un problema
+function scChip(label,m){return `<span class="chip ${m[1]}"><span class="d"></span>${label?label+' · ':''}${m[0]}</span>`}
+function scChips(r){
+  const li=r.linkedin_stato, ig=r.instagram_stato, out=[];
+  if(!li&&!ig){return scChip('',SC_PREP[r.stato]||[r.stato||'—','da','pl-stop'])}
+  if(li)out.push(scChip('LinkedIn',SC_ST[li]||[li,'da','pl-stop']));
+  if(ig&&!scIgOff(r))out.push(scChip('Instagram',SC_ST[ig]||[ig,'da','pl-stop']));
+  else if(scIgOff(r))out.push('<span class="chip da"><span class="d"></span>Solo LinkedIn</span>');
+  return out.join('');
+}
+function scTag(label,s){const m=SC_ST[s];return s?`<span class="sc-pl ${m?m[2]:'pl-stop'}" title="${escAttr(label==='LI'?'LinkedIn':'Instagram')}: ${escAttr(m?m[0]:s)}">${label}</span>`:''}
+function scTags(r){
+  if(!r.linkedin_stato&&!r.instagram_stato){const p=SC_PREP[r.stato]||[r.stato||'—','da','pl-stop'];return `<span class="sc-pl ${p[2]}">${esc(p[0])}</span>`}
+  return scTag('LI',r.linkedin_stato)+(scIgOff(r)?'':scTag('IG',r.instagram_stato));
+}
+function scPending(r){
+  return [['linkedin','LinkedIn'],['instagram','Instagram']].filter(([p])=>r[p+'_stato']==='in_approvazione'&&r[p+'_approval_id']).map(([p,l])=>({p,l,id:r[p+'_approval_id']}));
+}
+function scDeadline(r){return new Date(r.giorno+'T'+r.orario+':00')}
+function scLeft(r){
+  const m=Math.floor((scDeadline(r)-new Date())/6e4); if(m<=0)return null;
+  const h=Math.floor(m/60), mm=m%60;
+  return h?h+' h'+(mm?' '+String(mm).padStart(2,'0')+' min':''):mm+' min';
+}
+function scToApprove(){return sc.rows.filter(r=>scPending(r).length&&scDeadline(r)>new Date()).sort((a,b)=>scDeadline(a)-scDeadline(b))}
+function scIsProblem(r){
+  const bad=s=>s==='errore'||s==='saltato';
+  if(r.stato==='errore'||bad(r.linkedin_stato)||r.instagram_stato==='errore'||(r.instagram_stato==='saltato'&&!scIgOff(r)))return true;
+  if(r.stato==='saltato')return true;
+  return scPending(r).length>0&&scDeadline(r)<=new Date();   // approvazione non arrivata prima dell'orario
+}
+function scProblems(){const lim=scIso(scAddDays(today(),-7)), t=scIso(today());return sc.rows.filter(r=>r.giorno>=lim&&r.giorno<=t&&scIsProblem(r)).sort((a,b)=>(b.giorno+b.orario).localeCompare(a.giorno+a.orario))}
+function scTodayRows(){return sc.rows.filter(r=>r.giorno===scIso(today())).sort((a,b)=>a.orario.localeCompare(b.orario))}
+// piano fisso: lunedì, mercoledì e venerdì articoli (13:00 e 18:00); martedì e giovedì un servizio alle 13:00
+function scPlan(d){const w=d.getDay();return w===1||w===3||w===5?[{orario:'13:00',tipo:'articolo'},{orario:'18:00',tipo:'articolo'}]:w===2||w===4?[{orario:'13:00',tipo:'servizio'}]:[]}
+// i temi dei servizi escono in ordine tra quelli non ancora usati: assegno il prossimo a ogni martedì/giovedì che non ha ancora la sua riga
+function scTemaMap(){
+  const unused=sc.temi.filter(t=>!t.usato_il).sort((a,b)=>a.ordine-b.ordine), map={};
+  let k=0, d=today();
+  for(let i=0;i<70;i++,d=scAddDays(d,1)){
+    const iso=scIso(d);
+    if(!scPlan(d).some(p=>p.tipo==='servizio'))continue;
+    if(sc.rows.some(r=>r.giorno===iso&&r.tipo==='servizio'))continue;
+    map[iso]=unused[k++]||null;
+  }
+  return map;
+}
+function scDayItems(d,temi){
+  const iso=scIso(d), real=sc.rows.filter(r=>r.giorno===iso).sort((a,b)=>a.orario.localeCompare(b.orario));
+  const items=real.map(r=>({real:r,orario:r.orario}));
+  if(iso>=scIso(today()))scPlan(d).forEach(p=>{
+    if(real.some(r=>r.orario===p.orario))return;
+    const late=iso===scIso(today())&&new Date(iso+'T'+p.orario+':00')<new Date();
+    items.push({plan:p,orario:p.orario,iso,late,tema:p.tipo==='servizio'?temi[iso]:null});
+  });
+  return items.sort((a,b)=>a.orario.localeCompare(b.orario));
+}
+
+async function scLoad(opts={}){
+  if(!nlSupa||!nl.session||!nl.editor)return;
+  const first=!sc.loaded;
+  sc.loading=true; if(state.view==='social'&&!opts.silent)render();
+  try{
+    const {data:s}=await nlSupa.auth.getSession(); const tok=s&&s.session&&s.session.access_token;
+    if(!tok)throw new Error('accesso scaduto: esci e rientra');
+    const t0=today();
+    const res=await fetch(SC_FN,{method:'POST',headers:{'Authorization':'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify({da:scIso(scAddDays(t0,-60)),a:scIso(scAddDays(t0,30))})});
+    let j=null; try{j=await res.json()}catch(_){}
+    if(!res.ok||!j||!j.ok)throw new Error((j&&j.errore)||('errore '+res.status));
+    sc.rows=j.posts||[]; sc.temi=j.temi||[]; sc.err=''; sc.loaded=true; sc.at=Date.now();
+  }catch(e){sc.err=String(e.message||e); if(!opts.silent)toast('Social: '+sc.err,'err')}
+  sc.loading=false;
+  if(state.view==='social')render(); else if(first&&state.view==='home'&&!hl.editing)render(); else renderNav();
+  clearTimeout(sc.pollT); sc.pollT=setTimeout(()=>scLoad({silent:true}),state.view==='social'?120000:300000);   // ogni 2 minuti qui, ogni 5 altrove
+}
+async function scRefresh(){
+  const b=document.getElementById('btnRefresh'); if(b){b.disabled=true;b.innerHTML='<span class="spinner"></span> Aggiorno…';}
+  await scLoad(); toast(sc.err?'Social: '+sc.err:'Post aggiornati',sc.err?'err':'ok');
+}
+function scGoTab(t){sc.tab=t;if(state.view!=='social')go('social');else{closeRail();render();window.scrollTo(0,0)}}
+function scMarkOpened(id){
+  sc.opened[id]=Date.now();
+  const lim=Date.now()-4*864e5; Object.keys(sc.opened).forEach(k=>{if(sc.opened[k]<lim)delete sc.opened[k]});
+  save('flo_sc_opened',sc.opened);
+  setTimeout(()=>{if(state.view==='social'||state.view==='home')render()},300);
+}
+function scCopy(id,which){
+  const r=sc.rows.find(x=>x.id===id); if(!r)return;
+  const txt=which==='ig'?r.testo_instagram:r.testo_linkedin;
+  (navigator.clipboard?navigator.clipboard.writeText(txt||''):Promise.reject()).then(()=>toast('Testo copiato','ok'),()=>toast('Non riesco a copiare: selezionalo a mano','warn'));
+}
+function scApproveBtn(p){
+  const at=sc.opened[p.id];
+  return `<a class="btn ${at?'':'primary'}" href="${SC_APPROVE}${encodeURIComponent(p.id)}" target="_blank" rel="noopener" onclick="scMarkOpened('${escAttr(p.id)}')">${at?'Riapri':'Approva'} ${p.l}${SC_I.ext}</a>`
+    +(at?`<span class="sc-opened">aperta su Creads alle ${new Date(at).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'})}</span>`:'');
+}
+
+function scHeroCopy(){
+  if(!nl.session) return {t:'Social.',l:'Accedi per vedere i post LinkedIn e Instagram di Flowline e approvarli.'};
+  if(nl.editor===false) return {t:'Accesso non abilitato.',l:'Questo account non è nella squadra.'};
+  if(!sc.loaded) return {t:'Social.',l:sc.err?'Non riesco a leggere i post: '+sc.err+'.':'Carico i post…'};
+  if(sc.tab==='calendario') return {t:'Calendario editoriale.',l:'Cosa esce e quando: lunedì, mercoledì e venerdì dagli articoli del Journal, martedì e giovedì un post sui servizi. Le caselle tratteggiate sono le uscite previste.'};
+  if(sc.tab==='archivio') return {t:'Archivio dei post.',l:'I post degli ultimi due mesi, con lo stato su LinkedIn e Instagram.'};
+  const n=scToApprove().length;
+  return {t:n?`${n} post da approvare.`:'Niente da approvare adesso.',l:n?'Approva entro l\'orario di uscita: dopo, il post non esce più. I pulsanti aprono la pagina di approvazione su Creads.':'I post del giorno vengono preparati alle 8:05; le approvazioni compaiono qui e arrivano anche per email.'};
+}
+function scTopActions(){
+  if(!nl.session||!nl.editor)return '';
+  return `<button class="btn" id="btnRefresh" onclick="scRefresh()" title="Rileggi i post">${SC_I.refresh}<span class="lbl">Aggiorna</span></button>`;
+}
+function scGate(){
+  if(!nl.ready) return `<div class="empty"><span class="spinner"></span></div>`;
+  if(!nl.session) return nlLoginView('social');
+  if(nl.editor===null) return `<div class="empty"><span class="spinner"></span><p style="margin-top:14px">Verifico l'accesso…</p></div>`;
+  if(nl.editor===false) return `<div class="empty">${SC_I.cal}<h4>Questo account non è nella squadra</h4><p>${esc(nl.session.user?.email||'')} ha fatto l'accesso, ma non è tra le persone della squadra.</p><button class="btn" onclick="nlLogout()">Esci</button></div>`;
+  return '';
+}
+function viewSocial(){
+  const g=scGate(); if(g)return g;
+  if(!sc.loaded){
+    if(sc.err)return `<div class="empty">${SC_I.cal}<h4>Non riesco a leggere i post</h4><p>${esc(sc.err)}</p><button class="btn" onclick="scRefresh()">Riprova</button></div>`;
+    return `<div class="empty"><span class="spinner"></span><p style="margin-top:14px">Carico i post…</p></div>`;
+  }
+  const warn=sc.err?`<div class="alert"><span><b>Dati non aggiornati:</b> ${esc(sc.err)}. Sto mostrando l'ultima lettura riuscita.</span></div>`:'';
+  return warn+(sc.tab==='calendario'?scCalView():sc.tab==='archivio'?scArchView():scApprView());
+}
+function scCard(r){
+  const pend=scPending(r), left=scLeft(r);
+  const img=r.immagine_url||(Array.isArray(r.slide_urls)&&r.slide_urls[0])||'';
+  return `<article class="tile sc-card">
+    <button type="button" class="sc-thumb" onclick="scOpen('${escAttr(r.id)}')" aria-label="Anteprima: ${escAttr(r.titolo_grafica)}">${img?`<img src="${escAttr(img)}" alt="" loading="lazy">`:''}</button>
+    <div class="sc-main">
+      <div class="sc-meta">${scWhen(r.giorno)} · ${esc(r.orario)} · ${scTipo(r)}${left?` · <b>approva entro le ${esc(r.orario)} (tra ${left})</b>`:''}</div>
+      <h4 class="sc-title">${esc(r.titolo_grafica)}</h4>
+      <div class="sc-chips">${scChips(r)}</div>
+      <p class="sc-text">${esc(scShort(r.testo_linkedin,200))}</p>
+      <div class="sc-actions">${pend.map(scApproveBtn).join('')}<button type="button" class="btn" onclick="scOpen('${escAttr(r.id)}')">Anteprima e testi</button></div>
+    </div></article>`;
+}
+function scRow(r){
+  const note=scIsProblem(r)&&r.note?`<div class="email-cell">${esc(scShort(r.note,140))}</div>`:'';
+  return `<div class="sc-row" role="button" tabindex="0" onclick="scOpen('${escAttr(r.id)}')" onkeydown="if(event.key==='Enter'){scOpen('${escAttr(r.id)}')}">
+    <div class="sc-rt"><b>${esc(r.orario)}</b><span>${esc(scWhen(r.giorno))}</span></div>
+    <div><div class="sc-rtitle">${esc(r.titolo_grafica)}</div><div class="email-cell">${scTipo(r)}</div>${note}</div>
+    <div class="sc-chips">${scChips(r)}</div></div>`;
+}
+function scApprView(){
+  const ap=scToApprove(), pr=scProblems(), tod=scTodayRows(), t=scIso(today());
+  const prog=sc.rows.filter(r=>r.giorno>=t&&(r.linkedin_stato==='programmato'||r.instagram_stato==='programmato')).length;
+  const wk0=scIso(scMonday(today())), pubW=sc.rows.filter(r=>r.giorno>=wk0&&r.giorno<=t&&(r.linkedin_stato==='pubblicato'||r.instagram_stato==='pubblicato')).length;
+  const kpis=`<div class="nl-kpis" style="margin-bottom:8px">
+    <div class="stat-t t-orange"><div class="k">Da approvare</div><div class="row"><div class="v">${ap.length}</div><div class="m">${ap.length?'primo entro le '+esc(ap[0].orario)+(ap[0].giorno===t?'':' di '+scWhen(ap[0].giorno).toLowerCase()):'niente in attesa'}</div></div></div>
+    <div class="stat-t t-white"><div class="k">Programmati</div><div class="row"><div class="v">${prog}</div><div class="m">approvati, in uscita</div></div></div>
+    <div class="stat-t t-white"><div class="k">Usciti questa settimana</div><div class="row"><div class="v">${pubW}</div><div class="m">post pubblicati da lunedì</div></div></div>
+  </div>`;
+  return kpis
+    +`<div class="section-h"><h3>Da approvare</h3><span class="count">${ap.length}</span><div class="line"></div></div>`
+    +(ap.length?`<div class="sc-list">${ap.map(scCard).join('')}</div>`:`<p class="helptip">Niente da approvare adesso. Quando il flusso prepara un post, compare qui con il pulsante per approvarlo.</p>`)
+    +`<div class="section-h"><h3>Oggi</h3><span class="count">${tod.length}</span><div class="line"></div></div>`
+    +(tod.length?`<div class="sc-rows">${tod.map(scRow).join('')}</div>`:`<p class="helptip">${scPlan(today()).length?'Oggi i post non sono ancora stati preparati: il flusso parte alle 8:05.':'Oggi non sono previsti post.'}</p>`)
+    +(pr.length?`<div class="section-h"><h3>Da controllare</h3><span class="count">${pr.length}</span><div class="line"></div></div><div class="sc-rows">${pr.map(scRow).join('')}</div>`:'')
+    +`<p class="helptip" style="margin-top:18px">L'approvazione si fa su Creads: il pulsante apre la pagina giusta. Lo stato dei post (programmato, pubblicato) viene aggiornato dal flusso ogni ora, tra le 9:40 e le 16:40, quindi dopo aver approvato può servire un po' prima che qui cambi.</p>`;
+}
+function scCalItem(it,compact){
+  if(it.real){
+    const r=it.real;
+    return `<button type="button" class="sc-item" onclick="scOpen('${escAttr(r.id)}')" title="${escAttr(r.titolo_grafica)}">
+      <span class="sc-it-top"><span class="sc-time">${esc(r.orario)}</span><span class="sc-tags">${scTags(r)}</span></span>
+      <span class="sc-it-t">${esc(compact?scShort(r.titolo_grafica,38):r.titolo_grafica)}</span>
+      ${compact?'':`<span class="sc-it-s">${scTipo(r)}${r.linkedin_stato==='in_approvazione'||r.instagram_stato==='in_approvazione'?' · <b>da approvare</b>':''}</span>`}
+    </button>`;
+  }
+  const p=it.plan, label=p.tipo==='servizio'?(it.tema?it.tema.tema:'Tema da scegliere'):'Articolo del Journal';
+  return `<div class="sc-item plan" title="Uscita prevista">
+    <span class="sc-it-top"><span class="sc-time">${esc(it.orario)}</span>${it.late?'<span class="sc-pl pl-late">non preparato</span>':''}</span>
+    <span class="sc-it-t">${esc(compact?scShort(label,38):label)}</span>
+    ${compact?'':`<span class="sc-it-s">${p.tipo==='servizio'?'Servizio'+(it.tema&&it.tema.servizio?' · '+esc(it.tema.servizio):''):'Articolo'} · previsto</span>`}
+  </div>`;
+}
+function scCalView(){
+  if(!sc.ref)sc.ref=today();
+  const month=sc.cal==='mese', temi=scTemaMap(), t=scIso(today());
+  let days=[], title='';
+  if(month){
+    const f=new Date(sc.ref.getFullYear(),sc.ref.getMonth(),1), l=new Date(sc.ref.getFullYear(),sc.ref.getMonth()+1,0);
+    for(let d=scMonday(f);d<=l;d=scAddDays(d,7))for(let i=0;i<5;i++)days.push(scAddDays(d,i));
+    title=scCap(SC_MON[sc.ref.getMonth()])+' '+sc.ref.getFullYear();
+  }else{
+    const m=scMonday(sc.ref); days=[0,1,2,3,4].map(i=>scAddDays(m,i));
+    const a=days[0], b=days[4];
+    title=a.getMonth()===b.getMonth()?`${a.getDate()}–${b.getDate()} ${SC_MON[a.getMonth()]} ${a.getFullYear()}`:`${a.getDate()} ${SC_MON[a.getMonth()].slice(0,3)} – ${b.getDate()} ${SC_MON[b.getMonth()].slice(0,3)} ${b.getFullYear()}`;
+  }
+  const head=`<div class="filters sc-calbar">
+    <div class="seg" role="group" aria-label="Vista"><button class="fbtn ${!month?'on':''}" aria-pressed="${!month}" onclick="scSetCal('settimana')">Settimana</button><button class="fbtn ${month?'on':''}" aria-pressed="${month}" onclick="scSetCal('mese')">Mese</button></div>
+    <div class="sc-nav"><button class="btn sm" onclick="scNav(-1)" aria-label="${month?'Mese':'Settimana'} precedente">${SC_I.prev}</button><b class="sc-navt">${esc(title)}</b><button class="btn sm" onclick="scNav(1)" aria-label="${month?'Mese':'Settimana'} successiva">${SC_I.next}</button><button class="btn sm" onclick="scToday()">Oggi</button></div>
+  </div>`;
+  const wd=['Lun','Mar','Mer','Gio','Ven'];
+  const cells=days.map((d,i)=>{
+    const iso=scIso(d), items=scDayItems(d,temi), off=month&&d.getMonth()!==sc.ref.getMonth();
+    return `<div class="sc-day${iso===t?' today':''}${off?' off':''}"><div class="sc-dh"><span>${wd[i%5]}</span><b>${d.getDate()}${month&&d.getDate()===1?' '+SC_MON[d.getMonth()].slice(0,3):''}</b></div>${items.length?items.map(it=>scCalItem(it,month)).join(''):'<span class="sc-none">—</span>'}</div>`;
+  }).join('');
+  return head+`<div class="sc-cal ${month?'month':''}">${cells}</div>
+    <p class="helptip" style="margin-top:14px">Le uscite passate e di oggi sono i post veri; quelle tratteggiate sono previste dal piano (il flusso le prepara la mattina stessa alle 8:05). LI = LinkedIn, IG = Instagram; il colore dice lo stato.</p>`;
+}
+function scSetCal(v){sc.cal=v;render()}
+function scNav(dir){
+  if(!sc.ref)sc.ref=today();
+  sc.ref=sc.cal==='mese'?new Date(sc.ref.getFullYear(),sc.ref.getMonth()+dir,1):scAddDays(sc.ref,7*dir);
+  render();
+}
+function scToday(){sc.ref=today();render()}
+function scArchView(){
+  const t=scIso(today());
+  let rows=sc.rows.filter(r=>r.giorno<=t).sort((a,b)=>(b.giorno+b.orario).localeCompare(a.giorno+a.orario));
+  const F=[['tutti','Tutti',x=>true],['articolo','Articoli',x=>x.tipo==='articolo'],['servizio','Servizi',x=>x.tipo==='servizio'],['problemi','Con problemi',scIsProblem]];
+  const cnt=id=>rows.filter(F.find(f=>f[0]===id)[2]).length;
+  const f=F.find(x=>x[0]===sc.filter)||F[0];
+  const shown=rows.filter(f[2]);
+  const bar=`<div class="filters"><div class="seg" role="group" aria-label="Filtro">${F.map(x=>`<button class="fbtn ${sc.filter===x[0]?'on':''}" aria-pressed="${sc.filter===x[0]}" onclick="sc.filter='${x[0]}';render()">${x[1]} · ${cnt(x[0])}</button>`).join('')}</div></div>`;
+  if(!shown.length)return bar+`<div class="empty">${SC_I.cal}<h4>Nessun post qui</h4><p>Prova un altro filtro.</p></div>`;
+  const st=s=>s?scChip('',SC_ST[s]||[s,'da','pl-stop']):'<span class="email-cell">—</span>';
+  return bar+`<div class="table-wrap"><table><thead><tr><th>Giorno</th><th>Ora</th><th>Tipo</th><th>Titolo</th><th>LinkedIn</th><th>Instagram</th></tr></thead><tbody>
+    ${shown.map(r=>`<tr style="cursor:pointer" onclick="scOpen('${escAttr(r.id)}')"><td class="az">${esc(scWhen(r.giorno))}</td><td class="tnum">${esc(r.orario)}</td><td>${scTipo(r)}</td><td>${esc(r.titolo_grafica)}</td><td>${st(r.linkedin_stato)}</td><td>${scIgOff(r)?'<span class="email-cell">non previsto</span>':st(r.instagram_stato)}</td></tr>`).join('')}
+  </tbody></table></div>`;
+}
+function scOpen(id){
+  const r=sc.rows.find(x=>x.id===id); if(!r)return;
+  const slides=Array.isArray(r.slide_urls)?r.slide_urls:[], pend=scPending(r);
+  const igShown=!scIgOff(r)&&String(r.testo_instagram||'').trim().toLowerCase()!=='non usato';
+  const thumbs=slides.map((u,i)=>`<a href="${escAttr(u)}" target="_blank" rel="noopener" aria-label="Slide ${i+1}"><img src="${escAttr(u)}" alt="Slide ${i+1}" loading="lazy"></a>`).join('');
+  modal(`<div class="modal wide sc-modal" role="dialog" aria-modal="true" aria-labelledby="sc-h" onclick="event.stopPropagation()">
+    <div class="modal-h"><div style="flex:1;min-width:0"><h3 id="sc-h">${esc(r.titolo_grafica)}</h3><div class="email-cell">${esc(scWhen(r.giorno))} · ${esc(r.orario)} · ${scTipo(r)}</div></div>
+      <div class="x" role="button" tabindex="0" aria-label="Chiudi" onclick="closeModal()">${SC_I.x}</div></div>
+    <div class="modal-b">
+      <div class="sc-chips">${scChips(r)}</div>
+      ${r.note&&(scIsProblem(r)||r.stato==='errore')?`<div class="alert"><span>${esc(r.note)}</span></div>`:''}
+      ${pend.length?`<div class="sc-actions">${pend.map(scApproveBtn).join('')}${scLeft(r)?`<span class="sc-late" style="color:var(--accent)">entro le ${esc(r.orario)}, tra ${scLeft(r)}</span>`:`<span class="sc-late">orario passato: non approvare più</span>`}</div>`:''}
+      <section><div class="sc-lab">LinkedIn · immagine di copertina</div>
+        ${r.immagine_url?`<a class="sc-cover" href="${escAttr(r.immagine_url)}" target="_blank" rel="noopener"><img src="${escAttr(r.immagine_url)}" alt="Copertina LinkedIn" loading="lazy"></a>`:'<p class="helptip">Immagine non ancora pronta.</p>'}
+        <div class="sc-copy">${esc(r.testo_linkedin)}</div>
+        <div class="sc-actions"><button class="btn sm" onclick="scCopy('${escAttr(r.id)}','li')">Copia testo</button></div></section>
+      ${igShown?`<section><div class="sc-lab">Instagram · carosello${slides.length?' di '+slides.length+' slide':''}</div>
+        ${thumbs?`<div class="sc-slides">${thumbs}</div>`:'<p class="helptip">Slide non ancora pronte.</p>'}
+        <div class="sc-copy">${esc(r.testo_instagram)}</div>
+        <div class="sc-actions"><button class="btn sm" onclick="scCopy('${escAttr(r.id)}','ig')">Copia testo</button></div></section>`:''}
+      ${r.link_articolo?`<a class="btn" href="${escAttr(r.link_articolo)}" target="_blank" rel="noopener" style="align-self:flex-start">Apri l'articolo sul Journal${SC_I.ext}</a>`:''}
+    </div></div>`);
+}
+// riquadro della Home: i post di oggi e quanti sono da approvare
+function scHomeTile(span){
+  const rows=scTodayRows(), ap=sc.loaded?scToApprove().length:0;
+  const body=!sc.loaded?`<p class="hm-empty">${sc.err?'Non riesco a leggere i post.':'Carico i post…'}</p>`
+    :rows.length?`<ul class="sc-hm">${rows.map(r=>`<li><b>${esc(r.orario)}</b><span>${esc(scShort(r.titolo_grafica,46))}</span><span class="sc-tags">${scTags(r)}</span></li>`).join('')}</ul>`
+    :`<p class="hm-empty">${scPlan(today()).length?'I post di oggi non sono ancora stati preparati (il flusso parte alle 8:05).':'Oggi non sono previsti post.'}</p>`;
+  return `<section class="tile ${span} hm-card ${ap?'hm-alert':''}" ${hmLink("scGoTab('approva')")} aria-label="Social di oggi">
+    <div class="tile-h"><h3>Social di oggi</h3><span class="spacer"></span>${ap?`<span class="sub">${ap} da approvare</span>`:''}</div>
+    ${body}
+    <div class="hm-foot">${ap?`${ap} da approvare · `:''}Apri Social ${HM_I.arrow}</div>
+  </section>`;
 }
 
 /* =======================================================
