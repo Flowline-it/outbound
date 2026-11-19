@@ -1726,6 +1726,76 @@ button.rg-tit:hover{color:var(--accent);text-decoration:underline}
 .gs-foot kbd{margin-right:3px}
 @media(max-width:700px){.gs-ov{padding:0}.gs-box{max-height:100%;height:100%;border-radius:0}.gs-foot{display:none}}
 body.gs-on{overflow:hidden}
+/* Social */
+.sc-list{display:flex;flex-direction:column;gap:14px}
+.sc-card.tile{display:grid;grid-template-columns:148px minmax(0,1fr);gap:20px;padding:18px}
+.sc-thumb{width:148px;aspect-ratio:4/5;border-radius:var(--r-md);overflow:hidden;background:var(--surface-2);padding:0;cursor:pointer;display:block}
+.sc-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.sc-main{display:flex;flex-direction:column;gap:9px;min-width:0}
+.sc-meta{font-size:13px;color:var(--muted);font-weight:600}
+.sc-meta b{color:var(--accent);font-weight:700}
+.sc-title{font-size:20px;font-weight:800;font-stretch:108%;letter-spacing:-.03em;line-height:1.2}
+.sc-chips{display:flex;gap:8px;flex-wrap:wrap}
+.sc-text{font-size:14px;line-height:1.5;color:var(--muted);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.sc-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:4px}
+.sc-opened{font-size:12.5px;color:var(--faint)}
+.sc-late{color:var(--late);font-weight:650;font-size:13px}
+.sc-rows{background:var(--surface);border-radius:var(--r-xl);padding:4px 20px}
+.sc-row{display:grid;grid-template-columns:76px minmax(0,1fr) auto;gap:16px;align-items:center;padding:14px 0;border-bottom:1px solid var(--border);cursor:pointer}
+.sc-row:last-child{border-bottom:0}
+.sc-rt{display:flex;flex-direction:column;font-variant-numeric:tabular-nums;line-height:1.25}
+.sc-rt b{font-size:17px}.sc-rt span{font-size:12.5px;color:var(--muted)}
+.sc-rtitle{font-weight:650}
+.sc-calbar{justify-content:space-between}
+.sc-nav{display:flex;align-items:center;gap:8px}
+.sc-navt{min-width:180px;text-align:center;font-size:15px}
+.sc-cal{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.sc-day{background:var(--surface);border-radius:var(--r-lg);padding:12px;min-height:150px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.sc-wdrow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:0 0 6px;padding:0 12px}
+.sc-wdrow span{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.sc-cal.month .sc-day{min-height:96px;padding:10px}
+.sc-day.today{box-shadow:inset 0 0 0 2px var(--brand)}
+.sc-day.off{opacity:.45}
+.sc-dh{display:flex;align-items:baseline;justify-content:space-between;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.sc-dh b{font-size:20px;letter-spacing:-.02em;color:var(--text);font-variant-numeric:tabular-nums}
+.sc-none{color:var(--faint);font-size:13px}
+.sc-item{display:flex;flex-direction:column;gap:3px;text-align:left;width:100%;padding:9px 10px;border-radius:var(--r-sm);background:var(--surface-2);cursor:pointer;min-width:0}
+.sc-item:hover{background:var(--border)}
+.sc-item.plan{background:transparent;border:1.5px dashed var(--border-strong);cursor:default}
+.sc-it-top{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.sc-time{font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--muted)}
+.sc-it-t{font-size:13.5px;font-weight:650;line-height:1.25;overflow-wrap:anywhere}
+.sc-it-s{font-size:12px;color:var(--muted)}.sc-it-s b{color:var(--accent)}
+.sc-tags{display:inline-flex;gap:4px}
+.sc-pl{display:inline-flex;font-size:10.5px;font-weight:700;letter-spacing:.03em;padding:2px 7px;border-radius:var(--pill);background:var(--surface-2);color:var(--muted)}
+.sc-pl.pl-today{background:var(--brand-soft);color:var(--accent)}
+.sc-pl.pl-wait{background:var(--wait-soft);color:var(--wait)}
+.sc-pl.pl-reply{background:var(--ok-soft);color:var(--ok)}
+.sc-pl.pl-late{background:var(--late-soft);color:var(--late)}
+.sc-pl.pl-stop{background:var(--surface-2);color:var(--faint)}
+.sc-lab{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.modal.sc-modal{max-width:1040px}
+.sc-sticky{position:sticky;top:0;z-index:3;background:var(--surface)}
+.sc-sticky .modal-h{position:static;padding-bottom:10px}
+.sc-bar{padding:0 26px 14px;border-bottom:1px solid var(--border)}
+.sc-bar .sc-actions{margin:0}
+.sc-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start}
+.sc-cols.one{grid-template-columns:minmax(0,640px)}
+.sc-plat{border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.sc-plh{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.sc-plh .sc-lab{margin:0}
+.sc-cover{display:block;border-radius:var(--r-md);overflow:hidden;background:var(--surface-2)}
+.sc-cover img{display:block;width:100%;max-height:300px;object-fit:contain;margin:0 auto}
+.sc-slides{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x proximity;padding-bottom:8px;scrollbar-width:thin}
+.sc-slides a{flex:0 0 38%;scroll-snap-align:start;border-radius:var(--r-sm);overflow:hidden;background:var(--surface-2)}
+.sc-slides img{width:100%;display:block;aspect-ratio:4/5;object-fit:cover}
+.sc-copy{background:var(--surface-2);border-radius:var(--r-md);padding:14px 16px;white-space:pre-wrap;font-size:14.5px;line-height:1.6;overflow-wrap:anywhere;max-height:320px;overflow:auto}
+.sc-hm{list-style:none;display:flex;flex-direction:column;gap:10px;margin:6px 0 10px;padding:0}
+.sc-hm li{display:grid;grid-template-columns:46px minmax(0,1fr) auto;gap:10px;align-items:center;font-size:14px}
+.sc-hm li b{font-variant-numeric:tabular-nums}
+@media(min-width:901px){.sc-cal.month .sc-dh span{display:none}.sc-cal.month .sc-dh{justify-content:flex-end}}
+@media(max-width:900px){.sc-wdrow{display:none}.sc-cols{grid-template-columns:1fr}.sc-cols.one{grid-template-columns:1fr}.sc-cal{grid-template-columns:1fr}.sc-cal.month{grid-template-columns:repeat(2,minmax(0,1fr))}.sc-day{min-height:0}}
+@media(max-width:600px){.sc-card.tile{grid-template-columns:1fr}.sc-thumb{width:120px}.sc-row{grid-template-columns:60px minmax(0,1fr)}.sc-row .sc-chips{grid-column:2}.sc-navt{min-width:0}.sc-slides a{flex-basis:56%}.sc-bar{padding:0 24px 12px}}
 </style>
 </head>
 <body class="locked">
@@ -3875,62 +3945,7 @@ function codaCard(c,idx,cap){
 function previewEmail(id,step){
   const c=state.contacts.find(x=>x.id===id);if(!c)return;
   const d=getDraft(c,step), mail=composeEmail(c,d.corpo||'');
-  const doc=`<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0;padding:22px 24px;font-family:Arial,Helvetica,sans-serif;font-size:small;color:#222;background:#fff}/* Social */
-.sc-list{display:flex;flex-direction:column;gap:14px}
-.sc-card.tile{display:grid;grid-template-columns:148px minmax(0,1fr);gap:20px;padding:18px}
-.sc-thumb{width:148px;aspect-ratio:4/5;border-radius:var(--r-md);overflow:hidden;background:var(--surface-2);padding:0;cursor:pointer;display:block}
-.sc-thumb img{width:100%;height:100%;object-fit:cover;display:block}
-.sc-main{display:flex;flex-direction:column;gap:9px;min-width:0}
-.sc-meta{font-size:13px;color:var(--muted);font-weight:600}
-.sc-meta b{color:var(--accent);font-weight:700}
-.sc-title{font-size:20px;font-weight:800;font-stretch:108%;letter-spacing:-.03em;line-height:1.2}
-.sc-chips{display:flex;gap:8px;flex-wrap:wrap}
-.sc-text{font-size:14px;line-height:1.5;color:var(--muted);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.sc-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:4px}
-.sc-opened{font-size:12.5px;color:var(--faint)}
-.sc-late{color:var(--late);font-weight:650;font-size:13px}
-.sc-rows{background:var(--surface);border-radius:var(--r-xl);padding:4px 20px}
-.sc-row{display:grid;grid-template-columns:76px minmax(0,1fr) auto;gap:16px;align-items:center;padding:14px 0;border-bottom:1px solid var(--border);cursor:pointer}
-.sc-row:last-child{border-bottom:0}
-.sc-rt{display:flex;flex-direction:column;font-variant-numeric:tabular-nums;line-height:1.25}
-.sc-rt b{font-size:17px}.sc-rt span{font-size:12.5px;color:var(--muted)}
-.sc-rtitle{font-weight:650}
-.sc-calbar{justify-content:space-between}
-.sc-nav{display:flex;align-items:center;gap:8px}
-.sc-navt{min-width:180px;text-align:center;font-size:15px}
-.sc-cal{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
-.sc-day{background:var(--surface);border-radius:var(--r-lg);padding:12px;min-height:150px;display:flex;flex-direction:column;gap:8px;min-width:0}
-.sc-cal.month .sc-day{min-height:104px;padding:10px}
-.sc-day.today{box-shadow:inset 0 0 0 2px var(--brand)}
-.sc-day.off{opacity:.45}
-.sc-dh{display:flex;align-items:baseline;justify-content:space-between;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
-.sc-dh b{font-size:20px;letter-spacing:-.02em;color:var(--text);font-variant-numeric:tabular-nums}
-.sc-none{color:var(--faint);font-size:13px}
-.sc-item{display:flex;flex-direction:column;gap:3px;text-align:left;width:100%;padding:9px 10px;border-radius:var(--r-sm);background:var(--surface-2);cursor:pointer;min-width:0}
-.sc-item:hover{background:var(--border)}
-.sc-item.plan{background:transparent;border:1.5px dashed var(--border-strong);cursor:default}
-.sc-it-top{display:flex;align-items:center;justify-content:space-between;gap:6px}
-.sc-time{font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--muted)}
-.sc-it-t{font-size:13.5px;font-weight:650;line-height:1.25;overflow-wrap:anywhere}
-.sc-it-s{font-size:12px;color:var(--muted)}.sc-it-s b{color:var(--accent)}
-.sc-tags{display:inline-flex;gap:4px}
-.sc-pl{display:inline-flex;font-size:10.5px;font-weight:700;letter-spacing:.03em;padding:2px 7px;border-radius:var(--pill);background:var(--surface-2);color:var(--muted)}
-.sc-pl.pl-today{background:var(--brand-soft);color:var(--accent)}
-.sc-pl.pl-wait{background:var(--wait-soft);color:var(--wait)}
-.sc-pl.pl-reply{background:var(--ok-soft);color:var(--ok)}
-.sc-pl.pl-late{background:var(--late-soft);color:var(--late)}
-.sc-pl.pl-stop{background:var(--surface-2);color:var(--faint)}
-.sc-lab{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
-.sc-cover img{width:min(300px,100%);border-radius:var(--r-md);display:block;margin-bottom:12px}
-.sc-slides{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:12px}
-.sc-slides img{width:100%;border-radius:var(--r-sm);display:block}
-.sc-copy{background:var(--surface-2);border-radius:var(--r-md);padding:14px 16px;white-space:pre-wrap;font-size:14.5px;line-height:1.6;overflow-wrap:anywhere}
-.sc-hm{list-style:none;display:flex;flex-direction:column;gap:10px;margin:6px 0 10px;padding:0}
-.sc-hm li{display:grid;grid-template-columns:46px minmax(0,1fr) auto;gap:10px;align-items:center;font-size:14px}
-.sc-hm li b{font-variant-numeric:tabular-nums}
-@media(max-width:900px){.sc-cal{grid-template-columns:1fr}.sc-cal.month{grid-template-columns:repeat(2,minmax(0,1fr))}.sc-day{min-height:0}}
-@media(max-width:600px){.sc-card.tile{grid-template-columns:1fr}.sc-thumb{width:120px}.sc-row{grid-template-columns:60px minmax(0,1fr)}.sc-row .sc-chips{grid-column:2}.sc-navt{min-width:0}.sc-slides{grid-template-columns:repeat(2,minmax(0,1fr))}}
-</style></head><body>${mail.html}</body></html>`;
+  const doc=`<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0;padding:22px 24px;font-family:Arial,Helvetica,sans-serif;font-size:small;color:#222;background:#fff}</style></head><body>${mail.html}</body></html>`;
   modal(`<div class="modal" onclick="event.stopPropagation()" style="max-width:760px" role="dialog" aria-modal="true" aria-labelledby="pv-t">
     <div class="modal-h"><h3 id="pv-t">Anteprima email</h3><div class="x" role="button" tabindex="0" aria-label="Chiudi" onclick="closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div>
     <div class="modal-b">
@@ -9742,7 +9757,8 @@ function scCalView(){
     const iso=scIso(d), items=scDayItems(d,temi), off=month&&d.getMonth()!==sc.ref.getMonth();
     return `<div class="sc-day${iso===t?' today':''}${off?' off':''}"><div class="sc-dh"><span>${wd[i%5]}</span><b>${d.getDate()}${month&&d.getDate()===1?' '+SC_MON[d.getMonth()].slice(0,3):''}</b></div>${items.length?items.map(it=>scCalItem(it,month)).join(''):'<span class="sc-none">—</span>'}</div>`;
   }).join('');
-  return head+`<div class="sc-cal ${month?'month':''}">${cells}</div>
+  const wdRow=month?`<div class="sc-wdrow" aria-hidden="true">${wd.map(x=>`<span>${x}</span>`).join('')}</div>`:'';
+  return head+wdRow+`<div class="sc-cal ${month?'month':''}">${cells}</div>
     <p class="helptip" style="margin-top:14px">Le uscite passate e di oggi sono i post veri; quelle tratteggiate sono previste dal piano (il flusso le prepara la mattina stessa alle 8:05). LI = LinkedIn, IG = Instagram; il colore dice lo stato.</p>`;
 }
 function scSetCal(v){sc.cal=v;render()}
@@ -9771,21 +9787,26 @@ function scOpen(id){
   const slides=Array.isArray(r.slide_urls)?r.slide_urls:[], pend=scPending(r);
   const igShown=!scIgOff(r)&&String(r.testo_instagram||'').trim().toLowerCase()!=='non usato';
   const thumbs=slides.map((u,i)=>`<a href="${escAttr(u)}" target="_blank" rel="noopener" aria-label="Slide ${i+1}"><img src="${escAttr(u)}" alt="Slide ${i+1}" loading="lazy"></a>`).join('');
+  const pendHtml=pend.length?`<div class="sc-actions">${pend.map(scApproveBtn).join('')}${scLeft(r)?`<span class="sc-late" style="color:var(--accent)">entro le ${esc(r.orario)}, tra ${scLeft(r)}</span>`:`<span class="sc-late">orario passato: non approvare più</span>`}</div>`:'';
+  const li=`<section class="sc-plat">
+      <div class="sc-plh"><span class="sc-lab">LinkedIn</span>${scChip('',SC_ST[r.linkedin_stato]||['—','da','pl-stop'])}</div>
+      ${r.immagine_url?`<a class="sc-cover" href="${escAttr(r.immagine_url)}" target="_blank" rel="noopener" title="Apri l'immagine a grandezza piena"><img src="${escAttr(r.immagine_url)}" alt="Copertina LinkedIn" loading="lazy"></a>`:'<p class="helptip">Immagine di copertina non ancora pronta.</p>'}
+      <div class="sc-copy">${esc(r.testo_linkedin)}</div>
+      <div class="sc-actions"><button class="btn sm" onclick="scCopy('${escAttr(r.id)}','li')">Copia testo</button></div></section>`;
+  const ig=igShown?`<section class="sc-plat">
+      <div class="sc-plh"><span class="sc-lab">Instagram${slides.length?' · '+slides.length+' slide':''}</span>${scChip('',SC_ST[r.instagram_stato]||['—','da','pl-stop'])}</div>
+      ${thumbs?`<div class="sc-slides" tabindex="0" aria-label="Slide del carosello">${thumbs}</div>`:'<p class="helptip">Slide non ancora pronte.</p>'}
+      <div class="sc-copy">${esc(r.testo_instagram)}</div>
+      <div class="sc-actions"><button class="btn sm" onclick="scCopy('${escAttr(r.id)}','ig')">Copia testo</button></div></section>`:'';
   modal(`<div class="modal wide sc-modal" role="dialog" aria-modal="true" aria-labelledby="sc-h" onclick="event.stopPropagation()">
-    <div class="modal-h"><div style="flex:1;min-width:0"><h3 id="sc-h">${esc(r.titolo_grafica)}</h3><div class="email-cell">${esc(scWhen(r.giorno))} · ${esc(r.orario)} · ${scTipo(r)}</div></div>
-      <div class="x" role="button" tabindex="0" aria-label="Chiudi" onclick="closeModal()">${SC_I.x}</div></div>
+    <div class="sc-sticky">
+      <div class="modal-h"><div style="flex:1;min-width:0"><h3 id="sc-h">${esc(r.titolo_grafica)}</h3><div class="email-cell">${esc(scWhen(r.giorno))} · ${esc(r.orario)} · ${scTipo(r)}</div></div>
+        <div class="x" role="button" tabindex="0" aria-label="Chiudi" onclick="closeModal()">${SC_I.x}</div></div>
+      ${pendHtml?`<div class="sc-bar">${pendHtml}</div>`:''}
+    </div>
     <div class="modal-b">
-      <div class="sc-chips">${scChips(r)}</div>
       ${r.note&&(scIsProblem(r)||r.stato==='errore')?`<div class="alert"><span>${esc(r.note)}</span></div>`:''}
-      ${pend.length?`<div class="sc-actions">${pend.map(scApproveBtn).join('')}${scLeft(r)?`<span class="sc-late" style="color:var(--accent)">entro le ${esc(r.orario)}, tra ${scLeft(r)}</span>`:`<span class="sc-late">orario passato: non approvare più</span>`}</div>`:''}
-      <section><div class="sc-lab">LinkedIn · immagine di copertina</div>
-        ${r.immagine_url?`<a class="sc-cover" href="${escAttr(r.immagine_url)}" target="_blank" rel="noopener"><img src="${escAttr(r.immagine_url)}" alt="Copertina LinkedIn" loading="lazy"></a>`:'<p class="helptip">Immagine non ancora pronta.</p>'}
-        <div class="sc-copy">${esc(r.testo_linkedin)}</div>
-        <div class="sc-actions"><button class="btn sm" onclick="scCopy('${escAttr(r.id)}','li')">Copia testo</button></div></section>
-      ${igShown?`<section><div class="sc-lab">Instagram · carosello${slides.length?' di '+slides.length+' slide':''}</div>
-        ${thumbs?`<div class="sc-slides">${thumbs}</div>`:'<p class="helptip">Slide non ancora pronte.</p>'}
-        <div class="sc-copy">${esc(r.testo_instagram)}</div>
-        <div class="sc-actions"><button class="btn sm" onclick="scCopy('${escAttr(r.id)}','ig')">Copia testo</button></div></section>`:''}
+      <div class="sc-cols${ig?'':' one'}">${li}${ig}</div>
       ${r.link_articolo?`<a class="btn" href="${escAttr(r.link_articolo)}" target="_blank" rel="noopener" style="align-self:flex-start">Apri l'articolo sul Journal${SC_I.ext}</a>`:''}
     </div></div>`);
 }
