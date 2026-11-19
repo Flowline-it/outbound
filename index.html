@@ -4622,7 +4622,7 @@ const NL = {
 if(state.config.nlSite==null) state.config.nlSite=NL.siteDefault;
 let nlSupa=null;
 const nl={stats:{}, links:null, inited:false, ready:false, session:null, editor:null, tab:'campagne', subs:[], camps:[], loaded:false, loading:false,
-  q:'', filter:'attivi', edit:null, sends:null, sending:null, stop:false, prog:null, saveT:null, prevT:null, saving:false};
+  q:'', filter:'attivi', period:'30', edit:null, sends:null, sending:null, stop:false, prog:null, saveT:null, prevT:null, saving:false};
 
 function nlSite(){return String(state.config.nlSite||NL.siteDefault).trim().replace(/\/+$/,'')}
 function nlUnsubUrl(token,campaignId){return nlSite()+'/newsletter/disiscrizione/?t='+encodeURIComponent(token)+(campaignId?'&c='+encodeURIComponent(campaignId):'')}
@@ -5137,6 +5137,34 @@ function nlStatsBlock(c){
       :'<p class="helptip" style="margin-top:12px">Ancora nessun clic sui link.</p>'}
     <p class="helptip" style="margin-top:10px">Numeri anonimi: si sa quante persone hanno aperto o cliccato, non chi. Le aperture sono una stima (Apple Mail le gonfia, chi blocca le immagini non viene contato); chi clicca conta sempre come apertura.${st.bots?` Esclusi ${st.bots} ${st.bots===1?'accesso automatico':'accessi automatici'} di filtri antispam.`:''}</p>`;
 }
+// riepilogo per periodo: newsletter inviate in quel periodo (aperture e clic sono quelli della newsletter, anche se arrivati dopo)
+const NL_PERIODS=[['oggi','Oggi'],['7','Ultimi 7 giorni'],['30','Ultimi 30 giorni'],['90','Ultimi 90 giorni'],['all','Da sempre']];
+function nlSince(){
+  if(nl.period==='all')return null;
+  if(nl.period==='oggi'){const d=new Date();d.setHours(0,0,0,0);return d}
+  return new Date(Date.now()-(+nl.period)*864e5);
+}
+function nlSetPeriod(p){nl.period=p;render()}
+function nlPeriodTot(){
+  const since=nlSince(), inR=ts=>!!ts&&(!since||new Date(ts)>=since);
+  const camps=nl.camps.filter(c=>c.status!=='draft'&&inR(c.sent_at||c.updated_at));
+  const t={n:camps.length,sent:0,opens:0,clicks:0,newSubs:nl.subs.filter(s=>inR(s.created_at)).length,left:nl.subs.filter(s=>inR(s.unsubscribed_at)).length};
+  camps.forEach(c=>{const st=nl.stats[c.id]||{};t.sent+=c.sent_count||0;t.opens+=+st.opens_unique||0;t.clicks+=+st.clicks_unique||0});
+  return t;
+}
+function nlPeriodBlock(){
+  const t=nlPeriodTot(), lbl=nl.period==='all'?'da sempre':nl.period==='oggi'?'oggi':'negli ultimi '+nl.period+' giorni';
+  const seg=`<div class="filters"><div class="seg" role="group" aria-label="Periodo">${NL_PERIODS.map(([k,l])=>`<button class="fbtn ${nl.period===k?'on':''}" aria-pressed="${nl.period===k}" onclick="nlSetPeriod('${k}')">${l}</button>`).join('')}</div></div>`;
+  return `<div class="section-h"><h3>Statistiche</h3><div class="line"></div></div>${seg}
+  <div class="nl-kpis" style="margin-bottom:8px">
+    <div class="stat-t t-white"><div class="k">Iscritti nuovi</div><div class="row"><div class="v">${t.newSubs}</div><div class="m">${lbl}</div></div></div>
+    <div class="stat-t t-white"><div class="k">Disiscrizioni</div><div class="row"><div class="v">${t.left}</div><div class="m">${lbl}</div></div></div>
+    <div class="stat-t t-white"><div class="k">Newsletter inviate</div><div class="row"><div class="v">${t.n}</div><div class="m">${lbl}</div></div></div>
+    <div class="stat-t t-white"><div class="k">Email inviate</div><div class="row"><div class="v">${t.sent}</div><div class="m">${t.n?'in '+t.n+' newsletter':'nessun invio '+lbl}</div></div></div>
+    <div class="stat-t t-white"><div class="k">Aperture stimate</div><div class="row"><div class="v">${nlPct(t.opens,t.sent)}</div><div class="m">${t.n?t.opens+' persone':'—'}</div></div></div>
+    <div class="stat-t t-white"><div class="k">Hanno cliccato</div><div class="row"><div class="v">${nlPct(t.clicks,t.sent)}</div><div class="m">${t.n?t.clicks+' persone':'—'}</div></div></div>
+  </div>`;
+}
 function nlCampsView(){
   const n=nlActive().length, sent=nl.camps.filter(c=>c.status==='sent');
   const last=sent.map(c=>c.sent_at).filter(Boolean).sort().pop();
@@ -5145,7 +5173,7 @@ function nlCampsView(){
     <div class="stat-t t-peach"><div class="k">Newsletter inviate</div><div class="row"><div class="v">${sent.length}</div><div class="m">${last?'ultima il '+esc(nlFmt(last)):'ancora nessuna'}</div></div></div>
   </div>`;
   if(!nl.camps.length) return stats+`<div class="empty" style="margin-top:16px">${NL_I.mail}<h4>Nessuna newsletter ancora</h4><p>Scrivi la prima: la provi mandandola a te, poi la invii a tutti gli iscritti dalla tua casella Gmail.</p><button class="btn primary" onclick="nlNew()">${NL_I.plus}Nuova newsletter</button></div>`;
-  return stats+`<div class="section-h"><h3>Newsletter</h3><span class="count">${nl.camps.length}</span><div class="line"></div></div>
+  return stats+nlPeriodBlock()+`<div class="section-h"><h3>Newsletter</h3><span class="count">${nl.camps.length}</span><div class="line"></div></div>
   <div class="table-wrap"><table><thead><tr><th>Oggetto</th><th>Stato</th><th>Inviate</th><th>Aperture</th><th>Clic</th><th>Modificata</th><th></th></tr></thead><tbody>
   ${nl.camps.map(c=>`<tr style="cursor:pointer" onclick="nlOpen('${c.id}')">
     <td class="az">${esc(c.subject||'(senza oggetto)')}</td><td>${nlStatusChip(c)}</td>
@@ -9421,19 +9449,25 @@ async function obLoad(force){
   if(!supaReady()){ob.err='Database non collegato';render();return}
   if(ob.loading||(!force&&ob.loaded&&Date.now()-ob.at<60000))return;
   ob.loading=true; if(state.view==='stats')render();
-  const since=ob.period==='all'?null:new Date(Date.now()-(+ob.period)*864e5).toISOString();
+  const sd=obSince(), since=sd?sd.toISOString():null;
   const [a,b]=await Promise.all([supa.rpc('outbound_stats',{p_since:since}),supa.rpc('outbound_link_stats',{p_since:since})]);
   ob.loading=false;
   if(a.error||b.error){ob.err=(a.error||b.error).message;}
   else {ob.err='';ob.rows=a.data||[];ob.links=b.data||[];ob.loaded=true;ob.at=Date.now();}
   if(state.view==='stats')render();
 }
+// "Oggi" parte dalla mezzanotte locale; gli altri periodi contano le ultime N*24 ore
+function obSince(){
+  if(ob.period==='all')return null;
+  if(ob.period==='oggi'){const d=new Date();d.setHours(0,0,0,0);return d}
+  return new Date(Date.now()-(+ob.period)*864e5);
+}
 function obSetPeriod(p){ob.period=p;ob.loaded=false;obLoad(true)}
 function obPct(n,base){return base?Math.round(n/base*100)+'%':'—'}
 function obTot(){return ob.rows.reduce((t,r)=>({sent:t.sent+ +r.sent,opens:t.opens+ +r.opens_unique,clicks:t.clicks+ +r.clicks_unique,bots:t.bots+ +r.bots}),{sent:0,opens:0,clicks:0,bots:0})}
 // risposte: dai contatti (non sono dati anonimi, ma restano dentro Outbound come già oggi)
 function obReplies(){
-  const since=ob.period==='all'?null:new Date(Date.now()-(+ob.period)*864e5);
+  const since=obSince();
   const inRange=c=>!since||(c.reply&&c.reply.date&&new Date(c.reply.date)>=since);
   const real=state.contacts.filter(c=>c.haRisposto&&!(c.reply&&c.reply.auto)&&inRange(c));
   const byStep={};real.forEach(c=>{const sent=(c.history||[]).filter(h=>!h.skipped);const st=sent.length?Math.max(...sent.map(h=>h.step)):0;byStep[st]=(byStep[st]||0)+1});
@@ -9442,19 +9476,21 @@ function obReplies(){
 function obHeroCopy(){
   if(!ob.loaded) return {t:'Statistiche.',l:'Quante email della sequenza vengono aperte e cliccate, in forma anonima come per la newsletter.'};
   const t=obTot();
+  if(!t.sent&&ob.period==='oggi') return {t:'Oggi non è ancora partita nessuna email.',l:'Appena parte il primo invio reale della giornata, qui compaiono invii, aperture e clic.'};
   if(!t.sent) return {t:'Ancora nessun dato.',l:'I numeri partono dai prossimi invii reali: ogni email della sequenza viene contata in forma anonima.'};
-  return {t:`${obPct(t.opens,t.sent)} delle email aperte.`,l:`${t.sent} email contate ${ob.period==='all'?'da quando sono attive le statistiche':'negli ultimi '+ob.period+' giorni'} · ${obPct(t.clicks,t.sent)} con almeno un clic.`};
+  return {t:`${obPct(t.opens,t.sent)} delle email aperte.`,l:`${t.sent} email contate ${ob.period==='all'?'da quando sono attive le statistiche':ob.period==='oggi'?'oggi':'negli ultimi '+ob.period+' giorni'} · ${obPct(t.clicks,t.sent)} con almeno un clic.`};
 }
 function viewStats(){
   if(!ob.loaded&&!ob.loading&&!ob.err) setTimeout(()=>obLoad(),0);
   const seg=`<div class="filters"><div class="seg" role="group" aria-label="Periodo">
-    ${[['7','Ultimi 7 giorni'],['30','Ultimi 30 giorni'],['90','Ultimi 90 giorni'],['all','Da sempre']].map(([k,l])=>`<button class="fbtn ${ob.period===k?'on':''}" aria-pressed="${ob.period===k}" onclick="obSetPeriod('${k}')">${l}</button>`).join('')}
+    ${[['oggi','Oggi'],['7','Ultimi 7 giorni'],['30','Ultimi 30 giorni'],['90','Ultimi 90 giorni'],['all','Da sempre']].map(([k,l])=>`<button class="fbtn ${ob.period===k?'on':''}" aria-pressed="${ob.period===k}" onclick="obSetPeriod('${k}')">${l}</button>`).join('')}
   </div></div>`;
   if(ob.err) return seg+`<div class="empty"><h4>Statistiche non disponibili</h4><p>${esc(ob.err)}</p><button class="btn" onclick="obLoad(true)">Riprova</button></div>`;
   if(!ob.loaded) return seg+`<div class="empty"><span class="spinner"></span><p style="margin-top:14px">Carico le statistiche…</p></div>`;
   const t=obTot(), rep=obReplies();
   const off=!state.config.formatoHtml?'il formato "come Gmail" è spento':(!state.config.obTrackOpen&&!state.config.obTrackClick?'aperture e clic sono spenti':'');
   const warn=off?`<div class="alert"><span><b>Statistiche in pausa:</b> ${off} nelle Impostazioni, quindi le nuove email non vengono contate.</span></div>`:'';
+  if(!t.sent&&ob.period==='oggi') return seg+warn+`<div class="empty"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18 M7 16v-5 M12 16V8 M17 16v-8"/></svg><h4>Oggi non è ancora partita nessuna email</h4><p>Gli invii reali di oggi compariranno qui, con le aperture e i clic man mano che arrivano. Per i giorni scorsi scegli "Ultimi 7 giorni".</p></div>`;
   if(!t.sent) return seg+warn+`<div class="empty"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18 M7 16v-5 M12 16V8 M17 16v-8"/></svg><h4>Ancora nessun dato</h4><p>I numeri partono dai prossimi invii reali (non in modalità test). Ogni email della sequenza riceve un codice casuale: si contano le aperture e i clic, non chi li fa.</p></div>`;
   const rows=ob.rows.map(r=>{const st=state.cadence[r.step]?.nome||('Step '+(r.step+1));
     return `<tr><td class="az">${esc(st)}</td><td class="tnum">${r.sent}</td><td class="tnum">${obPct(r.opens_unique,r.sent)} <span class="email-cell">(${r.opens_unique})</span></td><td class="tnum">${obPct(r.clicks_unique,r.sent)} <span class="email-cell">(${r.clicks_unique})</span></td><td class="tnum">${rep.byStep[r.step]||0}</td></tr>`}).join('');
