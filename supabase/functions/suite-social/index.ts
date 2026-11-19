@@ -1,8 +1,8 @@
-// suite-social — lettura dei post social per la Flowline Suite (Marketing › Social).
+// suite-social — lettura dei post social e degli articoli del Journal per la Flowline Suite (Marketing › Social e Notizie).
 // Va pubblicata nel progetto Supabase FLOWLINE JOURNAL (dove vive la tabella social_posts), con verify_jwt = false.
 // La Suite ha il suo database (altro progetto), quindi il Journal non può verificare il suo accesso da solo:
 // la funzione chiede al database della Suite se il token è valido e se chi chiama è una persona attiva della
-// squadra (team_members). Solo allora legge social_posts e social_temi con la chiave di servizio.
+// squadra (team_members). Solo allora legge social_posts, social_temi e journal_articles (senza il testo) con la chiave di servizio.
 // Sola lettura: non scrive nulla. URL e chiave publishable della Suite sono pubblici (stanno già in index.html).
 const SUITE_URL = 'https://adaaubcarnczlmenfwam.supabase.co';
 const SUITE_KEY = 'sb_publishable_0a_ioaj4iiT3MlzUKR2XyQ_-PYHrQPP';
@@ -43,6 +43,7 @@ const sbGet = async (path: string) => {
   return r.json();
 };
 
+const ART_COLS = 'id,title,slug,status,scheduled_at,published_at,source_url';
 const POST_COLS = 'id,giorno,orario,tipo,formato,stato,linkedin_stato,instagram_stato,titolo_grafica,testo_linkedin,testo_instagram,link_articolo,immagine_url,slide_urls,linkedin_approval_id,instagram_approval_id,note,email_approvazione_inviata,article_id,tema_id,created_at,updated_at';
 
 Deno.serve(async (req) => {
@@ -59,11 +60,14 @@ Deno.serve(async (req) => {
     let a = body.a && DAY.test(body.a) ? body.a : shift(oggi, 14);
     if (a < da) a = da;
     if (a > shift(da, 120)) a = shift(da, 120);   // al massimo quattro mesi per volta
-    const [posts, temi] = await Promise.all([
+    // articoli del Journal: gli ultimi 120 giorni, più quelli non ancora pubblicati o programmati nel futuro
+    const artDa = shift(oggi, -120);
+    const [posts, temi, articoli] = await Promise.all([
       sbGet(`social_posts?select=${POST_COLS}&giorno=gte.${da}&giorno=lte.${a}&order=giorno.asc,orario.asc&limit=400`),
       sbGet('social_temi?select=id,ordine,servizio,tema,attivo,usato_il&attivo=eq.true&order=ordine.asc&limit=200'),
+      sbGet(`journal_articles?select=${ART_COLS}&or=(published_at.gte.${artDa},scheduled_at.gte.${artDa},status.neq.published)&order=published_at.desc.nullsfirst&limit=400`).catch(() => null),
     ]);
-    return json({ ok: true, oggi, da, a, posts, temi });
+    return json({ ok: true, oggi, da, a, posts, temi, articoli });
   } catch (e) {
     return json({ ok: false, errore: String((e as Error).message || e) }, 500);
   }
