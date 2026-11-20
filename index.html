@@ -4697,9 +4697,13 @@ document.addEventListener('input',e=>{
   if(e.target.id==='searchInput'){state.search=e.target.value;clearTimeout(window._st);window._st=setTimeout(()=>{render();const i=document.getElementById('searchInput');if(i){i.focus();i.setSelectionRange(i.value.length,i.value.length)}},220)}
 });
 
-/* keyboard: i = import, c = coda */
+/* keyboard: i = import, c = coda, d = dashboard — solo tasto singolo, solo dentro Outbound.
+   Con Cmd/Ctrl/Alt premuti non fa nulla, così ⌘C/⌘D/⌘I restano al browser (copia, preferiti…). */
 document.addEventListener('keydown',e=>{
-  if(e.target.matches('input,textarea,select'))return;
+  if(e.metaKey||e.ctrlKey||e.altKey||e.repeat)return;
+  if(e.target.closest&&e.target.closest('input,textarea,select,[contenteditable],[contenteditable="true"]'))return;
+  if(document.getElementById('modalRoot')?.firstChild)return;
+  if(sectionOf(state.view)!=='outbound')return;
   if(e.key==='i')pickFile();
   if(e.key==='c')go('coda');
   if(e.key==='d')go('dashboard');
