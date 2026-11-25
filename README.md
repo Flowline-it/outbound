@@ -141,3 +141,11 @@ In **Marketing › Social**, nella finestra di ogni post («Anteprima, testi e p
 - La scelta si salva nella colonna `social_posts.piattaforme` (progetto Supabase FLOWLINE JOURNAL) tramite la funzione `suite-social`, azione `piattaforme`, che controlla che chi scrive sia nella squadra.
 - Si può cambiare finché il post non è uscito e l'orario non è passato. L'attività di Claude «Social Flowline: programma» (ogni ora alle :40) la applica: programma le piattaforme aggiunte (con una nuova email di approvazione) e salta quelle tolte ancora in approvazione. Una piattaforma già approvata si toglie solo cancellando il post in Creads.
 - Quando Instagram viene scelto per un post delle 18:00, la didascalia la scrive il flusso al momento di programmarlo.
+
+## Logo Flowline (25 novembre)
+
+In `brand/` ci sono gli unici loghi da usare, così come li ha forniti Flowline (non vanno ricolorati né ridisegnati):
+- `brand/logo_FLOWLINE-black.png`: scritta grigio scuro, per sfondi chiari (email della newsletter, slide chiare);
+- `brand/logo_FLOWLINE-white.png`: scritta bianca, per sfondi scuri e foto.
+
+Le grafiche social (funzione `social-carosello-v2` nel progetto Supabase FLOWLINE JOURNAL) usano le stesse due copie, salvate in `journal-media/brand/`. Il vecchio logo provvisorio `flowline-logo-dark` è stato tolto.
