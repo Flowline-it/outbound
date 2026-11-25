@@ -1784,6 +1784,9 @@ body.gs-on{overflow:hidden}
 .sc-plat{border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
 .sc-plh{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .sc-plh .sc-lab{margin:0}
+.sc-where{border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;display:flex;flex-direction:column;gap:12px}
+.sc-where .seg .fbtn[disabled]{opacity:.5;cursor:not-allowed}
+.sc-where .helptip{margin:0}
 .sc-cover{display:block;border-radius:var(--r-md);overflow:hidden;background:var(--surface-2)}
 .sc-cover img{display:block;width:100%;max-height:300px;object-fit:contain;margin:0 auto}
 .sc-slides{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x proximity;padding-bottom:8px;scrollbar-width:thin}
@@ -9558,7 +9561,7 @@ const SC_APPROVE='https://creads.studio/mcp/approve/';
 const SC_TABS=[{tab:'approva',label:'Da approvare'},{tab:'calendario',label:'Calendario'},{tab:'archivio',label:'Archivio'}];
 const SC_DOW=['domenica','lunedì','martedì','mercoledì','giovedì','venerdì','sabato'];
 const SC_MON=['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
-const sc={tab:'approva',rows:[],temi:[],loaded:false,loading:false,err:'',at:0,pollT:null,cal:'settimana',ref:null,filter:'tutti',opened:load('flo_sc_opened',{})};
+const sc={tab:'approva',rows:[],temi:[],loaded:false,loading:false,saving:false,err:'',at:0,pollT:null,cal:'settimana',ref:null,filter:'tutti',opened:load('flo_sc_opened',{})};
 const SC_I={
   refresh:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6 M1 20v-6h6 M3.51 9a9 9 0 0 1 14.85-3.36L23 10 M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>',
   ext:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7 M8 7h9v9"/></svg>',
@@ -9585,20 +9588,26 @@ function scTipo(r){return r.tipo==='servizio'?'Servizio':'Articolo'}
 // stato di ogni piattaforma → etichetta e colore del chip (arancione = "da fare")
 const SC_ST={in_approvazione:['Da approvare','today','pl-today'],programmato:['Programmato','wait','pl-wait'],pubblicato:['Pubblicato','reply','pl-reply'],saltato:['Saltato','stop','pl-stop'],errore:['Errore','late','pl-late']};
 const SC_PREP={foto_da_generare:['In preparazione','da','pl-stop'],foto_in_generazione:['In preparazione','da','pl-stop'],foto_pronta:['Foto pronta','plan','pl-stop'],post_in_approvazione:['In approvazione','today','pl-today'],errore:['Errore','late','pl-late'],saltato:['Saltato','stop','pl-stop'],programmato:['Programmato','wait','pl-wait'],pubblicato:['Pubblicato','reply','pl-reply']};
-function scIgOff(r){return r.instagram_stato==='saltato'&&r.orario==='18:00'}   // le 18:00 escono solo su LinkedIn: non è un problema
+// piattaforme del post: quelle scelte dalla Suite (colonna piattaforme) o la regola predefinita (13:00 entrambe, 18:00 solo LinkedIn)
+function scPlat(r){return Array.isArray(r.piattaforme)&&r.piattaforme.length?r.piattaforme:(r.orario==='18:00'?['linkedin']:['linkedin','instagram'])}
+function scIgOff(r){return !scPlat(r).includes('instagram')}   // piattaforma non scelta: non è un problema
+function scLiOff(r){return !scPlat(r).includes('linkedin')}
 function scChip(label,m){return `<span class="chip ${m[1]}"><span class="d"></span>${label?label+' · ':''}${m[0]}</span>`}
 function scChips(r){
   const li=r.linkedin_stato, ig=r.instagram_stato, out=[];
-  if(!li&&!ig){return scChip('',SC_PREP[r.stato]||[r.stato||'—','da','pl-stop'])}
-  if(li)out.push(scChip('LinkedIn',SC_ST[li]||[li,'da','pl-stop']));
-  if(ig&&!scIgOff(r))out.push(scChip('Instagram',SC_ST[ig]||[ig,'da','pl-stop']));
-  else if(scIgOff(r))out.push('<span class="chip da"><span class="d"></span>Solo LinkedIn</span>');
+  if(!li&&!ig)out.push(scChip('',SC_PREP[r.stato]||[r.stato||'—','da','pl-stop']));
+  else{
+    if(li&&!scLiOff(r))out.push(scChip('LinkedIn',SC_ST[li]||[li,'da','pl-stop']));
+    if(ig&&!scIgOff(r))out.push(scChip('Instagram',SC_ST[ig]||[ig,'da','pl-stop']));
+  }
+  const solo=scLiOff(r)?'Solo Instagram':scIgOff(r)?'Solo LinkedIn':'';
+  if(solo)out.push(`<span class="chip da"><span class="d"></span>${solo}</span>`);
   return out.join('');
 }
 function scTag(label,s){const m=SC_ST[s];return s?`<span class="sc-pl ${m?m[2]:'pl-stop'}" title="${escAttr(label==='LI'?'LinkedIn':'Instagram')}: ${escAttr(m?m[0]:s)}">${label}</span>`:''}
 function scTags(r){
   if(!r.linkedin_stato&&!r.instagram_stato){const p=SC_PREP[r.stato]||[r.stato||'—','da','pl-stop'];return `<span class="sc-pl ${p[2]}">${esc(p[0])}</span>`}
-  return scTag('LI',r.linkedin_stato)+(scIgOff(r)?'':scTag('IG',r.instagram_stato));
+  return (scLiOff(r)?'':scTag('LI',r.linkedin_stato))+(scIgOff(r)?'':scTag('IG',r.instagram_stato));
 }
 function scPending(r){
   return [['linkedin','LinkedIn'],['instagram','Instagram']].filter(([p])=>r[p+'_stato']==='in_approvazione'&&r[p+'_approval_id']).map(([p,l])=>({p,l,id:r[p+'_approval_id']}));
@@ -9612,7 +9621,7 @@ function scLeft(r){
 function scToApprove(){return sc.rows.filter(r=>scPending(r).length&&scDeadline(r)>new Date()).sort((a,b)=>scDeadline(a)-scDeadline(b))}
 function scIsProblem(r){
   const bad=s=>s==='errore'||s==='saltato';
-  if(r.stato==='errore'||bad(r.linkedin_stato)||r.instagram_stato==='errore'||(r.instagram_stato==='saltato'&&!scIgOff(r)))return true;
+  if(r.stato==='errore'||(!scLiOff(r)&&bad(r.linkedin_stato))||(!scIgOff(r)&&bad(r.instagram_stato)))return true;
   if(r.stato==='saltato')return true;
   return scPending(r).length>0&&scDeadline(r)<=new Date();   // approvazione non arrivata prima dell'orario
 }
@@ -9721,7 +9730,7 @@ function scCard(r){
       <h4 class="sc-title">${esc(r.titolo_grafica)}</h4>
       <div class="sc-chips">${scChips(r)}</div>
       <p class="sc-text">${esc(scShort(r.testo_linkedin,200))}</p>
-      <div class="sc-actions">${pend.map(scApproveBtn).join('')}<button type="button" class="btn" onclick="scOpen('${escAttr(r.id)}')">Anteprima e testi</button></div>
+      <div class="sc-actions">${pend.map(scApproveBtn).join('')}<button type="button" class="btn" onclick="scOpen('${escAttr(r.id)}')">Anteprima, testi e piattaforme</button></div>
     </div></article>`;
 }
 function scRow(r){
@@ -9808,16 +9817,17 @@ function scArchView(){
   if(!shown.length)return bar+`<div class="empty">${SC_I.cal}<h4>Nessun post qui</h4><p>Prova un altro filtro.</p></div>`;
   const st=s=>s?scChip('',SC_ST[s]||[s,'da','pl-stop']):'<span class="email-cell">—</span>';
   return bar+`<div class="table-wrap"><table><thead><tr><th>Giorno</th><th>Ora</th><th>Tipo</th><th>Titolo</th><th>LinkedIn</th><th>Instagram</th></tr></thead><tbody>
-    ${shown.map(r=>`<tr style="cursor:pointer" onclick="scOpen('${escAttr(r.id)}')"><td class="az">${esc(scWhen(r.giorno))}</td><td class="tnum">${esc(r.orario)}</td><td>${scTipo(r)}</td><td>${esc(r.titolo_grafica)}</td><td>${st(r.linkedin_stato)}</td><td>${scIgOff(r)?'<span class="email-cell">non previsto</span>':st(r.instagram_stato)}</td></tr>`).join('')}
+    ${shown.map(r=>`<tr style="cursor:pointer" onclick="scOpen('${escAttr(r.id)}')"><td class="az">${esc(scWhen(r.giorno))}</td><td class="tnum">${esc(r.orario)}</td><td>${scTipo(r)}</td><td>${esc(r.titolo_grafica)}</td><td>${scLiOff(r)?'<span class="email-cell">non previsto</span>':st(r.linkedin_stato)}</td><td>${scIgOff(r)?'<span class="email-cell">non previsto</span>':st(r.instagram_stato)}</td></tr>`).join('')}
   </tbody></table></div>`;
 }
 function scOpen(id){
   const r=sc.rows.find(x=>x.id===id); if(!r)return;
   const slides=Array.isArray(r.slide_urls)?r.slide_urls:[], pend=scPending(r);
-  const igShown=!scIgOff(r)&&String(r.testo_instagram||'').trim().toLowerCase()!=='non usato';
+  const igNoText=String(r.testo_instagram||'').trim().toLowerCase()==='non usato';
+  const igShown=!scIgOff(r), liShown=!scLiOff(r);
   const thumbs=slides.map((u,i)=>`<a href="${escAttr(u)}" target="_blank" rel="noopener" aria-label="Slide ${i+1}"><img src="${escAttr(u)}" alt="Slide ${i+1}" loading="lazy"></a>`).join('');
   const pendHtml=pend.length?`<div class="sc-actions">${pend.map(scApproveBtn).join('')}${scLeft(r)?`<span class="sc-late" style="color:var(--accent)">entro le ${esc(r.orario)}, tra ${scLeft(r)}</span>`:`<span class="sc-late">orario passato: non approvare più</span>`}</div>`:'';
-  const li=`<section class="sc-plat">
+  const li=!liShown?'':`<section class="sc-plat">
       <div class="sc-plh"><span class="sc-lab">LinkedIn</span>${scChip('',SC_ST[r.linkedin_stato]||['—','da','pl-stop'])}</div>
       ${r.immagine_url?`<a class="sc-cover" href="${escAttr(r.immagine_url)}" target="_blank" rel="noopener" title="Apri l'immagine a grandezza piena"><img src="${escAttr(r.immagine_url)}" alt="Copertina LinkedIn" loading="lazy"></a>`:'<p class="helptip">Immagine di copertina non ancora pronta.</p>'}
       <div class="sc-copy">${esc(r.testo_linkedin)}</div>
@@ -9825,8 +9835,8 @@ function scOpen(id){
   const ig=igShown?`<section class="sc-plat">
       <div class="sc-plh"><span class="sc-lab">Instagram${slides.length?' · '+slides.length+' slide':''}</span>${scChip('',SC_ST[r.instagram_stato]||['—','da','pl-stop'])}</div>
       ${thumbs?`<div class="sc-slides" tabindex="0" aria-label="Slide del carosello">${thumbs}</div>`:'<p class="helptip">Slide non ancora pronte.</p>'}
-      <div class="sc-copy">${esc(r.testo_instagram)}</div>
-      <div class="sc-actions"><button class="btn sm" onclick="scCopy('${escAttr(r.id)}','ig')">Copia testo</button></div></section>`:'';
+      ${igNoText?'<p class="helptip">La didascalia per Instagram la scrive il flusso quando programma il post (ogni ora alle :40).</p>':`<div class="sc-copy">${esc(r.testo_instagram)}</div>
+      <div class="sc-actions"><button class="btn sm" onclick="scCopy('${escAttr(r.id)}','ig')">Copia testo</button></div>`}</section>`:'';
   modal(`<div class="modal wide sc-modal" role="dialog" aria-modal="true" aria-labelledby="sc-h" onclick="event.stopPropagation()">
     <div class="sc-sticky">
       <div class="modal-h"><div style="flex:1;min-width:0"><h3 id="sc-h">${esc(r.titolo_grafica)}</h3><div class="email-cell">${esc(scWhen(r.giorno))} · ${esc(r.orario)} · ${scTipo(r)}</div></div>
@@ -9835,10 +9845,43 @@ function scOpen(id){
     </div>
     <div class="modal-b">
       ${r.note&&(scIsProblem(r)||r.stato==='errore')?`<div class="alert"><span>${esc(r.note)}</span></div>`:''}
-      <div class="sc-cols${ig?'':' one'}">${li}${ig}</div>
+      ${scPlatPicker(r)}
+      <div class="sc-cols${ig&&li?'':' one'}">${li}${ig}</div>
       ${r.link_articolo?`<a class="btn" href="${escAttr(r.link_articolo)}" target="_blank" rel="noopener" style="align-self:flex-start">Apri l'articolo sul Journal${SC_I.ext}</a>`:''}
     </div></div>`);
 }
+// Dove esce il post: scelta salvata in social_posts.piattaforme (funzione suite-social, azione 'piattaforme').
+// L'attività "programma" (ogni ora alle :40) la applica: programma le piattaforme aggiunte, salta quelle tolte.
+function scPlatPicker(r){
+  const cur=scPlat(r).slice().sort().join(','), def=!(Array.isArray(r.piattaforme)&&r.piattaforme.length);
+  const locked=r.stato==='pubblicato'||r.stato==='saltato'||scDeadline(r)<=new Date();
+  const opts=[['linkedin','Solo LinkedIn'],['instagram','Solo Instagram'],['instagram,linkedin','LinkedIn e Instagram']];
+  const defTxt=r.orario==='18:00'?'solo LinkedIn':'LinkedIn e Instagram';
+  return `<section class="sc-where">
+    <div class="sc-plh"><span class="sc-lab">Dove esce</span><span class="email-cell">${def?'predefinito: '+defTxt:'scelto dalla Suite'}</span></div>
+    <div class="seg" role="group" aria-label="Dove esce">${opts.map(([v,l])=>`<button type="button" class="fbtn ${cur===v?'on':''}" aria-pressed="${cur===v}" ${locked||sc.saving?'disabled':''} onclick="scSetPlat('${escAttr(r.id)}','${v}')">${l}</button>`).join('')}${!def&&!locked?`<button type="button" class="btn sm ghost" ${sc.saving?'disabled':''} onclick="scSetPlat('${escAttr(r.id)}','')">Torna al predefinito</button>`:''}</div>
+    <p class="helptip">${locked?'Non si può più cambiare: il post è uscito, è stato saltato o l\'orario è passato.':'Su LinkedIn esce sempre la copertina; su Instagram il carosello (alle 18:00 la sola immagine). Se il post è già in approvazione, il flusso applica la scelta al prossimo giro (ogni ora alle :40).'}</p>
+  </section>`;
+}
+async function scSetPlat(id,v){
+  const r=sc.rows.find(x=>x.id===id); if(!r||sc.saving)return;
+  if(v===scPlat(r).slice().sort().join(',')&&Array.isArray(r.piattaforme)&&r.piattaforme.length)return;
+  sc.saving=true; scOpen(id);
+  try{
+    const {data:s}=await nlSupa.auth.getSession(); const tok=s&&s.session&&s.session.access_token;
+    if(!tok)throw new Error('accesso scaduto: esci e rientra');
+    const res=await fetch(SC_FN,{method:'POST',headers:{'Authorization':'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify({azione:'piattaforme',post_id:id,piattaforme:v?v.split(','):null})});
+    let j=null; try{j=await res.json()}catch(_){}
+    if(!res.ok||!j||!j.ok)throw new Error((j&&j.errore)||('errore '+res.status));
+    if(j.post)Object.assign(r,j.post);
+    toast('Salvato: '+(scLiOff(r)?'solo Instagram':scIgOff(r)?'solo LinkedIn':'LinkedIn e Instagram'),'ok');
+    (j.avvisi||[]).forEach(a=>toast(a,'warn'));
+  }catch(e){toast('Social: '+String(e.message||e),'err')}
+  sc.saving=false;
+  if(document.querySelector('.sc-modal'))scOpen(id);
+  if(state.view==='social')render();
+}
+
 // riquadro della Home: i post di oggi e quanti sono da approvare
 function scHomeTile(span){
   const rows=scTodayRows(), ap=sc.loaded?scToApprove().length:0;
